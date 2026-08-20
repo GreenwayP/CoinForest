@@ -1,1 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallets | CoinForest</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #081525;
+      --navy2: #10263f;
+      --green: #2ecc71;
+      --green-dark: #159957;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #142033;
+      --muted: #718096;
+      --border: #e6ebf2;
+      --danger: #e55353;
+      --warning: #e7a11b;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      width: 250px;
+      background: var(--navy);
+      color: white;
+      padding: 24px 16px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      font-size: 25px;
+      font-weight: 800;
+      padding: 0 14px 28px;
+    }
+
+    .brand span {
+      color: var(--green);
+    }
+
+    .nav-title {
+      color: #7f91a8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px 14px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      margin: 4px 0;
+      border-radius: 10px;
+      color: #b9c7d8;
+      font-size: 14px;
+      transition: .2s;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: #17314d;
+      color: white;
+    }
+
+    .nav a.active {
+      border-left: 3px solid var(--green);
+    }
+
+    .logout {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      right: 16px;
+    }
+
+    .logout button {
+      width: 100%;
+      border: 1px solid #29415d;
+      background: transparent;
+      color: #b9c7d8;
+      padding: 12px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .logout button:hover {
+      background: #17314d;
+      color: white;
+    }
+
+    /* MAIN */
+
+    .main {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 76px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 34px;
+    }
+
+    .topbar h1 {
+      font-size: 22px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #dff8e9;
+      color: var(--green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .content {
+      padding: 32px;
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    /* BALANCE */
+
+    .balance-card {
+      background: linear-gradient(135deg, var(--navy), #16456b);
+      color: white;
+      border-radius: 18px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 35px rgba(8, 21, 37, .14);
+    }
+
+    .balance-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(46, 204, 113, .12);
+      right: -70px;
+      top: -80px;
+    }
+
+    .balance-label {
+      color: #aebfd2;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .balance {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .balance-change {
+      color: #8ff0b4;
+      font-size: 13px;
+    }
+
+    /* WALLET GRID */
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .wallet-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 7px 22px rgba(15, 30, 50, .05);
+    }
+
+    .wallet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .wallet-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .wallet-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: #e8f9ef;
+      color: var(--green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .wallet-title h3 {
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .wallet-title span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .wallet-amount {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 7px;
+    }
+
+    .wallet-usd {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 23px;
+    }
+
+    .wallet-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .wallet-actions button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      background: #edf8f1;
+      color: var(--green-dark);
+    }
+
+    .wallet-actions button:hover {
+      background: var(--green);
+      color: white;
+    }
+
+    /* SECTION */
+
+    .section-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .section-header {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h2 {
+      font-size: 17px;
+    }
+
+    .section-header span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* TRANSACTIONS */
+
+    .transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 17px 22px;
+      border-bottom: 1px solid #edf0f5;
+    }
+
+    .transaction:last-child {
+      border-bottom: 0;
+    }
+
+    .transaction-left {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .transaction-icon {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+      background: #eef8f2;
+      color: var(--green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .transaction-info h4 {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .transaction-info p {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .transaction-right {
+      text-align: right;
+    }
+
+    .transaction-right strong {
+      font-size: 14px;
+    }
+
+    .positive {
+      color: var(--green-dark);
+    }
+
+    .negative {
+      color: var(--danger);
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      background: #eaf8ef;
+      color: var(--green-dark);
+    }
+
+    .empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* MODAL */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 15, 28, .65);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+
+    .modal-box h2 {
+      margin-bottom: 7px;
+    }
+
+    .modal-box > p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d9e0e8;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--green);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .cancel {
+      background: #edf0f4;
+      color: #4b5563;
+    }
+
+    .submit {
+      background: var(--green);
+      color: #07150d;
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 0;
+      background: transparent;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 850px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .content {
+        padding: 20px 15px;
+      }
+
+      .wallet-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .balance {
+        font-size: 34px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .wallet-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .transaction {
+        align-items: flex-start;
+      }
+
+      .transaction-right {
+        min-width: 90px;
+      }
+
+      .user-name {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">Coin<span>Forest</span></div>
+
+    <div class="nav-title">Main menu</div>
+
+    <nav class="nav">
+      <a href="dashboard.html">▦ <span>Dashboard</span></a>
+      <a href="wallet.html" class="active">◉ <span>Wallets</span></a>
+      <a href="portfolio.html">◈ <span>Portfolio</span></a>
+      <a href="transactions.html">↔ <span>Transactions</span></a>
+      <a href="markets.html">↗ <span>Markets</span></a>
+    </nav>
+
+    <div class="nav-title">Account</div>
+
+    <nav class="nav">
+      <a href="profile.html">● <span>Profile</span></a>
+      <a href="security.html">⌾ <span>Security</span></a>
+    </nav>
+
+    <div class="logout">
+      <button onclick="logout()">↪ &nbsp; Sign out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+        <h1>My Wallets</h1>
+      </div>
+
+      <div class="user-area">
+        <div class="user-name">
+          <strong id="userName">Account</strong>
+        </div>
+        <div class="avatar" id="avatar">CF</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <section class="balance-card">
+        <div class="balance-label">Total Wallet Balance</div>
+        <div class="balance" id="totalBalance">$0.00</div>
+        <div class="balance-change">Available balance across your CoinForest wallets</div>
+      </section>
+
+      <section class="wallet-grid">
+
+        <div class="wallet-card">
+          <div class="wallet-header">
+            <div class="wallet-title">
+              <div class="wallet-icon">₿</div>
+              <div>
+                <h3>Main Wallet</h3>
+                <span>Primary wallet</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="wallet-amount" id="mainWallet">$0.00</div>
+          <div class="wallet-usd">Available balance</div>
+
+          <div class="wallet-actions">
+            <button onclick="openAction('deposit')">＋ Deposit</button>
+            <button onclick="openAction('send')">↗ Send</button>
+            <button onclick="openAction('withdraw')">↓ Withdraw</button>
+          </div>
+        </div>
+
+        <div class="wallet-card">
+          <div class="wallet-header">
+            <div class="wallet-title">
+              <div class="wallet-icon">◆</div>
+              <div>
+                <h3>Profit Wallet</h3>
+                <span>Investment profits</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="wallet-amount" id="profitWallet">$0.00</div>
+          <div class="wallet-usd">Available balance</div>
+
+          <div class="wallet-actions">
+            <button onclick="openAction('deposit')">＋ Deposit</button>
+            <button onclick="openAction('send')">↗ Send</button>
+            <button onclick="openAction('withdraw')">↓ Withdraw</button>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="section-card">
+        <div class="section-header">
+          <div>
+            <h2>Wallet Activity</h2>
+            <span>Recent wallet transactions</span>
+          </div>
+        </div>
+
+        <div id="transactions">
+          <div class="empty">
+            No wallet transactions available yet.
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ACTION MODAL -->
+
+<div class="modal" id="actionModal">
+  <div class="modal-box">
+
+    <h2 id="modalTitle">Wallet Action</h2>
+    <p id="modalDescription">Complete the information below.</p>
+
+    <form id="actionForm">
+
+      <div class="form-group">
+        <label>Wallet</label>
+        <select id="walletType">
+          <option value="main">Main Wallet</option>
+          <option value="profit">Profit Wallet</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="recipientGroup" style="display:none;">
+        <label>Recipient</label>
+        <input id="recipient" type="text" placeholder="Username or wallet address">
+      </div>
+
+      <div class="form-group">
+        <label>Amount (USD)</label>
+        <input id="amount" type="number" min="0" step="0.01" placeholder="0.00" required>
+      </div>
+
+      <div class="form-group">
+        <label>Note</label>
+        <input id="note" type="text" placeholder="Optional note">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="cancel" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="submit">Continue</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  let currentAction = "";
+
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+  }
+
+  function openAction(action) {
+    currentAction = action;
+
+    const modal = document.getElementById("actionModal");
+    const title = document.getElementById("modalTitle");
+    const description = document.getElementById("modalDescription");
+    const recipientGroup = document.getElementById("recipientGroup");
+
+    recipientGroup.style.display = "none";
+
+    if (action === "deposit") {
+      title.textContent = "Deposit Funds";
+      description.textContent =
+        "Enter the amount you want to deposit into your CoinForest wallet.";
+    }
+
+    if (action === "send") {
+      title.textContent = "Send Funds";
+      description.textContent =
+        "Send funds to another supported CoinForest account.";
+      recipientGroup.style.display = "block";
+    }
+
+    if (action === "withdraw") {
+      title.textContent = "Withdraw Funds";
+      description.textContent =
+        "Enter the amount you want to withdraw from your wallet.";
+    }
+
+    modal.classList.add("show");
+  }
+
+  function closeModal() {
+    document.getElementById("actionModal").classList.remove("show");
+    document.getElementById("actionForm").reset();
+  }
+
+  document.getElementById("actionForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const amount = Number(document.getElementById("amount").value);
+
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    /*
+      Backend transaction endpoints will be connected here next.
+
+      We intentionally do not fake a successful deposit, withdrawal,
+      or transfer. The wallet balance will only change after the
+      backend/database transaction system is connected.
+    */
+
+    alert(
+      "This wallet action is ready for backend connection. " +
+      "No balance has been changed."
+    );
+
+    closeModal();
+  });
+
+  async function loadUser() {
+    const token = localStorage.getItem("coinforest_token");
+
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/auth/me", {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!data.success || !data.user) {
+        return;
+      }
+
+      const user = data.user;
+
+      const name =
+        user.first_name ||
+        user.username ||
+        user.email ||
+        "Account";
+
+      document.getElementById("userName").textContent = name;
+
+      const initials = (
+        (user.first_name || "").charAt(0) +
+        (user.last_name || "").charAt(0)
+      ).toUpperCase();
+
+      document.getElementById("avatar").textContent =
+        initials || "CF";
+
+    } catch (error) {
+      console.error("Unable to load user:", error);
+    }
+  }
+
+  async function logout() {
+    const token = localStorage.getItem("coinforest_token");
+
+    try {
+      if (token) {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+
+    localStorage.removeItem("coinforest_token");
+    window.location.href = "index.html";
+  }
+
+  document.getElementById("actionModal").addEventListener("click", function(event) {
+    if (event.target === this) {
+      closeModal();
+    }
+  });
+
+  loadUser();
+</script>
+
+</body>
+                                                         </html>
