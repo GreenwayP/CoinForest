@@ -207,8 +207,7 @@ export default async function handler(request) {
   }
 
   try {
-    const url = new URL(request.url);
-    const path = url.pathname.replace(/^\/api/, "") || "/";
+    const path = url.pprofiles
 
     if (request.method === "GET" && path === "/health") {
       return health();
