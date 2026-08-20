@@ -1,1 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoinForest</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    header {
+      background: #0b1728;
+      color: white;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+    }
+
+    .hero {
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      padding: 60px 6%;
+      background: linear-gradient(135deg, #0b1728, #123b63);
+      color: white;
+    }
+
+    .hero-content {
+      max-width: 700px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 1.05;
+      margin-bottom: 22px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #d8e4f2;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .primary {
+      background: #2ecc71;
+      color: #07150d;
+    }
+
+    .secondary {
+      border: 1px solid #ffffff66;
+      color: white;
+    }
+
+    .section {
+      padding: 70px 6%;
+    }
+
+    .section h2 {
+      font-size: 32px;
+      margin-bottom: 14px;
+    }
+
+    .section-intro {
+      color: #64748b;
+      margin-bottom: 35px;
+      line-height: 1.6;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 26px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.06);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    footer {
+      background: #0b1728;
+      color: #aebdce;
+      text-align: center;
+      padding: 30px 6%;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      nav a {
+        margin-left: 0;
+      }
+
+      .hero {
+        min-height: 60vh;
+        padding-top: 45px;
+        padding-bottom: 45px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">CoinForest</div>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#markets">Markets</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Build Your Digital Asset Journey</h1>
+
+    <p>
+      CoinForest provides a modern platform for managing digital assets,
+      monitoring markets and accessing a structured financial dashboard.
+    </p>
+
+    <div class="buttons">
+      <a class="btn primary" href="#">Get Started</a>
+      <a class="btn secondary" href="#">Login</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <h2>About CoinForest</h2>
+  <p class="section-intro">
+    A modern digital-asset platform designed around a secure,
+    structured and user-friendly experience.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Secure Platform</h3>
+      <p>Designed with authentication, authorization and account security in mind.</p>
+    </div>
+
+    <div class="card">
+      <h3>Wallet Management</h3>
+      <p>Manage your main and profit wallet through one organized platform.</p>
+    </div>
+
+    <div class="card">
+      <h3>Transparent Activity</h3>
+      <p>Track deposits, investments, transfers and withdrawals from your account.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <h2>Our Services</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Digital Wallets</h3>
+      <p>Access your main and profit wallet from your personal dashboard.</p>
+    </div>
+
+    <div class="card">
+      <h3>Investments</h3>
+      <p>Explore structured investment schemas available on the platform.</p>
+    </div>
+
+    <div class="card">
+      <h3>Transfers</h3>
+      <p>Send funds between supported CoinForest accounts.</p>
+    </div>
+
+    <div class="card">
+      <h3>Market Overview</h3>
+      <p>Monitor supported digital assets and market information.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="markets">
+  <h2>Markets</h2>
+
+  <p class="section-intro">
+    Market data will be connected to the CoinForest platform as development progresses.
+  </p>
+</section>
+
+<section class="section" id="faq">
+  <h2>Frequently Asked Questions</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>How do I create an account?</h3>
+      <p>Account registration will be available through the CoinForest registration system.</p>
+    </div>
+
+    <div class="card">
+      <h3>Can I manage my wallets?</h3>
+      <p>Yes. The user dashboard will contain Main Wallet and Profit Wallet management.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <h2>Contact CoinForest</h2>
+  <p class="section-intro">
+    Customer support and ticket management will be available through the platform.
+  </p>
+</section>
+
+<footer>
+  © 2026 CoinForest. All rights reserved.
+</footer>
+
+</body>
+  </html>
