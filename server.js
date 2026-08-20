@@ -1,46 +1,47 @@
 import http from "node:http";
 import crypto from "node:crypto";
-import { promisify } from "node:util";
 import { neon } from "@neondatabase/serverless";
 
-const databaseUrl = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL;
 
-if (!databaseUrl) {
+if (!DATABASE_URL) {
   throw new Error("DATABASE_URL is not configured.");
 }
 
-const sql = neon(databaseUrl);
-
+const sql = neon(DATABASE_URL);
 const PORT = process.env.PORT || 3000;
 const SESSION_DAYS = 30;
-const MAX_LOGIN_ATTEMPTS = 5;
-const LOCK_MINUTES = 15;
 
-const scryptAsync = promisify(crypto.scrypt);
+/* =====================================================
+   RESPONSE
+===================================================== */
 
-/* -------------------------------------------------------
-   HELPERS
-------------------------------------------------------- */
-
-function sendJson(res, statusCode, data) {
-  res.writeHead(statusCode, {
-    "Content-Type": "application/json; charset=utf-8",
+function headers() {
+  return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, OPTIONS"
-  });
+    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Content-Type": "application/json; charset=utf-8"
+  };
+}
 
+function json(res, status, data) {
+  res.writeHead(status, headers());
   res.end(JSON.stringify(data));
 }
 
-function sendError(res, statusCode, message) {
-  return sendJson(res, statusCode, {
+function error(res, status, message) {
+  return json(res, status, {
     success: false,
     error: message
   });
 }
 
-async function readBody(req) {
+/* =====================================================
+   REQUEST BODY
+===================================================== */
+
+function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
 
@@ -54,7 +55,7 @@ async function readBody(req) {
     });
 
     req.on("end", () => {
-      if (!body) {
+      if (!body.trim()) {
         resolve({});
         return;
       }
@@ -70,6 +71,31 @@ async function readBody(req) {
   });
 }
 
+/* =====================================================
+   SECURITY
+===================================================== */
+
+function normalizeEmail(email) {
+  return String(email || "")
+    .trim()
+    .toLowerCase();
+}
+
+function clean(value) {
+  if (value === undefined || value === null) return null;
+
+  const result = String(value).trim();
+
+  return result || null;
+}
+
+function hashPassword(password) {
+  return crypto
+    .createHash("sha256")
+    .update(String(password))
+    .digest("hex");
+}
+
 function generateToken() {
   return crypto.randomBytes(48).toString("hex");
 }
@@ -81,90 +107,61 @@ function hashToken(token) {
     .digest("hex");
 }
 
-function getBearerToken(req) {
-  const header = req.headers.authorization || "";
+function getToken(req) {
+  const authorization = req.headers.authorization || "";
 
-  if (!header.startsWith("Bearer ")) {
+  if (!authorization.startsWith("Bearer ")) {
     return null;
   }
 
-  return header.slice(7).trim();
-}
-
-function normalizeEmail(email) {
-  return String(email || "")
-    .trim()
-    .toLowerCase();
+  return authorization.substring(7).trim() || null;
 }
 
 function validPassword(password) {
   return (
     typeof password === "string" &&
-    password.length >= 8 &&
-    password.length <= 128
+    password.length >= 6 &&
+    password.length <= 200
   );
 }
 
-/* -------------------------------------------------------
-   PASSWORD HASHING
-------------------------------------------------------- */
+/* =====================================================
+   DATABASE HEALTH
+===================================================== */
 
-async function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toString("hex");
+async function databaseHealth(req, res) {
+  try {
+    const result = await sql`
+      SELECT NOW() AS current_time
+    `;
 
-  const derivedKey = await scryptAsync(
-    password,
-    salt,
-    64
-  );
+    return json(res, 200, {
+      success: true,
+      database: "connected",
+      current_time: result[0].current_time
+    });
+  } catch (err) {
+    console.error(err);
 
-  return `${salt}:${derivedKey.toString("hex")}`;
-}
-
-async function verifyPassword(password, storedHash) {
-  if (!storedHash || !storedHash.includes(":")) {
-    return false;
+    return error(
+      res,
+      500,
+      "Database connection failed."
+    );
   }
-
-  const [salt, keyHex] = storedHash.split(":");
-
-  const derivedKey = await scryptAsync(
-    password,
-    salt,
-    64
-  );
-
-  const storedKey = Buffer.from(keyHex, "hex");
-
-  if (storedKey.length !== derivedKey.length) {
-    return false;
-  }
-
-  return crypto.timingSafeEqual(
-    storedKey,
-    derivedKey
-  );
 }
 
-/* -------------------------------------------------------
-   DATABASE
-------------------------------------------------------- */
-
-export async function testDatabaseConnection() {
-  const result = await sql`
-    SELECT NOW() AS current_time
-  `;
-
-  return result[0];
-}
-
-/* -------------------------------------------------------
-   SESSION
-------------------------------------------------------- */
+/* =====================================================
+   CREATE SESSION
+===================================================== */
 
 async function createSession(userId, req) {
-  const rawToken = generateToken();
-  const tokenHash = hashToken(rawToken);
+  const token = generateToken();
+  const tokenHash = hashToken(token);
+
+  const userAgent = req.headers["user-agent"]
+    ? String(req.headers["user-agent"]).slice(0, 1000)
+    : null;
 
   await sql`
     INSERT INTO user_sessions (
@@ -182,40 +179,26 @@ async function createSession(userId, req) {
     VALUES (
       ${userId},
       ${tokenHash},
-      ${req.socket.remoteAddress || null},
-      ${req.headers["user-agent"] || null},
+      NULL,
+      ${userAgent},
       NULL,
       'active',
       NOW(),
-      NOW() + INTERVAL '30 days',
+      NOW() + (${SESSION_DAYS} || ' days')::interval,
       NOW(),
       NOW()
     )
   `;
 
-  return rawToken;
+  return token;
 }
 
-async function revokeSession(token) {
-  if (!token) {
-    return;
-  }
+/* =====================================================
+   AUTHENTICATED USER
+===================================================== */
 
-  const tokenHash = hashToken(token);
-
-  await sql`
-    UPDATE user_sessions
-    SET
-      status = 'revoked',
-      revoked_at = NOW(),
-      updated_at = NOW()
-    WHERE session_token_hash = ${tokenHash}
-      AND status = 'active'
-  `;
-}
-
-async function getAuthenticatedUser(req) {
-  const token = getBearerToken(req);
+async function getUser(req) {
+  const token = getToken(req);
 
   if (!token) {
     return null;
@@ -244,9 +227,9 @@ async function getAuthenticatedUser(req) {
       r.name AS role,
       s.id AS session_id
     FROM user_sessions s
-    INNER JOIN profiles p
+    JOIN profiles p
       ON p.id = s.user_id
-    INNER JOIN roles r
+    JOIN roles r
       ON r.id = p.role_id
     WHERE s.session_token_hash = ${tokenHash}
       AND s.status = 'active'
@@ -270,44 +253,9 @@ async function getAuthenticatedUser(req) {
   return result[0];
 }
 
-/* -------------------------------------------------------
-   AUTHORIZATION
-------------------------------------------------------- */
-
-async function requireUser(req, res) {
-  const user = await getAuthenticatedUser(req);
-
-  if (!user) {
-    sendError(res, 401, "Authentication required.");
-    return null;
-  }
-
-  return user;
-}
-
-async function requireAdmin(req, res) {
-  const user = await requireUser(req, res);
-
-  if (!user) {
-    return null;
-  }
-
-  if (user.role !== "admin") {
-    sendError(
-      res,
-      403,
-      "Administrator access required."
-    );
-
-    return null;
-  }
-
-  return user;
-}
-
-/* -------------------------------------------------------
+/* =====================================================
    REGISTER
-------------------------------------------------------- */
+===================================================== */
 
 async function register(req, res) {
   const body = await readBody(req);
@@ -315,67 +263,81 @@ async function register(req, res) {
   const email = normalizeEmail(body.email);
   const password = body.password;
 
-  const firstName = body.first_name
-    ? String(body.first_name).trim()
-    : null;
-
-  const lastName = body.last_name
-    ? String(body.last_name).trim()
-    : null;
-
-  const username = body.username
-    ? String(body.username).trim()
-    : null;
+  const firstName = clean(body.first_name);
+  const lastName = clean(body.last_name);
+  const username = clean(body.username);
 
   if (!email) {
-    return sendError(
-      res,
-      400,
-      "Email is required."
-    );
+    return error(res, 400, "Email is required.");
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return error(res, 400, "Enter a valid email address.");
   }
 
   if (!validPassword(password)) {
-    return sendError(
+    return error(
       res,
       400,
-      "Password must contain 8 to 128 characters."
+      "Password must contain at least 6 characters."
     );
   }
 
-  const existing = await sql`
+  if (!username) {
+    return error(res, 400, "Username is required.");
+  }
+
+  const existingEmail = await sql`
     SELECT id
     FROM profiles
     WHERE LOWER(email) = ${email}
     LIMIT 1
   `;
 
-  if (existing.length > 0) {
-    return sendError(
+  if (existingEmail.length) {
+    return error(
       res,
       409,
       "An account with this email already exists."
     );
   }
 
-  const roleResult = await sql`
+  const existingUsername = await sql`
+    SELECT id
+    FROM profiles
+    WHERE LOWER(username) = LOWER(${username})
+    LIMIT 1
+  `;
+
+  if (existingUsername.length) {
+    return error(
+      res,
+      409,
+      "That username is already in use."
+    );
+  }
+
+  const role = await sql`
     SELECT id
     FROM roles
     WHERE name = 'user'
     LIMIT 1
   `;
 
-  if (roleResult.length === 0) {
-    return sendError(
+  if (!role.length) {
+    return error(
       res,
       500,
-      "Default user role is not configured."
+      "User role is not configured."
     );
   }
 
   const userId = crypto.randomUUID();
-  const passwordHash = await hashPassword(password);
+  const passwordHash = hashPassword(password);
 
+  /*
+   * Create profile.
+   */
   await sql`
     INSERT INTO profiles (
       id,
@@ -392,7 +354,7 @@ async function register(req, res) {
     )
     VALUES (
       ${userId},
-      ${roleResult[0].id},
+      ${role[0].id},
       ${firstName},
       ${lastName},
       ${username},
@@ -405,37 +367,31 @@ async function register(req, res) {
     )
   `;
 
-  try {
-    await sql`
-      INSERT INTO auth_credentials (
-        user_id,
-        password_hash,
-        password_updated_at,
-        failed_login_attempts,
-        locked_until,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${userId},
-        ${passwordHash},
-        NOW(),
-        0,
-        NULL,
-        NOW(),
-        NOW()
-      )
-    `;
-  } catch (error) {
-    await sql`
-      DELETE FROM profiles
-      WHERE id = ${userId}
-    `;
+  /*
+   * Create password credentials.
+   */
+  await sql`
+    INSERT INTO auth_credentials (
+      user_id,
+      password_hash,
+      password_updated_at,
+      failed_login_attempts,
+      locked_until,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      ${userId},
+      ${passwordHash},
+      NOW(),
+      0,
+      NULL,
+      NOW(),
+      NOW()
+    )
+  `;
 
-    throw error;
-  }
-
-  return sendJson(res, 201, {
+  return json(res, 201, {
     success: true,
     message: "Account created successfully.",
     user: {
@@ -443,6 +399,7 @@ async function register(req, res) {
       email,
       first_name: firstName,
       last_name: lastName,
+      username,
       role: "user",
       status: "active",
       kyc_status: "not_verified"
@@ -450,9 +407,9 @@ async function register(req, res) {
   });
 }
 
-/* -------------------------------------------------------
+/* =====================================================
    LOGIN
-------------------------------------------------------- */
+===================================================== */
 
 async function login(req, res) {
   const body = await readBody(req);
@@ -461,7 +418,7 @@ async function login(req, res) {
   const password = body.password;
 
   if (!email || !password) {
-    return sendError(
+    return error(
       res,
       400,
       "Email and password are required."
@@ -473,3 +430,288 @@ async function login(req, res) {
       p.id,
       p.email,
       p.first_name,
+      p.last_name,
+      p.username,
+      p.status,
+      p.kyc_status,
+      p.two_factor_enabled,
+      r.name AS role,
+      c.password_hash,
+      c.failed_login_attempts,
+      c.locked_until
+    FROM profiles p
+    JOIN roles r
+      ON r.id = p.role_id
+    JOIN auth_credentials c
+      ON c.user_id = p.id
+    WHERE LOWER(p.email) = ${email}
+    LIMIT 1
+  `;
+
+  if (!result.length) {
+    return error(
+      res,
+      401,
+      "Invalid email or password."
+    );
+  }
+
+  const account = result[0];
+
+  if (account.status !== "active") {
+    return error(
+      res,
+      403,
+      "This account is not active."
+    );
+  }
+
+  if (
+    account.locked_until &&
+    new Date(account.locked_until).getTime() > Date.now()
+  ) {
+    return error(
+      res,
+      423,
+      "Account temporarily locked. Please try again later."
+    );
+  }
+
+  const passwordHash = hashPassword(password);
+
+  if (passwordHash !== account.password_hash) {
+    const attempts =
+      Number(account.failed_login_attempts || 0) + 1;
+
+    if (attempts >= 5) {
+      await sql`
+        UPDATE auth_credentials
+        SET
+          failed_login_attempts = 0,
+          locked_until = NOW() + INTERVAL '15 minutes',
+          updated_at = NOW()
+        WHERE user_id = ${account.id}
+      `;
+
+      return error(
+        res,
+        423,
+        "Too many failed attempts. Account locked for 15 minutes."
+      );
+    }
+
+    await sql`
+      UPDATE auth_credentials
+      SET
+        failed_login_attempts = ${attempts},
+        updated_at = NOW()
+      WHERE user_id = ${account.id}
+    `;
+
+    return error(
+      res,
+      401,
+      "Invalid email or password."
+    );
+  }
+
+  /*
+   * Successful login.
+   */
+  await sql`
+    UPDATE auth_credentials
+    SET
+      failed_login_attempts = 0,
+      locked_until = NULL,
+      updated_at = NOW()
+    WHERE user_id = ${account.id}
+  `;
+
+  const token = await createSession(
+    account.id,
+    req
+  );
+
+  return json(res, 200, {
+    success: true,
+    message: "Login successful.",
+    token,
+    user: {
+      id: account.id,
+      email: account.email,
+      first_name: account.first_name,
+      last_name: account.last_name,
+      username: account.username,
+      role: account.role,
+      status: account.status,
+      kyc_status: account.kyc_status,
+      two_factor_enabled: account.two_factor_enabled
+    }
+  });
+}
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(req, res) {
+  const token = getToken(req);
+
+  if (!token) {
+    return json(res, 200, {
+      success: true,
+      message: "Already logged out."
+    });
+  }
+
+  const tokenHash = hashToken(token);
+
+  await sql`
+    UPDATE user_sessions
+    SET
+      status = 'revoked',
+      revoked_at = NOW(),
+      updated_at = NOW()
+    WHERE session_token_hash = ${tokenHash}
+      AND status = 'active'
+  `;
+
+  return json(res, 200, {
+    success: true,
+    message: "Logged out successfully."
+  });
+}
+
+/* =====================================================
+   CURRENT USER
+===================================================== */
+
+async function currentUser(req, res) {
+  const user = await getUser(req);
+
+  if (!user) {
+    return error(
+      res,
+      401,
+      "Authentication required."
+    );
+  }
+
+  return json(res, 200, {
+    success: true,
+    user
+  });
+}
+
+/* =====================================================
+   ADMIN
+===================================================== */
+
+async function adminMe(req, res) {
+  const user = await getUser(req);
+
+  if (!user) {
+    return error(
+      res,
+      401,
+      "Authentication required."
+    );
+  }
+
+  if (user.role !== "admin") {
+    return error(
+      res,
+      403,
+      "Administrator access required."
+    );
+  }
+
+  return json(res, 200, {
+    success: true,
+    user
+  });
+}
+
+/* =====================================================
+   ROUTER
+===================================================== */
+
+async function handleRequest(req, res) {
+  if (req.method === "OPTIONS") {
+    res.writeHead(204, headers());
+    res.end();
+    return;
+  }
+
+  const url = new URL(
+    req.url,
+    `http://${req.headers.host || "localhost"}`
+  );
+
+  try {
+    if (
+      req.method === "GET" &&
+      url.pathname === "/api/health"
+    ) {
+      return await databaseHealth(req, res);
+    }
+
+    if (
+      req.method === "POST" &&
+      url.pathname === "/api/auth/register"
+    ) {
+      return await register(req, res);
+    }
+
+    if (
+      req.method === "POST" &&
+      url.pathname === "/api/auth/login"
+    ) {
+      return await login(req, res);
+    }
+
+    if (
+      req.method === "POST" &&
+      url.pathname === "/api/auth/logout"
+    ) {
+      return await logout(req, res);
+    }
+
+    if (
+      req.method === "GET" &&
+      url.pathname === "/api/auth/me"
+    ) {
+      return await currentUser(req, res);
+    }
+
+    if (
+      req.method === "GET" &&
+      url.pathname === "/api/admin/me"
+    ) {
+      return await adminMe(req, res);
+    }
+
+    return error(res, 404, "Route not found.");
+
+  } catch (err) {
+    console.error("CoinForest server error:", err);
+
+    return error(
+      res,
+      500,
+      "Internal server error."
+    );
+  }
+}
+
+/* =====================================================
+   START
+===================================================== */
+
+const server = http.createServer(handleRequest);
+
+server.listen(PORT, () => {
+  console.log(
+    `CoinForest server running on port ${PORT}`
+  );
+});
