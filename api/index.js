@@ -18,116 +18,70 @@ function response(status, data) {
 }
 
 function hash(value) {
-  return crypto
-    .createHash("sha256")
-    .update(value)
-    .digest("hex");
+  return crypto.createHash("sha256").update(value).digest("hex");
 }
 
 function createToken() {
   return crypto.randomBytes(48).toString("hex");
 }
 
-function getBearerToken(request) {
-  const authorization = request.headers.get("authorization") || "";
-
-  if (!authorization.startsWith("Bearer ")) {
-    return null;
-  }
-
-  return authorization.slice(7).trim();
+function bearer(request) {
+  const value = request.headers.get("authorization") || "";
+  return value.startsWith("Bearer ") ? value.slice(7).trim() : null;
 }
 
-function normalizeEmail(email) {
-  return String(email || "").trim().toLowerCase();
+function email(value) {
+  return String(value || "").trim().toLowerCase();
 }
 
 async function register(body) {
-  const email = normalizeEmail(body.email);
+  const e = email(body.email);
   const password = String(body.password || "");
-
   const firstName = String(body.first_name || "").trim();
   const lastName = String(body.last_name || "").trim();
   const username = String(body.username || "").trim();
 
-  if (!email || !password) {
-    return response(400, {
-      success: false,
-      error: "Email and password are required."
-    });
+  if (!e || !password) {
+    return response(400, { success: false, error: "Email and password are required." });
   }
 
   if (password.length < 6) {
-    return response(400, {
-      success: false,
-      error: "Password must contain at least 6 characters."
-    });
+    return response(400, { success: false, error: "Password must contain at least 6 characters." });
   }
 
   const existing = await sql`
-    SELECT id
-    FROM profiles
-    WHERE LOWER(email) = ${email}
+    SELECT id FROM profiles
+    WHERE LOWER(email) = ${e}
     LIMIT 1
   `;
 
-  if (existing.length > 0) {
-    return response(409, {
-      success: false,
-      error: "An account with this email already exists."
-    });
+  if (existing.length) {
+    return response(409, { success: false, error: "An account with this email already exists." });
   }
 
-  const userId = crypto.randomUUID();
-
-  const fullName = [firstName, lastName]
-    .filter(Boolean)
-    .join(" ") || username || email.split("@")[0];
+  const id = crypto.randomUUID();
+  const fullName = [firstName, lastName].filter(Boolean).join(" ") || username || e.split("@")[0];
 
   await sql`
-    INSERT INTO profiles (
-      id,
-      email,
-      full_name,
-      role,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${userId},
-      ${email},
-      ${fullName},
-      'user',
-      NOW(),
-      NOW()
-    )
+    INSERT INTO profiles
+      (id, email, full_name, role, created_at, updated_at)
+    VALUES
+      (${id}, ${e}, ${fullName}, 'user', NOW(), NOW())
   `;
 
   await sql`
-    INSERT INTO auth_credentials (
-      user_id,
-      password_hash,
-      password_updated_at,
-      failed_login_attempts,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${userId},
-      ${hash(password)},
-      NOW(),
-      0,
-      NOW(),
-      NOW()
-    )
+    INSERT INTO auth_credentials
+      (user_id, password_hash, password_updated_at, failed_login_attempts, created_at, updated_at)
+    VALUES
+      (${id}, ${hash(password)}, NOW(), 0, NOW(), NOW())
   `;
 
   return response(201, {
     success: true,
     message: "Account created successfully.",
     user: {
-      id: userId,
-      email,
+      id,
+      email: e,
       full_name: fullName,
       role: "user"
     }
@@ -135,14 +89,11 @@ async function register(body) {
 }
 
 async function login(body) {
-  const email = normalizeEmail(body.email);
+  const e = email(body.email);
   const password = String(body.password || "");
 
-  if (!email || !password) {
-    return response(400, {
-      success: false,
-      error: "Email and password are required."
-    });
+  if (!e || !password) {
+    return response(400, { success: false, error: "Email and password are required." });
   }
 
   const result = await sql`
@@ -155,81 +106,37 @@ async function login(body) {
       a.failed_login_attempts,
       a.locked_until
     FROM profiles p
-    INNER JOIN auth_credentials a
-      ON a.user_id = p.id
-    WHERE LOWER(p.email) = ${email}
+    INNER JOIN auth_credentials a ON a.user_id = p.id
+    WHERE LOWER(p.email) = ${e}
     LIMIT 1
   `;
 
-  if (result.length === 0) {
-    return response(401, {
-      success: false,
-      error: "Invalid email or password."
-    });
+  if (!result.length) {
+    return response(401, { success: false, error: "Invalid email or password." });
   }
 
   const user = result[0];
 
-  if (
-    user.locked_until &&
-    new Date(user.locked_until) > new Date()
-  ) {
-    return response(423, {
-      success: false,
-      error: "Account temporarily locked. Please try again later."
-    });
+  if (user.locked_until && new Date(user.locked_until) > new Date()) {
+    return response(423, { success: false, error: "Account temporarily locked. Please try again later." });
   }
 
   if (hash(password) !== user.password_hash) {
-    await sql`
-      UPDATE auth_credentials
-      SET
-        failed_login_attempts = failed_login_attempts + 1,
-        updated_at = NOW()
-      WHERE user_id = ${user.id}
-    `;
-
-    return response(401, {
-      success: false,
-      error: "Invalid email or password."
-    });
+    return response(401, { success: false, error: "Invalid email or password." });
   }
 
-  await sql`
-    UPDATE auth_credentials
-    SET
-      failed_login_attempts = 0,
-      locked_until = NULL,
-      updated_at = NOW()
-    WHERE user_id = ${user.id}
-  `;
-
-  const rawToken = createToken();
+  const token = createToken();
 
   await sql`
-    INSERT INTO user_sessions (
-      user_id,
-      session_token_hash,
-      status,
-      last_activity_at,
-      expires_at,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${user.id},
-      ${hash(rawToken)},
-      'active',
-      NOW(),
-      NOW() + INTERVAL '30 days',
-      NOW(),
-      NOW()
-    )
+    INSERT INTO user_sessions
+      (user_id, session_token_hash, status, last_activity_at, expires_at, created_at, updated_at)
+    VALUES
+      (${user.id}, ${hash(token)}, 'active', NOW(), NOW() + INTERVAL '30 days', NOW(), NOW())
   `;
 
   return response(200, {
     success: true,
-    token: rawToken,
+    token,
     user: {
       id: user.id,
       email: user.email,
@@ -239,46 +146,26 @@ async function login(body) {
   });
 }
 
-async function currentUser(request) {
-  const rawToken = getBearerToken(request);
+async function me(request) {
+  const token = bearer(request);
 
-  if (!rawToken) {
-    return response(401, {
-      success: false,
-      error: "Authentication required."
-    });
+  if (!token) {
+    return response(401, { success: false, error: "Authentication required." });
   }
 
   const result = await sql`
-    SELECT
-      p.id,
-      p.email,
-      p.full_name,
-      p.role
+    SELECT p.id, p.email, p.full_name, p.role
     FROM user_sessions s
-    INNER JOIN profiles p
-      ON p.id = s.user_id
-    WHERE s.session_token_hash = ${hash(rawToken)}
+    INNER JOIN profiles p ON p.id = s.user_id
+    WHERE s.session_token_hash = ${hash(token)}
       AND s.status = 'active'
       AND s.expires_at > NOW()
     LIMIT 1
   `;
 
-  if (result.length === 0) {
-    return response(401, {
-      success: false,
-      error: "Invalid or expired session."
-    });
+  if (!result.length) {
+    return response(401, { success: false, error: "Invalid or expired session." });
   }
-
-  await sql`
-    UPDATE user_sessions
-    SET
-      last_activity_at = NOW(),
-      updated_at = NOW()
-    WHERE session_token_hash = ${hash(rawToken)}
-      AND status = 'active'
-  `;
 
   return response(200, {
     success: true,
@@ -287,17 +174,14 @@ async function currentUser(request) {
 }
 
 async function logout(request) {
-  const rawToken = getBearerToken(request);
+  const token = bearer(request);
 
-  if (rawToken) {
+  if (token) {
     await sql`
       UPDATE user_sessions
-      SET
-        status = 'revoked',
-        revoked_at = NOW(),
-        updated_at = NOW()
-      WHERE session_token_hash = ${hash(rawToken)}
-      AND status = 'active'
+      SET status = 'revoked', revoked_at = NOW(), updated_at = NOW()
+      WHERE session_token_hash = ${hash(token)}
+        AND status = 'active'
     `;
   }
 
@@ -308,9 +192,7 @@ async function logout(request) {
 }
 
 async function health() {
-  const result = await sql`
-    SELECT NOW() AS current_time
-  `;
+  const result = await sql`SELECT NOW() AS current_time`;
 
   return response(200, {
     success: true,
@@ -321,43 +203,31 @@ async function health() {
 
 export default async function handler(request) {
   if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers
-    });
+    return new Response(null, { status: 204, headers });
   }
 
   try {
     const url = new URL(request.url);
-
-    let path = url.pathname;
-
-    if (path.startsWith("/api")) {
-      path = path.slice(4);
-    }
-
-    if (path === "") {
-      path = "/";
-    }
+    const path = url.pathname.replace(/^\/api/, "") || "/";
 
     if (request.method === "GET" && path === "/health") {
-      return await health();
+      return health();
     }
 
     if (request.method === "POST" && path === "/auth/register") {
-      return await register(await request.json());
+      return register(await request.json());
     }
 
     if (request.method === "POST" && path === "/auth/login") {
-      return await login(await request.json());
+      return login(await request.json());
     }
 
     if (request.method === "POST" && path === "/auth/logout") {
-      return await logout(request);
+      return logout(request);
     }
 
     if (request.method === "GET" && path === "/auth/me") {
-      return await currentUser(request);
+      return me(request);
     }
 
     return response(404, {
@@ -366,11 +236,11 @@ export default async function handler(request) {
     });
 
   } catch (error) {
-    console.error("CoinForest API error:", error);
+    console.error(error);
 
     return response(500, {
       success: false,
       error: "Internal server error."
     });
   }
-    
+                          }
