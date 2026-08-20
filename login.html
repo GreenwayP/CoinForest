@@ -1,1 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | CoinForest</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(46, 204, 113, .18), transparent 35%),
+        linear-gradient(135deg, #06111f, #0b2037 55%, #123b63);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      color: #172033;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1050px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #ffffff;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+    }
+
+    /* LEFT SIDE */
+
+    .visual {
+      position: relative;
+      padding: 55px;
+      color: white;
+      background:
+        linear-gradient(rgba(5, 18, 32, .88), rgba(8, 42, 70, .92)),
+        linear-gradient(135deg, #0b1728, #123b63);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 680px;
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+    }
+
+    .logo span {
+      color: #2ecc71;
+    }
+
+    .visual-content {
+      max-width: 420px;
+    }
+
+    .visual-content .badge {
+      display: inline-block;
+      padding: 8px 13px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      border-radius: 30px;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .visual h1 {
+      font-size: clamp(38px, 5vw, 58px);
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+
+    .visual h1 span {
+      color: #2ecc71;
+    }
+
+    .visual p {
+      color: #c9d8e7;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .features {
+      display: grid;
+      gap: 13px;
+      margin-top: 30px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #dbe8f4;
+      font-size: 14px;
+    }
+
+    .check {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: rgba(46,204,113,.15);
+      color: #2ecc71;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .copyright {
+      color: #8298ad;
+      font-size: 12px;
+    }
+
+    /* FORM */
+
+    .form-area {
+      padding: 50px;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
+    }
+
+    .form-header {
+      margin-bottom: 28px;
+    }
+
+    .form-header h2 {
+      font-size: 30px;
+      margin-bottom: 8px;
+      color: #10233a;
+    }
+
+    .form-header p {
+      color: #718096;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #26364a;
+    }
+
+    input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #d9e1ea;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 14px;
+      color: #172033;
+      outline: none;
+      transition: .2s;
+      background: #fbfcfe;
+    }
+
+    input:focus {
+      border-color: #2ecc71;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(46,204,113,.10);
+    }
+
+    .password-info {
+      color: #8492a6;
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .terms {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      margin: 4px 0 20px;
+      font-size: 12px;
+      color: #718096;
+      line-height: 1.5;
+    }
+
+    .terms input {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      margin-top: 2px;
+    }
+
+    .terms a,
+    .login a {
+      color: #159957;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #2ecc71, #20b963);
+      color: #06140c;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s;
+      box-shadow: 0 8px 20px rgba(46,204,113,.20);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 11px 25px rgba(46,204,113,.28);
+    }
+
+    .submit-btn:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      display: block;
+      background: #fff1f1;
+      color: #b42318;
+      border: 1px solid #ffd2d2;
+    }
+
+    .message.success {
+      display: block;
+      background: #ecfdf3;
+      color: #087443;
+      border: 1px solid #b7ebcd;
+    }
+
+    .login {
+      text-align: center;
+      margin-top: 22px;
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .back a {
+      color: #718096;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+      body {
+        padding: 15px;
+      }
+
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .visual {
+        min-height: auto;
+        padding: 35px 28px;
+      }
+
+      .visual-content {
+        margin-top: 45px;
+      }
+
+      .visual h1 {
+        font-size: 40px;
+      }
+
+      .features {
+        margin-bottom: 35px;
+      }
+
+      .form-area {
+        padding: 35px 25px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .visual {
+        padding: 30px 22px;
+      }
+
+      .form-area {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <section class="visual">
+
+      <div class="logo">
+        Coin<span>Forest</span>
+      </div>
+
+      <div class="visual-content">
+
+        <div class="badge">
+          DIGITAL ASSET PLATFORM
+        </div>
+
+        <h1>
+          Start your <span>CoinForest</span> journey.
+        </h1>
+
+        <p>
+          Create your account and access a structured digital-asset
+          platform built around wallets, investments, transfers,
+          market activity and account management.
+        </p>
+
+        <div class="features">
+
+          <div class="feature">
+            <div class="check">✓</div>
+            Secure account management
+          </div>
+
+          <div class="feature">
+            <div class="check">✓</div>
+            Personal wallet dashboard
+          </div>
+
+          <div class="feature">
+            <div class="check">✓</div>
+            KYC and account verification
+          </div>
+
+          <div class="feature">
+            <div class="check">✓</div>
+            Activity and transaction tracking
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="copyright">
+        © 2026 CoinForest. All rights reserved.
+      </div>
+
+    </section>
+
+
+    <section class="form-area">
+
+      <div class="form-container">
+
+        <div class="form-header">
+          <h2>Create account</h2>
+          <p>
+            Enter your information below to create your CoinForest account.
+          </p>
+        </div>
+
+        <form id="registerForm">
+
+          <div class="row">
+
+            <div class="field">
+              <label for="first_name">First name</label>
+              <input
+                id="first_name"
+                name="first_name"
+                type="text"
+                placeholder="First name"
+                autocomplete="given-name"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="last_name">Last name</label>
+              <input
+                id="last_name"
+                name="last_name"
+                type="text"
+                placeholder="Last name"
+                autocomplete="family-name"
+                required
+              >
+            </div>
+
+          </div>
+
+
+          <div class="field">
+            <label for="username">Username</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              placeholder="Choose a username"
+              autocomplete="username"
+              required
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+
+          <div class="row">
+
+            <div class="field">
+              <label for="password">Password</label>
+
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Minimum 6 characters"
+                minlength="6"
+                autocomplete="new-password"
+                required
+              >
+
+              <div class="password-info">
+                Minimum 6 characters.
+              </div>
+            </div>
+
+
+            <div class="field">
+              <label for="confirm_password">Confirm password</label>
+
+              <input
+                id="confirm_password"
+                name="confirm_password"
+                type="password"
+                placeholder="Repeat password"
+                minlength="6"
+                autocomplete="new-password"
+                required
+              >
+            </div>
+
+          </div>
+
+
+          <label class="terms">
+            <input id="terms" type="checkbox" required>
+
+            <span>
+              I agree to the CoinForest terms of service and understand
+              that account verification may be required.
+            </span>
+          </label>
+
+
+          <button
+            class="submit-btn"
+            id="submitBtn"
+            type="submit"
+          >
+            Create Account
+          </button>
+
+          <div id="message" class="message"></div>
+
+        </form>
+
+
+        <div class="login">
+          Already have an account?
+          <a href="login.html">Sign in</a>
+        </div>
+
+        <div class="back">
+          <a href="index.html">← Back to CoinForest</a>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const button = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const first_name =
+        document.getElementById("first_name").value.trim();
+
+      const last_name =
+        document.getElementById("last_name").value.trim();
+
+      const username =
+        document.getElementById("username").value.trim();
+
+      const email =
+        document.getElementById("email").value.trim().toLowerCase();
+
+      const password =
+        document.getElementById("password").value;
+
+      const confirm_password =
+        document.getElementById("confirm_password").value;
+
+
+      if (password.length < 6) {
+        showMessage(
+          "Password must contain at least 6 characters.",
+          "error"
+        );
+        return;
+      }
+
+
+      if (password !== confirm_password) {
+        showMessage(
+          "Passwords do not match.",
+          "error"
+        );
+        return;
+      }
+
+
+      button.disabled = true;
+      button.textContent = "Creating account...";
+
+      message.className = "message";
+
+
+      try {
+
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            first_name,
+            last_name,
+            username,
+            email,
+            password
+          })
+        });
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Unable to create your account."
+          );
+        }
+
+
+        showMessage(
+          "Account created successfully. Redirecting to login...",
+          "success"
+        );
+
+
+        form.reset();
+
+
+        setTimeout(function () {
+          window.location.href = "login.html";
+        }, 1200);
+
+
+      } catch (error) {
+
+        console.error("Registration error:", error);
+
+        showMessage(
+          error.message ||
+          "Unable to connect to the CoinForest server.",
+          "error"
+        );
+
+      } finally {
+
+        button.disabled = false;
+        button.textContent = "Create Account";
+
+      }
+
+    });
+  </script>
+
+</body>
+        </html>
