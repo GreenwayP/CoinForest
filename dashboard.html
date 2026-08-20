@@ -1,1 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoinForest | Dashboard</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#071525;
+  --navy2:#0d2138;
+  --green:#20d47a;
+  --green2:#16b968;
+  --blue:#3b82f6;
+  --gold:#f5b942;
+  --red:#ef5350;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --text:#142033;
+  --muted:#718096;
+  --border:#e7edf4;
+  --shadow:0 12px 35px rgba(8,25,45,.07);
+}
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:250px;
+  background:linear-gradient(180deg,var(--navy),#0b2037);
+  color:white;
+  padding:25px 16px;
+  z-index:20;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:0 12px 30px;
+}
+.brand-icon{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--green),#7bf0b5);
+  color:#062014;
+  font-weight:900;
+}
+.brand h2{font-size:22px}
+.nav-title{
+  color:#71859b;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  padding:12px;
+}
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 14px;
+  margin:4px 0;
+  color:#b8c6d6;
+  border-radius:11px;
+  transition:.2s;
+}
+.nav-link:hover,.nav-link.active{
+  color:white;
+  background:rgba(255,255,255,.09);
+}
+.nav-link.active{
+  border-left:3px solid var(--green);
+}
+.nav-icon{width:22px;text-align:center}
+.sidebar-bottom{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:20px;
+}
+.logout{
+  width:100%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:#dbe5ef;
+  padding:12px;
+  border-radius:10px;
+}
+
+/* MAIN */
+.main{
+  margin-left:250px;
+  min-height:100vh;
+}
+.topbar{
+  height:76px;
+  background:white;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 35px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.mobile-menu{
+  display:none;
+  border:0;
+  background:none;
+  font-size:25px;
+}
+.welcome small{color:var(--muted)}
+.welcome strong{display:block;font-size:18px;margin-top:3px}
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+.icon-btn{
+  width:40px;height:40px;
+  border:1px solid var(--border);
+  background:white;
+  border-radius:10px;
+}
+.profile-mini{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.avatar{
+  width:40px;height:40px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#20d47a,#3b82f6);
+  color:white;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+}
+
+/* CONTENT */
+.content{padding:32px 35px}
+.page-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+.page-title h1{font-size:28px}
+.page-title p{color:var(--muted);margin-top:5px}
+.verified{
+  background:#e7f9ef;
+  color:#138a4d;
+  padding:9px 14px;
+  border-radius:30px;
+  font-size:13px;
+  font-weight:700;
+}
+
+/* WALLET */
+.wallet-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+  margin-bottom:22px;
+}
+.wallet-main{
+  background:linear-gradient(135deg,#071525,#123b63);
+  color:white;
+  border-radius:18px;
+  padding:28px;
+  position:relative;
+  overflow:hidden;
+}
+.wallet-main:after{
+  content:"";
+  position:absolute;
+  width:220px;height:220px;
+  border-radius:50%;
+  background:rgba(32,212,122,.08);
+  right:-80px;top:-90px;
+}
+.wallet-label{
+  color:#aebfd1;
+  font-size:13px;
+}
+.balance{
+  font-size:40px;
+  font-weight:800;
+  margin:10px 0 5px;
+}
+.wallet-id{color:#9fb0c2;font-size:12px}
+.wallet-actions{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
+  flex-wrap:wrap;
+}
+.action{
+  border:0;
+  padding:11px 17px;
+  border-radius:9px;
+  font-weight:700;
+}
+.action.green{background:var(--green);color:#062014}
+.action.light{background:rgba(255,255,255,.1);color:white}
+.profit-card{
+  background:white;
+  border-radius:18px;
+  padding:25px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+.profit-card .amount{
+  font-size:31px;
+  font-weight:800;
+  margin:15px 0 7px;
+}
+.profit-positive{color:#149957;font-size:13px}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-bottom:25px;
+}
+.stat{
+  background:white;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  border-radius:15px;
+  padding:20px;
+}
+.stat-top{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:13px;
+}
+.stat-icon{
+  width:38px;height:38px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:#eef5ff;
+}
+.stat-value{
+  font-size:24px;
+  font-weight:800;
+  margin-top:14px;
+}
+
+/* SECTIONS */
+.grid-2{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:20px;
+}
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:22px;
+}
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+.card-header h3{font-size:17px}
+.view{font-size:13px;color:#2778df;font-weight:700}
+
+/* INVESTMENT */
+.investment{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:12px;
+}
+.invest-top{
+  display:flex;
+  justify-content:space-between;
+}
+.plan{font-weight:800}
+.plan-status{
+  color:#149957;
+  background:#e8f9f0;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:700;
+}
+.invest-details{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  margin-top:15px;
+  gap:10px;
+}
+.detail small{display:block;color:var(--muted);font-size:11px}
+.detail strong{display:block;margin-top:4px}
+
+/* TRANSACTIONS */
+.transaction{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.transaction:last-child{border-bottom:0}
+.tx-icon{
+  width:38px;height:38px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:#eef7f2;
+  color:#129454;
+}
+.tx-info{flex:1}
+.tx-info strong{display:block;font-size:13px}
+.tx-info small{color:var(--muted)}
+.tx-amount{text-align:right;font-weight:800}
+.credit{color:#15995a}
+.debit{color:#e04a4a}
+
+/* KYC */
+.kyc{
+  margin-top:20px;
+  background:linear-gradient(135deg,#102942,#0d3c35);
+  color:white;
+  border-radius:16px;
+  padding:24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.kyc p{color:#b9cbd9;font-size:13px;margin-top:7px}
+.kyc-btn{
+  background:var(--green);
+  border:0;
+  padding:12px 18px;
+  border-radius:9px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(3,12,23,.65);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:20px;
+}
+.modal.show{display:flex}
+.modal-box{
+  width:min(460px,100%);
+  background:white;
+  border-radius:18px;
+  padding:25px;
+}
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.close{
+  border:0;background:#f0f3f7;
+  width:34px;height:34px;
+  border-radius:50%;
+}
+.form-group{margin-bottom:15px}
+.form-group label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+.form-group input,.form-group select{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  outline:none;
+}
+.form-group input:focus{border-color:var(--green)}
+.submit{
+  width:100%;
+  padding:13px;
+  border:0;
+  border-radius:9px;
+  background:var(--green);
+  font-weight:800;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#071525;
+  color:white;
+  padding:14px 18px;
+  border-radius:10px;
+  display:none;
+  z-index:200;
+}
+.toast.show{display:block}
+
+/* RESPONSIVE */
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .wallet-grid,.grid-2{grid-template-columns:1fr}
+}
+@media(max-width:800px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mobile-menu{display:block}
+  .topbar{padding:0 18px}
+  .content{padding:24px 18px}
+  .profile-mini span{display:none}
+}
+@media(max-width:550px){
+  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .stat{padding:15px}
+  .stat-value{font-size:20px}
+  .balance{font-size:31px}
+  .wallet-main,.profit-card{padding:20px}
+  .invest-details{grid-template-columns:1fr 1fr}
+  .page-title{align-items:flex-start;gap:10px}
+  .verified{font-size:11px}
+  .kyc{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">C</div>
+    <h2>CoinForest</h2>
+  </div>
+
+  <div class="nav-title">Main Menu</div>
+
+  <a class="nav-link active" href="dashboard.html">
+    <span class="nav-icon">⌂</span> Dashboard
+  </a>
+
+  <a class="nav-link" href="wallet.html">
+    <span class="nav-icon">◈</span> Wallets
+  </a>
+
+  <a class="nav-link" href="investments.html">
+    <span class="nav-icon">↗</span> Investments
+  </a>
+
+  <a class="nav-link" href="transactions.html">
+    <span class="nav-icon">↔</span> Transactions
+  </a>
+
+  <div class="nav-title">Account</div>
+
+  <a class="nav-link" href="profile.html">
+    <span class="nav-icon">◉</span> My Profile
+  </a>
+
+  <a class="nav-link" href="kyc.html">
+    <span class="nav-icon">✓</span> Verification
+  </a>
+
+  <a class="nav-link" href="security.html">
+    <span class="nav-icon">◆</span> Security
+  </a>
+
+  <div class="sidebar-bottom">
+    <button class="logout" onclick="logout()">↪ &nbsp; Sign Out</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <header class="topbar">
+    <div class="top-actions">
+      <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+      <div class="welcome">
+        <small>Welcome back</small>
+        <strong id="welcomeName">CoinForest User</strong>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="icon-btn" onclick="showToast('No new notifications')">🔔</button>
+
+      <div class="profile-mini">
+        <div class="avatar" id="avatar">U</div>
+        <span id="profileName">User</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <div class="page-title">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Your CoinForest financial overview.</p>
+      </div>
+
+      <div class="verified" id="kycBadge">● KYC Not Verified</div>
+    </div>
+
+    <!-- WALLETS -->
+    <section class="wallet-grid">
+
+      <div class="wallet-main">
+        <div class="wallet-label">Main Wallet Balance</div>
+
+        <div class="balance" id="mainBalance">$0.00</div>
+
+        <div class="wallet-id">
+          Wallet ID: <span id="walletId">CF-000000</span>
+        </div>
+
+        <div class="wallet-actions">
+          <button class="action green" onclick="openModal('deposit')">
+            + Deposit
+          </button>
+
+          <button class="action light" onclick="openModal('transfer')">
+            ↗ Send Money
+          </button>
+
+          <button class="action light" onclick="openModal('withdraw')">
+            ↓ Withdraw
+          </button>
+        </div>
+      </div>
+
+      <div class="profit-card">
+        <div class="wallet-label">Profit Wallet</div>
+
+        <div class="amount" id="profitBalance">$0.00</div>
+
+        <div class="profit-positive">
+          ↗ Available profit
+        </div>
+
+        <div style="margin-top:22px;color:#718096;font-size:13px;line-height:1.6">
+          Your investment earnings are displayed separately from your main wallet.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+
+      <div class="stat">
+        <div class="stat-top">
+          <span>Total Invested</span>
+          <div class="stat-icon">◈</div>
+        </div>
+        <div class="stat-value" id="invested">$0.00</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top">
+          <span>Total Profit</span>
+          <div class="stat-icon">↗</div>
+        </div>
+        <div class="stat-value" id="profitStat">$0.00</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top">
+          <span>Active Investments</span>
+          <div class="stat-icon">●</div>
+        </div>
+        <div class="stat-value" id="activeInvestments">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top">
+          <span>Account Status</span>
+          <div class="stat-icon">✓</div>
+        </div>
+        <div class="stat-value" id="accountStatus">Active</div>
+      </div>
+
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <section class="grid-2">
+
+      <!-- INVESTMENTS -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Active Investments</h3>
+          <a class="view" href="investments.html">View all</a>
+        </div>
+
+        <div id="investmentsList">
+
+          <div class="investment">
+            <div class="invest-top">
+              <div class="plan">No active investment</div>
+              <span class="plan-status">Available</span>
+            </div>
+
+            <div style="color:#718096;font-size:13px;margin-top:10px">
+              Your active investment plans will appear here.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="card">
+
+        <div class="card-header">
+          <h3>Recent Activity</h3>
+          <a class="view" href="transactions.html">View all</a>
+        </div>
+
+        <div id="transactionsList">
+
+          <div class="transaction">
+            <div class="tx-icon">↔</div>
+
+            <div class="tx-info">
+              <strong>No recent transactions</strong>
+              <small>Your account activity will appear here.</small>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- KYC -->
+    <section class="kyc">
+
+      <div>
+        <strong>Complete your account verification</strong>
+        <p>
+          Verify your identity to unlock the full CoinForest account experience.
+        </p>
+      </div>
+
+      <button class="kyc-btn" onclick="location.href='kyc.html'">
+        Verify Account
+      </button>
+
+    </section>
+
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3 id="modalTitle">Request</h3>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <form id="requestForm" onsubmit="submitRequest(event)">
+
+      <div class="form-group">
+        <label>Amount</label>
+        <input
+          id="requestAmount"
+          type="number"
+          min="1"
+          step="0.01"
+          placeholder="Enter amount"
+          required
+        >
+      </div>
+
+      <div class="form-group" id="recipientGroup" style="display:none">
+        <label>Recipient email or wallet ID</label>
+        <input id="recipient" type="text" placeholder="Recipient">
+      </div>
+
+      <div class="form-group" id="methodGroup">
+        <label>Method</label>
+        <select id="method">
+          <option>Bank Transfer</option>
+          <option>Crypto Wallet</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <button class="submit" type="submit">Submit Request</button>
+
+    </form>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "/api";
+let currentUser = null;
+let modalType = null;
+
+/* -----------------------------
+   AUTH
+----------------------------- */
+
+async function loadUser(){
+
+  try{
+
+    const response = await fetch(API + "/auth/me",{
+      headers:{
+        "Authorization":"Bearer " + (localStorage.getItem("coinforest_token") || "")
+      }
+    });
+
+    if(!response.ok){
+      /*
+        During the early frontend stage, allow the dashboard
+        to render while authentication is being connected.
+      */
+      return;
+    }
+
+    const data = await response.json();
+
+    if(data.success && data.user){
+      currentUser = data.user;
+      renderUser(data.user);
+    }
+
+  }catch(error){
+    console.log("User session unavailable:",error);
+  }
+}
+
+function renderUser(user){
+
+  const name =
+    user.first_name ||
+    user.username ||
+    user.email?.split("@")[0] ||
+    "User";
+
+  document.getElementById("welcomeName").textContent =
+    "Welcome, " + name;
+
+  document.getElementById("profileName").textContent = name;
+
+  document.getElementById("avatar").textContent =
+    name.charAt(0).toUpperCase();
+
+  const kyc = user.kyc_status || "not_verified";
+
+  const badge = document.getElementById("kycBadge");
+
+  if(kyc === "verified" || kyc === "approved"){
+    badge.textContent = "● KYC Verified";
+    badge.style.background = "#e7f9ef";
+    badge.style.color = "#138a4d";
+  }else{
+    badge.textContent = "● KYC Not Verified";
+  }
+
+  document.getElementById("accountStatus").textContent =
+    user.status || "Active";
+}
+
+/* -----------------------------
+   SIDEBAR
+----------------------------- */
+
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("open");
+}
+
+/* -----------------------------
+   MODALS
+----------------------------- */
+
+function openModal(type){
+
+  modalType = type;
+
+  const modal = document.getElementById("modal");
+  const title = document.getElementById("modalTitle");
+  const recipient = document.getElementById("recipientGroup");
+
+  recipient.style.display = "none";
+
+  if(type === "deposit"){
+    title.textContent = "Deposit Request";
+  }
+
+  if(type === "withdraw"){
+    title.textContent = "Withdraw Funds";
+  }
+
+  if(type === "transfer"){
+    title.textContent = "Send Money";
+    recipient.style.display = "block";
+  }
+
+  modal.classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+  document.getElementById("requestForm").reset();
+}
+
+async function submitRequest(event){
+
+  event.preventDefault();
+
+  const amount =
+    Number(document.getElementById("requestAmount").value);
+
+  if(!amount || amount <= 0){
+    showToast("Enter a valid amount.");
+    return;
+  }
+
+  /*
+    The corresponding backend request endpoints will be connected
+    to deposit_requests, transfer_requests and withdrawal_requests
+    as those workflows are activated.
+  */
+
+  if(modalType === "deposit"){
+    showToast("Deposit request workflow ready.");
+  }
+
+  if(modalType === "withdraw"){
+    showToast("Withdrawal request workflow ready.");
+  }
+
+  if(modalType === "transfer"){
+    const recipient =
+      document.getElementById("recipient").value.trim();
+
+    if(!recipient){
+      showToast("Enter the recipient.");
+      return;
+    }
+
+    showToast("Transfer request workflow ready.");
+  }
+
+  closeModal();
+}
+
+/* -----------------------------
+   TOAST
+----------------------------- */
+
+function showToast(message){
+
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },3000);
+}
+
+/* -----------------------------
+   LOGOUT
+----------------------------- */
+
+async function logout(){
+
+  try{
+
+    const token = localStorage.getItem("coinforest_token");
+
+    if(token){
+
+      await fetch(API + "/auth/logout",{
+        method:"POST",
+        headers:{
+          "Authorization":"Bearer " + token
+        }
+      });
+
+    }
+
+  }catch(error){
+    console.log(error);
+  }
+
+  localStorage.removeItem("coinforest_token");
+
+  location.href = "index.html";
+}
+
+/* -----------------------------
+   DEMO DISPLAY DATA
+   Backend data can replace these
+   without changing the UI.
+----------------------------- */
+
+function loadDashboardData(){
+
+  document.getElementById("mainBalance").textContent = "$0.00";
+  document.getElementById("profitBalance").textContent = "$0.00";
+  document.getElementById("invested").textContent = "$0.00";
+  document.getElementById("profitStat").textContent = "$0.00";
+  document.getElementById("activeInvestments").textContent = "0";
+
+  const savedWallet =
+    localStorage.getItem("coinforest_wallet_id");
+
+  if(savedWallet){
+    document.getElementById("walletId").textContent = savedWallet;
+  }else{
+
+    const wallet =
+      "CF-" +
+      Math.floor(100000 + Math.random() * 900000);
+
+    localStorage.setItem(
+      "coinforest_wallet_id",
+      wallet
+    );
+
+    document.getElementById("walletId").textContent = wallet;
+  }
+}
+
+/* -----------------------------
+   START
+----------------------------- */
+
+loadDashboardData();
+loadUser();
+</script>
+
+</body>
+  </html>
