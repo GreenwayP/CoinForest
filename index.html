@@ -32,11 +32,21 @@
       font-weight: 700;
     }
 
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
     nav a {
       color: white;
       text-decoration: none;
-      margin-left: 20px;
       font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #2ecc71;
     }
 
     .hero {
@@ -77,6 +87,9 @@
       border-radius: 8px;
       text-decoration: none;
       font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
     }
 
     .primary {
@@ -87,6 +100,7 @@
     .secondary {
       border: 1px solid #ffffff66;
       color: white;
+      background: transparent;
     }
 
     .section {
@@ -133,6 +147,170 @@
       padding: 30px 6%;
     }
 
+    /* AUTH MODAL */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 10, 20, .75);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+
+    .auth-box h2 {
+      margin-bottom: 8px;
+      color: #0b1728;
+    }
+
+    .auth-subtitle {
+      color: #64748b;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 17px;
+      border: none;
+      background: transparent;
+      font-size: 26px;
+      cursor: pointer;
+      color: #64748b;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 11px;
+      border: 1px solid #dbe2ea;
+      background: #f8fafc;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .auth-tab.active {
+      background: #0b1728;
+      color: white;
+      border-color: #0b1728;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .field input:focus {
+      border-color: #2ecc71;
+    }
+
+    .auth-submit {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #2ecc71;
+      color: #07150d;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
+    .auth-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      padding: 11px 13px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .message.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .user-status {
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-status.active {
+      display: flex;
+    }
+
+    .logout-btn {
+      border: 1px solid #ffffff55;
+      background: transparent;
+      color: white;
+      padding: 8px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
     @media (max-width: 700px) {
       header {
         flex-direction: column;
@@ -140,20 +318,17 @@
       }
 
       nav {
-        display: flex;
-        flex-wrap: wrap;
         justify-content: center;
-        gap: 12px;
-      }
-
-      nav a {
-        margin-left: 0;
       }
 
       .hero {
         min-height: 60vh;
         padding-top: 45px;
         padding-bottom: 45px;
+      }
+
+      .auth-box {
+        padding: 25px 20px;
       }
     }
   </style>
@@ -170,11 +345,22 @@
     <a href="#markets">Markets</a>
     <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
+
+    <div id="guestActions">
+      <button class="btn primary" onclick="openAuth('register')">
+        Get Started
+      </button>
+    </div>
+
+    <div id="userStatus" class="user-status">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
   </nav>
 </header>
 
 <section class="hero">
   <div class="hero-content">
+
     <h1>Build Your Digital Asset Journey</h1>
 
     <p>
@@ -183,34 +369,51 @@
     </p>
 
     <div class="buttons">
-      <a class="btn primary" href="#">Get Started</a>
-      <a class="btn secondary" href="#">Login</a>
+      <button class="btn primary" onclick="openAuth('register')">
+        Get Started
+      </button>
+
+      <button class="btn secondary" onclick="openAuth('login')">
+        Login
+      </button>
     </div>
+
   </div>
 </section>
 
 <section class="section" id="about">
   <h2>About CoinForest</h2>
+
   <p class="section-intro">
     A modern digital-asset platform designed around a secure,
     structured and user-friendly experience.
   </p>
 
   <div class="cards">
+
     <div class="card">
       <h3>Secure Platform</h3>
-      <p>Designed with authentication, authorization and account security in mind.</p>
+      <p>
+        Designed with authentication, authorization and account security
+        in mind.
+      </p>
     </div>
 
     <div class="card">
       <h3>Wallet Management</h3>
-      <p>Manage your main and profit wallet through one organized platform.</p>
+      <p>
+        Manage your main and profit wallet through one organized platform.
+      </p>
     </div>
 
     <div class="card">
       <h3>Transparent Activity</h3>
-      <p>Track deposits, investments, transfers and withdrawals from your account.</p>
+      <p>
+        Track deposits, investments, transfers and withdrawals from
+        your account.
+      </p>
     </div>
+
   </div>
 </section>
 
@@ -218,25 +421,35 @@
   <h2>Our Services</h2>
 
   <div class="cards">
+
     <div class="card">
       <h3>Digital Wallets</h3>
-      <p>Access your main and profit wallet from your personal dashboard.</p>
+      <p>
+        Access your main and profit wallet from your personal dashboard.
+      </p>
     </div>
 
     <div class="card">
       <h3>Investments</h3>
-      <p>Explore structured investment schemas available on the platform.</p>
+      <p>
+        Explore structured investment schemas available on the platform.
+      </p>
     </div>
 
     <div class="card">
       <h3>Transfers</h3>
-      <p>Send funds between supported CoinForest accounts.</p>
+      <p>
+        Send funds between supported CoinForest accounts.
+      </p>
     </div>
 
     <div class="card">
       <h3>Market Overview</h3>
-      <p>Monitor supported digital assets and market information.</p>
+      <p>
+        Monitor supported digital assets and market information.
+      </p>
     </div>
+
   </div>
 </section>
 
@@ -244,7 +457,8 @@
   <h2>Markets</h2>
 
   <p class="section-intro">
-    Market data will be connected to the CoinForest platform as development progresses.
+    Market data will be connected to the CoinForest platform as
+    development progresses.
   </p>
 </section>
 
@@ -252,22 +466,31 @@
   <h2>Frequently Asked Questions</h2>
 
   <div class="cards">
+
     <div class="card">
       <h3>How do I create an account?</h3>
-      <p>Account registration will be available through the CoinForest registration system.</p>
+      <p>
+        Select Get Started and complete the CoinForest registration form.
+      </p>
     </div>
 
     <div class="card">
       <h3>Can I manage my wallets?</h3>
-      <p>Yes. The user dashboard will contain Main Wallet and Profit Wallet management.</p>
+      <p>
+        Yes. The user dashboard will contain Main Wallet and Profit Wallet
+        management.
+      </p>
     </div>
+
   </div>
 </section>
 
 <section class="section" id="contact">
   <h2>Contact CoinForest</h2>
+
   <p class="section-intro">
-    Customer support and ticket management will be available through the platform.
+    Customer support and ticket management will be available through
+    the platform.
   </p>
 </section>
 
@@ -275,5 +498,7 @@
   © 2026 CoinForest. All rights reserved.
 </footer>
 
-</body>
-  </html>
+
+<!-- AUTH MODAL -->
+
+<div class="modal" id="
