@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 const sql = neon(process.env.DATABASE_URL);
 
 const headers = {
-  "Content-Type": "application/json",
+  "Content-Type": "application/json; charset=utf-8",
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
@@ -18,7 +18,10 @@ function response(status, data) {
 }
 
 function hash(value) {
-  return crypto.createHash("sha256").update(value).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(String(value))
+    .digest("hex");
 }
 
 function createToken() {
@@ -27,53 +30,139 @@ function createToken() {
 
 function bearer(request) {
   const value = request.headers.get("authorization") || "";
-  return value.startsWith("Bearer ") ? value.slice(7).trim() : null;
+
+  if (!value.startsWith("Bearer ")) {
+    return null;
+  }
+
+  return value.slice(7).trim();
 }
 
-function email(value) {
-  return String(value || "").trim().toLowerCase();
+function normalizeEmail(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
+
+/* =====================================================
+   REGISTER
+===================================================== */
 
 async function register(body) {
-  const e = email(body.email);
+  const e = normalizeEmail(body.email);
   const password = String(body.password || "");
+
   const firstName = String(body.first_name || "").trim();
   const lastName = String(body.last_name || "").trim();
   const username = String(body.username || "").trim();
 
   if (!e || !password) {
-    return response(400, { success: false, error: "Email and password are required." });
+    return response(400, {
+      success: false,
+      error: "Email and password are required."
+    });
+  }
+
+  if (!firstName) {
+    return response(400, {
+      success: false,
+      error: "First name is required."
+    });
+  }
+
+  if (!lastName) {
+    return response(400, {
+      success: false,
+      error: "Last name is required."
+    });
+  }
+
+  if (!username) {
+    return response(400, {
+      success: false,
+      error: "Username is required."
+    });
   }
 
   if (password.length < 6) {
-    return response(400, { success: false, error: "Password must contain at least 6 characters." });
+    return response(400, {
+      success: false,
+      error: "Password must contain at least 6 characters."
+    });
   }
 
-  const existing = await sql`
-    SELECT id FROM profiles
+  const existingEmail = await sql`
+    SELECT id
+    FROM profiles
     WHERE LOWER(email) = ${e}
     LIMIT 1
   `;
 
-  if (existing.length) {
-    return response(409, { success: false, error: "An account with this email already exists." });
+  if (existingEmail.length > 0) {
+    return response(409, {
+      success: false,
+      error: "An account with this email already exists."
+    });
+  }
+
+  const existingUsername = await sql`
+    SELECT id
+    FROM profiles
+    WHERE LOWER(username) = LOWER(${username})
+    LIMIT 1
+  `;
+
+  if (existingUsername.length > 0) {
+    return response(409, {
+      success: false,
+      error: "That username is already in use."
+    });
   }
 
   const id = crypto.randomUUID();
-  const fullName = [firstName, lastName].filter(Boolean).join(" ") || username || e.split("@")[0];
+
+  const fullName = [firstName, lastName]
+    .filter(Boolean)
+    .join(" ");
 
   await sql`
-    INSERT INTO profiles
-      (id, email, full_name, role, created_at, updated_at)
-    VALUES
-      (${id}, ${e}, ${fullName}, 'user', NOW(), NOW())
+    INSERT INTO profiles (
+      id,
+      email,
+      full_name,
+      username,
+      role,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      ${id},
+      ${e},
+      ${fullName},
+      ${username},
+      'user',
+      NOW(),
+      NOW()
+    )
   `;
 
   await sql`
-    INSERT INTO auth_credentials
-      (user_id, password_hash, password_updated_at, failed_login_attempts, created_at, updated_at)
-    VALUES
-      (${id}, ${hash(password)}, NOW(), 0, NOW(), NOW())
+    INSERT INTO auth_credentials (
+      user_id,
+      password_hash,
+      password_updated_at,
+      failed_login_attempts,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      ${id},
+      ${hash(password)},
+      NOW(),
+      0,
+      NOW(),
+      NOW()
+    )
   `;
 
   return response(201, {
@@ -82,18 +171,28 @@ async function register(body) {
     user: {
       id,
       email: e,
+      first_name: firstName,
+      last_name: lastName,
+      username,
       full_name: fullName,
       role: "user"
     }
   });
 }
 
+/* =====================================================
+   LOGIN
+===================================================== */
+
 async function login(body) {
-  const e = email(body.email);
+  const e = normalizeEmail(body.email);
   const password = String(body.password || "");
 
   if (!e || !password) {
-    return response(400, { success: false, error: "Email and password are required." });
+    return response(400, {
+      success: false,
+      error: "Email and password are required."
+    });
   }
 
   const result = await sql`
@@ -101,71 +200,164 @@ async function login(body) {
       p.id,
       p.email,
       p.full_name,
+      p.username,
       p.role,
       a.password_hash,
       a.failed_login_attempts,
       a.locked_until
     FROM profiles p
-    INNER JOIN auth_credentials a ON a.user_id = p.id
+    INNER JOIN auth_credentials a
+      ON a.user_id = p.id
     WHERE LOWER(p.email) = ${e}
     LIMIT 1
   `;
 
-  if (!result.length) {
-    return response(401, { success: false, error: "Invalid email or password." });
+  if (result.length === 0) {
+    return response(401, {
+      success: false,
+      error: "Invalid email or password."
+    });
   }
 
   const user = result[0];
 
-  if (user.locked_until && new Date(user.locked_until) > new Date()) {
-    return response(423, { success: false, error: "Account temporarily locked. Please try again later." });
+  if (
+    user.locked_until &&
+    new Date(user.locked_until) > new Date()
+  ) {
+    return response(423, {
+      success: false,
+      error: "Account temporarily locked. Please try again later."
+    });
   }
 
   if (hash(password) !== user.password_hash) {
-    return response(401, { success: false, error: "Invalid email or password." });
+    const attempts =
+      Number(user.failed_login_attempts || 0) + 1;
+
+    if (attempts >= 5) {
+      await sql`
+        UPDATE auth_credentials
+        SET
+          failed_login_attempts = 0,
+          locked_until = NOW() + INTERVAL '15 minutes',
+          updated_at = NOW()
+        WHERE user_id = ${user.id}
+      `;
+
+      return response(423, {
+        success: false,
+        error: "Too many failed login attempts. Account temporarily locked."
+      });
+    }
+
+    await sql`
+      UPDATE auth_credentials
+      SET
+        failed_login_attempts = ${attempts},
+        updated_at = NOW()
+      WHERE user_id = ${user.id}
+    `;
+
+    return response(401, {
+      success: false,
+      error: "Invalid email or password."
+    });
   }
+
+  await sql`
+    UPDATE auth_credentials
+    SET
+      failed_login_attempts = 0,
+      locked_until = NULL,
+      updated_at = NOW()
+    WHERE user_id = ${user.id}
+  `;
 
   const token = createToken();
 
   await sql`
-    INSERT INTO user_sessions
-      (user_id, session_token_hash, status, last_activity_at, expires_at, created_at, updated_at)
-    VALUES
-      (${user.id}, ${hash(token)}, 'active', NOW(), NOW() + INTERVAL '30 days', NOW(), NOW())
+    INSERT INTO user_sessions (
+      user_id,
+      session_token_hash,
+      status,
+      last_activity_at,
+      expires_at,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      ${user.id},
+      ${hash(token)},
+      'active',
+      NOW(),
+      NOW() + INTERVAL '30 days',
+      NOW(),
+      NOW()
+    )
   `;
 
   return response(200, {
     success: true,
+    message: "Login successful.",
     token,
     user: {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
+      username: user.username,
       role: user.role
     }
   });
 }
 
+/* =====================================================
+   CURRENT USER
+===================================================== */
+
 async function me(request) {
   const token = bearer(request);
 
   if (!token) {
-    return response(401, { success: false, error: "Authentication required." });
+    return response(401, {
+      success: false,
+      error: "Authentication required."
+    });
   }
 
+  const tokenHash = hash(token);
+
   const result = await sql`
-    SELECT p.id, p.email, p.full_name, p.role
+    SELECT
+      p.id,
+      p.email,
+      p.full_name,
+      p.username,
+      p.role
     FROM user_sessions s
-    INNER JOIN profiles p ON p.id = s.user_id
-    WHERE s.session_token_hash = ${hash(token)}
+    INNER JOIN profiles p
+      ON p.id = s.user_id
+    WHERE s.session_token_hash = ${tokenHash}
       AND s.status = 'active'
       AND s.expires_at > NOW()
     LIMIT 1
   `;
 
-  if (!result.length) {
-    return response(401, { success: false, error: "Invalid or expired session." });
+  if (result.length === 0) {
+    return response(401, {
+      success: false,
+      error: "Invalid or expired session."
+    });
   }
+
+  await sql`
+    UPDATE user_sessions
+    SET
+      last_activity_at = NOW(),
+      updated_at = NOW()
+    WHERE session_token_hash = ${tokenHash}
+      AND status = 'active'
+  `;
 
   return response(200, {
     success: true,
@@ -173,13 +365,20 @@ async function me(request) {
   });
 }
 
+/* =====================================================
+   LOGOUT
+===================================================== */
+
 async function logout(request) {
   const token = bearer(request);
 
   if (token) {
     await sql`
       UPDATE user_sessions
-      SET status = 'revoked', revoked_at = NOW(), updated_at = NOW()
+      SET
+        status = 'revoked',
+        revoked_at = NOW(),
+        updated_at = NOW()
       WHERE session_token_hash = ${hash(token)}
         AND status = 'active'
     `;
@@ -191,8 +390,14 @@ async function logout(request) {
   });
 }
 
+/* =====================================================
+   HEALTH
+===================================================== */
+
 async function health() {
-  const result = await sql`SELECT NOW() AS current_time`;
+  const result = await sql`
+    SELECT NOW() AS current_time
+  `;
 
   return response(200, {
     success: true,
@@ -201,45 +406,71 @@ async function health() {
   });
 }
 
+/* =====================================================
+   ROUTER
+===================================================== */
+
 export default async function handler(request) {
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers });
+    return new Response(null, {
+      status: 204,
+      headers
+    });
   }
 
   try {
-    const path = url.pprofiles
+    const url = new URL(request.url);
+    const path = url.pathname;
 
-    if (request.method === "GET" && path === "/health") {
-      return health();
+    if (
+      request.method === "GET" &&
+      path === "/api/health"
+    ) {
+      return await health();
     }
 
-    if (request.method === "POST" && path === "/auth/register") {
-      return register(await request.json());
+    if (
+      request.method === "POST" &&
+      path === "/api/auth/register"
+    ) {
+      const body = await request.json();
+      return await register(body);
     }
 
-    if (request.method === "POST" && path === "/auth/login") {
-      return login(await request.json());
+    if (
+      request.method === "POST" &&
+      path === "/api/auth/login"
+    ) {
+      const body = await request.json();
+      return await login(body);
     }
 
-    if (request.method === "POST" && path === "/auth/logout") {
-      return logout(request);
+    if (
+      request.method === "POST" &&
+      path === "/api/auth/logout"
+    ) {
+      return await logout(request);
     }
 
-    if (request.method === "GET" && path === "/auth/me") {
-      return me(request);
+    if (
+      request.method === "GET" &&
+      path === "/api/auth/me"
+    ) {
+      return await me(request);
     }
 
     return response(404, {
       success: false,
-      error: "API route not found."
+      error: "API route not found.",
+      path
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("CoinForest API error:", error);
 
     return response(500, {
       success: false,
       error: "Internal server error."
     });
   }
-                          }
+}
