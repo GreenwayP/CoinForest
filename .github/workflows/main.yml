@@ -1,0 +1,25 @@
+name: CoinForest Neon Connection Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-neon:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout CoinForest
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test Neon connection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node --input-type=module -e "import { neon } from '@neondatabase/serverless'; const sql = neon(process.env.DATABASE_URL); const result = await sql\`SELECT NOW() AS current_time\`; console.log('COINFOREST NEON CONNECTION SUCCESS:', result[0].current_time)"
