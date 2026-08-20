@@ -501,4 +501,578 @@
 
 <!-- AUTH MODAL -->
 
-<div class="modal" id="
+<div class="modal" id="authModal">
+
+  <div class="auth-box">
+
+    <button class="close-btn" onclick="closeAuth()">×</button>
+
+    <h2 id="authTitle">Create your CoinForest account</h2>
+
+    <p class="auth-subtitle" id="authSubtitle">
+      Create an account to access your CoinForest dashboard.
+    </p>
+
+    <div class="auth-tabs">
+
+      <button
+        class="auth-tab active"
+        id="registerTab"
+        onclick="switchAuth('register')">
+        Register
+      </button>
+
+      <button
+        class="auth-tab"
+        id="loginTab"
+        onclick="switchAuth('login')">
+        Login
+      </button>
+
+    </div>
+
+    <div id="authMessage" class="message"></div>
+
+
+    <!-- REGISTER -->
+
+    <form
+      id="registerForm"
+      class="auth-form active"
+      onsubmit="registerUser(event)">
+
+      <div class="field">
+        <label>First name</label>
+        <input
+          type="text"
+          id="registerFirstName"
+          required>
+      </div>
+
+      <div class="field">
+        <label>Last name</label>
+        <input
+          type="text"
+          id="registerLastName"
+          required>
+      </div>
+
+      <div class="field">
+        <label>Username</label>
+        <input
+          type="text"
+          id="registerUsername"
+          required>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input
+          type="email"
+          id="registerEmail"
+          required>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input
+          type="password"
+          id="registerPassword"
+          minlength="6"
+          required>
+      </div>
+
+      <button
+        class="auth-submit"
+        id="registerSubmit"
+        type="submit">
+        Create Account
+      </button>
+
+    </form>
+
+
+    <!-- LOGIN -->
+
+    <form
+      id="loginForm"
+      class="auth-form"
+      onsubmit="loginUser(event)">
+
+      <div class="field">
+        <label>Email</label>
+        <input
+          type="email"
+          id="loginEmail"
+          required>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input
+          type="password"
+          id="loginPassword"
+          required>
+      </div>
+
+      <button
+        class="auth-submit"
+        id="loginSubmit"
+        type="submit">
+        Login
+      </button>
+
+    </form>
+
+  </div>
+</div>
+
+
+<script>
+
+const API_BASE = "";
+
+
+/* -------------------------------------------------------
+   AUTH UI
+------------------------------------------------------- */
+
+function openAuth(mode = "login") {
+  document
+    .getElementById("authModal")
+    .classList.add("active");
+
+  switchAuth(mode);
+}
+
+function closeAuth() {
+  document
+    .getElementById("authModal")
+    .classList.remove("active");
+
+  clearMessage();
+}
+
+function switchAuth(mode) {
+
+  const registerForm =
+    document.getElementById("registerForm");
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const registerTab =
+    document.getElementById("registerTab");
+
+  const loginTab =
+    document.getElementById("loginTab");
+
+  const title =
+    document.getElementById("authTitle");
+
+  const subtitle =
+    document.getElementById("authSubtitle");
+
+  clearMessage();
+
+  if (mode === "register") {
+
+    registerForm.classList.add("active");
+    loginForm.classList.remove("active");
+
+    registerTab.classList.add("active");
+    loginTab.classList.remove("active");
+
+    title.textContent =
+      "Create your CoinForest account";
+
+    subtitle.textContent =
+      "Create an account to access your CoinForest dashboard.";
+
+  } else {
+
+    registerForm.classList.remove("active");
+    loginForm.classList.add("active");
+
+    registerTab.classList.remove("active");
+    loginTab.classList.add("active");
+
+    title.textContent =
+      "Welcome back";
+
+    subtitle.textContent =
+      "Login to access your CoinForest account.";
+
+  }
+}
+
+
+/* -------------------------------------------------------
+   MESSAGE
+------------------------------------------------------- */
+
+function showMessage(message, type = "error") {
+
+  const element =
+    document.getElementById("authMessage");
+
+  element.textContent = message;
+
+  element.className =
+    "message show " + type;
+}
+
+function clearMessage() {
+
+  const element =
+    document.getElementById("authMessage");
+
+  element.textContent = "";
+
+  element.className = "message";
+}
+
+
+/* -------------------------------------------------------
+   REGISTER
+------------------------------------------------------- */
+
+async function registerUser(event) {
+
+  event.preventDefault();
+
+  const button =
+    document.getElementById("registerSubmit");
+
+  button.disabled = true;
+  button.textContent = "Creating account...";
+
+  clearMessage();
+
+  const payload = {
+
+    first_name:
+      document.getElementById("registerFirstName").value.trim(),
+
+    last_name:
+      document.getElementById("registerLastName").value.trim(),
+
+    username:
+      document.getElementById("registerUsername").value.trim(),
+
+    email:
+      document.getElementById("registerEmail").value.trim(),
+
+    password:
+      document.getElementById("registerPassword").value
+
+  };
+
+  try {
+
+    const response =
+      await fetch(
+        API_BASE + "/api/auth/register",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(payload)
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Unable to create account."
+      );
+    }
+
+    showMessage(
+      "Account created successfully. You can now log in.",
+      "success"
+    );
+
+    document.getElementById("registerForm").reset();
+
+    setTimeout(() => {
+      switchAuth("login");
+
+      document.getElementById("loginEmail").value =
+        payload.email;
+    }, 900);
+
+  } catch (error) {
+
+    console.error("Registration error:", error);
+
+    showMessage(
+      error.message || "Unable to create account."
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Create Account";
+
+  }
+}
+
+
+/* -------------------------------------------------------
+   LOGIN
+------------------------------------------------------- */
+
+async function loginUser(event) {
+
+  event.preventDefault();
+
+  const button =
+    document.getElementById("loginSubmit");
+
+  button.disabled = true;
+  button.textContent = "Logging in...";
+
+  clearMessage();
+
+  const payload = {
+
+    email:
+      document.getElementById("loginEmail").value.trim(),
+
+    password:
+      document.getElementById("loginPassword").value
+
+  };
+
+  try {
+
+    const response =
+      await fetch(
+        API_BASE + "/api/auth/login",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(payload)
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Unable to login."
+      );
+    }
+
+    if (!data.token) {
+      throw new Error(
+        "Login succeeded but no session token was returned."
+      );
+    }
+
+    localStorage.setItem(
+      "coinforest_token",
+      data.token
+    );
+
+    showMessage(
+      "Login successful. Opening your dashboard...",
+      "success"
+    );
+
+    setTimeout(() => {
+
+      window.location.href =
+        "/dashboard.html";
+
+    }, 700);
+
+  } catch (error) {
+
+    console.error("Login error:", error);
+
+    showMessage(
+      error.message || "Unable to login."
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Login";
+
+  }
+}
+
+
+/* -------------------------------------------------------
+   LOGOUT
+------------------------------------------------------- */
+
+async function logout() {
+
+  const token =
+    localStorage.getItem("coinforest_token");
+
+  if (!token) {
+    updateGuestState();
+    return;
+  }
+
+  try {
+
+    await fetch(
+      API_BASE + "/api/auth/logout",
+      {
+        method: "POST",
+
+        headers: {
+          "Authorization":
+            "Bearer " + token
+        }
+      }
+    );
+
+  } catch (error) {
+
+    console.error("Logout error:", error);
+
+  }
+
+  localStorage.removeItem("coinforest_token");
+
+  updateGuestState();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+/* -------------------------------------------------------
+   CURRENT USER CHECK
+------------------------------------------------------- */
+
+async function checkCurrentUser() {
+
+  const token =
+    localStorage.getItem("coinforest_token");
+
+  if (!token) {
+    updateGuestState();
+    return;
+  }
+
+  try {
+
+    const response =
+      await fetch(
+        API_BASE + "/api/auth/me",
+        {
+          method: "GET",
+
+          headers: {
+            "Authorization":
+              "Bearer " + token
+          }
+        }
+      );
+
+    if (!response.ok) {
+
+      localStorage.removeItem(
+        "coinforest_token"
+      );
+
+      updateGuestState();
+
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    if (data.success && data.user) {
+
+      document.getElementById(
+        "guestActions"
+      ).style.display = "none";
+
+      document.getElementById(
+        "userStatus"
+      ).classList.add("active");
+
+    } else {
+
+      localStorage.removeItem(
+        "coinforest_token"
+      );
+
+      updateGuestState();
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Authentication check failed:",
+      error
+    );
+
+    updateGuestState();
+  }
+}
+
+
+/* -------------------------------------------------------
+   GUEST STATE
+------------------------------------------------------- */
+
+function updateGuestState() {
+
+  document.getElementById(
+    "guestActions"
+  ).style.display = "block";
+
+  document.getElementById(
+    "userStatus"
+  ).classList.remove("active");
+}
+
+
+/* -------------------------------------------------------
+   MODAL BACKDROP
+------------------------------------------------------- */
+
+document
+  .getElementById("authModal")
+  .addEventListener("click", function(event) {
+
+    if (event.target === this) {
+      closeAuth();
+    }
+
+  });
+
+
+/* -------------------------------------------------------
+   INITIALIZE
+------------------------------------------------------- */
+
+checkCurrentUser();
+
+</script>
+
+</body>
+  </html>
