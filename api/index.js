@@ -628,27 +628,29 @@ async function register(request, body) {
     hashPassword(password);
 
   await sql`
-    INSERT INTO profiles (
-      id,
-      email,
-      full_name,
-      username,
-      role,
-      email_verified_at,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${id},
-      ${e},
-      ${fullName},
-      ${username},
-      'user',
-      NULL,
-      NOW(),
-      NOW()
-    )
-  `;
+  INSERT INTO profiles (
+    id,
+    role_id,
+    first_name,
+    last_name,
+    username,
+    email,
+    email_verified_at,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    ${id},
+    '9dbe97ec-7b11-4789-b31b-bff00bc2483e',
+    ${firstName},
+    ${lastName},
+    ${username},
+    ${e},
+    NULL,
+    NOW(),
+    NOW()
+  )
+`;
 
   await sql`
     INSERT INTO auth_credentials (
