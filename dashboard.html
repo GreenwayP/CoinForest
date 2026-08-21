@@ -14,603 +14,237 @@
   --dark2:#0d2238;
   --green:#20c879;
   --green2:#13a866;
+  --gold:#f5b942;
+  --gold2:#d99a16;
   --text:#142033;
   --muted:#718096;
   --border:#e7ebf1;
   --danger:#ef5350;
 }
-body{
-  font-family:Inter,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
 button{font:inherit}
 a{text-decoration:none;color:inherit}
 
 /* SIDEBAR */
 .sidebar{
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  width:245px;
-  background:var(--dark);
-  color:#fff;
-  padding:25px 16px;
-  z-index:100;
+ position:fixed;left:0;top:0;bottom:0;width:245px;
+ background:linear-gradient(180deg,#071525,#091c2e);
+ color:#fff;padding:25px 16px;z-index:100
 }
-.logo{
-  font-size:25px;
-  font-weight:800;
-  padding:0 15px 30px;
-  letter-spacing:-.5px;
-}
+.logo{font-size:25px;font-weight:800;padding:0 15px 30px;letter-spacing:-.5px}
 .logo span{color:var(--green)}
-.menu-title{
-  color:#71859a;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:1.4px;
-  padding:12px 15px 8px;
-}
+.menu-title{color:#71859a;font-size:11px;text-transform:uppercase;letter-spacing:1.4px;padding:12px 15px 8px}
 .menu a{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  padding:13px 15px;
-  border-radius:10px;
-  margin:4px 0;
-  color:#aebccc;
-  font-size:14px;
-  transition:.2s;
+ display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:10px;
+ margin:4px 0;color:#aebccc;font-size:14px;transition:.2s
 }
-.menu a:hover,.menu a.active{
-  background:#102b44;
-  color:#fff;
-}
-.menu a.active{
-  border-left:3px solid var(--green);
-}
-.icon{
-  width:22px;
-  text-align:center;
-  font-size:17px;
-}
-.sidebar-bottom{
-  position:absolute;
-  bottom:22px;
-  left:16px;
-  right:16px;
-}
+.menu a:hover,.menu a.active{background:#102b44;color:#fff}
+.menu a.active{border-left:3px solid var(--green)}
+.icon{width:22px;text-align:center;font-size:17px}
+.sidebar-bottom{position:absolute;bottom:22px;left:16px;right:16px}
 .logout{
-  width:100%;
-  border:1px solid #294157;
-  background:transparent;
-  color:#b8c6d4;
-  padding:11px;
-  border-radius:9px;
-  cursor:pointer;
+ width:100%;border:1px solid #294157;background:transparent;color:#b8c6d4;
+ padding:11px;border-radius:9px;cursor:pointer
 }
 
 /* MAIN */
-.main{
-  margin-left:245px;
-  min-height:100vh;
-}
+.main{margin-left:245px;min-height:100vh}
 .topbar{
-  height:72px;
-  background:#fff;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 35px;
+ height:72px;background:#fff;border-bottom:1px solid var(--border);
+ display:flex;justify-content:space-between;align-items:center;padding:0 35px
 }
-.mobile-menu{
-  display:none;
-  border:0;
-  background:none;
-  font-size:25px;
-  cursor:pointer;
-}
-.welcome small{
-  color:var(--muted);
-  font-size:12px;
-}
-.welcome strong{
-  display:block;
-  margin-top:3px;
-  font-size:17px;
-}
-.profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+.mobile-menu{display:none;border:0;background:none;font-size:25px;cursor:pointer}
+.welcome small{color:var(--muted);font-size:12px}
+.welcome strong{display:block;margin-top:3px;font-size:17px}
+.profile{display:flex;align-items:center;gap:12px}
 .avatar{
-  width:39px;
-  height:39px;
-  border-radius:50%;
-  background:var(--green);
-  color:#062014;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
+ width:39px;height:39px;border-radius:50%;
+ background:linear-gradient(135deg,var(--green),var(--gold));
+ color:#062014;display:flex;align-items:center;justify-content:center;font-weight:800
 }
-.profile-info{
-  line-height:1.2;
-}
-.profile-info strong{
-  font-size:13px;
-}
-.profile-info small{
-  display:block;
-  color:var(--muted);
-  font-size:11px;
-  margin-top:3px;
-}
+.profile-info{line-height:1.2}
+.profile-info strong{font-size:13px}
+.profile-info small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
 
 /* CONTENT */
-.content{
-  padding:30px 35px 50px;
-}
-.page-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
-}
-.page-title h1{
-  font-size:25px;
-}
-.page-title p{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:5px;
-}
-.action-buttons{
-  display:flex;
-  gap:9px;
-}
-.btn{
-  border:0;
-  border-radius:9px;
-  padding:11px 17px;
-  cursor:pointer;
-  font-weight:700;
-  font-size:13px;
-}
-.btn-green{
-  background:var(--green);
-  color:#052014;
-}
-.btn-dark{
-  background:var(--dark);
-  color:#fff;
-}
+.content{padding:30px 35px 50px}
+.page-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.page-title h1{font-size:25px}
+.page-title p{color:var(--muted);font-size:13px;margin-top:5px}
+.action-buttons{display:flex;gap:9px}
+.btn{border:0;border-radius:9px;padding:11px 17px;cursor:pointer;font-weight:700;font-size:13px}
+.btn-green{background:var(--green);color:#052014}
+.btn-dark{background:var(--dark);color:#fff}
 
-/* HERO BALANCE */
+/* BALANCE */
 .balance-card{
-  background:linear-gradient(135deg,#071525,#103b5b);
-  color:#fff;
-  border-radius:18px;
-  padding:28px;
-  margin-bottom:22px;
-  position:relative;
-  overflow:hidden;
+ background:
+ radial-gradient(circle at 90% 15%,rgba(245,185,66,.18),transparent 24%),
+ linear-gradient(135deg,#071525,#103b5b);
+ color:#fff;border-radius:18px;padding:28px;margin-bottom:22px;
+ position:relative;overflow:hidden
 }
 .balance-card:after{
-  content:"";
-  position:absolute;
-  width:250px;
-  height:250px;
-  right:-80px;
-  top:-100px;
-  border:35px solid rgba(32,200,121,.09);
-  border-radius:50%;
+ content:"";position:absolute;width:250px;height:250px;right:-80px;top:-100px;
+ border:35px solid rgba(245,185,66,.09);border-radius:50%
 }
-.balance-label{
-  color:#9bb0c4;
-  font-size:13px;
-}
-.total-balance{
-  font-size:37px;
-  font-weight:800;
-  margin:7px 0 22px;
-}
-.balance-row{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-.balance-item{
-  border-left:1px solid rgba(255,255,255,.14);
-  padding-left:18px;
-}
-.balance-item:first-child{
-  border-left:0;
-  padding-left:0;
-}
-.balance-item span{
-  color:#9bb0c4;
-  font-size:11px;
-}
-.balance-item strong{
-  display:block;
-  margin-top:6px;
-  font-size:18px;
-}
+.balance-label{color:#9bb0c4;font-size:13px}
+.total-balance{font-size:37px;font-weight:800;margin:7px 0 22px}
+.balance-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.balance-item{border-left:1px solid rgba(255,255,255,.14);padding-left:18px}
+.balance-item:first-child{border-left:0;padding-left:0}
+.balance-item span{color:#9bb0c4;font-size:11px}
+.balance-item strong{display:block;margin-top:6px;font-size:18px}
 .positive{color:#39dd91}
 
 /* CARDS */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  margin-bottom:24px;
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:20px;
-}
-.stat-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:20px}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
 .stat-icon{
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  background:#e9faf2;
-  color:var(--green2);
-  font-size:18px;
+ width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+ border-radius:10px;background:#e9faf2;color:var(--green2);font-size:18px
 }
-.stat-label{
-  color:var(--muted);
-  font-size:12px;
-}
-.stat-value{
-  font-size:22px;
-  font-weight:800;
-  margin-top:14px;
-}
-.stat-change{
-  font-size:11px;
-  margin-top:7px;
-  color:var(--green2);
-}
+.stat-label{color:var(--muted);font-size:12px}
+.stat-value{font-size:22px;font-weight:800;margin-top:14px}
+.stat-change{font-size:11px;margin-top:7px;color:var(--green2)}
 
 /* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1.45fr 1fr;
-  gap:22px;
-  margin-bottom:22px;
-}
-.card-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:19px;
-}
-.card-head h2{
-  font-size:16px;
-}
-.card-head a{
-  color:var(--green2);
-  font-size:12px;
-  font-weight:700;
-}
+.grid{display:grid;grid-template-columns:1.45fr 1fr;gap:22px;margin-bottom:22px}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:19px}
+.card-head h2{font-size:16px}
+.card-head a{color:var(--green2);font-size:12px;font-weight:700}
 
-/* QUICK ACTIONS */
-.actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-}
+/* ACTIONS */
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .action{
-  border:1px solid var(--border);
-  background:#fbfcfe;
-  border-radius:12px;
-  padding:17px 12px;
-  cursor:pointer;
-  text-align:left;
+ border:1px solid var(--border);background:#fbfcfe;border-radius:12px;
+ padding:17px 12px;cursor:pointer;text-align:left
 }
-.action:hover{
-  border-color:#a8e9c9;
-  background:#f5fffa;
-}
-.action-icon{
-  font-size:20px;
-  margin-bottom:12px;
-}
-.action strong{
-  display:block;
-  font-size:13px;
-}
-.action span{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  margin-top:4px;
-}
+.action:hover{border-color:#a8e9c9;background:#f5fffa}
+.action-icon{font-size:20px;margin-bottom:12px}
+.action strong{display:block;font-size:13px}
+.action span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
 
 /* WALLET */
-.wallet-list{
-  display:grid;
-  gap:12px;
-}
+.wallet-list{display:grid;gap:12px}
 .wallet{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border:1px solid var(--border);
-  padding:15px;
-  border-radius:11px;
+ display:flex;justify-content:space-between;align-items:center;
+ border:1px solid var(--border);padding:15px;border-radius:11px
 }
-.wallet-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+.wallet-left{display:flex;align-items:center;gap:12px}
 .wallet-icon{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:#edf9f3;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+ width:38px;height:38px;border-radius:50%;background:#edf9f3;
+ display:flex;align-items:center;justify-content:center
 }
-.wallet-name{
-  font-weight:700;
-  font-size:13px;
-}
-.wallet-sub{
-  color:var(--muted);
-  font-size:10px;
-  margin-top:3px;
-}
-.wallet-value{
-  font-weight:800;
-  font-size:14px;
-}
+.wallet-name{font-weight:700;font-size:13px}
+.wallet-sub{color:var(--muted);font-size:10px;margin-top:3px}
+.wallet-value{font-weight:800;font-size:14px}
 
 /* INVESTMENT */
-.plans{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-}
-.plan{
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:18px;
-  background:#fff;
-}
+.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.plan{border:1px solid var(--border);border-radius:13px;padding:18px;background:#fff}
 .plan.featured{
-  border-color:var(--green);
-  box-shadow:0 7px 22px rgba(32,200,121,.1);
+ border-color:var(--gold);
+ box-shadow:0 7px 22px rgba(245,185,66,.15)
 }
-.plan h3{
-  font-size:15px;
-}
-.plan-rate{
-  color:var(--green2);
-  font-size:23px;
-  font-weight:800;
-  margin:12px 0 4px;
-}
-.plan-period{
-  color:var(--muted);
-  font-size:10px;
-}
-.plan-line{
-  border-top:1px solid var(--border);
-  margin:14px 0;
-}
-.plan small{
-  color:var(--muted);
-  font-size:10px;
-}
+.plan h3{font-size:15px}
+.plan-rate{color:var(--green2);font-size:23px;font-weight:800;margin:12px 0 4px}
+.plan.featured .plan-rate{color:var(--gold2)}
+.plan-period{color:var(--muted);font-size:10px}
+.plan-line{border-top:1px solid var(--border);margin:14px 0}
+.plan small{color:var(--muted);font-size:10px}
 .plan button{
-  width:100%;
-  margin-top:15px;
-  padding:10px;
-  border-radius:8px;
-  border:0;
-  background:var(--dark);
-  color:#fff;
-  font-size:11px;
-  cursor:pointer;
+ width:100%;margin-top:15px;padding:10px;border-radius:8px;border:0;
+ background:var(--dark);color:#fff;font-size:11px;cursor:pointer
 }
 
 /* TRANSACTIONS */
-.transactions{
-  width:100%;
-  border-collapse:collapse;
-}
+.transactions{width:100%;border-collapse:collapse}
 .transactions th{
-  text-align:left;
-  color:#8a96a7;
-  font-size:10px;
-  text-transform:uppercase;
-  padding:9px 6px;
-  border-bottom:1px solid var(--border);
+ text-align:left;color:#8a96a7;font-size:10px;text-transform:uppercase;
+ padding:9px 6px;border-bottom:1px solid var(--border)
 }
-.transactions td{
-  padding:13px 6px;
-  border-bottom:1px solid #f0f2f5;
-  font-size:12px;
-}
-.status{
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:20px;
-  font-size:9px;
-  font-weight:700;
-}
-.status.completed{
-  background:#dcfce9;
-  color:#15803d;
-}
-.status.pending{
-  background:#fff7d6;
-  color:#a16207;
-}
-.status.failed{
-  background:#fee2e2;
-  color:#b91c1c;
-}
+.transactions td{padding:13px 6px;border-bottom:1px solid #f0f2f5;font-size:12px}
+.status{display:inline-block;padding:5px 8px;border-radius:20px;font-size:9px;font-weight:700}
+.status.completed{background:#dcfce9;color:#15803d}
+.status.pending{background:#fff7d6;color:#a16207}
+.status.failed{background:#fee2e2;color:#b91c1c}
 .amount-plus{color:#159957;font-weight:700}
 .amount-minus{color:#dc3c3c;font-weight:700}
 
-/* MARKET */
+/* LIVE MARKET */
 .market-strip{
-  background:#081827;
-  color:white;
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:22px;
+ background:linear-gradient(135deg,#071525,#0b2034);
+ color:white;border-radius:14px;padding:18px;margin-bottom:22px;
+ box-shadow:0 10px 30px rgba(7,21,37,.12)
 }
-.market-title{
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:15px;
-}
-.market-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
+.market-title{font-size:14px;font-weight:700;margin-bottom:15px}
+.market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .coin{
-  background:#102638;
-  border-radius:10px;
-  padding:13px;
+ background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.06);
+ border-radius:10px;padding:13px;transition:.25s
 }
-.coin-top{
-  display:flex;
-  justify-content:space-between;
-  font-size:11px;
+.coin:hover{transform:translateY(-2px);background:rgba(255,255,255,.08)}
+.coin-top{display:flex;align-items:center;gap:8px;font-size:11px}
+.coin-name{color:#8ea1b5}
+.coin-icon{
+ width:31px;height:31px;border-radius:50%;display:flex;
+ align-items:center;justify-content:center;font-weight:900;font-size:14px
 }
-.coin-price{
-  font-size:16px;
-  font-weight:800;
-  margin-top:9px;
-}
-.coin-change{
-  color:#36da8e;
-  font-size:10px;
-  margin-top:4px;
-}
+.btc-icon{background:linear-gradient(135deg,#f7931a,#ffd166);color:#fff}
+.eth-icon{background:linear-gradient(135deg,#627eea,#aab9ff);color:#fff}
+.usdt-icon{background:linear-gradient(135deg,#26a17b,#70d7b0);color:#fff}
+.bnb-icon{background:linear-gradient(135deg,#f3ba2f,#ffe28a);color:#111}
+.coin-price{font-size:16px;font-weight:800;margin-top:11px}
+.coin-change{font-size:10px;margin-top:4px;font-weight:700}
+.coin-change.up{color:#36da8e}
+.coin-change.down{color:#ef5350}
 
 /* MODALS */
 .modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(3,10,20,.72);
-  z-index:500;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+ display:none;position:fixed;inset:0;background:rgba(3,10,20,.72);
+ z-index:500;align-items:center;justify-content:center;padding:20px
 }
 .modal.active{display:flex}
-.modal-box{
-  width:100%;
-  max-width:430px;
-  background:#fff;
-  border-radius:17px;
-  padding:26px;
-  position:relative;
-}
-.modal-box h2{
-  font-size:20px;
-  margin-bottom:7px;
-}
-.modal-box p{
-  color:var(--muted);
-  font-size:12px;
-  margin-bottom:20px;
-}
-.close{
-  position:absolute;
-  right:17px;
-  top:12px;
-  border:0;
-  background:none;
-  font-size:25px;
-  cursor:pointer;
-}
-.field{
-  margin-bottom:14px;
-}
-.field label{
-  display:block;
-  font-size:12px;
-  font-weight:700;
-  margin-bottom:6px;
-}
+.modal-box{width:100%;max-width:430px;background:#fff;border-radius:17px;padding:26px;position:relative}
+.modal-box h2{font-size:20px;margin-bottom:7px}
+.modal-box p{color:var(--muted);font-size:12px;margin-bottom:20px}
+.close{position:absolute;right:17px;top:12px;border:0;background:none;font-size:25px;cursor:pointer}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
 .field input,.field select{
-  width:100%;
-  padding:12px;
-  border:1px solid #dce2e9;
-  border-radius:8px;
-  outline:none;
+ width:100%;padding:12px;border:1px solid #dce2e9;border-radius:8px;outline:none
 }
 .modal-submit{
-  width:100%;
-  padding:13px;
-  border:0;
-  background:var(--green);
-  border-radius:9px;
-  font-weight:800;
-  cursor:pointer;
+ width:100%;padding:13px;border:0;background:var(--green);
+ border-radius:9px;font-weight:800;cursor:pointer
 }
 
 /* MOBILE */
 @media(max-width:1100px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .plans{grid-template-columns:repeat(2,1fr)}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .plans{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:850px){
-  .sidebar{
-    transform:translateX(-100%);
-    transition:.25s;
-  }
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .mobile-menu{display:block}
-  .topbar{padding:0 18px}
-  .content{padding:22px 18px 40px}
-  .grid{grid-template-columns:1fr}
-  .market-grid{grid-template-columns:repeat(2,1fr)}
+ .sidebar{transform:translateX(-100%);transition:.25s}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-left:0}
+ .mobile-menu{display:block}
+ .topbar{padding:0 18px}
+ .content{padding:22px 18px 40px}
+ .grid{grid-template-columns:1fr}
+ .market-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:600px){
-  .page-title{
-    align-items:flex-start;
-    flex-direction:column;
-    gap:15px;
-  }
-  .balance-row{grid-template-columns:1fr}
-  .balance-item{
-    border-left:0;
-    border-top:1px solid rgba(255,255,255,.14);
-    padding:12px 0 0;
-  }
-  .stats{grid-template-columns:1fr 1fr}
-  .actions{grid-template-columns:1fr 1fr}
-  .plans{grid-template-columns:1fr}
-  .profile-info{display:none}
-  .transactions th:nth-child(2),
-  .transactions td:nth-child(2){display:none}
+ .page-title{align-items:flex-start;flex-direction:column;gap:15px}
+ .balance-row{grid-template-columns:1fr}
+ .balance-item{border-left:0;border-top:1px solid rgba(255,255,255,.14);padding:12px 0 0}
+ .stats{grid-template-columns:1fr 1fr}
+ .actions{grid-template-columns:1fr 1fr}
+ .plans{grid-template-columns:1fr}
+ .profile-info{display:none}
+ .transactions th:nth-child(2),.transactions td:nth-child(2){display:none}
 }
 </style>
 </head>
@@ -740,32 +374,48 @@ a{text-decoration:none;color:inherit}
   </section>
 
   <section class="market-strip">
-    <div class="market-title">Market Overview</div>
+    <div class="market-title">Live Market Overview</div>
 
     <div class="market-grid">
 
       <div class="coin">
-        <div class="coin-top"><strong>BTC</strong><span>Bitcoin</span></div>
-        <div class="coin-price">$104,820.00</div>
-        <div class="coin-change">+2.41%</div>
+        <div class="coin-top">
+          <div class="coin-icon btc-icon">₿</div>
+          <strong>BTC</strong>
+          <span class="coin-name">Bitcoin</span>
+        </div>
+        <div class="coin-price" id="btcPrice">$104,820.00</div>
+        <div class="coin-change up" id="btcChange">+2.41%</div>
       </div>
 
       <div class="coin">
-        <div class="coin-top"><strong>ETH</strong><span>Ethereum</span></div>
-        <div class="coin-price">$3,842.12</div>
-        <div class="coin-change">+1.83%</div>
+        <div class="coin-top">
+          <div class="coin-icon eth-icon">Ξ</div>
+          <strong>ETH</strong>
+          <span class="coin-name">Ethereum</span>
+        </div>
+        <div class="coin-price" id="ethPrice">$3,842.12</div>
+        <div class="coin-change up" id="ethChange">+1.83%</div>
       </div>
 
       <div class="coin">
-        <div class="coin-top"><strong>USDT</strong><span>Tether</span></div>
-        <div class="coin-price">$1.00</div>
-        <div class="coin-change">+0.02%</div>
+        <div class="coin-top">
+          <div class="coin-icon usdt-icon">₮</div>
+          <strong>USDT</strong>
+          <span class="coin-name">Tether</span>
+        </div>
+        <div class="coin-price" id="usdtPrice">$1.00</div>
+        <div class="coin-change up" id="usdtChange">+0.02%</div>
       </div>
 
       <div class="coin">
-        <div class="coin-top"><strong>BNB</strong><span>BNB</span></div>
-        <div class="coin-price">$716.35</div>
-        <div class="coin-change">+1.27%</div>
+        <div class="coin-top">
+          <div class="coin-icon bnb-icon">◆</div>
+          <strong>BNB</strong>
+          <span class="coin-name">BNB</span>
+        </div>
+        <div class="coin-price" id="bnbPrice">$716.35</div>
+        <div class="coin-change up" id="bnbChange">+1.27%</div>
       </div>
 
     </div>
@@ -908,7 +558,6 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <div style="overflow-x:auto">
-
       <table class="transactions">
         <thead>
           <tr>
@@ -928,13 +577,11 @@ a{text-decoration:none;color:inherit}
           </tr>
         </tbody>
       </table>
-
     </div>
   </section>
 
 </div>
 </main>
-
 
 <!-- DEPOSIT -->
 <div class="modal" id="depositModal">
@@ -942,18 +589,13 @@ a{text-decoration:none;color:inherit}
     <button class="close" onclick="closeModal('depositModal')">×</button>
     <h2>Deposit Funds</h2>
     <p>Add funds to your CoinForest Main Wallet.</p>
-
     <div class="field">
       <label>Amount</label>
       <input type="number" id="depositAmount" min="1" placeholder="Enter amount">
     </div>
-
-    <button class="modal-submit" onclick="submitDemoAction('depositAmount','Deposit')">
-      Continue
-    </button>
+    <button class="modal-submit" onclick="submitDemoAction('depositAmount','Deposit')">Continue</button>
   </div>
 </div>
-
 
 <!-- WITHDRAW -->
 <div class="modal" id="withdrawModal">
@@ -961,18 +603,13 @@ a{text-decoration:none;color:inherit}
     <button class="close" onclick="closeModal('withdrawModal')">×</button>
     <h2>Withdraw Funds</h2>
     <p>Request a withdrawal from your Main Wallet.</p>
-
     <div class="field">
       <label>Amount</label>
       <input type="number" id="withdrawAmount" min="1" placeholder="Enter amount">
     </div>
-
-    <button class="modal-submit" onclick="submitDemoAction('withdrawAmount','Withdrawal')">
-      Request Withdrawal
-    </button>
+    <button class="modal-submit" onclick="submitDemoAction('withdrawAmount','Withdrawal')">Request Withdrawal</button>
   </div>
 </div>
-
 
 <!-- SEND -->
 <div class="modal" id="sendModal">
@@ -980,23 +617,17 @@ a{text-decoration:none;color:inherit}
     <button class="close" onclick="closeModal('sendModal')">×</button>
     <h2>Send Money</h2>
     <p>Transfer funds to another CoinForest account.</p>
-
     <div class="field">
       <label>Recipient Username</label>
       <input type="text" id="recipient" placeholder="@username">
     </div>
-
     <div class="field">
       <label>Amount</label>
       <input type="number" id="sendAmount" min="1" placeholder="Enter amount">
     </div>
-
-    <button class="modal-submit" onclick="submitDemoAction('sendAmount','Transfer')">
-      Send Money
-    </button>
+    <button class="modal-submit" onclick="submitDemoAction('sendAmount','Transfer')">Send Money</button>
   </div>
 </div>
-
 
 <!-- INVESTMENT -->
 <div class="modal" id="investmentModal">
@@ -1004,7 +635,6 @@ a{text-decoration:none;color:inherit}
     <button class="close" onclick="closeModal('investmentModal')">×</button>
     <h2>Start Investment</h2>
     <p>Select an investment plan.</p>
-
     <div class="field">
       <label>Plan</label>
       <select id="investmentPlan">
@@ -1014,18 +644,13 @@ a{text-decoration:none;color:inherit}
         <option>Gold</option>
       </select>
     </div>
-
     <div class="field">
       <label>Amount</label>
       <input type="number" id="investmentAmount" min="1" placeholder="Enter amount">
     </div>
-
-    <button class="modal-submit" onclick="submitDemoAction('investmentAmount','Investment')">
-      Start Investment
-    </button>
+    <button class="modal-submit" onclick="submitDemoAction('investmentAmount','Investment')">Start Investment</button>
   </div>
 </div>
-
 
 <script>
 const token = localStorage.getItem("coinforest_token");
@@ -1046,14 +671,11 @@ function closeModal(id){
   document.getElementById(id).classList.remove("active");
 }
 
+/* USER */
 async function loadUser(){
-
   try{
-
     const response=await fetch("/api/auth/me",{
-      headers:{
-        Authorization:"Bearer "+token
-      }
+      headers:{Authorization:"Bearer "+token}
     });
 
     if(!response.ok){
@@ -1072,34 +694,21 @@ async function loadUser(){
 
     const user=data.user;
 
-    const name =
-      user.first_name ||
-      user.full_name ||
-      user.username ||
-      "CoinForest Member";
+    const name=user.first_name||user.full_name||user.username||"CoinForest Member";
 
-    document.getElementById("welcomeName").textContent =
-      "Hello, "+name;
+    document.getElementById("welcomeName").textContent="Hello, "+name;
+    document.getElementById("profileName").textContent=name;
+    document.getElementById("profileEmail").textContent=user.email||"Account";
 
-    document.getElementById("profileName").textContent =
-      name;
-
-    document.getElementById("profileEmail").textContent =
-      user.email || "Account";
-
-    const initials =
-      ((user.first_name||"C")[0]+
-       (user.last_name||"F")[0]).toUpperCase();
-
+    const initials=((user.first_name||"C")[0]+(user.last_name||"F")[0]).toUpperCase();
     document.getElementById("avatar").textContent=initials;
 
   }catch(error){
-
     console.error(error);
-
   }
 }
 
+/* DEMO ACTIONS */
 function submitDemoAction(inputId,type){
 
   const input=document.getElementById(inputId);
@@ -1122,17 +731,14 @@ function submitDemoAction(inputId,type){
   });
 }
 
+/* LOGOUT */
 async function logoutUser(){
 
   try{
-
     await fetch("/api/auth/logout",{
       method:"POST",
-      headers:{
-        Authorization:"Bearer "+token
-      }
+      headers:{Authorization:"Bearer "+token}
     });
-
   }catch(error){
     console.error(error);
   }
@@ -1141,18 +747,114 @@ async function logoutUser(){
   window.location.href="/";
 }
 
+/* CLOSE MODALS */
 document.querySelectorAll(".modal").forEach(modal=>{
-
   modal.addEventListener("click",e=>{
     if(e.target===modal){
       modal.classList.remove("active");
     }
   });
-
 });
+
+/* =========================================================
+   LIVE MARKET SIMULATION
+   ========================================================= */
+
+const markets={
+  BTC:{
+    price:104820,
+    decimals:2,
+    priceId:"btcPrice",
+    changeId:"btcChange"
+  },
+  ETH:{
+    price:3842.12,
+    decimals:2,
+    priceId:"ethPrice",
+    changeId:"ethChange"
+  },
+  USDT:{
+    price:1.00,
+    decimals:2,
+    priceId:"usdtPrice",
+    changeId:"usdtChange"
+  },
+  BNB:{
+    price:716.35,
+    decimals:2,
+    priceId:"bnbPrice",
+    changeId:"bnbChange"
+  }
+};
+
+function formatMoney(value,decimals=2){
+  return "$"+Number(value).toLocaleString("en-US",{
+    minimumFractionDigits:decimals,
+    maximumFractionDigits:decimals
+  });
+}
+
+function updateMarketCoin(symbol){
+
+  const coin=markets[symbol];
+
+  /*
+   Small random movement to make the dashboard feel alive.
+   This is a visual market simulation and does not represent
+   real-time exchange prices.
+  */
+
+  let movement;
+
+  if(symbol==="USDT"){
+    movement=(Math.random()-.5)*0.0015;
+  }else if(symbol==="BTC"){
+    movement=(Math.random()-.5)*0.0022;
+  }else if(symbol==="ETH"){
+    movement=(Math.random()-.5)*0.0028;
+  }else{
+    movement=(Math.random()-.5)*0.003;
+  }
+
+  coin.price=coin.price*(1+movement);
+
+  let change;
+
+  if(symbol==="USDT"){
+    change=((coin.price-1)*100);
+  }else{
+    change=(movement*100);
+  }
+
+  const priceElement=document.getElementById(coin.priceId);
+  const changeElement=document.getElementById(coin.changeId);
+
+  priceElement.textContent=formatMoney(coin.price,coin.decimals);
+
+  const positive=change>=0;
+
+  changeElement.textContent=
+    (positive?"+":"")+change.toFixed(2)+"%";
+
+  changeElement.classList.toggle("up",positive);
+  changeElement.classList.toggle("down",!positive);
+}
+
+function updateMarkets(){
+
+  Object.keys(markets).forEach(symbol=>{
+    updateMarketCoin(symbol);
+  });
+
+}
+
+/*
+Update every 2.5 seconds so prices continuously move.
+*/
+setInterval(updateMarkets,2500);
 
 loadUser();
 </script>
 
 </body>
-          </html>
+  </html>
