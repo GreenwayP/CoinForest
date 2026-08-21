@@ -13,24 +13,35 @@
 }
 
 :root{
-  --navy:#081525;
-  --navy2:#10263f;
+  --navy:#071525;
+  --navy2:#102b45;
+  --navy3:#173c5c;
   --green:#2ecc71;
   --green-dark:#159957;
+  --green-soft:#eaf9f0;
   --bg:#f4f7fb;
-  --card:#ffffff;
+  --card:#fff;
   --text:#142033;
   --muted:#718096;
-  --border:#e6ebf2;
-  --gold:#e7a11b;
+  --border:#e5ebf2;
+  --gold:#e8aa25;
+  --gold-soft:#fff6df;
   --danger:#e55353;
   --blue:#2878d8;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 
 body{
   font-family:Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
+}
+
+body.sidebar-open{
+  overflow:hidden;
 }
 
 a{
@@ -66,7 +77,8 @@ button{
   left:0;
   top:0;
   bottom:0;
-  z-index:200;
+  z-index:1000;
+  transition:.25s ease;
 }
 
 .brand{
@@ -77,6 +89,20 @@ button{
 
 .brand span{
   color:var(--green);
+}
+
+.sidebar-close{
+  display:none;
+  position:absolute;
+  right:15px;
+  top:17px;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:50%;
+  background:#17314d;
+  color:white;
+  font-size:22px;
 }
 
 .nav-title{
@@ -96,6 +122,7 @@ button{
   border-radius:10px;
   color:#b9c7d8;
   font-size:14px;
+  transition:.2s;
 }
 
 .nav a:hover,
@@ -124,6 +151,25 @@ button{
   border-radius:9px;
 }
 
+.logout button:hover{
+  background:#17314d;
+  color:white;
+}
+
+/* mobile overlay */
+
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(3,10,18,.62);
+  z-index:900;
+}
+
+.sidebar-overlay.show{
+  display:block;
+}
+
 /* =========================
    MAIN
 ========================= */
@@ -142,10 +188,27 @@ button{
   align-items:center;
   justify-content:space-between;
   padding:0 34px;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap:13px;
 }
 
 .topbar h1{
   font-size:22px;
+}
+
+.mobile-menu{
+  display:none;
+  border:0;
+  background:transparent;
+  font-size:25px;
+  color:var(--text);
 }
 
 .user-area{
@@ -154,9 +217,13 @@ button{
   gap:12px;
 }
 
+.user-name{
+  font-size:13px;
+}
+
 .avatar{
-  width:38px;
-  height:38px;
+  width:39px;
+  height:39px;
   border-radius:50%;
   background:#dff8e9;
   color:var(--green-dark);
@@ -167,8 +234,8 @@ button{
 }
 
 .content{
-  padding:32px;
-  max-width:1400px;
+  padding:30px 32px 45px;
+  max-width:1450px;
   margin:auto;
 }
 
@@ -179,92 +246,99 @@ button{
 .hero{
   position:relative;
   overflow:hidden;
-  border-radius:20px;
+  border-radius:21px;
   padding:32px;
   background:
+    radial-gradient(
+      circle at 85% 25%,
+      rgba(46,204,113,.22),
+      transparent 28%
+    ),
     linear-gradient(
       135deg,
-      #071525,
-      #123b5c 62%,
-      #126b50
+      #061321,
+      #0d2e49 60%,
+      #105b49
     );
   color:white;
-  margin-bottom:25px;
-  box-shadow:
-    0 14px 38px rgba(8,21,37,.16);
+  margin-bottom:24px;
+  box-shadow:0 15px 40px rgba(8,21,37,.16);
 }
 
 .hero::before{
   content:"";
   position:absolute;
-  width:300px;
-  height:300px;
-  border:1px solid rgba(46,204,113,.22);
+  width:350px;
+  height:350px;
+  border:1px solid rgba(46,204,113,.18);
   border-radius:50%;
-  right:-80px;
-  top:-160px;
+  right:-100px;
+  top:-190px;
 }
 
 .hero::after{
   content:"";
   position:absolute;
-  width:360px;
-  height:360px;
-  border:1px solid rgba(46,204,113,.12);
+  width:430px;
+  height:430px;
+  border:1px solid rgba(255,255,255,.06);
   border-radius:50%;
-  right:80px;
-  bottom:-300px;
+  right:40px;
+  bottom:-350px;
 }
 
 .hero-content{
   position:relative;
   z-index:2;
-  max-width:750px;
+  max-width:850px;
 }
 
 .eyebrow{
   color:#8ff0b4;
   font-size:11px;
   text-transform:uppercase;
-  letter-spacing:1.5px;
+  letter-spacing:1.6px;
   font-weight:800;
   margin-bottom:10px;
 }
 
 .hero h2{
   font-size:34px;
-  margin-bottom:10px;
+  line-height:1.15;
+  margin-bottom:11px;
 }
 
 .hero p{
   color:#c4d4e3;
-  line-height:1.6;
+  line-height:1.65;
   font-size:14px;
+  max-width:750px;
 }
 
-.stats{
+.hero-stats{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin-top:24px;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:25px;
 }
 
-.stat{
+.hero-stat{
   background:rgba(255,255,255,.08);
   border:1px solid rgba(255,255,255,.1);
   border-radius:12px;
-  padding:15px;
+  padding:14px;
+  backdrop-filter:blur(5px);
 }
 
-.stat small{
+.hero-stat small{
   display:block;
   color:#9fb4c8;
-  font-size:11px;
-  margin-bottom:6px;
+  font-size:10px;
+  margin-bottom:7px;
 }
 
-.stat strong{
-  font-size:18px;
+.hero-stat strong{
+  font-size:17px;
 }
 
 /* =========================
@@ -272,7 +346,7 @@ button{
 ========================= */
 
 .section-title{
-  margin:30px 0 15px;
+  margin:28px 0 15px;
 }
 
 .section-title h2{
@@ -286,7 +360,7 @@ button{
 }
 
 /* =========================
-   INVESTMENT PLANS
+   PLANS
 ========================= */
 
 .plans{
@@ -298,97 +372,115 @@ button{
 .plan{
   background:white;
   border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:17px;
   padding:22px;
-  box-shadow:
-    0 7px 22px rgba(15,30,50,.05);
   position:relative;
   overflow:hidden;
+  box-shadow:0 7px 23px rgba(15,30,50,.05);
+  transition:.2s;
+}
+
+.plan:hover{
+  transform:translateY(-3px);
+  box-shadow:0 13px 30px rgba(15,30,50,.09);
 }
 
 .plan.featured{
-  border-color:#b7e9c9;
-  box-shadow:
-    0 10px 28px rgba(46,204,113,.1);
+  border-color:#a9e4bf;
 }
 
 .badge{
   position:absolute;
   right:14px;
   top:14px;
-  background:#e9f9ef;
+  background:var(--green-soft);
   color:var(--green-dark);
-  padding:5px 8px;
+  padding:5px 9px;
   border-radius:20px;
   font-size:9px;
   font-weight:800;
 }
 
-.coin{
-  width:46px;
-  height:46px;
-  border-radius:13px;
-  background:#eaf9f0;
-  color:var(--green-dark);
+.plan-icon{
+  width:48px;
+  height:48px;
+  border-radius:14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:20px;
+  background:var(--green-soft);
+  color:var(--green-dark);
+  font-size:21px;
   font-weight:800;
-  margin-bottom:16px;
+  margin-bottom:17px;
+}
+
+.plan:nth-child(2) .plan-icon{
+  background:#eef5ff;
+  color:var(--blue);
+}
+
+.plan:nth-child(3) .plan-icon{
+  background:var(--gold-soft);
+  color:#ae7905;
+}
+
+.plan:nth-child(4) .plan-icon{
+  background:#f0edff;
+  color:#6752c7;
 }
 
 .plan h3{
-  font-size:17px;
-  margin-bottom:6px;
+  font-size:18px;
+  margin-bottom:7px;
 }
 
-.plan-desc{
-  font-size:11px;
+.plan-description{
   color:var(--muted);
+  font-size:11px;
   line-height:1.55;
-  min-height:42px;
+  min-height:51px;
 }
 
-.range{
-  margin:18px 0;
-  padding:12px;
+.plan-range{
   background:#f6f9fc;
   border-radius:10px;
+  padding:12px;
+  margin:17px 0;
 }
 
-.range span{
+.plan-range small{
   display:block;
   color:var(--muted);
-  font-size:10px;
+  font-size:9px;
   margin-bottom:4px;
 }
 
-.range strong{
-  font-size:15px;
+.plan-range strong{
+  font-size:14px;
 }
 
-.meta{
+.plan-meta{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:9px;
   margin-bottom:18px;
 }
 
-.meta div{
+.plan-meta-item{
   border-top:1px solid #edf0f4;
   padding-top:10px;
 }
 
-.meta small{
+.plan-meta-item small{
   display:block;
   color:var(--muted);
   font-size:9px;
   margin-bottom:4px;
 }
 
-.meta strong{
-  font-size:12px;
+.plan-meta-item strong{
+  font-size:11px;
 }
 
 .plan button{
@@ -407,14 +499,77 @@ button{
 }
 
 /* =========================
-   INFORMATION
+   BALANCE CARDS
+========================= */
+
+.balance-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:25px;
+}
+
+.balance-card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:21px;
+  box-shadow:0 7px 22px rgba(15,30,50,.04);
+}
+
+.balance-card.highlight{
+  background:linear-gradient(135deg,#081a2c,#123e5c);
+  color:white;
+  border:0;
+}
+
+.balance-card.profit{
+  background:linear-gradient(135deg,#fffdf6,#fff7df);
+  border-color:#f0dfae;
+}
+
+.balance-label{
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:8px;
+}
+
+.highlight .balance-label{
+  color:#aebfd2;
+}
+
+.profit .balance-label{
+  color:#9a7a30;
+}
+
+.balance-value{
+  font-size:27px;
+  font-weight:800;
+}
+
+.balance-sub{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:7px;
+}
+
+.highlight .balance-sub{
+  color:#b9cad9;
+}
+
+.profit .balance-sub{
+  color:#9a8550;
+}
+
+/* =========================
+   DETAILS
 ========================= */
 
 .details{
   display:grid;
-  grid-template-columns:1.3fr .7fr;
+  grid-template-columns:1.25fr .75fr;
   gap:18px;
-  margin-top:26px;
+  margin-top:25px;
 }
 
 .panel{
@@ -439,7 +594,7 @@ button{
   margin-top:5px;
 }
 
-.detail-list{
+.detail-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
 }
@@ -465,14 +620,29 @@ button{
 }
 
 .notice{
-  margin:20px;
+  margin:19px;
   background:#f4f8fc;
   border:1px solid #e1e8ef;
   border-radius:10px;
   padding:13px;
-  font-size:11px;
   color:#66768a;
+  font-size:11px;
   line-height:1.6;
+}
+
+.notice b{
+  color:var(--text);
+}
+
+.activity{
+  min-height:190px;
+}
+
+.activity-empty{
+  padding:45px 20px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
 }
 
 /* =========================
@@ -483,11 +653,11 @@ button{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(5,15,28,.68);
-  z-index:500;
+  background:rgba(5,15,28,.7);
+  z-index:2000;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:18px;
 }
 
 .modal.show{
@@ -495,37 +665,38 @@ button{
 }
 
 .modal-box{
-  background:white;
   width:100%;
-  max-width:540px;
-  max-height:92vh;
-  overflow:auto;
-  border-radius:17px;
+  max-width:550px;
+  max-height:94vh;
+  overflow-y:auto;
+  background:white;
+  border-radius:18px;
   padding:27px;
-  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  box-shadow:0 20px 70px rgba(0,0,0,.28);
 }
 
 .modal-top{
   display:flex;
+  align-items:flex-start;
   justify-content:space-between;
   gap:15px;
 }
 
-.modal h2{
+.modal-top h2{
   font-size:21px;
 }
 
 .close{
+  width:35px;
+  height:35px;
   border:0;
-  background:#f1f4f7;
-  width:34px;
-  height:34px;
   border-radius:50%;
-  font-size:22px;
+  background:#f1f4f7;
   color:#687585;
+  font-size:22px;
 }
 
-.desc{
+.modal-desc{
   color:var(--muted);
   font-size:12px;
   line-height:1.55;
@@ -543,19 +714,32 @@ button{
   margin-bottom:7px;
 }
 
-.form-group input{
+.form-group input,
+.form-group select{
   width:100%;
   padding:12px;
   border:1px solid #d9e0e8;
   border-radius:8px;
   outline:none;
+  background:white;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+  border-color:var(--green);
+}
+
+.funding-title{
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:8px;
 }
 
 .funding{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
-  margin-bottom:18px;
+  margin-bottom:17px;
 }
 
 .fund{
@@ -563,6 +747,7 @@ button{
   background:#f8fafc;
   border-radius:11px;
   padding:14px;
+  cursor:pointer;
 }
 
 .fund input{
@@ -579,6 +764,7 @@ button{
   color:var(--muted);
   font-size:10px;
   margin-top:5px;
+  line-height:1.4;
 }
 
 .fund.selected{
@@ -592,6 +778,7 @@ button{
   border-radius:9px;
   padding:11px;
   font-size:11px;
+  line-height:1.5;
   margin-bottom:15px;
 }
 
@@ -606,7 +793,7 @@ button{
   margin-bottom:15px;
 }
 
-.bank{
+.bank-details{
   display:none;
 }
 
@@ -618,39 +805,32 @@ button{
 
 .actions button{
   flex:1;
-  padding:12px;
   border:0;
   border-radius:8px;
+  padding:12px;
   font-weight:700;
 }
 
-.cancel{
+.cancel-btn{
   background:#edf0f4;
   color:#4b5563;
 }
 
-.primary{
+.primary-btn{
   background:var(--green);
   color:#07150d;
 }
 
-.primary:hover{
+.primary-btn:hover{
   background:var(--green-dark);
   color:white;
-}
-
-.mobile-menu{
-  display:none;
-  border:0;
-  background:transparent;
-  font-size:25px;
 }
 
 /* =========================
    MOBILE
 ========================= */
 
-@media(max-width:1100px){
+@media(max-width:1150px){
 
   .plans{
     grid-template-columns:repeat(2,1fr);
@@ -666,11 +846,14 @@ button{
 
   .sidebar{
     transform:translateX(-100%);
-    transition:.25s;
   }
 
   .sidebar.open{
     transform:translateX(0);
+  }
+
+  .sidebar-close{
+    display:block;
   }
 
   .main{
@@ -687,24 +870,36 @@ button{
   }
 
   .content{
-    padding:20px 15px;
+    padding:20px 15px 35px;
   }
 
   .hero h2{
     font-size:28px;
   }
 
+  .hero-stats{
+    grid-template-columns:1fr 1fr;
+  }
+
 }
 
 @media(max-width:600px){
 
-  .stats,
   .plans,
+  .balance-grid,
   .funding{
     grid-template-columns:1fr;
   }
 
-  .detail-list{
+  .hero{
+    padding:25px 20px;
+  }
+
+  .hero-stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .detail-grid{
     grid-template-columns:1fr;
   }
 
@@ -720,6 +915,18 @@ button{
     display:none;
   }
 
+  .modal-box{
+    padding:22px;
+  }
+
+}
+
+@media(max-width:400px){
+
+  .hero-stats{
+    grid-template-columns:1fr;
+  }
+
 }
 </style>
 </head>
@@ -728,98 +935,126 @@ button{
 
 <div class="layout">
 
+<!-- =========================
+     SIDEBAR
+========================= -->
+
 <aside class="sidebar" id="sidebar">
 
-<div class="brand">
-Coin<span>Forest</span>
-</div>
+  <button
+    class="sidebar-close"
+    type="button"
+    onclick="closeSidebar()"
+    aria-label="Close menu">
+    ×
+  </button>
 
-<div class="nav-title">
-Main menu
-</div>
+  <div class="brand">
+    Coin<span>Forest</span>
+  </div>
 
-<nav class="nav">
+  <div class="nav-title">
+    Main menu
+  </div>
 
-<a href="dashboard.html">
-▦ <span>Dashboard</span>
-</a>
+  <nav class="nav">
 
-<a href="wallet.html">
-◉ <span>Wallets</span>
-</a>
+    <a href="dashboard.html">
+      ▦ <span>Dashboard</span>
+    </a>
 
-<a href="investment.html" class="active">
-◈ <span>Investments</span>
-</a>
+    <a href="wallet.html">
+      ◉ <span>Wallets</span>
+    </a>
 
-<a href="transactions.html">
-↔ <span>Transactions</span>
-</a>
+    <a href="investment.html" class="active">
+      ◈ <span>Investments</span>
+    </a>
 
-<a href="markets.html">
-↗ <span>Markets</span>
-</a>
+    <a href="transactions.html">
+      ↔ <span>Transactions</span>
+    </a>
 
-</nav>
+    <a href="markets.html">
+      ↗ <span>Markets</span>
+    </a>
 
-<div class="nav-title">
-Account
-</div>
+  </nav>
 
-<nav class="nav">
+  <div class="nav-title">
+    Account
+  </div>
 
-<a href="profile.html">
-● <span>Profile</span>
-</a>
+  <nav class="nav">
 
-<a href="security.html">
-⌾ <span>Security</span>
-</a>
+    <a href="profile.html">
+      ● <span>Profile</span>
+    </a>
 
-</nav>
+    <a href="security.html">
+      ⌾ <span>Security</span>
+    </a>
 
-<div class="logout">
+  </nav>
 
-<button onclick="logout()">
-↪ &nbsp; Sign out
-</button>
+  <div class="logout">
 
-</div>
+    <button
+      type="button"
+      onclick="logout()">
+      ↪ &nbsp; Sign out
+    </button>
+
+  </div>
 
 </aside>
 
+<div
+  class="sidebar-overlay"
+  id="sidebarOverlay"
+  onclick="closeSidebar()">
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
 
 <main class="main">
 
 <header class="topbar">
 
-<div style="display:flex;align-items:center;gap:12px">
+  <div class="topbar-left">
 
-<button
-class="mobile-menu"
-onclick="toggleSidebar()">
-☰
-</button>
+    <button
+      class="mobile-menu"
+      type="button"
+      onclick="openSidebar()"
+      aria-label="Open menu">
+      ☰
+    </button>
 
-<h1>
-Investments
-</h1>
+    <h1>
+      Investments
+    </h1>
 
-</div>
+  </div>
 
-<div class="user-area">
+  <div class="user-area">
 
-<div class="user-name">
-<strong id="userName">
-Account
-</strong>
-</div>
+    <div class="user-name">
+      <strong id="userName">
+        Account
+      </strong>
+    </div>
 
-<div class="avatar" id="avatar">
-CF
-</div>
+    <div
+      class="avatar"
+      id="avatar">
+      CF
+    </div>
 
-</div>
+  </div>
 
 </header>
 
@@ -827,216 +1062,317 @@ CF
 <div class="content">
 
 
+<!-- =========================
+     HERO
+========================= -->
+
 <section class="hero">
 
-<div class="hero-content">
+  <div class="hero-content">
 
-<div class="eyebrow">
-CoinForest Investment Center
-</div>
+    <div class="eyebrow">
+      CoinForest Investment Center
+    </div>
 
-<h2>
-Build your digital portfolio with purpose.
-</h2>
+    <h2>
+      Build and manage your investment portfolio.
+    </h2>
 
-<p>
-Explore structured investment schemes, review the terms
-of each plan, and choose an eligible funding method.
-Investment requests are subject to account verification
-and the applicable approval process.
-</p>
-
-
-<div class="stats">
-
-<div class="stat">
-
-<small>
-Total Invested
-</small>
-
-<strong id="totalInvested">
-$0.00
-</strong>
-
-</div>
+    <p>
+      Explore structured investment schemes, review their
+      terms and choose an eligible funding method. Investment
+      requests are subject to account verification and the
+      applicable approval process.
+    </p>
 
 
-<div class="stat">
+    <div class="hero-stats">
 
-<small>
-Active Investments
-</small>
+      <div class="hero-stat">
 
-<strong id="activeCount">
-0
-</strong>
+        <small>
+          Total Invested
+        </small>
 
-</div>
+        <strong id="totalInvested">
+          $0.00
+        </strong>
+
+      </div>
 
 
-<div class="stat">
+      <div class="hero-stat">
 
-<small>
-Main Wallet Available
-</small>
+        <small>
+          Active Investments
+        </small>
 
-<strong id="mainAvailable">
-$0.00
-</strong>
+        <strong id="activeCount">
+          0
+        </strong>
 
-</div>
+      </div>
 
-</div>
 
-</div>
+      <div class="hero-stat">
+
+        <small>
+          Main Wallet
+        </small>
+
+        <strong id="heroMainBalance">
+          $0.00
+        </strong>
+
+      </div>
+
+
+      <div class="hero-stat">
+
+        <small>
+          Profit Wallet
+        </small>
+
+        <strong id="heroProfitBalance">
+          $0.00
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
 
+<!-- =========================
+     BALANCE OVERVIEW
+========================= -->
+
 <div class="section-title">
 
-<h2>
-Investment Schemes
-</h2>
+  <h2>
+    Investment Overview
+  </h2>
 
-<p>
-Review the structure and requirements before starting
-an investment.
-</p>
+  <p>
+    Your current investment and eligible wallet balances.
+  </p>
+
+</div>
+
+
+<section class="balance-grid">
+
+  <div class="balance-card highlight">
+
+    <div class="balance-label">
+      Investment Balance
+    </div>
+
+    <div
+      class="balance-value"
+      id="investmentBalance">
+      $0.00
+    </div>
+
+    <div class="balance-sub">
+      Total value currently recorded for investments
+    </div>
+
+  </div>
+
+
+  <div class="balance-card">
+
+    <div class="balance-label">
+      Main Wallet
+    </div>
+
+    <div
+      class="balance-value"
+      id="mainBalance">
+      $0.00
+    </div>
+
+    <div class="balance-sub">
+      Available direct investment funding
+    </div>
+
+  </div>
+
+
+  <div class="balance-card profit">
+
+    <div class="balance-label">
+      Profit Wallet
+    </div>
+
+    <div
+      class="balance-value"
+      id="profitBalance">
+      $0.00
+    </div>
+
+    <div class="balance-sub">
+      Investment profits and eligible withdrawals
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     SCHEMES
+========================= -->
+
+<div class="section-title">
+
+  <h2>
+    Investment Schemes
+  </h2>
+
+  <p>
+    Review each scheme carefully before submitting an
+    investment request.
+  </p>
 
 </div>
 
 
 <section
-class="plans"
-id="plans">
+  class="plans"
+  id="plans">
 </section>
 
 
+<!-- =========================
+     DETAILS
+========================= -->
+
 <section class="details">
 
+  <div class="panel">
 
-<div class="panel">
+    <div class="panel-head">
 
-<div class="panel-head">
+      <h2>
+        How investment funding works
+      </h2>
 
-<h2>
-How investment funding works
-</h2>
+      <p>
+        Funding sources, account protections and investment rules
+      </p>
 
-<p>
-Funding options and account protections
-</p>
-
-</div>
-
-
-<div class="detail-list">
+    </div>
 
 
-<div class="detail">
+    <div class="detail-grid">
 
-<strong>
-Main Wallet
-</strong>
+      <div class="detail">
 
-<p>
-Eligible for investment funding. The requested amount
-must not exceed your available Main Wallet balance.
-</p>
+        <strong>
+          Main Wallet
+        </strong>
 
-</div>
+        <p>
+          The Main Wallet can directly fund eligible
+          investments. The requested amount cannot exceed
+          the available Main Wallet balance.
+        </p>
 
-
-<div class="detail">
-
-<strong>
-Bank Transfer
-</strong>
-
-<p>
-Available as an alternative funding method. Requests
-remain pending until the applicable payment and admin
-review process is completed.
-</p>
-
-</div>
+      </div>
 
 
-<div class="detail">
+      <div class="detail">
 
-<strong>
-Profit Wallet
-</strong>
+        <strong>
+          Bank Transfer
+        </strong>
 
-<p>
-Not an investment funding source. Profit Wallet funds
-cannot be used to open or fund an investment.
-</p>
+        <p>
+          Bank Transfer can be selected when submitting an
+          investment request. Payment details and reference
+          information are required for review.
+        </p>
 
-</div>
-
-
-<div class="detail">
-
-<strong>
-KYC Verification
-</strong>
-
-<p>
-An approved KYC profile is required before an investment
-request can be submitted.
-</p>
-
-</div>
-
-</div>
+      </div>
 
 
-<div class="notice">
+      <div class="detail">
 
-<b>
-Important:
-</b>
+        <strong>
+          Profit Wallet
+        </strong>
 
-Returns are not represented as guaranteed. Each scheme
-should be evaluated according to its stated terms,
-duration, applicable fees, and risk.
+        <p>
+          Profit Wallet funds cannot be used as an investment
+          funding source. They remain separate from the
+          investment payment balance.
+        </p>
 
-No wallet balance is changed by this page until a
-connected backend transaction workflow processes
-the request.
-
-</div>
-
-</div>
+      </div>
 
 
-<div class="panel">
+      <div class="detail">
 
-<div class="panel-head">
+        <strong>
+          KYC Verification
+        </strong>
 
-<h2>
-Investment Activity
-</h2>
+        <p>
+          An approved KYC profile is required before an
+          investment request can be submitted.
+        </p>
 
-<p>
-Your investment requests will appear here when connected
-to the backend.
-</p>
+      </div>
 
-</div>
+    </div>
 
-<div
-class="activity-empty"
-id="activity">
 
-No investment activity available yet.
+    <div class="notice">
 
-</div>
+      <b>
+        Important:
+      </b>
 
-</div>
+      Investment values and returns are determined by the
+      connected investment workflow and applicable scheme
+      terms. This page does not independently create funds,
+      profits or investment balances.
+
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <div class="panel-head">
+
+      <h2>
+        Investment Activity
+      </h2>
+
+      <p>
+        Your investment records will appear here.
+      </p>
+
+    </div>
+
+    <div
+      class="activity"
+      id="activity">
+
+      <div class="activity-empty">
+        No investment activity available yet.
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
@@ -1047,1048 +1383,1247 @@ No investment activity available yet.
 </div>
 
 
-<!-- INVESTMENT MODAL -->
+<!-- =========================
+     INVESTMENT MODAL
+========================= -->
 
 <div
-class="modal"
-id="modal">
+  class="modal"
+  id="investmentModal">
 
-<div class="modal-box">
+  <div class="modal-box">
 
+    <div class="modal-top">
 
-<div class="modal-top">
+      <div>
 
-<div>
+        <h2 id="modalTitle">
+          Start Investment
+        </h2>
 
-<h2 id="modalTitle">
-Start Investment
-</h2>
+        <p
+          class="modal-desc"
+          id="modalDescription">
 
-<p
-class="desc"
-id="modalDesc">
+          Review the selected scheme and choose
+          how you want to fund it.
 
-Review the scheme and choose how
-you want to fund it.
+        </p>
 
-</p>
+      </div>
 
-</div>
+      <button
+        class="close"
+        type="button"
+        onclick="closeInvestmentModal()">
+        ×
+      </button>
 
-<button
-class="close"
-onclick="closeModal()">
+    </div>
 
-×
 
-</button>
+    <div class="form-group">
 
-</div>
+      <label>
+        Investment Scheme
+      </label>
 
+      <input
+        id="schemeName"
+        type="text"
+        readonly>
 
-<div class="form-group">
+    </div>
 
-<label>
-Investment Scheme
-</label>
 
-<input
-id="schemeName"
-readonly>
+    <div class="form-group">
 
-</div>
+      <label>
+        Investment Amount (USD)
+      </label>
 
+      <input
+        id="investmentAmount"
+        type="number"
+        min="0.01"
+        step="0.01"
+        placeholder="0.00">
 
-<div class="form-group">
+    </div>
 
-<label>
-Investment Amount (USD)
-</label>
 
-<input
-id="amount"
-type="number"
-min="0.01"
-step="0.01"
-placeholder="0.00">
+    <div class="funding-title">
+      Funding Method
+    </div>
 
-</div>
 
+    <div class="funding">
 
-<div class="form-group">
+      <label
+        class="fund selected"
+        id="fundMain">
 
-<label>
-Funding Method
-</label>
+        <input
+          type="radio"
+          name="funding"
+          value="main"
+          checked>
 
-</div>
+        <strong>
+          💳 Main Wallet
+        </strong>
 
+        <span id="fundMainText">
+          Available balance: $0.00
+        </span>
 
-<div class="funding">
+      </label>
 
 
-<label
-class="fund selected"
-id="fundMain">
+      <label
+        class="fund"
+        id="fundBank">
 
-<input
-type="radio"
-name="funding"
-value="main"
-checked>
+        <input
+          type="radio"
+          name="funding"
+          value="bank">
 
-<strong>
-💳 Main Wallet
-</strong>
+        <strong>
+          🏦 Bank Transfer
+        </strong>
 
-<span id="fundMainText">
-Available balance: $0.00
-</span>
+        <span>
+          Submit transfer details for review
+        </span>
 
-</label>
+      </label>
 
+    </div>
 
-<label
-class="fund"
-id="fundBank">
 
-<input
-type="radio"
-name="funding"
-value="bank">
+    <div
+      class="balance-note"
+      id="balanceNote">
 
-<strong>
-🏦 Bank Transfer
-</strong>
+      Main Wallet is the only wallet balance eligible
+      for direct investment funding.
 
-<span>
-Submit payment details for review
-</span>
+    </div>
 
-</label>
 
-</div>
+    <!-- BANK DETAILS -->
 
+    <div
+      class="bank-details"
+      id="bankDetails">
 
-<div
-class="balance-note"
-id="balanceNote">
+      <div class="form-group">
 
-Main Wallet is the only wallet balance eligible
-for direct investment funding.
+        <label>
+          Account Name
+        </label>
 
-</div>
+        <input
+          id="bankAccountName"
+          type="text"
+          placeholder="Account holder name">
 
+      </div>
 
-<div
-class="bank"
-id="bank">
 
+      <div class="form-group">
 
-<div class="form-group">
+        <label>
+          Bank Name
+        </label>
 
-<label>
-Account Name
-</label>
+        <input
+          id="bankName"
+          type="text"
+          placeholder="Bank name">
 
-<input
-id="bankAccountName"
-placeholder="Account holder name">
+      </div>
 
-</div>
 
+      <div class="form-group">
 
-<div class="form-group">
+        <label>
+          Account Number
+        </label>
 
-<label>
-Bank Name
-</label>
+        <input
+          id="bankAccountNumber"
+          type="text"
+          inputmode="numeric"
+          placeholder="Account number">
 
-<input
-id="bankName"
-placeholder="Bank name">
+      </div>
 
-</div>
 
+      <div class="form-group">
 
-<div class="form-group">
+        <label>
+          Transfer Reference
+        </label>
 
-<label>
-Account Number
-</label>
+        <input
+          id="transferReference"
+          type="text"
+          placeholder="Payment / transfer reference">
 
-<input
-id="bankAccountNumber"
-inputmode="numeric"
-placeholder="Account number">
+      </div>
 
-</div>
+    </div>
 
 
-<div class="form-group">
+    <div class="warning">
 
-<label>
-Transfer Reference
-</label>
+      Investment requests require approved KYC and are
+      subject to the selected scheme terms and applicable
+      approval process.
 
-<input
-id="transferReference"
-placeholder="Payment / transfer reference">
+      Your wallet balance will not be changed by this page
+      before the backend transaction workflow processes the
+      request.
 
-</div>
+    </div>
 
-</div>
 
+    <div class="actions">
 
-<div class="warning">
+      <button
+        class="cancel-btn"
+        type="button"
+        onclick="closeInvestmentModal()">
 
-Investment requests require KYC approval and are subject
-to the selected scheme terms and admin review.
+        Cancel
 
-This page does not create or alter balances by itself.
+      </button>
 
-</div>
+      <button
+        class="primary-btn"
+        type="button"
+        id="submitInvestment">
 
+        Submit Investment Request
 
-<div class="actions">
+      </button>
 
-<button
-class="cancel"
-onclick="closeModal()">
+    </div>
 
-Cancel
-
-</button>
-
-<button
-class="primary"
-id="submitBtn">
-
-Submit Investment Request
-
-</button>
-
-</div>
-
-
-</div>
+  </div>
 
 </div>
 
 
 <script>
 
-let currentUser = null;
+/* ======================================================
+   STATE
+====================================================== */
 
-let balances = {
-main:0,
-profit:0
-};
+let currentUser = null;
 
 let selectedPlan = null;
 
+let balances = {
+  main:0,
+  profit:0
+};
 
-/* =========================
+
+/* ======================================================
    INVESTMENT SCHEMES
-========================= */
+====================================================== */
 
 const schemes = [
 
-{
-name:"Starter",
-min:100,
-max:999,
-duration:"30 days",
-desc:"A structured entry-level plan for smaller allocations."
-},
+  {
+    name:"Starter",
+    min:100,
+    max:999,
+    duration:"30 Days",
+    description:
+      "An entry-level investment structure for smaller portfolio allocations.",
+    icon:"₿",
+    featured:false
+  },
 
-{
-name:"Growth",
-min:1000,
-max:4999,
-duration:"60 days",
-desc:"A longer-term allocation structure for growing portfolios."
-},
+  {
+    name:"Growth",
+    min:1000,
+    max:4999,
+    duration:"60 Days",
+    description:
+      "A balanced investment tier designed for users seeking a larger allocation.",
+    icon:"Ξ",
+    featured:true
+  },
 
-{
-name:"Premium",
-min:5000,
-max:24999,
-duration:"90 days",
-desc:"Designed for larger portfolio allocations with a longer term."
-},
+  {
+    name:"Premium",
+    min:5000,
+    max:24999,
+    duration:"90 Days",
+    description:
+      "A higher allocation tier for more substantial portfolio positions.",
+    icon:"◆",
+    featured:false
+  },
 
-{
-name:"Elite",
-min:25000,
-max:1000000,
-duration:"120 days",
-desc:"A higher allocation tier with an extended investment period."
-}
+  {
+    name:"Elite",
+    min:25000,
+    max:1000000,
+    duration:"120 Days",
+    description:
+      "An extended investment tier for larger portfolio allocations.",
+    icon:"◈",
+    featured:false
+  }
 
 ];
 
 
-/* =========================
+/* ======================================================
    MONEY
-========================= */
+====================================================== */
 
 function money(value){
 
-const number =
-Number(value) || 0;
+  const number =
+    Number(value) || 0;
 
-return "$" +
-number.toLocaleString(
-"en-US",
-{
-minimumFractionDigits:2,
-maximumFractionDigits:2
+  return "$" +
+    number.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+
 }
-);
-
-}
 
 
-/* =========================
+/* ======================================================
    SIDEBAR
-========================= */
+====================================================== */
+
+function openSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList
+    .add("open");
+
+  document
+    .getElementById("sidebarOverlay")
+    .classList
+    .add("show");
+
+  document
+    .body
+    .classList
+    .add("sidebar-open");
+
+}
+
+
+function closeSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList
+    .remove("open");
+
+  document
+    .getElementById("sidebarOverlay")
+    .classList
+    .remove("show");
+
+  document
+    .body
+    .classList
+    .remove("sidebar-open");
+
+}
+
 
 function toggleSidebar(){
 
-document
-.getElementById("sidebar")
-.classList
-.toggle("open");
+  const sidebar =
+    document.getElementById("sidebar");
+
+  if(sidebar.classList.contains("open")){
+
+    closeSidebar();
+
+  }else{
+
+    openSidebar();
+
+  }
 
 }
 
 
-/* =========================
+/*
+  Close sidebar automatically when
+  a navigation link is selected.
+*/
+
+document
+  .querySelectorAll(".sidebar .nav a")
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      closeSidebar
+    );
+
+  });
+
+
+/*
+  Browser back button should not leave
+  the user trapped behind an open sidebar.
+*/
+
+window.addEventListener(
+  "popstate",
+  function(){
+
+    closeSidebar();
+
+  }
+);
+
+
+/* ======================================================
    KYC
-========================= */
+====================================================== */
 
 function kycApproved(){
 
-if(!currentUser){
+  if(!currentUser){
+    return false;
+  }
 
-return false;
+  const status =
+    String(
+      currentUser.kyc_status ||
+      currentUser.kycStatus ||
+      currentUser.verification_status ||
+      ""
+    ).toLowerCase();
 
-}
-
-const status =
-String(
-currentUser.kyc_status ||
-currentUser.kycStatus ||
-currentUser.verification_status ||
-""
-).toLowerCase();
-
-return [
-
-"approved",
-"verified",
-"complete",
-"completed"
-
-].includes(status);
+  return [
+    "approved",
+    "verified",
+    "complete",
+    "completed"
+  ].includes(status);
 
 }
 
 
-/* =========================
+/* ======================================================
    RENDER PLANS
-========================= */
+====================================================== */
 
 function renderPlans(){
 
-const container =
-document.getElementById("plans");
+  const container =
+    document.getElementById("plans");
 
-container.innerHTML =
-schemes.map(
-(plan,index)=>`
+  container.innerHTML =
+    schemes.map(
+      (plan,index) => {
 
-<article
-class="plan ${index === 1 ? "featured" : ""}">
+        return `
 
-${
-index === 1
-?
-'<div class="badge">POPULAR</div>'
-:
-""
-}
+          <article
+            class="plan ${plan.featured ? "featured" : ""}">
 
-<div class="coin">
+            ${
+              plan.featured
+              ?
+              '<div class="badge">POPULAR</div>'
+              :
+              ""
+            }
 
-${
-index === 0
-?
-"₿"
-:
-index === 1
-?
-"Ξ"
-:
-index === 2
-?
-"◆"
-:
-"◈"
-}
+            <div class="plan-icon">
+              ${plan.icon}
+            </div>
 
-</div>
+            <h3>
+              ${plan.name}
+            </h3>
 
+            <p class="plan-description">
+              ${plan.description}
+            </p>
 
-<h3>
-${plan.name}
-</h3>
+            <div class="plan-range">
 
+              <small>
+                INVESTMENT RANGE
+              </small>
 
-<p class="plan-desc">
-${plan.desc}
-</p>
+              <strong>
+                ${money(plan.min)}
+                –
+                ${money(plan.max)}
+              </strong>
 
+            </div>
 
-<div class="range">
+            <div class="plan-meta">
 
-<span>
-Investment range
-</span>
+              <div class="plan-meta-item">
 
-<strong>
-${money(plan.min)}
-–
-${money(plan.max)}
-</strong>
+                <small>
+                  TERM
+                </small>
 
-</div>
+                <strong>
+                  ${plan.duration}
+                </strong>
 
+              </div>
 
-<div class="meta">
+              <div class="plan-meta-item">
 
-<div>
+                <small>
+                  FUNDING
+                </small>
 
-<small>
-TERM
-</small>
+                <strong>
+                  Wallet / Bank
+                </strong>
 
-<strong>
-${plan.duration}
-</strong>
+              </div>
 
-</div>
+            </div>
 
+            <button
+              type="button"
+              onclick="openInvestment(${index})">
 
-<div>
+              Invest Now
 
-<small>
-RISK
-</small>
+            </button>
 
-<strong>
-Review terms
-</strong>
+          </article>
 
-</div>
+        `;
 
-</div>
-
-
-<button
-onclick="openInvestment(${index})">
-
-Invest Now
-
-</button>
-
-</article>
-
-`
-).join("");
+      }
+    ).join("");
 
 }
 
 
-/* =========================
+/* ======================================================
    OPEN INVESTMENT
-========================= */
+====================================================== */
 
 function openInvestment(index){
 
-if(!kycApproved()){
+  if(!kycApproved()){
 
-alert(
-"KYC verification is required before you can submit an investment request."
-);
+    alert(
+      "KYC verification is required before you can submit an investment request."
+    );
 
-return;
+    return;
 
-}
+  }
 
+  selectedPlan =
+    schemes[index];
 
-selectedPlan =
-schemes[index];
+  document
+    .getElementById("schemeName")
+    .value =
+      selectedPlan.name +
+      " — " +
+      selectedPlan.duration;
 
+  document
+    .getElementById("investmentAmount")
+    .value = "";
 
-document
-.getElementById("schemeName")
-.value =
-selectedPlan.name +
-" — " +
-selectedPlan.duration;
+  document
+    .getElementById("fundMainText")
+    .textContent =
+      "Available balance: " +
+      money(balances.main);
 
+  document
+    .querySelector(
+      'input[name="funding"][value="main"]'
+    )
+    .checked = true;
 
-document
-.getElementById("amount")
-.value = "";
+  document
+    .getElementById("fundMain")
+    .classList
+    .add("selected");
 
+  document
+    .getElementById("fundBank")
+    .classList
+    .remove("selected");
 
-document
-.getElementById("fundMainText")
-.textContent =
-"Available balance: " +
-money(balances.main);
+  document
+    .getElementById("bankDetails")
+    .style
+    .display = "none";
 
+  document
+    .getElementById("balanceNote")
+    .textContent =
+      "Main Wallet available: " +
+      money(balances.main) +
+      ". Investment amount cannot exceed this balance.";
 
-document
-.getElementById("fundMain")
-.classList
-.add("selected");
-
-
-document
-.getElementById("fundBank")
-.classList
-.remove("selected");
-
-
-document
-.querySelector(
-'input[value="main"]'
-)
-.checked = true;
-
-
-document
-.getElementById("bank")
-.style.display = "none";
-
-
-document
-.getElementById("balanceNote")
-.textContent =
-"Main Wallet available: " +
-money(balances.main) +
-". Investment amount cannot exceed this balance.";
-
-
-document
-.getElementById("modal")
-.classList
-.add("show");
+  document
+    .getElementById("investmentModal")
+    .classList
+    .add("show");
 
 }
 
 
-/* =========================
-   CLOSE MODAL
-========================= */
+/* ======================================================
+   CLOSE INVESTMENT MODAL
+====================================================== */
 
-function closeModal(){
+function closeInvestmentModal(){
 
-document
-.getElementById("modal")
-.classList
-.remove("show");
+  document
+    .getElementById("investmentModal")
+    .classList
+    .remove("show");
+
+  selectedPlan = null;
 
 }
 
 
-/* =========================
+/* ======================================================
    FUNDING METHOD
-========================= */
+====================================================== */
 
 document
-.querySelectorAll(
-'input[name="funding"]'
-)
-.forEach(
-radio=>{
+  .querySelectorAll(
+    'input[name="funding"]'
+  )
+  .forEach(
+    radio => {
 
-radio.addEventListener(
-"change",
-function(){
+      radio.addEventListener(
+        "change",
+        function(){
 
-const main =
-document
-.querySelector(
-'input[value="main"]'
-)
-.checked;
+          const mainSelected =
+            document
+              .querySelector(
+                'input[name="funding"][value="main"]'
+              )
+              .checked;
 
+          document
+            .getElementById("fundMain")
+            .classList
+            .toggle(
+              "selected",
+              mainSelected
+            );
 
-document
-.getElementById("fundMain")
-.classList
-.toggle(
-"selected",
-main
-);
+          document
+            .getElementById("fundBank")
+            .classList
+            .toggle(
+              "selected",
+              !mainSelected
+            );
 
+          document
+            .getElementById("bankDetails")
+            .style
+            .display =
+              mainSelected
+              ?
+              "none"
+              :
+              "block";
 
-document
-.getElementById("fundBank")
-.classList
-.toggle(
-"selected",
-!main
-);
+          document
+            .getElementById("balanceNote")
+            .textContent =
+              mainSelected
+              ?
+              "Main Wallet available: " +
+              money(balances.main) +
+              ". Investment amount cannot exceed this balance."
+              :
+              "Bank Transfer selected. Your investment request will remain pending until the applicable payment and admin review process is completed.";
 
+        }
+      );
 
-document
-.getElementById("bank")
-.style.display =
-main
-?
-"none"
-:
-"block";
-
-
-document
-.getElementById("balanceNote")
-.textContent =
-main
-?
-"Main Wallet available: " +
-money(balances.main) +
-". Investment amount cannot exceed this balance."
-:
-"Bank Transfer selected. Your investment request will remain pending until the applicable payment and admin review process is completed.";
-
-});
-
-}
-);
+    }
+  );
 
 
-/* =========================
-   AMOUNT CHECK
-========================= */
+/* ======================================================
+   AMOUNT VALIDATION DISPLAY
+====================================================== */
 
 document
-.getElementById("amount")
-.addEventListener(
-"input",
-function(){
+  .getElementById("investmentAmount")
+  .addEventListener(
+    "input",
+    function(){
 
-const amount =
-Number(this.value) || 0;
+      const amount =
+        Number(this.value) || 0;
+
+      const mainSelected =
+        document
+          .querySelector(
+            'input[name="funding"][value="main"]'
+          )
+          .checked;
+
+      if(
+        mainSelected &&
+        amount > balances.main
+      ){
+
+        document
+          .getElementById("balanceNote")
+          .textContent =
+            "Insufficient Main Wallet balance.";
+
+      }else{
+
+        document
+          .getElementById("balanceNote")
+          .textContent =
+            mainSelected
+            ?
+            "Main Wallet available: " +
+            money(balances.main) +
+            ". Investment amount cannot exceed this balance."
+            :
+            "Bank Transfer selected. Your request will remain pending until payment and admin review.";
+
+      }
+
+    }
+  );
 
 
-const main =
-document
-.querySelector(
-'input[value="main"]'
-)
-.checked;
-
-
-if(
-main &&
-amount > balances.main
-){
-
-document
-.getElementById("balanceNote")
-.textContent =
-"Insufficient Main Wallet balance for this investment amount.";
-
-}
-
-}
-);
-
-
-/* =========================
+/* ======================================================
    SUBMIT INVESTMENT
-========================= */
+====================================================== */
 
 document
-.getElementById("submitBtn")
-.addEventListener(
-"click",
-function(){
+  .getElementById("submitInvestment")
+  .addEventListener(
+    "click",
+    function(){
 
-if(!kycApproved()){
+      if(!selectedPlan){
 
-alert(
-"KYC verification is required before you can submit an investment request."
-);
+        alert(
+          "Please select an investment scheme."
+        );
 
-return;
+        return;
 
-}
-
-
-const amount =
-Number(
-document
-.getElementById("amount")
-.value
-);
+      }
 
 
-if(
-!amount ||
-amount <= 0
-){
+      if(!kycApproved()){
 
-alert(
-"Please enter a valid investment amount."
-);
+        alert(
+          "KYC verification is required before you can submit an investment request."
+        );
 
-return;
+        return;
 
-}
+      }
 
 
-if(
-amount < selectedPlan.min ||
-amount > selectedPlan.max
-){
-
-alert(
-"The amount is outside the selected scheme's investment range."
-);
-
-return;
-
-}
+      const amount =
+        Number(
+          document
+            .getElementById("investmentAmount")
+            .value
+        );
 
 
-const main =
-document
-.querySelector(
-'input[value="main"]'
-)
-.checked;
+      if(
+        !amount ||
+        amount <= 0
+      ){
+
+        alert(
+          "Please enter a valid investment amount."
+        );
+
+        return;
+
+      }
 
 
-/*
-  MAIN WALLET
-*/
+      /*
+        Scheme range protection.
+      */
 
-if(
-main &&
-amount > balances.main
-){
+      if(
+        amount < selectedPlan.min ||
+        amount > selectedPlan.max
+      ){
 
-alert(
-"Insufficient Main Wallet balance. You cannot invest more than your available Main Wallet balance."
-);
+        alert(
+          "The amount is outside the selected " +
+          selectedPlan.name +
+          " scheme range of " +
+          money(selectedPlan.min) +
+          " to " +
+          money(selectedPlan.max) +
+          "."
+        );
 
-return;
+        return;
 
-}
-
-
-/*
-  BANK TRANSFER
-*/
-
-if(!main){
-
-const requiredFields = [
-
-"bankAccountName",
-"bankName",
-"bankAccountNumber",
-"transferReference"
-
-];
+      }
 
 
-for(
-const id of requiredFields
-){
-
-if(
-!document
-.getElementById(id)
-.value
-.trim()
-){
-
-alert(
-"Please provide the complete bank transfer details."
-);
-
-return;
-
-}
-
-}
-
-}
+      const mainSelected =
+        document
+          .querySelector(
+            'input[name="funding"][value="main"]'
+          )
+          .checked;
 
 
-/*
-  IMPORTANT:
-  NO BALANCE CHANGE.
-*/
+      /*
+        MAIN WALLET PROTECTION
+      */
 
-alert(
+      if(
+        mainSelected &&
+        amount > balances.main
+      ){
 
-"Investment request prepared successfully. " +
-"It remains pending until the connected backend " +
-"transaction and approval workflow processes it. " +
-"No wallet balance has been changed."
+        alert(
+          "Insufficient Main Wallet balance. You cannot invest more than your available Main Wallet balance."
+        );
 
-);
+        return;
 
-
-closeModal();
-
-}
-);
+      }
 
 
-/* =========================
+      /*
+        BANK TRANSFER VALIDATION
+      */
+
+      if(!mainSelected){
+
+        const fields = [
+
+          "bankAccountName",
+          "bankName",
+          "bankAccountNumber",
+          "transferReference"
+
+        ];
+
+
+        for(
+          const id of fields
+        ){
+
+          const value =
+            document
+              .getElementById(id)
+              .value
+              .trim();
+
+
+          if(!value){
+
+            alert(
+              "Please provide all required bank transfer details."
+            );
+
+            return;
+
+          }
+
+        }
+
+      }
+
+
+      /*
+        IMPORTANT:
+        No local balance is changed.
+        No fake profit is created.
+        No investment balance is fabricated.
+      */
+
+      alert(
+        "Investment request prepared successfully. It remains pending until the connected backend transaction and approval workflow processes it. No wallet balance has been changed."
+      );
+
+      closeInvestmentModal();
+
+    }
+  );
+
+
+/* ======================================================
    LOAD USER
-========================= */
+====================================================== */
 
 async function loadUser(){
 
-const token =
-localStorage.getItem(
-"coinforest_token"
-);
+  const token =
+    localStorage.getItem(
+      "coinforest_token"
+    );
 
 
-if(!token){
+  if(!token){
 
-window.location.href =
-"index.html";
+    window.location.href =
+      "index.html";
 
-return;
+    return;
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/auth/me",
+        {
+          method:"GET",
+          headers:{
+            Authorization:
+              "Bearer " + token,
+
+            Accept:
+              "application/json"
+          }
+        }
+      );
+
+
+    if(!response.ok){
+
+      console.error(
+        "Authentication request failed:",
+        response.status
+      );
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !data.success ||
+      !data.user
+    ){
+
+      console.error(
+        "Invalid authentication response:",
+        data
+      );
+
+      return;
+
+    }
+
+
+    currentUser =
+      data.user;
+
+
+    /*
+      USER NAME
+    */
+
+    const name =
+      currentUser.first_name ||
+      currentUser.full_name ||
+      currentUser.username ||
+      currentUser.email ||
+      "Account";
+
+
+    document
+      .getElementById("userName")
+      .textContent =
+        name;
+
+
+    /*
+      AVATAR
+    */
+
+    const initials = (
+
+      (currentUser.first_name || "")
+        .charAt(0) +
+
+      (currentUser.last_name || "")
+        .charAt(0)
+
+    ).toUpperCase();
+
+
+    document
+      .getElementById("avatar")
+      .textContent =
+        initials || "CF";
+
+
+    /*
+      MAIN WALLET
+    */
+
+    balances.main =
+      Number(
+        currentUser.main_wallet_balance ??
+        currentUser.main_balance ??
+        currentUser.wallet_balance ??
+        0
+      );
+
+
+    /*
+      PROFIT WALLET
+    */
+
+    balances.profit =
+      Number(
+        currentUser.profit_wallet_balance ??
+        currentUser.profit_balance ??
+        0
+      );
+
+
+    /*
+      INVESTMENT BALANCE
+
+      We read whichever backend field already
+      exists. Nothing is invented.
+    */
+
+    const investmentBalance =
+      Number(
+        currentUser.investment_balance ??
+        currentUser.total_invested ??
+        currentUser.invested_balance ??
+        0
+      );
+
+
+    /*
+      ACTIVE INVESTMENTS
+    */
+
+    const activeInvestments =
+      Number(
+        currentUser.active_investments ??
+        currentUser.active_investment_count ??
+        0
+      );
+
+
+    /*
+      UPDATE UI
+    */
+
+    document
+      .getElementById("investmentBalance")
+      .textContent =
+        money(investmentBalance);
+
+
+    document
+      .getElementById("totalInvested")
+      .textContent =
+        money(
+          currentUser.total_invested ??
+          investmentBalance
+        );
+
+
+    document
+      .getElementById("activeCount")
+      .textContent =
+        activeInvestments;
+
+
+    document
+      .getElementById("mainBalance")
+      .textContent =
+        money(balances.main);
+
+
+    document
+      .getElementById("profitBalance")
+      .textContent =
+        money(balances.profit);
+
+
+    document
+      .getElementById("heroMainBalance")
+      .textContent =
+        money(balances.main);
+
+
+    document
+      .getElementById("heroProfitBalance")
+      .textContent =
+        money(balances.profit);
+
+
+    document
+      .getElementById("fundMainText")
+      .textContent =
+        "Available balance: " +
+        money(balances.main);
+
+
+  }catch(error){
+
+    console.error(
+      "Unable to load CoinForest account:",
+      error
+    );
+
+  }
 
 }
 
 
-try{
-
-const response =
-await fetch(
-"/api/auth/me",
-{
-headers:{
-Authorization:
-"Bearer " + token,
-
-Accept:
-"application/json"
-}
-}
-);
-
-
-if(!response.ok){
-
-return;
-
-}
-
-
-const data =
-await response.json();
-
-
-if(
-!data.success ||
-!data.user
-){
-
-return;
-
-}
-
-
-currentUser =
-data.user;
-
-
-const name =
-currentUser.first_name ||
-currentUser.full_name ||
-currentUser.username ||
-currentUser.email ||
-"Account";
-
-
-document
-.getElementById("userName")
-.textContent =
-name;
-
-
-const initials = (
-
-(currentUser.first_name || "")
-.charAt(0) +
-
-(currentUser.last_name || "")
-.charAt(0)
-
-).toUpperCase();
-
-
-document
-.getElementById("avatar")
-.textContent =
-initials || "CF";
-
-
-/*
-  READ EXISTING BACKEND BALANCES.
-  DO NOT INVENT BALANCES.
-*/
-
-balances.main =
-Number(
-currentUser.main_wallet_balance ??
-currentUser.main_balance ??
-currentUser.wallet_balance ??
-0
-);
-
-
-balances.profit =
-Number(
-currentUser.profit_wallet_balance ??
-currentUser.profit_balance ??
-0
-);
-
-
-document
-.getElementById("mainAvailable")
-.textContent =
-money(balances.main);
-
-
-document
-.getElementById("fundMainText")
-.textContent =
-"Available balance: " +
-money(balances.main);
-
-
-document
-.getElementById("totalInvested")
-.textContent =
-money(
-currentUser.total_invested ?? 0
-);
-
-
-document
-.getElementById("activeCount")
-.textContent =
-Number(
-currentUser.active_investments ?? 0
-);
-
-
-}catch(error){
-
-console.error(
-"Unable to load CoinForest account:",
-error
-);
-
-}
-
-}
-
-
-/* =========================
+/* ======================================================
    LOGOUT
-========================= */
+====================================================== */
 
 async function logout(){
 
-const token =
-localStorage.getItem(
-"coinforest_token"
-);
+  const token =
+    localStorage.getItem(
+      "coinforest_token"
+    );
 
 
-try{
+  try{
 
-if(token){
+    if(token){
 
-await fetch(
-"/api/auth/logout",
-{
-method:"POST",
-headers:{
-Authorization:
-"Bearer " + token
+      await fetch(
+        "/api/auth/logout",
+        {
+          method:"POST",
+          headers:{
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Logout error:",
+      error
+    );
+
+  }
+
+
+  localStorage.removeItem(
+    "coinforest_token"
+  );
+
+
+  window.location.href =
+    "index.html";
+
 }
-}
-);
-
-}
-
-}catch(error){
-
-console.error(
-"Logout error:",
-error
-);
-
-}
 
 
-localStorage.removeItem(
-"coinforest_token"
-);
-
-
-window.location.href =
-"index.html";
-
-}
-
-
-/* =========================
-   OUTSIDE CLICK
-========================= */
+/* ======================================================
+   MODAL OUTSIDE CLICK
+====================================================== */
 
 document
-.getElementById("modal")
-.addEventListener(
-"click",
-function(event){
+  .getElementById("investmentModal")
+  .addEventListener(
+    "click",
+    function(event){
 
-if(
-event.target === this
-){
+      if(
+        event.target === this
+      ){
 
-closeModal();
+        closeInvestmentModal();
 
-}
+      }
 
-}
-);
+    }
+  );
 
 
-/* =========================
+/* ======================================================
+   ESC KEY
+====================================================== */
+
+document
+  .addEventListener(
+    "keydown",
+    function(event){
+
+      if(event.key === "Escape"){
+
+        closeInvestmentModal();
+
+        closeSidebar();
+
+      }
+
+    }
+  );
+
+
+/* ======================================================
    INITIALIZE
-========================= */
+====================================================== */
 
 renderPlans();
 
@@ -2097,4 +2632,4 @@ loadUser();
 </script>
 
 </body>
-</html>
+  </html>
