@@ -33,7 +33,7 @@ function hashToken(value) {
 }
 
 function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toStrin.digest("hex");g("hex");
+ const salt = crypto.randomBytes(16).toString("hex"); 
 
   const derivedKey = crypto.scryptSync(
     String(password),
