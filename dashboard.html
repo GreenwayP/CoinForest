@@ -7,56 +7,66 @@
 <title>CoinForest Dashboard</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0
+}
 
 :root{
   --bg:#f3f6fa;
-  --card:#fff;
-  --dark:#071525;
-  --dark2:#0d2238;
+  --card:#ffffff;
+  --dark:#061525;
+  --dark2:#0b2136;
+  --dark3:#123650;
   --green:#20c879;
   --green2:#13a866;
+  --green3:#42e39a;
   --gold:#f5b942;
   --gold2:#d99a16;
-  --blue:#4385ff;
+  --blue:#4d8dff;
   --purple:#8b5cf6;
   --text:#142033;
   --muted:#718096;
-  --border:#e4eaf1;
+  --border:#e5ebf2;
   --danger:#ef5350;
-  --shadow:0 12px 35px rgba(7,21,37,.07);
+  --warning:#f59e0b;
+  --shadow:0 12px 35px rgba(7,21,37,.07)
 }
 
 html{
-  scroll-behavior:smooth;
+  scroll-behavior:smooth
 }
 
 body{
   font-family:Inter,Arial,sans-serif;
   background:
-    radial-gradient(circle at 15% 5%,rgba(32,200,121,.045),transparent 20%),
-    radial-gradient(circle at 90% 20%,rgba(67,133,255,.045),transparent 22%),
+    radial-gradient(circle at 15% 0%,rgba(32,200,121,.045),transparent 25%),
+    radial-gradient(circle at 90% 15%,rgba(77,141,255,.04),transparent 25%),
     var(--bg);
   color:var(--text);
-  min-height:100vh;
+  min-height:100vh
 }
 
-button,input,select,textarea{
-  font:inherit;
+button,
+input,
+select,
+textarea{
+  font:inherit
 }
 
 button{
-  cursor:pointer;
+  cursor:pointer
 }
 
 a{
   text-decoration:none;
-  color:inherit;
+  color:inherit
 }
 
-/* =========================================================
+/* =========================
    SIDEBAR
-========================================================= */
+========================= */
 
 .sidebar{
   position:fixed;
@@ -65,31 +75,31 @@ a{
   bottom:0;
   width:245px;
   background:
-    radial-gradient(circle at 20% 10%,rgba(32,200,121,.08),transparent 25%),
-    linear-gradient(180deg,#071525,#091c2e);
+    radial-gradient(circle at 20% 0%,rgba(32,200,121,.08),transparent 25%),
+    linear-gradient(180deg,#061525,#081d31);
   color:#fff;
   padding:25px 16px;
   z-index:1000;
-  box-shadow:8px 0 30px rgba(0,0,0,.08);
+  box-shadow:10px 0 30px rgba(0,0,0,.06)
 }
 
 .logo{
   font-size:25px;
   font-weight:800;
   padding:0 15px 30px;
-  letter-spacing:-.5px;
+  letter-spacing:-.7px
 }
 
 .logo span{
-  color:var(--green);
+  color:var(--green)
 }
 
 .menu-title{
   color:#71859a;
-  font-size:11px;
+  font-size:10px;
   text-transform:uppercase;
-  letter-spacing:1.4px;
-  padding:12px 15px 8px;
+  letter-spacing:1.5px;
+  padding:12px 15px 8px
 }
 
 .menu a{
@@ -100,61 +110,61 @@ a{
   border-radius:10px;
   margin:4px 0;
   color:#aebccc;
-  font-size:14px;
-  transition:.2s;
+  font-size:13px;
+  transition:.2s
 }
 
 .menu a:hover,
 .menu a.active{
   background:#102b44;
-  color:#fff;
+  color:#fff
 }
 
 .menu a.active{
   border-left:3px solid var(--green);
+  padding-left:12px
 }
 
 .icon{
   width:22px;
   text-align:center;
-  font-size:17px;
+  font-size:17px
 }
 
 .sidebar-bottom{
   position:absolute;
   bottom:22px;
   left:16px;
-  right:16px;
+  right:16px
 }
 
 .logout{
   width:100%;
   border:1px solid #294157;
-  background:transparent;
+  background:rgba(255,255,255,.025);
   color:#b8c6d4;
   padding:11px;
   border-radius:9px;
-  cursor:pointer;
-  transition:.2s;
+  cursor:pointer
 }
 
 .logout:hover{
-  background:#102b44;
-  color:#fff;
+  background:#122c43;
+  color:#fff
 }
 
-/* =========================================================
+/* =========================
    MAIN
-========================================================= */
+========================= */
 
 .main{
   margin-left:245px;
-  min-height:100vh;
+  min-height:100vh
 }
 
 .topbar{
   height:72px;
-  background:rgba(255,255,255,.94);
+  background:rgba(255,255,255,.96);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   display:flex;
@@ -163,7 +173,13 @@ a{
   padding:0 35px;
   position:sticky;
   top:0;
-  z-index:200;
+  z-index:500
+}
+
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap:13px
 }
 
 .mobile-menu{
@@ -171,38 +187,44 @@ a{
   border:0;
   background:none;
   font-size:25px;
-  color:var(--dark);
+  cursor:pointer;
+  color:var(--dark)
 }
 
 .back-button{
   width:38px;
   height:38px;
-  border-radius:10px;
   border:1px solid var(--border);
   background:#fff;
-  color:var(--dark);
-  font-size:22px;
+  border-radius:10px;
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 5px 15px rgba(7,21,37,.05);
+  font-size:20px;
+  color:var(--dark);
+  box-shadow:0 4px 12px rgba(7,21,37,.04)
+}
+
+.back-button:hover{
+  background:#f3f7fb;
+  transform:translateX(-2px)
 }
 
 .welcome small{
   color:var(--muted);
-  font-size:12px;
+  font-size:11px
 }
 
 .welcome strong{
   display:block;
   margin-top:3px;
-  font-size:17px;
+  font-size:16px
 }
 
 .profile{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px
 }
 
 .avatar{
@@ -215,55 +237,68 @@ a{
   align-items:center;
   justify-content:center;
   font-weight:800;
-  box-shadow:0 5px 15px rgba(32,200,121,.18);
+  box-shadow:0 5px 16px rgba(32,200,121,.18)
 }
 
 .profile-info{
-  line-height:1.2;
+  line-height:1.2
 }
 
 .profile-info strong{
-  font-size:13px;
+  font-size:12px
 }
 
 .profile-info small{
   display:block;
   color:var(--muted);
-  font-size:11px;
-  margin-top:3px;
+  font-size:10px;
+  margin-top:3px
 }
 
-/* =========================================================
+.current-tier{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:5px;
+  font-size:9px;
+  font-weight:800;
+  color:#a16207;
+  background:#fff7d6;
+  padding:4px 7px;
+  border-radius:20px
+}
+
+/* =========================
    CONTENT
-========================================================= */
+========================= */
 
 .content{
-  padding:30px 35px 55px;
-  max-width:1600px;
-  margin:auto;
+  padding:28px 35px 55px;
+  max-width:1500px;
+  margin:auto
 }
 
 .page-title{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:25px;
+  margin-bottom:22px
 }
 
 .page-title h1{
-  font-size:27px;
-  letter-spacing:-.5px;
+  font-size:26px;
+  letter-spacing:-.5px
 }
 
 .page-title p{
   color:var(--muted);
-  font-size:13px;
-  margin-top:5px;
+  font-size:12px;
+  margin-top:5px
 }
 
 .action-buttons{
   display:flex;
-  gap:9px;
+  gap:9px
 }
 
 .btn{
@@ -271,363 +306,138 @@ a{
   border-radius:10px;
   padding:11px 17px;
   cursor:pointer;
-  font-weight:700;
-  font-size:13px;
-  transition:.2s;
+  font-weight:800;
+  font-size:12px;
+  transition:.2s
 }
 
 .btn:hover{
-  transform:translateY(-1px);
+  transform:translateY(-1px)
 }
 
 .btn-green{
   background:var(--green);
-  color:#052014;
-  box-shadow:0 7px 18px rgba(32,200,121,.17);
+  color:#052014
 }
 
 .btn-dark{
   background:var(--dark);
-  color:#fff;
+  color:#fff
 }
 
-/* =========================================================
-   CRYPTO HERO
-========================================================= */
-
-.crypto-hero{
-  position:relative;
-  overflow:hidden;
-  min-height:220px;
-  border-radius:22px;
-  padding:30px;
-  margin-bottom:22px;
-  color:#fff;
-  background:
-    radial-gradient(circle at 80% 20%,rgba(32,200,121,.22),transparent 25%),
-    radial-gradient(circle at 95% 90%,rgba(245,185,66,.16),transparent 25%),
-    linear-gradient(135deg,#061321,#0b2d47 60%,#071a2c);
-  box-shadow:0 18px 45px rgba(7,21,37,.13);
-}
-
-.crypto-hero:before,
-.crypto-hero:after{
-  content:"";
-  position:absolute;
-  border-radius:50%;
-  pointer-events:none;
-}
-
-.crypto-hero:before{
-  width:270px;
-  height:270px;
-  right:-100px;
-  top:-120px;
-  border:45px solid rgba(32,200,121,.08);
-}
-
-.crypto-hero:after{
-  width:170px;
-  height:170px;
-  right:120px;
-  bottom:-110px;
-  border:30px solid rgba(245,185,66,.07);
-}
-
-.hero-content{
-  position:relative;
-  z-index:2;
-  max-width:620px;
-}
-
-.hero-kicker{
-  color:#70e5ae;
-  font-size:11px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:1.5px;
-  margin-bottom:10px;
-}
-
-.hero-content h2{
-  font-size:30px;
-  line-height:1.15;
-  margin-bottom:10px;
-}
-
-.hero-content p{
-  color:#a9bbcb;
-  font-size:13px;
-  line-height:1.7;
-  max-width:580px;
-}
-
-.hero-visual{
-  position:absolute;
-  right:35px;
-  top:28px;
-  width:230px;
-  height:165px;
-}
-
-.crypto-orbit{
-  position:absolute;
-  width:145px;
-  height:145px;
-  right:25px;
-  top:5px;
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:50%;
-  animation:spin 14s linear infinite;
-}
-
-.crypto-orbit:before{
-  content:"";
-  position:absolute;
-  inset:18px;
-  border:1px dashed rgba(32,200,121,.35);
-  border-radius:50%;
-}
-
-.crypto-core{
-  position:absolute;
-  width:72px;
-  height:72px;
-  right:62px;
-  top:42px;
-  border-radius:22px;
-  background:linear-gradient(145deg,#20c879,#0c9d61);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:35px;
-  font-weight:900;
-  box-shadow:0 15px 35px rgba(32,200,121,.3);
-}
-
-.crypto-node{
-  position:absolute;
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px;
-  font-weight:900;
-  color:#fff;
-  box-shadow:0 7px 18px rgba(0,0,0,.2);
-}
-
-.node1{
-  background:#f7931a;
-  right:172px;
-  top:25px;
-}
-
-.node2{
-  background:#627eea;
-  right:0;
-  top:70px;
-}
-
-.node3{
-  background:#f3ba2f;
-  right:100px;
-  bottom:0;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-/* =========================================================
-   BALANCE
-========================================================= */
+/* =========================
+   BALANCE HERO
+========================= */
 
 .balance-card{
   background:
-    radial-gradient(circle at 90% 15%,rgba(245,185,66,.18),transparent 24%),
-    radial-gradient(circle at 15% 90%,rgba(32,200,121,.11),transparent 22%),
-    linear-gradient(135deg,#071525,#103b5b);
+    radial-gradient(circle at 86% 15%,rgba(245,185,66,.2),transparent 24%),
+    radial-gradient(circle at 10% 100%,rgba(32,200,121,.13),transparent 30%),
+    linear-gradient(135deg,#061525,#0e3b5a);
   color:#fff;
-  border-radius:18px;
-  padding:28px;
+  border-radius:20px;
+  padding:30px;
   margin-bottom:22px;
   position:relative;
   overflow:hidden;
-  box-shadow:var(--shadow);
+  box-shadow:0 16px 40px rgba(7,21,37,.13)
+}
+
+.balance-card:before{
+  content:"";
+  position:absolute;
+  width:310px;
+  height:310px;
+  right:-110px;
+  top:-145px;
+  border:42px solid rgba(245,185,66,.07);
+  border-radius:50%
 }
 
 .balance-card:after{
   content:"";
   position:absolute;
-  width:250px;
-  height:250px;
-  right:-80px;
-  top:-100px;
-  border:35px solid rgba(245,185,66,.09);
-  border-radius:50%;
+  width:150px;
+  height:150px;
+  right:70px;
+  bottom:-100px;
+  border:25px solid rgba(32,200,121,.07);
+  border-radius:50%
+}
+
+.balance-content{
+  position:relative;
+  z-index:2
 }
 
 .balance-label{
   color:#9bb0c4;
-  font-size:13px;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px
 }
 
 .total-balance{
-  font-size:37px;
-  font-weight:800;
-  margin:7px 0 22px;
+  font-size:39px;
+  font-weight:850;
+  margin:7px 0 24px;
+  letter-spacing:-1px
 }
 
 .balance-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:18px;
+  gap:18px
 }
 
 .balance-item{
   border-left:1px solid rgba(255,255,255,.14);
-  padding-left:18px;
+  padding-left:18px
 }
 
 .balance-item:first-child{
   border-left:0;
-  padding-left:0;
+  padding-left:0
 }
 
 .balance-item span{
   color:#9bb0c4;
-  font-size:11px;
+  font-size:10px
 }
 
 .balance-item strong{
   display:block;
   margin-top:6px;
-  font-size:18px;
+  font-size:17px
 }
 
 .positive{
-  color:#39dd91;
+  color:#39dd91
 }
 
-/* =========================================================
-   TIER
-========================================================= */
-
-.account-tier{
-  margin-bottom:24px;
-  display:grid;
-  grid-template-columns:1.5fr 1fr;
-  gap:18px;
-}
-
-.tier-card,
-.bonus-card{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:20px;
-  box-shadow:var(--shadow);
-}
-
-.tier-head,
-.bonus-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  margin-bottom:15px;
-}
-
-.tier-head h3,
-.bonus-head h3{
-  font-size:15px;
-}
-
-.tier-badge{
-  background:#e9faf2;
-  color:var(--green2);
-  padding:7px 11px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:800;
-}
-
-.tier-progress{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-
-.tier-step{
-  position:relative;
-  background:#f4f6f9;
-  border-radius:10px;
-  padding:12px;
-  border:1px solid #edf0f4;
-}
-
-.tier-step.active{
-  background:#ecfff5;
-  border-color:#b8efd3;
-}
-
-.tier-step strong{
-  display:block;
-  font-size:11px;
-}
-
-.tier-step span{
-  display:block;
-  color:var(--muted);
-  font-size:9px;
-  margin-top:4px;
-  line-height:1.4;
-}
-
-.bonus-card{
-  background:
-    radial-gradient(circle at 90% 20%,rgba(245,185,66,.15),transparent 35%),
-    linear-gradient(135deg,#fff,#fffaf0);
-}
-
-.bonus-amount{
-  font-size:25px;
-  font-weight:900;
-  color:var(--gold2);
-}
-
-.bonus-card p{
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.6;
-}
-
-/* =========================================================
+/* =========================
    STATS
-========================================================= */
+========================= */
 
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  margin-bottom:24px;
+  gap:16px;
+  margin-bottom:22px
 }
 
 .card{
   background:var(--card);
   border:1px solid var(--border);
-  border-radius:15px;
+  border-radius:16px;
   padding:20px;
-  box-shadow:0 5px 20px rgba(7,21,37,.035);
+  box-shadow:var(--shadow)
 }
 
 .stat-top{
   display:flex;
   justify-content:space-between;
-  align-items:center;
+  align-items:center
 }
 
 .stat-icon{
@@ -636,231 +446,131 @@ a{
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:12px;
+  border-radius:11px;
   background:#e9faf2;
   color:var(--green2);
-  font-size:18px;
+  font-size:18px
 }
 
 .stat-label{
   color:var(--muted);
-  font-size:12px;
+  font-size:11px
 }
 
 .stat-value{
-  font-size:22px;
-  font-weight:800;
-  margin-top:14px;
+  font-size:21px;
+  font-weight:850;
+  margin-top:13px
 }
 
 .stat-change{
-  font-size:11px;
-  margin-top:7px;
-  color:var(--green2);
-}
-
-/* =========================================================
-   MARKET
-========================================================= */
-
-.market-strip{
-  background:
-    radial-gradient(circle at 90% 20%,rgba(32,200,121,.12),transparent 25%),
-    linear-gradient(135deg,#071525,#0b2034);
-  color:white;
-  border-radius:17px;
-  padding:20px;
-  margin-bottom:22px;
-  box-shadow:0 12px 30px rgba(7,21,37,.12);
-}
-
-.market-title{
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:15px;
-}
-
-.market-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.coin{
-  background:rgba(255,255,255,.055);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;
-  padding:14px;
-  transition:.25s;
-}
-
-.coin:hover{
-  transform:translateY(-3px);
-  background:rgba(255,255,255,.08);
-}
-
-.coin-top{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:11px;
-}
-
-.coin-name{
-  color:#8ea1b5;
-}
-
-.coin-icon{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:15px;
-}
-
-.btc-icon{
-  background:linear-gradient(135deg,#f7931a,#ffd166);
-}
-
-.eth-icon{
-  background:linear-gradient(135deg,#627eea,#aab9ff);
-}
-
-.usdt-icon{
-  background:linear-gradient(135deg,#26a17b,#70d7b0);
-}
-
-.bnb-icon{
-  background:linear-gradient(135deg,#f3ba2f,#ffe28a);
-  color:#111;
-}
-
-.sol-icon{
-  background:linear-gradient(135deg,#14f195,#9945ff);
-}
-
-.xrp-icon{
-  background:linear-gradient(135deg,#111827,#60a5fa);
-}
-
-.ada-icon{
-  background:linear-gradient(135deg,#2563eb,#93c5fd);
-}
-
-.dot-icon{
-  background:linear-gradient(135deg,#f97316,#ef4444);
-}
-
-.coin-price{
-  font-size:16px;
-  font-weight:800;
-  margin-top:11px;
-}
-
-.coin-change{
   font-size:10px;
-  margin-top:4px;
-  font-weight:700;
+  margin-top:6px;
+  color:var(--green2)
 }
 
-.coin-change.up{
-  color:#36da8e;
-}
-
-.coin-change.down{
-  color:#ef5350;
-}
-
-/* =========================================================
+/* =========================
    GRID
-========================================================= */
+========================= */
 
 .grid{
   display:grid;
   grid-template-columns:1.45fr 1fr;
-  gap:22px;
-  margin-bottom:22px;
+  gap:20px;
+  margin-bottom:22px
 }
 
 .card-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:19px;
+  margin-bottom:18px
 }
 
 .card-head h2{
-  font-size:16px;
+  font-size:15px
 }
 
 .card-head a{
   color:var(--green2);
-  font-size:12px;
-  font-weight:700;
+  font-size:11px;
+  font-weight:800
 }
 
-/* =========================================================
-   ACTIONS
-========================================================= */
+/* =========================
+   QUICK ACTION GRID
+========================= */
 
 .actions{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:12px;
+  gap:12px
 }
 
 .action{
+  position:relative;
+  overflow:hidden;
   border:1px solid var(--border);
   background:
-    linear-gradient(145deg,#fff,#f9fbfd);
+    radial-gradient(circle at 100% 0%,rgba(32,200,121,.06),transparent 40%),
+    #fbfcfe;
   border-radius:14px;
   padding:17px 13px;
   cursor:pointer;
   text-align:left;
-  transition:.22s;
-  min-height:120px;
+  transition:.22s
+}
+
+.action:after{
+  content:"";
+  position:absolute;
+  width:45px;
+  height:45px;
+  right:-15px;
+  bottom:-20px;
+  border-radius:50%;
+  border:8px solid rgba(32,200,121,.05)
 }
 
 .action:hover{
-  transform:translateY(-3px);
-  border-color:#a8e9c9;
-  box-shadow:0 10px 25px rgba(32,200,121,.08);
+  border-color:#9ce6c2;
+  background:#f6fffa;
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(32,200,121,.08)
 }
 
 .action-icon{
   width:42px;
   height:42px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#e9faf2,#f4fff9);
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:12px;
-  background:#eefaf5;
   font-size:20px;
-  margin-bottom:12px;
+  margin-bottom:12px
 }
 
 .action strong{
   display:block;
-  font-size:13px;
+  font-size:12px
 }
 
 .action span{
   display:block;
   color:var(--muted);
-  font-size:10px;
-  margin-top:4px;
+  font-size:9px;
+  margin-top:4px
 }
 
-/* =========================================================
-   WALLET
-========================================================= */
+/* =========================
+   WALLET GRID
+========================= */
 
 .wallet-list{
   display:grid;
-  gap:12px;
+  grid-template-columns:1fr;
+  gap:12px
 }
 
 .wallet{
@@ -868,72 +578,283 @@ a{
   justify-content:space-between;
   align-items:center;
   border:1px solid var(--border);
-  padding:15px;
-  border-radius:12px;
-  background:linear-gradient(145deg,#fff,#fafcfe);
+  padding:16px;
+  border-radius:13px;
+  background:
+    linear-gradient(135deg,#fff,#fafcff)
 }
 
 .wallet-left{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:12px
 }
 
 .wallet-icon{
   width:40px;
   height:40px;
   border-radius:12px;
-  background:#edf9f3;
+  background:linear-gradient(135deg,#edf9f3,#e8f2ff);
   display:flex;
   align-items:center;
-  justify-content:center;
+  justify-content:center
 }
 
 .wallet-name{
-  font-weight:700;
-  font-size:13px;
+  font-weight:800;
+  font-size:12px
 }
 
 .wallet-sub{
   color:var(--muted);
-  font-size:10px;
-  margin-top:3px;
+  font-size:9px;
+  margin-top:3px
 }
 
 .wallet-value{
-  font-weight:800;
-  font-size:14px;
+  font-weight:850;
+  font-size:14px
 }
 
-/* =========================================================
-   INVESTMENT SECTION
-========================================================= */
+/* =========================
+   MARKET
+========================= */
+
+.market-strip{
+  background:
+    radial-gradient(circle at 90% 0%,rgba(77,141,255,.15),transparent 25%),
+    radial-gradient(circle at 5% 100%,rgba(32,200,121,.12),transparent 25%),
+    linear-gradient(135deg,#061525,#0b2339);
+  color:white;
+  border-radius:17px;
+  padding:20px;
+  margin-bottom:22px;
+  box-shadow:0 12px 30px rgba(7,21,37,.12)
+}
+
+.market-title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px
+}
+
+.market-title{
+  font-size:14px;
+  font-weight:800
+}
+
+.market-live{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  color:#70e8ad;
+  font-size:9px;
+  font-weight:700
+}
+
+.live-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#39dd91;
+  box-shadow:0 0 8px #39dd91
+}
+
+.market-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px
+}
+
+.coin{
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+  padding:14px;
+  transition:.25s
+}
+
+.coin:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.085)
+}
+
+.coin-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:10px
+}
+
+.coin-name{
+  color:#8ea1b5;
+  margin-left:auto
+}
+
+.coin-icon{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:14px
+}
+
+.btc-icon{
+  background:linear-gradient(135deg,#f7931a,#ffd166);
+  color:#fff
+}
+
+.eth-icon{
+  background:linear-gradient(135deg,#627eea,#aab9ff);
+  color:#fff
+}
+
+.usdt-icon{
+  background:linear-gradient(135deg,#26a17b,#70d7b0);
+  color:#fff
+}
+
+.bnb-icon{
+  background:linear-gradient(135deg,#f3ba2f,#ffe28a);
+  color:#111
+}
+
+.sol-icon{
+  background:linear-gradient(135deg,#8b5cf6,#20c879);
+  color:#fff
+}
+
+.xrp-icon{
+  background:linear-gradient(135deg,#263238,#607d8b);
+  color:#fff
+}
+
+.ada-icon{
+  background:linear-gradient(135deg,#2f80ed,#56ccf2);
+  color:#fff
+}
+
+.doge-icon{
+  background:linear-gradient(135deg,#c5a43e,#f5d76e);
+  color:#111
+}
+
+.coin-price{
+  font-size:16px;
+  font-weight:850;
+  margin-top:11px
+}
+
+.coin-change{
+  font-size:9px;
+  margin-top:4px;
+  font-weight:800
+}
+
+.coin-change.up{
+  color:#36da8e
+}
+
+.coin-change.down{
+  color:#ef5350
+}
+
+/* =========================
+   INVESTMENT
+========================= */
+
+.investment-section{
+  margin-bottom:22px;
+  position:relative;
+  overflow:hidden
+}
 
 .investment-intro{
-  margin-bottom:20px;
-  padding:18px;
-  border-radius:14px;
+  display:grid;
+  grid-template-columns:1.35fr .65fr;
+  gap:15px;
+  margin-bottom:17px
+}
+
+.investment-banner{
   background:
-    radial-gradient(circle at 90% 20%,rgba(67,133,255,.08),transparent 25%),
-    #f7faff;
-  border:1px solid #e4ebf7;
+    radial-gradient(circle at 95% 10%,rgba(245,185,66,.18),transparent 25%),
+    radial-gradient(circle at 5% 100%,rgba(32,200,121,.13),transparent 30%),
+    linear-gradient(135deg,#071525,#103b5b);
+  border-radius:15px;
+  color:#fff;
+  padding:20px;
+  position:relative;
+  overflow:hidden
 }
 
-.investment-intro h3{
-  font-size:16px;
-  margin-bottom:6px;
+.investment-banner h3{
+  font-size:17px;
+  margin-bottom:6px
 }
 
-.investment-intro p{
-  color:var(--muted);
+.investment-banner p{
+  color:#a9bacb;
+  font-size:10px;
+  line-height:1.6;
+  max-width:680px
+}
+
+.investment-orbit{
+  position:absolute;
+  right:35px;
+  top:12px;
+  width:105px;
+  height:105px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:50%
+}
+
+.investment-orbit:before{
+  content:"₿";
+  position:absolute;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#f7931a,#ffd166);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  left:30px;
+  top:30px;
+  box-shadow:0 0 30px rgba(245,185,66,.3)
+}
+
+.investment-note{
+  border:1px solid #e9dfbb;
+  background:linear-gradient(135deg,#fffdf3,#fff);
+  border-radius:15px;
+  padding:17px
+}
+
+.investment-note strong{
   font-size:11px;
-  line-height:1.7;
+  display:block;
+  color:#8a6511;
+  margin-bottom:5px
+}
+
+.investment-note p{
+  color:#776c52;
+  font-size:9px;
+  line-height:1.6
 }
 
 .plans{
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  gap:15px;
+  gap:13px
 }
 
 .plan{
@@ -941,222 +862,278 @@ a{
   overflow:hidden;
   border:1px solid var(--border);
   border-radius:15px;
-  padding:18px;
+  padding:17px;
   background:
-    radial-gradient(circle at 100% 0,rgba(32,200,121,.07),transparent 32%),
+    radial-gradient(circle at 100% 0%,rgba(32,200,121,.07),transparent 35%),
     #fff;
-  transition:.25s;
+  transition:.22s
 }
 
 .plan:hover{
-  transform:translateY(-4px);
-  box-shadow:0 14px 30px rgba(7,21,37,.09);
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(7,21,37,.08)
 }
 
 .plan.featured{
   border-color:var(--gold);
-  box-shadow:0 7px 22px rgba(245,185,66,.15);
-}
-
-.plan-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  box-shadow:0 8px 24px rgba(245,185,66,.14)
 }
 
 .plan-badge{
-  font-size:9px;
-  padding:5px 8px;
-  border-radius:20px;
-  background:#eefaf5;
-  color:var(--green2);
-  font-weight:800;
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:7px;
+  text-transform:uppercase;
+  font-weight:900;
+  letter-spacing:.5px;
+  color:#8a6511;
+  background:#fff4c9;
+  padding:4px 6px;
+  border-radius:20px
 }
 
-.plan.featured .plan-badge{
-  background:#fff4d8;
-  color:var(--gold2);
+.plan-icon{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#eafbf3,#e7f2ff);
+  font-size:20px;
+  margin-bottom:12px
 }
 
 .plan h3{
-  font-size:15px;
+  font-size:14px
 }
 
 .plan-rate{
   color:var(--green2);
-  font-size:27px;
+  font-size:25px;
   font-weight:900;
-  margin:13px 0 2px;
+  margin:9px 0 2px
 }
 
 .plan.featured .plan-rate{
-  color:var(--gold2);
+  color:var(--gold2)
 }
 
 .plan-period{
   color:var(--muted);
+  font-size:9px
+}
+
+.plan-range{
+  margin-top:12px;
+  padding:9px;
+  background:#f7fafc;
+  border-radius:9px;
+  font-size:9px;
+  color:#475569
+}
+
+.plan-range strong{
+  display:block;
+  color:var(--dark);
   font-size:10px;
+  margin-top:3px
 }
 
 .plan-line{
   border-top:1px solid var(--border);
-  margin:14px 0;
+  margin:13px 0
 }
 
-.plan-detail{
-  display:flex;
-  justify-content:space-between;
-  gap:5px;
-  margin:8px 0;
-  font-size:10px;
+.plan ul{
+  list-style:none
 }
 
-.plan-detail span:first-child{
+.plan li{
   color:var(--muted);
+  font-size:9px;
+  margin:6px 0
 }
 
-.plan-detail strong{
-  font-size:10px;
-}
-
-.plan-description{
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.5;
-  min-height:45px;
+.plan li:before{
+  content:"✓";
+  color:var(--green2);
+  font-weight:900;
+  margin-right:5px
 }
 
 .plan button{
   width:100%;
-  margin-top:15px;
+  margin-top:14px;
   padding:10px;
-  border-radius:9px;
+  border-radius:8px;
   border:0;
   background:var(--dark);
   color:#fff;
-  font-size:11px;
-  cursor:pointer;
-  font-weight:700;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer
 }
 
 .plan button:hover{
-  background:#103452;
+  background:var(--green2)
 }
 
-.investment-illustration{
-  margin-top:22px;
-  min-height:155px;
-  border-radius:16px;
-  overflow:hidden;
-  position:relative;
+.plan-disabled{
+  opacity:.62
+}
+
+.plan-disabled button{
+  cursor:not-allowed
+}
+
+/* =========================
+   WELCOME BONUS
+========================= */
+
+.bonus-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
   background:
-    radial-gradient(circle at 20% 20%,rgba(32,200,121,.2),transparent 20%),
-    radial-gradient(circle at 80% 80%,rgba(245,185,66,.16),transparent 25%),
-    linear-gradient(135deg,#071525,#0b2d47);
-  color:#fff;
-  padding:24px;
+    radial-gradient(circle at 90% 0%,rgba(245,185,66,.13),transparent 30%),
+    linear-gradient(135deg,#fffdf4,#fff);
+  border:1px solid #f0dfab;
+  border-radius:15px;
+  padding:17px 19px;
+  margin-bottom:22px
 }
 
-.illustration-lines{
-  position:absolute;
-  inset:0;
-  opacity:.16;
-  background-image:
-    linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px);
-  background-size:30px 30px;
+.bonus-icon{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#f5b942,#ffd978);
+  color:#624600;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  flex-shrink:0
 }
 
-.chart-line{
-  position:absolute;
-  right:20px;
-  bottom:25px;
-  width:45%;
-  height:90px;
+.bonus-card strong{
+  font-size:12px;
+  display:block;
+  color:#72530a
 }
 
-.chart-line svg{
-  width:100%;
-  height:100%;
-}
-
-.investment-illustration-content{
-  position:relative;
-  z-index:2;
-  max-width:52%;
-}
-
-.investment-illustration h3{
-  font-size:18px;
-  margin-bottom:7px;
-}
-
-.investment-illustration p{
-  color:#a9bbcb;
-  font-size:10px;
+.bonus-card p{
+  color:#806f4a;
+  font-size:9px;
   line-height:1.6;
+  margin-top:3px
 }
 
-/* =========================================================
+/* =========================
    TRANSACTIONS
-========================================================= */
+========================= */
 
 .transactions{
   width:100%;
-  border-collapse:collapse;
+  border-collapse:collapse
 }
 
 .transactions th{
   text-align:left;
   color:#8a96a7;
-  font-size:10px;
+  font-size:9px;
   text-transform:uppercase;
   padding:9px 6px;
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid var(--border)
 }
 
 .transactions td{
   padding:13px 6px;
   border-bottom:1px solid #f0f2f5;
-  font-size:12px;
+  font-size:11px
 }
 
 .status{
   display:inline-block;
   padding:5px 8px;
   border-radius:20px;
-  font-size:9px;
-  font-weight:700;
+  font-size:8px;
+  font-weight:800
 }
 
 .status.completed{
   background:#dcfce9;
-  color:#15803d;
+  color:#15803d
 }
 
 .status.pending{
   background:#fff7d6;
-  color:#a16207;
+  color:#a16207
 }
 
 .status.failed{
   background:#fee2e2;
-  color:#b91c1c;
+  color:#b91c1c
 }
 
 .amount-plus{
   color:#159957;
-  font-weight:700;
+  font-weight:800
 }
 
 .amount-minus{
   color:#dc3c3c;
-  font-weight:700;
+  font-weight:800
 }
 
-/* =========================================================
+/* =========================
+   CHAT
+========================= */
+
+.chat-card{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(32,200,121,.08),transparent 35%),
+    #fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:22px;
+  box-shadow:var(--shadow)
+}
+
+.chat-layout{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:15px;
+  align-items:center
+}
+
+.chat-copy h3{
+  font-size:15px
+}
+
+.chat-copy p{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:5px;
+  line-height:1.6
+}
+
+.chat-button{
+  border:0;
+  background:var(--dark);
+  color:#fff;
+  border-radius:10px;
+  padding:11px 17px;
+  font-size:11px;
+  font-weight:800
+}
+
+/* =========================
    MODALS
-========================================================= */
+========================= */
 
 .modal{
   display:none;
@@ -1167,57 +1144,57 @@ a{
   z-index:2000;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:20px
 }
 
 .modal.active{
-  display:flex;
+  display:flex
 }
 
 .modal-box{
   width:100%;
-  max-width:450px;
+  max-width:460px;
   max-height:90vh;
-  overflow-y:auto;
+  overflow:auto;
   background:#fff;
-  border-radius:19px;
-  padding:27px;
+  border-radius:18px;
+  padding:25px;
   position:relative;
-  box-shadow:0 30px 80px rgba(0,0,0,.22);
+  box-shadow:0 25px 70px rgba(0,0,0,.25)
 }
 
 .modal-box h2{
   font-size:20px;
-  margin-bottom:7px;
+  margin-bottom:6px
 }
 
 .modal-box p{
   color:var(--muted);
-  font-size:12px;
-  margin-bottom:20px;
+  font-size:10px;
   line-height:1.6;
+  margin-bottom:19px
 }
 
 .close{
   position:absolute;
-  right:17px;
-  top:12px;
+  right:16px;
+  top:11px;
   border:0;
   background:none;
   font-size:25px;
   cursor:pointer;
-  color:#718096;
+  color:#718096
 }
 
 .field{
-  margin-bottom:14px;
+  margin-bottom:13px
 }
 
 .field label{
   display:block;
-  font-size:12px;
-  font-weight:700;
-  margin-bottom:6px;
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:6px
 }
 
 .field input,
@@ -1229,67 +1206,18 @@ a{
   border-radius:9px;
   outline:none;
   background:#fff;
+  color:var(--text)
 }
 
 .field textarea{
-  resize:vertical;
-  min-height:90px;
+  min-height:100px;
+  resize:vertical
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(32,200,121,.08);
-}
-
-.method-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.method-option{
-  position:relative;
-}
-
-.method-option input{
-  position:absolute;
-  opacity:0;
-}
-
-.method-option label{
-  display:block;
-  padding:15px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  cursor:pointer;
-  background:#fafbfd;
-  transition:.2s;
-}
-
-.method-option input:checked + label{
-  border-color:var(--green);
-  background:#effcf5;
-  box-shadow:0 5px 15px rgba(32,200,121,.08);
-}
-
-.method-icon{
-  font-size:22px;
-  margin-bottom:7px;
-}
-
-.method-option strong{
-  display:block;
-  font-size:12px;
-}
-
-.method-option span{
-  display:block;
-  color:var(--muted);
-  font-size:9px;
-  margin-top:3px;
+  border-color:var(--green)
 }
 
 .modal-submit{
@@ -1298,261 +1226,294 @@ a{
   border:0;
   background:var(--green);
   border-radius:9px;
-  font-weight:800;
+  font-weight:850;
   cursor:pointer;
-  color:#052014;
+  color:#052014
 }
 
-.modal-note{
-  margin-top:12px;
-  padding:11px;
-  background:#f5f7fa;
+.modal-submit.dark{
+  background:var(--dark);
+  color:#fff
+}
+
+.balance-warning{
+  display:none;
+  background:#fff4f4;
+  border:1px solid #ffd2d2;
+  color:#b91c1c;
   border-radius:9px;
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.5;
+  padding:9px;
+  font-size:9px;
+  margin-bottom:12px
 }
 
-/* =========================================================
-   CHAT
-========================================================= */
+.balance-warning.show{
+  display:block
+}
 
-.chat-box{
-  max-width:500px;
+.method-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:15px
+}
+
+.method{
+  border:1px solid var(--border);
+  background:#fafcfe;
+  border-radius:11px;
+  padding:13px;
+  text-align:left;
+  transition:.2s
+}
+
+.method.active{
+  border-color:var(--green);
+  background:#f1fff8
+}
+
+.method-icon{
+  font-size:20px;
+  margin-bottom:6px
+}
+
+.method strong{
+  display:block;
+  font-size:11px
+}
+
+.method span{
+  display:block;
+  color:var(--muted);
+  font-size:8px;
+  margin-top:3px
 }
 
 .chat-messages{
-  height:300px;
-  overflow-y:auto;
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:13px;
+  min-height:180px;
+  max-height:320px;
+  overflow:auto;
   background:#f7f9fc;
-  margin-bottom:12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px
 }
 
 .chat-empty{
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   text-align:center;
   color:var(--muted);
-  font-size:11px;
-  padding:30px;
+  font-size:10px;
+  padding:60px 10px
 }
 
-.message{
-  margin:8px 0;
-  max-width:80%;
-  padding:10px 12px;
-  border-radius:12px;
-  font-size:11px;
-  line-height:1.5;
+.chat-message{
+  max-width:82%;
+  padding:9px 11px;
+  border-radius:11px;
+  margin-bottom:8px;
+  font-size:10px;
+  line-height:1.5
 }
 
-.message.customer{
-  margin-left:auto;
+.chat-message.user{
   background:#dff9ec;
-  color:#12472f;
-  border-bottom-right-radius:3px;
+  margin-left:auto
 }
 
-.message.admin{
-  margin-right:auto;
+.chat-message.admin{
   background:#fff;
-  border:1px solid var(--border);
-  border-bottom-left-radius:3px;
+  border:1px solid var(--border)
 }
 
-.chat-input-row{
-  display:flex;
-  gap:8px;
+.chat-compose{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px
 }
 
-.chat-input-row input{
-  flex:1;
-  padding:12px;
+.chat-compose input{
   border:1px solid #dce2e9;
   border-radius:9px;
-  outline:none;
+  padding:11px
 }
 
-.chat-send{
+.chat-compose button{
   border:0;
+  background:var(--green);
   border-radius:9px;
-  padding:0 17px;
-  background:var(--dark);
-  color:#fff;
-  font-weight:700;
+  padding:0 16px;
+  font-weight:800
 }
 
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast{
-  position:fixed;
-  right:22px;
-  bottom:22px;
-  z-index:3000;
-  background:#071525;
-  color:#fff;
-  padding:13px 17px;
-  border-radius:11px;
-  box-shadow:0 15px 35px rgba(0,0,0,.2);
-  font-size:11px;
-  opacity:0;
-  transform:translateY(15px);
-  pointer-events:none;
-  transition:.25s;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* =========================================================
+/* =========================
    MOBILE
-========================================================= */
+========================= */
 
 @media(max-width:1200px){
+
   .plans{
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(3,1fr)
   }
 
   .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .hero-visual{
-    opacity:.65;
-  }
-}
-
-@media(max-width:900px){
-  .sidebar{
-    transform:translateX(-100%);
-    transition:.25s;
-  }
-
-  .sidebar.open{
-    transform:translateX(0);
-  }
-
-  .main{
-    margin-left:0;
-  }
-
-  .mobile-menu{
-    display:block;
-  }
-
-  .topbar{
-    padding:0 18px;
-  }
-
-  .content{
-    padding:22px 18px 40px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(2,1fr)
   }
 
   .market-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .account-tier{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(4,1fr)
   }
 }
 
-@media(max-width:650px){
+@media(max-width:950px){
+
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s
+  }
+
+  .sidebar.open{
+    transform:translateX(0)
+  }
+
+  .main{
+    margin-left:0
+  }
+
+  .mobile-menu{
+    display:block
+  }
+
+  .topbar{
+    padding:0 18px
+  }
+
+  .content{
+    padding:22px 18px 40px
+  }
+
+  .grid{
+    grid-template-columns:1fr
+  }
+
+  .investment-intro{
+    grid-template-columns:1fr
+  }
+
+  .plans{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .market-grid{
+    grid-template-columns:repeat(2,1fr)
+  }
+}
+
+@media(max-width:600px){
+
+  .topbar{
+    height:68px
+  }
+
+  .back-button{
+    display:flex
+  }
+
+  .welcome strong{
+    font-size:14px
+  }
+
+  .profile-info{
+    display:none
+  }
+
   .page-title{
     align-items:flex-start;
     flex-direction:column;
-    gap:15px;
+    gap:13px
   }
 
   .action-buttons{
-    width:100%;
+    width:100%
   }
 
   .action-buttons .btn{
-    flex:1;
+    flex:1
+  }
+
+  .balance-card{
+    padding:22px
+  }
+
+  .total-balance{
+    font-size:32px
   }
 
   .balance-row{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr
   }
 
   .balance-item{
     border-left:0;
     border-top:1px solid rgba(255,255,255,.14);
-    padding:12px 0 0;
+    padding:12px 0 0
   }
 
   .stats{
     grid-template-columns:1fr 1fr;
+    gap:10px
+  }
+
+  .card{
+    padding:16px
   }
 
   .actions{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr
   }
 
   .plans{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr
   }
 
-  .hero-content h2{
-    font-size:23px;
-  }
-
-  .hero-visual{
-    opacity:.25;
-    right:-35px;
-  }
-
-  .investment-illustration-content{
-    max-width:80%;
-  }
-
-  .profile-info{
-    display:none;
+  .market-grid{
+    grid-template-columns:1fr 1fr
   }
 
   .transactions th:nth-child(2),
   .transactions td:nth-child(2){
-    display:none;
+    display:none
   }
 
-  .tier-progress{
-    grid-template-columns:1fr;
+  .bonus-card{
+    align-items:flex-start
+  }
+
+  .chat-layout{
+    grid-template-columns:1fr
+  }
+
+  .chat-button{
+    width:100%
+  }
+
+  .method-grid{
+    grid-template-columns:1fr 1fr
   }
 }
 
-@media(max-width:430px){
-  .stats{
-    grid-template-columns:1fr;
-  }
+@media(max-width:390px){
 
   .actions{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr
+  }
+
+  .stats{
+    grid-template-columns:1fr
   }
 
   .market-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .topbar{
-    height:66px;
-  }
-
-  .welcome strong{
-    font-size:14px;
+    grid-template-columns:1fr
   }
 }
 </style>
@@ -1560,13 +1521,15 @@ a{
 
 <body>
 
-<!-- =========================================================
+<!-- =========================
      SIDEBAR
-========================================================= -->
+========================= -->
 
 <aside class="sidebar" id="sidebar">
 
-  <div class="logo">Coin<span>Forest</span></div>
+  <div class="logo">
+    Coin<span>Forest</span>
+  </div>
 
   <div class="menu-title">Main Menu</div>
 
@@ -1574,27 +1537,27 @@ a{
 
     <a href="#" class="active">
       <span class="icon">⌂</span>
-      <span data-i18n="dashboard">Dashboard</span>
+      Dashboard
     </a>
 
     <a href="wallet.html">
       <span class="icon">◉</span>
-      <span data-i18n="wallets">Wallets</span>
+      Wallets
     </a>
 
     <a href="#investments">
       <span class="icon">▣</span>
-      <span data-i18n="investments">Investments</span>
+      Investments
     </a>
 
     <a href="#transactions">
       <span class="icon">↕</span>
-      <span data-i18n="transactions">Transactions</span>
+      Transactions
     </a>
 
     <a href="#">
       <span class="icon">⇄</span>
-      <span data-i18n="transfers">Transfers</span>
+      Transfers
     </a>
 
   </nav>
@@ -1605,68 +1568,90 @@ a{
 
     <a href="#">
       <span class="icon">♙</span>
-      <span data-i18n="profile">Profile</span>
+      Profile
     </a>
 
     <a href="#">
       <span class="icon">⚙</span>
-      <span data-i18n="settings">Settings</span>
+      Settings
     </a>
 
-    <a href="#" onclick="openModal('chatModal');return false;">
+    <a href="javascript:void(0)" onclick="openChat()">
       <span class="icon">?</span>
-      <span data-i18n="support">Support</span>
+      Support
     </a>
 
   </nav>
 
   <div class="sidebar-bottom">
-    <button class="logout" onclick="logoutUser()" data-i18n="logout">
+
+    <button class="logout" onclick="logoutUser()">
       Log out
     </button>
+
   </div>
 
 </aside>
 
-<!-- =========================================================
+<!-- =========================
      MAIN
-========================================================= -->
+========================= -->
 
 <main class="main">
 
 <header class="topbar">
 
-  <div style="display:flex;align-items:center;gap:10px">
+  <div class="topbar-left">
+
+    <button
+      class="mobile-menu"
+      onclick="toggleSidebar()">
+      ☰
+    </button>
 
     <button
       class="back-button"
       onclick="goBack()"
-      title="Back"
-      aria-label="Back">
-      ‹
-    </button>
-
-    <button
-      class="mobile-menu"
-      onclick="toggleSidebar()"
-      aria-label="Open menu">
-      ☰
+      aria-label="Go back">
+      ←
     </button>
 
     <div class="welcome">
-      <small data-i18n="welcomeBack">Welcome back</small>
-      <strong id="welcomeName">CoinForest Member</strong>
+
+      <small>Welcome back</small>
+
+      <strong id="welcomeName">
+        CoinForest Member
+      </strong>
+
     </div>
 
   </div>
 
   <div class="profile">
 
-    <div class="avatar" id="avatar">CF</div>
+    <div
+      class="avatar"
+      id="avatar">
+      CF
+    </div>
 
     <div class="profile-info">
-      <strong id="profileName">CoinForest Member</strong>
-      <small id="profileEmail">Account</small>
+
+      <strong id="profileName">
+        CoinForest Member
+      </strong>
+
+      <small id="profileEmail">
+        Account
+      </small>
+
+      <span
+        class="current-tier"
+        id="currentTier">
+        ◆ Tier 1
+      </span>
+
     </div>
 
   </div>
@@ -1675,55 +1660,20 @@ a{
 
 <div class="content">
 
-<!-- =========================================================
-     CRYPTO HERO
-========================================================= -->
-
-<section class="crypto-hero">
-
-  <div class="hero-content">
-
-    <div class="hero-kicker">
-      COINFOREST DIGITAL ASSET PLATFORM
-    </div>
-
-    <h2 id="heroGreeting">
-      Build your digital portfolio with confidence.
-    </h2>
-
-    <p>
-      Monitor your wallets, explore investment opportunities,
-      track transactions and stay connected with your CoinForest
-      account from one professional dashboard.
-    </p>
-
-  </div>
-
-  <div class="hero-visual">
-
-    <div class="crypto-orbit"></div>
-
-    <div class="crypto-core">₿</div>
-
-    <div class="crypto-node node1">₿</div>
-    <div class="crypto-node node2">Ξ</div>
-    <div class="crypto-node node3">◆</div>
-
-  </div>
-
-</section>
-
-<!-- =========================================================
-     PAGE TITLE
-========================================================= -->
+<!-- =========================
+     TITLE
+========================= -->
 
 <div class="page-title">
 
   <div>
-    <h1 data-i18n="dashboard">Dashboard</h1>
-    <p data-i18n="dashboardSubtitle">
-      Manage your digital assets and monitor your portfolio.
+
+    <h1>Dashboard</h1>
+
+    <p>
+      Manage your digital assets, wallets and CoinForest portfolio.
     </p>
+
   </div>
 
   <div class="action-buttons">
@@ -1731,132 +1681,106 @@ a{
     <button
       class="btn btn-green"
       onclick="openModal('depositModal')">
-      + <span data-i18n="deposit">Deposit</span>
+      + Deposit
     </button>
 
     <button
       class="btn btn-dark"
       onclick="openModal('sendModal')">
-      <span data-i18n="sendMoney">Send Money</span>
+      Send Money
     </button>
 
   </div>
 
 </div>
 
-<!-- =========================================================
+<!-- =========================
      BALANCE
-========================================================= -->
+========================= -->
 
 <section class="balance-card">
 
-  <div class="balance-label">
-    Total Portfolio Balance
-  </div>
+  <div class="balance-content">
 
-  <div class="total-balance" id="totalBalance">
-    $0.00
-  </div>
-
-  <div class="balance-row">
-
-    <div class="balance-item">
-      <span>Main Wallet</span>
-      <strong id="mainWallet">$0.00</strong>
+    <div class="balance-label">
+      Total Portfolio Balance
     </div>
 
-    <div class="balance-item">
-      <span>Profit Wallet</span>
-      <strong id="profitWallet">$0.00</strong>
+    <div
+      class="total-balance"
+      id="totalBalance">
+      $0.00
     </div>
 
-    <div class="balance-item">
-      <span>This Week</span>
-      <strong class="positive" id="weeklyProfit">
-        +$0.00
-      </strong>
+    <div class="balance-row">
+
+      <div class="balance-item">
+
+        <span>
+          Main Wallet
+        </span>
+
+        <strong id="mainWallet">
+          $0.00
+        </strong>
+
+      </div>
+
+      <div class="balance-item">
+
+        <span>
+          Profit Wallet
+        </span>
+
+        <strong id="profitWallet">
+          $0.00
+        </strong>
+
+      </div>
+
+      <div class="balance-item">
+
+        <span>
+          This Week
+        </span>
+
+        <strong
+          class="positive"
+          id="weeklyProfit">
+          +$0.00
+        </strong>
+
+      </div>
+
     </div>
 
   </div>
 
 </section>
 
-<!-- =========================================================
-     TIER + WELCOME BONUS
-========================================================= -->
-
-<section class="account-tier">
-
-  <div class="tier-card">
-
-    <div class="tier-head">
-
-      <div>
-        <h3>Account Verification Level</h3>
-      </div>
-
-      <span class="tier-badge" id="tierBadge">
-        Tier 1
-      </span>
-
-    </div>
-
-    <div class="tier-progress">
-
-      <div class="tier-step active" id="tier1Step">
-        <strong>Tier 1</strong>
-        <span>Email confirmation completed.</span>
-      </div>
-
-      <div class="tier-step" id="tier2Step">
-        <strong>Tier 2</strong>
-        <span>KYC verification approved by CoinForest.</span>
-      </div>
-
-      <div class="tier-step" id="tier3Step">
-        <strong>Tier 3</strong>
-        <span>Investment eligibility enabled.</span>
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="bonus-card">
-
-    <div class="bonus-head">
-
-      <h3>Welcome Bonus</h3>
-
-      <div class="bonus-amount">$20</div>
-
-    </div>
-
-    <p>
-      Eligible accounts may receive a $20 welcome bonus in the
-      Profit Wallet. The bonus is manually credited by an
-      authorized administrator and is recorded separately as
-      a <strong>Welcome Bonus</strong> transaction.
-    </p>
-
-  </div>
-
-</section>
-
-<!-- =========================================================
+<!-- =========================
      STATS
-========================================================= -->
+========================= -->
 
 <section class="stats">
 
   <div class="card">
 
     <div class="stat-top">
-      <span class="stat-label">Total Deposits</span>
-      <div class="stat-icon">↓</div>
+
+      <span class="stat-label">
+        Total Deposits
+      </span>
+
+      <div class="stat-icon">
+        ↓
+      </div>
+
     </div>
 
-    <div class="stat-value" id="totalDeposits">
+    <div
+      class="stat-value"
+      id="totalDeposits">
       $0.00
     </div>
 
@@ -1869,11 +1793,20 @@ a{
   <div class="card">
 
     <div class="stat-top">
-      <span class="stat-label">Invested</span>
-      <div class="stat-icon">▣</div>
+
+      <span class="stat-label">
+        Invested
+      </span>
+
+      <div class="stat-icon">
+        ▣
+      </div>
+
     </div>
 
-    <div class="stat-value" id="totalInvested">
+    <div
+      class="stat-value"
+      id="totalInvested">
       $0.00
     </div>
 
@@ -1886,11 +1819,20 @@ a{
   <div class="card">
 
     <div class="stat-top">
-      <span class="stat-label">Withdrawals</span>
-      <div class="stat-icon">↑</div>
+
+      <span class="stat-label">
+        Withdrawals
+      </span>
+
+      <div class="stat-icon">
+        ↑
+      </div>
+
     </div>
 
-    <div class="stat-value" id="withdrawals">
+    <div
+      class="stat-value"
+      id="withdrawals">
       $0.00
     </div>
 
@@ -1903,11 +1845,20 @@ a{
   <div class="card">
 
     <div class="stat-top">
-      <span class="stat-label">Account Status</span>
-      <div class="stat-icon">✓</div>
+
+      <span class="stat-label">
+        Account Status
+      </span>
+
+      <div class="stat-icon">
+        ✓
+      </div>
+
     </div>
 
-    <div class="stat-value" id="accountStatus" style="font-size:18px">
+    <div
+      class="stat-value"
+      style="font-size:18px">
       Active
     </div>
 
@@ -1919,112 +1870,312 @@ a{
 
 </section>
 
-<!-- =========================================================
+<!-- =========================
      MARKET
-========================================================= -->
+========================= -->
 
 <section class="market-strip">
 
-  <div class="market-title">
-    Live Market Overview
+  <div class="market-title-row">
+
+    <div class="market-title">
+      Live Market Overview
+    </div>
+
+    <div class="market-live">
+      <span class="live-dot"></span>
+      Market simulation
+    </div>
+
   </div>
 
   <div class="market-grid">
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon btc-icon">₿</div>
+
+        <div class="coin-icon btc-icon">
+          ₿
+        </div>
+
         <strong>BTC</strong>
-        <span class="coin-name">Bitcoin</span>
+
+        <span class="coin-name">
+          Bitcoin
+        </span>
+
       </div>
-      <div class="coin-price" id="btcPrice">$104,820.00</div>
-      <div class="coin-change up" id="btcChange">+2.41%</div>
+
+      <div
+        class="coin-price"
+        id="btcPrice">
+        $104,820.00
+      </div>
+
+      <div
+        class="coin-change up"
+        id="btcChange">
+        +2.41%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon eth-icon">Ξ</div>
+
+        <div class="coin-icon eth-icon">
+          Ξ
+        </div>
+
         <strong>ETH</strong>
-        <span class="coin-name">Ethereum</span>
+
+        <span class="coin-name">
+          Ethereum
+        </span>
+
       </div>
-      <div class="coin-price" id="ethPrice">$3,842.12</div>
-      <div class="coin-change up" id="ethChange">+1.83%</div>
+
+      <div
+        class="coin-price"
+        id="ethPrice">
+        $3,842.12
+      </div>
+
+      <div
+        class="coin-change up"
+        id="ethChange">
+        +1.83%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon usdt-icon">₮</div>
+
+        <div class="coin-icon usdt-icon">
+          ₮
+        </div>
+
         <strong>USDT</strong>
-        <span class="coin-name">Tether</span>
+
+        <span class="coin-name">
+          Tether
+        </span>
+
       </div>
-      <div class="coin-price" id="usdtPrice">$1.00</div>
-      <div class="coin-change up" id="usdtChange">+0.02%</div>
+
+      <div
+        class="coin-price"
+        id="usdtPrice">
+        $1.00
+      </div>
+
+      <div
+        class="coin-change up"
+        id="usdtChange">
+        +0.02%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon bnb-icon">◆</div>
+
+        <div class="coin-icon bnb-icon">
+          ◆
+        </div>
+
         <strong>BNB</strong>
-        <span class="coin-name">BNB</span>
+
+        <span class="coin-name">
+          BNB
+        </span>
+
       </div>
-      <div class="coin-price" id="bnbPrice">$716.35</div>
-      <div class="coin-change up" id="bnbChange">+1.27%</div>
+
+      <div
+        class="coin-price"
+        id="bnbPrice">
+        $716.35
+      </div>
+
+      <div
+        class="coin-change up"
+        id="bnbChange">
+        +1.27%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon sol-icon">S</div>
+
+        <div class="coin-icon sol-icon">
+          S
+        </div>
+
         <strong>SOL</strong>
-        <span class="coin-name">Solana</span>
+
+        <span class="coin-name">
+          Solana
+        </span>
+
       </div>
-      <div class="coin-price" id="solPrice">$0.00</div>
-      <div class="coin-change up" id="solChange">+0.00%</div>
+
+      <div
+        class="coin-price"
+        id="solPrice">
+        $182.40
+      </div>
+
+      <div
+        class="coin-change up"
+        id="solChange">
+        +1.21%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon xrp-icon">X</div>
+
+        <div class="coin-icon xrp-icon">
+          X
+        </div>
+
         <strong>XRP</strong>
-        <span class="coin-name">XRP</span>
+
+        <span class="coin-name">
+          XRP
+        </span>
+
       </div>
-      <div class="coin-price" id="xrpPrice">$0.00</div>
-      <div class="coin-change up" id="xrpChange">+0.00%</div>
+
+      <div
+        class="coin-price"
+        id="xrpPrice">
+        $2.91
+      </div>
+
+      <div
+        class="coin-change up"
+        id="xrpChange">
+        +0.84%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon ada-icon">A</div>
+
+        <div class="coin-icon ada-icon">
+          A
+        </div>
+
         <strong>ADA</strong>
-        <span class="coin-name">Cardano</span>
+
+        <span class="coin-name">
+          Cardano
+        </span>
+
       </div>
-      <div class="coin-price" id="adaPrice">$0.00</div>
-      <div class="coin-change up" id="adaChange">+0.00%</div>
+
+      <div
+        class="coin-price"
+        id="adaPrice">
+        $0.81
+      </div>
+
+      <div
+        class="coin-change down"
+        id="adaChange">
+        -0.32%
+      </div>
+
     </div>
 
     <div class="coin">
+
       <div class="coin-top">
-        <div class="coin-icon dot-icon">●</div>
-        <strong>DOT</strong>
-        <span class="coin-name">Polkadot</span>
+
+        <div class="coin-icon doge-icon">
+          Ð
+        </div>
+
+        <strong>DOGE</strong>
+
+        <span class="coin-name">
+          Dogecoin
+        </span>
+
       </div>
-      <div class="coin-price" id="dotPrice">$0.00</div>
-      <div class="coin-change up" id="dotChange">+0.00%</div>
+
+      <div
+        class="coin-price"
+        id="dogePrice">
+        $0.24
+      </div>
+
+      <div
+        class="coin-change up"
+        id="dogeChange">
+        +0.71%
+      </div>
+
     </div>
 
   </div>
 
 </section>
 
-<!-- =========================================================
+<!-- =========================
+     BONUS
+========================= -->
+
+<section class="bonus-card">
+
+  <div class="bonus-icon">
+    🎁
+  </div>
+
+  <div>
+
+    <strong>
+      Welcome to CoinForest — $20 Welcome Bonus
+    </strong>
+
+    <p>
+      Eligible new accounts may receive a $20 welcome bonus credited
+      manually by CoinForest administration to the Profit Wallet.
+      The welcome bonus is recorded separately in your transaction history.
+      Profit Wallet funds are not available for investment funding.
+    </p>
+
+  </div>
+
+</section>
+
+<!-- =========================
      QUICK ACTIONS + WALLETS
-========================================================= -->
+========================= -->
 
 <section class="grid">
 
   <div class="card">
 
     <div class="card-head">
-      <h2>Quick Actions</h2>
+
+      <h2>
+        Quick Actions
+      </h2>
+
     </div>
 
     <div class="actions">
@@ -2033,19 +2184,35 @@ a{
         class="action"
         onclick="openModal('depositModal')">
 
-        <div class="action-icon">💳</div>
-        <strong>Deposit</strong>
-        <span>Add funds to your account</span>
+        <div class="action-icon">
+          💳
+        </div>
+
+        <strong>
+          Deposit
+        </strong>
+
+        <span>
+          Add funds to Main Wallet
+        </span>
 
       </button>
 
       <button
         class="action"
-        onclick="openInvestment()">
+        onclick="openModal('investmentModal')">
 
-        <div class="action-icon">📈</div>
-        <strong>Invest</strong>
-        <span>Explore available schemas</span>
+        <div class="action-icon">
+          📈
+        </div>
+
+        <strong>
+          Invest
+        </strong>
+
+        <span>
+          Use Main Wallet balance
+        </span>
 
       </button>
 
@@ -2053,9 +2220,17 @@ a{
         class="action"
         onclick="openModal('withdrawModal')">
 
-        <div class="action-icon">💸</div>
-        <strong>Withdraw</strong>
-        <span>Request a withdrawal</span>
+        <div class="action-icon">
+          💸
+        </div>
+
+        <strong>
+          Withdraw
+        </strong>
+
+        <span>
+          Send funds to your bank
+        </span>
 
       </button>
 
@@ -2063,9 +2238,17 @@ a{
         class="action"
         onclick="openModal('sendModal')">
 
-        <div class="action-icon">↗</div>
-        <strong>Send Money</strong>
-        <span>Transfer to another account</span>
+        <div class="action-icon">
+          ↗
+        </div>
+
+        <strong>
+          Send Money
+        </strong>
+
+        <span>
+          Transfer to another user
+        </span>
 
       </button>
 
@@ -2073,19 +2256,35 @@ a{
         class="action"
         onclick="window.location.href='wallet.html'">
 
-        <div class="action-icon">👛</div>
-        <strong>Wallet Exchange</strong>
-        <span>Manage supported wallets</span>
+        <div class="action-icon">
+          👛
+        </div>
+
+        <strong>
+          Wallet Exchange
+        </strong>
+
+        <span>
+          Manage wallet balances
+        </span>
 
       </button>
 
       <button
         class="action"
-        onclick="openModal('chatModal')">
+        onclick="openChat()">
 
-        <div class="action-icon">💬</div>
-        <strong>Customer Support</strong>
-        <span>Chat with CoinForest Admin</span>
+        <div class="action-icon">
+          💬
+        </div>
+
+        <strong>
+          Support Chat
+        </strong>
+
+        <span>
+          Contact CoinForest admin
+        </span>
 
       </button>
 
@@ -2097,7 +2296,9 @@ a{
 
     <div class="card-head">
 
-      <h2>My Wallets</h2>
+      <h2>
+        My Wallets
+      </h2>
 
       <a href="wallet.html">
         View all
@@ -2116,13 +2317,15 @@ a{
           </div>
 
           <div>
+
             <div class="wallet-name">
               Main Wallet
             </div>
 
             <div class="wallet-sub">
-              Available balance • Investment funding
+              Available for deposits, transfers and investments
             </div>
+
           </div>
 
         </div>
@@ -2150,7 +2353,7 @@ a{
             </div>
 
             <div class="wallet-sub">
-              Earnings & approved bonuses
+              Earnings and manually credited bonuses
             </div>
 
           </div>
@@ -2167,349 +2370,280 @@ a{
 
     </div>
 
-    <div class="modal-note" style="margin-top:14px">
-      <strong>Main Wallet:</strong> used for eligible investment funding.
-      <br>
-      <strong>Profit Wallet:</strong> earnings and bonuses only.
-    </div>
-
   </div>
 
 </section>
 
-<!-- =========================================================
-     INVESTMENT PLANS
-========================================================= -->
+<!-- =========================
+     INVESTMENTS
+========================= -->
 
 <section
-  class="card"
-  id="investments"
-  style="margin-bottom:22px">
+  class="card investment-section"
+  id="investments">
 
   <div class="card-head">
 
-    <h2>Investment Schemas</h2>
+    <h2>
+      Investment Schemas
+    </h2>
 
-    <a href="#" onclick="openInvestment();return false;">
-      Explore
+    <a href="#investments">
+      Explore plans
     </a>
 
   </div>
 
   <div class="investment-intro">
 
-    <h3>
-      Structured investment opportunities
-    </h3>
+    <div class="investment-banner">
 
-    <p>
-      CoinForest investment schemas are organized by entry range
-      and configured return percentage. Each schema has its own
-      minimum requirement. Investment funding is restricted to
-      the customer's Main Wallet and cannot be taken from the
-      Profit Wallet. Final eligibility and transaction processing
-      are controlled by the CoinForest account system.
-    </p>
+      <div class="investment-orbit"></div>
+
+      <h3>
+        Build your investment portfolio
+      </h3>
+
+      <p>
+        CoinForest investment schemas are structured around different
+        entry levels. Each schema has its own minimum amount and
+        return percentage. Your Main Wallet is the funding source
+        for investments. Profit Wallet funds cannot be used to start
+        an investment.
+      </p>
+
+    </div>
+
+    <div class="investment-note">
+
+      <strong>
+        🔐 Investment access
+      </strong>
+
+      <p>
+        Investment participation requires the appropriate account
+        verification level. Tier 1 requires confirmed email,
+        Tier 2 requires approved KYC, and Tier 3 represents
+        investment-level access.
+      </p>
+
+    </div>
 
   </div>
 
   <div class="plans">
 
-    <!-- 15% -->
+    <!-- PLAN 1 -->
 
     <div class="plan">
 
-      <div class="plan-top">
-
-        <h3>Starter</h3>
-
-        <span class="plan-badge">
-          Entry
-        </span>
-
+      <div class="plan-icon">
+        🌱
       </div>
+
+      <h3>
+        Starter
+      </h3>
 
       <div class="plan-rate">
         15%
       </div>
 
       <div class="plan-period">
-        Configured return
+        Schema Return
+      </div>
+
+      <div class="plan-range">
+        Minimum / Range
+        <strong>
+          $100 – $1,500
+        </strong>
       </div>
 
       <div class="plan-line"></div>
 
-      <div class="plan-detail">
-        <span>Range</span>
-        <strong>$100–$1,500</strong>
-      </div>
+      <ul>
+        <li>Entry-level portfolio</li>
+        <li>Main Wallet funding</li>
+        <li>Structured investment record</li>
+      </ul>
 
-      <div class="plan-detail">
-        <span>Minimum</span>
-        <strong>$100</strong>
-      </div>
-
-      <div class="plan-detail">
-        <span>Funding</span>
-        <strong>Main Wallet</strong>
-      </div>
-
-      <div class="plan-description">
-        Designed as the starting schema for customers
-        entering the CoinForest investment system.
-      </div>
-
-      <button onclick="openInvestment('Starter')">
-        View Schema
+      <button
+        onclick="selectPlan('Starter')">
+        Invest Now
       </button>
 
     </div>
 
-    <!-- 25% -->
+    <!-- PLAN 2 -->
 
     <div class="plan">
 
-      <div class="plan-top">
-
-        <h3>Growth</h3>
-
-        <span class="plan-badge">
-          Growth
-        </span>
-
+      <div class="plan-icon">
+        🚀
       </div>
+
+      <h3>
+        Growth
+      </h3>
 
       <div class="plan-rate">
         25%
       </div>
 
       <div class="plan-period">
-        Configured return
+        Schema Return
+      </div>
+
+      <div class="plan-range">
+        Minimum / Range
+        <strong>
+          $750 – $5,500
+        </strong>
       </div>
 
       <div class="plan-line"></div>
 
-      <div class="plan-detail">
-        <span>Range</span>
-        <strong>$750–$5,500</strong>
-      </div>
+      <ul>
+        <li>Higher portfolio level</li>
+        <li>Main Wallet funding</li>
+        <li>Investment tracking</li>
+      </ul>
 
-      <div class="plan-detail">
-        <span>Minimum</span>
-        <strong>$750</strong>
-      </div>
-
-      <div class="plan-detail">
-        <span>Funding</span>
-        <strong>Main Wallet</strong>
-      </div>
-
-      <div class="plan-description">
-        A higher-entry schema intended for customers
-        who meet the required account and balance criteria.
-      </div>
-
-      <button onclick="openInvestment('Growth')">
-        View Schema
+      <button
+        onclick="selectPlan('Growth')">
+        Invest Now
       </button>
 
     </div>
 
-    <!-- 35% -->
+    <!-- PLAN 3 -->
 
-    <div class="plan">
+    <div class="plan featured">
 
-      <div class="plan-top">
-
-        <h3>Silver</h3>
-
-        <span class="plan-badge">
-          Advanced
-        </span>
-
+      <div class="plan-badge">
+        Popular
       </div>
+
+      <div class="plan-icon">
+        💎
+      </div>
+
+      <h3>
+        Silver
+      </h3>
 
       <div class="plan-rate">
         35%
       </div>
 
       <div class="plan-period">
-        Configured return
+        Schema Return
+      </div>
+
+      <div class="plan-range">
+        Minimum / Range
+        <strong>
+          $5,500 – $25,000
+        </strong>
       </div>
 
       <div class="plan-line"></div>
 
-      <div class="plan-detail">
-        <span>Range</span>
-        <strong>$5,500–$25,000</strong>
-      </div>
+      <ul>
+        <li>Advanced portfolio level</li>
+        <li>Main Wallet funding</li>
+        <li>Detailed investment record</li>
+      </ul>
 
-      <div class="plan-detail">
-        <span>Minimum</span>
-        <strong>$5,500</strong>
-      </div>
-
-      <div class="plan-detail">
-        <span>Funding</span>
-        <strong>Main Wallet</strong>
-      </div>
-
-      <div class="plan-description">
-        An advanced schema with a larger minimum
-        allocation and additional eligibility requirements.
-      </div>
-
-      <button onclick="openInvestment('Silver')">
-        View Schema
+      <button
+        onclick="selectPlan('Silver')">
+        Invest Now
       </button>
 
     </div>
 
-    <!-- 45% -->
+    <!-- PLAN 4 -->
 
-    <div class="plan featured">
+    <div class="plan">
 
-      <div class="plan-top">
-
-        <h3>Gold</h3>
-
-        <span class="plan-badge">
-          Premium
-        </span>
-
+      <div class="plan-icon">
+        🏆
       </div>
+
+      <h3>
+        Gold
+      </h3>
 
       <div class="plan-rate">
         45%
       </div>
 
       <div class="plan-period">
-        Configured return
+        Schema Return
+      </div>
+
+      <div class="plan-range">
+        Minimum / Range
+        <strong>
+          $25,000 – $75,000
+        </strong>
       </div>
 
       <div class="plan-line"></div>
 
-      <div class="plan-detail">
-        <span>Range</span>
-        <strong>$25K–$75K</strong>
-      </div>
+      <ul>
+        <li>Premium portfolio level</li>
+        <li>Main Wallet funding</li>
+        <li>Advanced account tracking</li>
+      </ul>
 
-      <div class="plan-detail">
-        <span>Minimum</span>
-        <strong>$25,000</strong>
-      </div>
-
-      <div class="plan-detail">
-        <span>Funding</span>
-        <strong>Main Wallet</strong>
-      </div>
-
-      <div class="plan-description">
-        A premium schema designed for higher-value
-        allocations and qualified CoinForest accounts.
-      </div>
-
-      <button onclick="openInvestment('Gold')">
-        View Schema
+      <button
+        onclick="selectPlan('Gold')">
+        Invest Now
       </button>
 
     </div>
 
-    <!-- 50% -->
+    <!-- PLAN 5 -->
 
     <div class="plan">
 
-      <div class="plan-top">
-
-        <h3>Platinum</h3>
-
-        <span class="plan-badge">
-          Elite
-        </span>
-
+      <div class="plan-icon">
+        👑
       </div>
+
+      <h3>
+        Platinum
+      </h3>
 
       <div class="plan-rate">
         50%
       </div>
 
       <div class="plan-period">
-        Configured return
+        Schema Return
+      </div>
+
+      <div class="plan-range">
+        Minimum / Range
+        <strong>
+          $75,000+
+        </strong>
       </div>
 
       <div class="plan-line"></div>
 
-      <div class="plan-detail">
-        <span>Range</span>
-        <strong>$75,000+</strong>
-      </div>
+      <ul>
+        <li>Highest portfolio level</li>
+        <li>Main Wallet funding</li>
+        <li>Premium account tracking</li>
+      </ul>
 
-      <div class="plan-detail">
-        <span>Minimum</span>
-        <strong>$75,000</strong>
-      </div>
-
-      <div class="plan-detail">
-        <span>Funding</span>
-        <strong>Main Wallet</strong>
-      </div>
-
-      <div class="plan-description">
-        The highest displayed schema, reserved for
-        accounts meeting the required investment criteria.
-      </div>
-
-      <button onclick="openInvestment('Platinum')">
-        View Schema
+      <button
+        onclick="selectPlan('Platinum')">
+        Invest Now
       </button>
-
-    </div>
-
-  </div>
-
-  <!-- INVESTMENT ILLUSTRATION -->
-
-  <div class="investment-illustration">
-
-    <div class="illustration-lines"></div>
-
-    <div class="investment-illustration-content">
-
-      <h3>
-        Grow with a structured portfolio approach
-      </h3>
-
-      <p>
-        Review each schema carefully before proceeding.
-        Your available Main Wallet balance, account tier,
-        KYC status and schema requirements determine whether
-        an investment can be initiated.
-      </p>
-
-    </div>
-
-    <div class="chart-line">
-
-      <svg viewBox="0 0 400 120" preserveAspectRatio="none">
-
-        <polyline
-          points="0,105 45,88 80,94 125,65 165,75 210,45 250,58 300,25 350,39 400,5"
-          fill="none"
-          stroke="#20c879"
-          stroke-width="5"
-          stroke-linecap="round"
-          stroke-linejoin="round"/>
-
-        <polyline
-          points="0,105 45,88 80,94 125,65 165,75 210,45 250,58 300,25 350,39 400,5"
-          fill="none"
-          stroke="#20c879"
-          stroke-width="16"
-          opacity=".08"
-          stroke-linecap="round"
-          stroke-linejoin="round"/>
-
-      </svg>
 
     </div>
 
@@ -2517,11 +2651,45 @@ a{
 
 </section>
 
-<!-- =========================================================
-     TRANSACTIONS
-========================================================= -->
+<!-- =========================
+     CHAT
+========================= -->
 
-<section class="card" id="transactions">
+<section class="chat-card">
+
+  <div class="chat-layout">
+
+    <div class="chat-copy">
+
+      <h3>
+        CoinForest Customer Support
+      </h3>
+
+      <p>
+        Need assistance with your account, deposit, withdrawal,
+        verification or investment access? Contact the CoinForest
+        support team through the customer/admin chat.
+      </p>
+
+    </div>
+
+    <button
+      class="chat-button"
+      onclick="openChat()">
+      Open Support Chat
+    </button>
+
+  </div>
+
+</section>
+
+<!-- =========================
+     TRANSACTIONS
+========================= -->
+
+<section
+  class="card"
+  id="transactions">
 
   <div class="card-head">
 
@@ -2529,7 +2697,7 @@ a{
       Recent Transactions
     </h2>
 
-    <a href="#">
+    <a href="#transactions">
       View all
     </a>
 
@@ -2542,10 +2710,23 @@ a{
       <thead>
 
         <tr>
-          <th>Transaction</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Amount</th>
+
+          <th>
+            Transaction
+          </th>
+
+          <th>
+            Date
+          </th>
+
+          <th>
+            Status
+          </th>
+
+          <th>
+            Amount
+          </th>
+
         </tr>
 
       </thead>
@@ -2585,11 +2766,13 @@ a{
 </div>
 </main>
 
-<!-- =========================================================
+<!-- =========================
      DEPOSIT MODAL
-========================================================= -->
+========================= -->
 
-<div class="modal" id="depositModal">
+<div
+  class="modal"
+  id="depositModal">
 
   <div class="modal-box">
 
@@ -2599,70 +2782,83 @@ a{
       ×
     </button>
 
-    <h2>Deposit Funds</h2>
+    <h2>
+      Deposit Funds
+    </h2>
 
     <p>
-      Choose how you want your deposit request handled.
+      Choose how you want to fund your CoinForest Main Wallet.
+      Profit Wallet cannot be used as a deposit funding source.
     </p>
 
-    <div class="field">
+    <label class="field">
 
-      <label>
+      <span>
         Payment Method
-      </label>
+      </span>
 
       <div class="method-grid">
 
-        <div class="method-option">
+        <button
+          type="button"
+          class="method active"
+          onclick="selectMethod(this,'depositMethod','Wallet')">
 
-          <input
-            type="radio"
-            name="depositMethod"
-            id="depositWallet"
-            value="wallet"
-            checked>
+          <div class="method-icon">
+            👛
+          </div>
 
-          <label for="depositWallet">
+          <strong>
+            Wallet
+          </strong>
 
-            <div class="method-icon">
-              👛
-            </div>
+          <span>
+            CoinForest wallet funding
+          </span>
 
-            <strong>Wallet</strong>
+        </button>
 
-            <span>
-              Internal wallet workflow
-            </span>
+        <button
+          type="button"
+          class="method"
+          onclick="selectMethod(this,'depositMethod','Bank Transfer')">
 
-          </label>
+          <div class="method-icon">
+            🏦
+          </div>
 
-        </div>
+          <strong>
+            Bank Transfer
+          </strong>
 
-        <div class="method-option">
+          <span>
+            Manual bank transfer
+          </span>
 
-          <input
-            type="radio"
-            name="depositMethod"
-            id="depositBank"
-            value="bank_transfer">
-
-          <label for="depositBank">
-
-            <div class="method-icon">
-              🏦
-            </div>
-
-            <strong>Bank Transfer</strong>
-
-            <span>
-              Manual bank transfer workflow
-            </span>
-
-          </label>
-
-        </div>
+        </button>
 
       </div>
+
+    </label>
+
+    <input
+      type="hidden"
+      id="depositMethod"
+      value="Wallet">
+
+    <div
+      class="field"
+      id="depositBankField"
+      style="display:none">
+
+      <label>
+        Bank Transfer Reference
+      </label>
+
+      <input
+        type="text"
+        id="depositReference"
+        placeholder="Enter transfer reference">
 
     </div>
 
@@ -2683,26 +2879,20 @@ a{
     <button
       class="modal-submit"
       onclick="submitDeposit()">
-
       Continue
-
     </button>
-
-    <div class="modal-note">
-      Deposits are currently handled through controlled
-      development workflows. No real payment gateway is
-      connected at this stage.
-    </div>
 
   </div>
 
 </div>
 
-<!-- =========================================================
+<!-- =========================
      WITHDRAW MODAL
-========================================================= -->
+========================= -->
 
-<div class="modal" id="withdrawModal">
+<div
+  class="modal"
+  id="withdrawModal">
 
   <div class="modal-box">
 
@@ -2712,74 +2902,67 @@ a{
       ×
     </button>
 
-    <h2>Withdraw Funds</h2>
+    <h2>
+      Withdraw Funds
+    </h2>
 
     <p>
-      Choose a withdrawal payment method and enter the amount.
+      Withdraw available funds to your registered bank account.
+      Withdrawal availability is subject to account status and
+      platform verification.
     </p>
 
     <div class="field">
 
       <label>
-        Payment Method
+        Withdraw From
       </label>
 
-      <div class="method-grid">
+      <select id="withdrawFrom">
 
-        <div class="method-option">
+        <option value="Main Wallet">
+          Main Wallet
+        </option>
 
-          <input
-            type="radio"
-            name="withdrawMethod"
-            id="withdrawWallet"
-            value="wallet"
-            checked>
+        <option value="Profit Wallet">
+          Profit Wallet
+        </option>
 
-          <label for="withdrawWallet">
-
-            <div class="method-icon">
-              👛
-            </div>
-
-            <strong>Wallet</strong>
-
-            <span>
-              Wallet-based withdrawal workflow
-            </span>
-
-          </label>
-
-        </div>
-
-        <div class="method-option">
-
-          <input
-            type="radio"
-            name="withdrawMethod"
-            id="withdrawBank"
-            value="bank_transfer">
-
-          <label for="withdrawBank">
-
-            <div class="method-icon">
-              🏦
-            </div>
-
-            <strong>Bank Transfer</strong>
-
-            <span>
-              Manual bank transfer workflow
-            </span>
-
-          </label>
-
-        </div>
-
-      </div>
+      </select>
 
     </div>
 
     <div class="field">
+
+      <label>
+        Withdraw To
+      </label>
+
+      <select id="withdrawTo">
+
+        <option value="Bank Account">
+          Bank Account
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Bank Account
+      </label>
+
+      <input
+        type="text"
+        id="withdrawAccount"
+        placeholder="Registered bank account">
+
+    </div>
+
+    <div
+      class="field">
 
       <label>
         Amount
@@ -2793,28 +2976,29 @@ a{
 
     </div>
 
+    <div
+      class="balance-warning"
+      id="withdrawWarning">
+      Withdrawal amount cannot exceed the selected wallet balance.
+    </div>
+
     <button
       class="modal-submit"
       onclick="submitWithdrawal()">
-
       Request Withdrawal
-
     </button>
-
-    <div class="modal-note">
-      Withdrawals are currently simulated development
-      requests. No real bank transfer is performed automatically.
-    </div>
 
   </div>
 
 </div>
 
-<!-- =========================================================
-     SEND MONEY
-========================================================= -->
+<!-- =========================
+     SEND MODAL
+========================= -->
 
-<div class="modal" id="sendModal">
+<div
+  class="modal"
+  id="sendModal">
 
   <div class="modal-box">
 
@@ -2824,11 +3008,30 @@ a{
       ×
     </button>
 
-    <h2>Send Money</h2>
+    <h2>
+      Send Money
+    </h2>
 
     <p>
-      Transfer funds to another CoinForest account.
+      Send funds from your Main Wallet to another CoinForest account.
+      Profit Wallet cannot be used as a payment source.
     </p>
+
+    <div class="field">
+
+      <label>
+        Send From
+      </label>
+
+      <select id="sendFrom">
+
+        <option value="Main Wallet">
+          Main Wallet
+        </option>
+
+      </select>
+
+    </div>
 
     <div class="field">
 
@@ -2838,12 +3041,8 @@ a{
 
       <select id="sendMethod">
 
-        <option value="wallet">
+        <option value="Wallet">
           Wallet
-        </option>
-
-        <option value="bank_transfer">
-          Bank Transfer
         </option>
 
       </select>
@@ -2877,6 +3076,12 @@ a{
 
     </div>
 
+    <div
+      class="balance-warning"
+      id="sendWarning">
+      Send amount cannot exceed your Main Wallet balance.
+    </div>
+
     <div class="field">
 
       <label>
@@ -2891,22 +3096,22 @@ a{
     </div>
 
     <button
-      class="modal-submit"
-      onclick="submitSendMoney()">
-
+      class="modal-submit dark"
+      onclick="submitTransfer()">
       Send Money
-
     </button>
 
   </div>
 
 </div>
 
-<!-- =========================================================
+<!-- =========================
      INVESTMENT MODAL
-========================================================= -->
+========================= -->
 
-<div class="modal" id="investmentModal">
+<div
+  class="modal"
+  id="investmentModal">
 
   <div class="modal-box">
 
@@ -2916,45 +3121,68 @@ a{
       ×
     </button>
 
-    <h2>Investment Schema</h2>
+    <h2>
+      Start Investment
+    </h2>
 
-    <p id="investmentDescription">
-      Review the schema requirements before proceeding.
+    <p>
+      Investments are funded exclusively from your Main Wallet.
+      Profit Wallet cannot be selected as an investment payment source.
     </p>
 
     <div class="field">
 
       <label>
-        Schema
+        Investment Schema
       </label>
 
-      <select id="investmentPlan">
+      <select
+        id="investmentPlan"
+        onchange="updateInvestmentLimits()">
 
         <option value="Starter">
-          Starter — 15%
+          Starter — 15% — $100–$1,500
         </option>
 
         <option value="Growth">
-          Growth — 25%
+          Growth — 25% — $750–$5,500
         </option>
 
         <option value="Silver">
-          Silver — 35%
+          Silver — 35% — $5,500–$25,000
         </option>
 
         <option value="Gold">
-          Gold — 45%
+          Gold — 45% — $25,000–$75,000
         </option>
 
         <option value="Platinum">
-          Platinum — 50%
+          Platinum — 50% — $75,000+
         </option>
 
       </select>
 
     </div>
 
-    <div class="field">
+    <div
+      class="field">
+
+      <label>
+        Payment Source
+      </label>
+
+      <select disabled>
+
+        <option>
+          Main Wallet
+        </option>
+
+      </select>
+
+    </div>
+
+    <div
+      class="field">
 
       <label>
         Investment Amount
@@ -2963,44 +3191,37 @@ a{
       <input
         type="number"
         id="investmentAmount"
-        min="1"
+        min="100"
         placeholder="Enter amount"
-        oninput="validateInvestmentAmount()">
+        oninput="checkInvestmentAmount()">
 
     </div>
 
     <div
-      class="modal-note"
-      id="investmentInfo">
-
-      Payment source: <strong>Main Wallet only</strong>.
-      <br>
-      Profit Wallet cannot be used for investments.
-      <br>
-      Available Main Wallet balance:
-      <strong id="investmentBalance">$0.00</strong>
-
+      class="balance-warning"
+      id="investmentWarning">
+      Investment amount is outside the selected schema range or exceeds your Main Wallet balance.
     </div>
 
     <button
       class="modal-submit"
       onclick="submitInvestment()">
-
-      Review Investment
-
+      Start Investment
     </button>
 
   </div>
 
 </div>
 
-<!-- =========================================================
+<!-- =========================
      CHAT MODAL
-========================================================= -->
+========================= -->
 
-<div class="modal" id="chatModal">
+<div
+  class="modal"
+  id="chatModal">
 
-  <div class="modal-box chat-box">
+  <div class="modal-box">
 
     <button
       class="close"
@@ -3013,30 +3234,30 @@ a{
     </h2>
 
     <p>
-      Send a message to the CoinForest customer support/admin team.
+      Chat directly with the CoinForest customer support/admin team.
     </p>
 
-    <div class="chat-messages" id="chatMessages">
+    <div
+      class="chat-messages"
+      id="chatMessages">
 
       <div class="chat-empty">
-        Your customer support conversation will appear here.
+        Loading your support conversation...
       </div>
 
     </div>
 
-    <div class="chat-input-row">
+    <div class="chat-compose">
 
       <input
         type="text"
         id="chatInput"
-        placeholder="Type your message...">
+        placeholder="Write a message..."
+        onkeydown="if(event.key==='Enter')sendChatMessage()">
 
       <button
-        class="chat-send"
         onclick="sendChatMessage()">
-
         Send
-
       </button>
 
     </div>
@@ -3045,75 +3266,38 @@ a{
 
 </div>
 
-<!-- =========================================================
-     TOAST
-========================================================= -->
-
-<div class="toast" id="toast"></div>
-
 <script>
+
 /* =========================================================
    AUTHENTICATION
 ========================================================= */
 
-const token = localStorage.getItem("coinforest_token");
+const token =
+  localStorage.getItem("coinforest_token");
 
 if(!token){
   window.location.href="/";
 }
 
-/* =========================================================
-   USER STATE
-========================================================= */
-
-let currentUser = null;
-
-let mainWalletBalance = 0;
-let profitWalletBalance = 0;
 
 /* =========================================================
-   BACK BUTTON
+   NAVIGATION
 ========================================================= */
 
 function goBack(){
 
-  const activeModal =
-    document.querySelector(".modal.active");
-
-  if(activeModal){
-    activeModal.classList.remove("active");
-    return;
-  }
-
-  const sidebar =
-    document.getElementById("sidebar");
-
-  if(sidebar.classList.contains("open")){
-    sidebar.classList.remove("open");
-    return;
-  }
-
   if(window.history.length > 1){
+
     window.history.back();
+
   }else{
+
     window.location.href="/";
+
   }
+
 }
 
-window.addEventListener("popstate",function(){
-
-  const activeModal =
-    document.querySelector(".modal.active");
-
-  if(activeModal){
-    activeModal.classList.remove("active");
-  }
-
-});
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
 
 function toggleSidebar(){
 
@@ -3122,6 +3306,7 @@ function toggleSidebar(){
     .classList.toggle("open");
 
 }
+
 
 /* =========================================================
    MODALS
@@ -3138,6 +3323,7 @@ function openModal(id){
 
 }
 
+
 function closeModal(id){
 
   const modal =
@@ -3149,31 +3335,34 @@ function closeModal(id){
 
 }
 
+
+document
+  .querySelectorAll(".modal")
+  .forEach(modal=>{
+
+    modal.addEventListener("click",e=>{
+
+      if(e.target===modal){
+
+        modal.classList.remove("active");
+
+      }
+
+    });
+
+  });
+
+
 /* =========================================================
-   TOAST
+   USER BALANCES
 ========================================================= */
 
-let toastTimer;
+let mainWalletBalance = 0;
+let profitWalletBalance = 0;
 
-function showToast(message){
-
-  const toast =
-    document.getElementById("toast");
-
-  toast.textContent=message;
-
-  toast.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer=setTimeout(()=>{
-    toast.classList.remove("show");
-  },3500);
-
-}
 
 /* =========================================================
-   USER
+   LOAD USER
 ========================================================= */
 
 async function loadUser(){
@@ -3182,15 +3371,23 @@ async function loadUser(){
 
     const response =
       await fetch("/api/auth/me",{
+
         method:"GET",
+
         headers:{
-          "Authorization":"Bearer "+token,
-          "Accept":"application/json"
+          "Authorization":
+            "Bearer "+token,
+
+          "Accept":
+            "application/json"
         }
+
       });
+
 
     const data =
       await response.json();
+
 
     if(!response.ok ||
        !data.success ||
@@ -3203,30 +3400,29 @@ async function loadUser(){
       );
 
       return;
+
     }
+
 
     const user =
       data.user;
 
-    currentUser=user;
-
-    /*
-      Keep session alive on temporary errors.
-      We intentionally do NOT remove the token here.
-    */
 
     const firstName =
       user.first_name ||
       "";
 
+
     const lastName =
       user.last_name ||
       "";
+
 
     const surname =
       lastName ||
       user.surname ||
       "";
+
 
     const displayName =
       firstName ||
@@ -3234,81 +3430,112 @@ async function loadUser(){
       user.username ||
       "CoinForest Member";
 
+
     let welcomeText =
-      "Welcome back";
+      "Welcome, "+displayName;
+
 
     if(surname){
-      welcomeText += ", "+surname;
-    }else if(firstName){
-      welcomeText += ", "+firstName;
+
+      welcomeText =
+        "Welcome, "+surname;
+
     }
 
-    document.getElementById(
-      "welcomeName"
-    ).textContent=welcomeText;
 
-    document.getElementById(
-      "heroGreeting"
-    ).textContent=
-      "Welcome to CoinForest, "+
-      (surname || firstName || "Member")+".";
+    document
+      .getElementById("welcomeName")
+      .textContent =
+      welcomeText;
 
-    document.getElementById(
-      "profileName"
-    ).textContent=displayName;
 
-    document.getElementById(
-      "profileEmail"
-    ).textContent=
+    document
+      .getElementById("profileName")
+      .textContent =
+      displayName;
+
+
+    document
+      .getElementById("profileEmail")
+      .textContent =
       user.email ||
       "Account";
 
-    const initials =
-      (
-        (firstName || user.username || "C")[0] +
-        (surname || "F")[0]
-      ).toUpperCase();
 
-    document.getElementById(
-      "avatar"
-    ).textContent=initials;
+    const initials = (
 
-    updateTier(user);
+      (firstName || displayName || "C")[0] +
+
+      (lastName || "F")[0]
+
+    ).toUpperCase();
+
+
+    document
+      .getElementById("avatar")
+      .textContent =
+      initials;
+
 
     /*
-      Try to use balances supplied by the API.
-      If the API uses another structure, the dashboard
-      safely remains at zero rather than breaking.
+      Read possible balance fields if the API
+      already returns them.
     */
-
-    const wallets =
-      user.wallets ||
-      user.wallet ||
-      {};
 
     mainWalletBalance =
       Number(
         user.main_wallet_balance ??
-        wallets.main_wallet ??
-        user.mainWallet ??
+        user.main_balance ??
+        user.wallet_balance ??
         0
-      ) || 0;
+      );
+
 
     profitWalletBalance =
       Number(
         user.profit_wallet_balance ??
-        wallets.profit_wallet ??
-        user.profitWallet ??
+        user.profit_balance ??
         0
-      ) || 0;
+      );
+
 
     updateWalletDisplay();
 
-    document.getElementById(
-      "accountStatus"
-    ).textContent=
-      user.status ||
-      "Active";
+
+    /*
+      Tier remains a single profile indicator.
+      It is intentionally NOT displayed as a
+      row/grid of three tiers.
+    */
+
+    let tier = 1;
+
+
+    if(
+      user.kyc_status === "approved" ||
+      user.kyc_verified === true
+    ){
+
+      tier = 2;
+
+    }
+
+
+    if(
+      user.tier === 3 ||
+      user.account_tier === 3
+    ){
+
+      tier = 3;
+
+    }
+
+
+    document
+      .getElementById("currentTier")
+      .textContent =
+      "◆ Tier "+tier;
+
 
   }catch(error){
 
@@ -3318,104 +3545,18 @@ async function loadUser(){
     );
 
     /*
-      IMPORTANT:
-      Do not immediately destroy the session because
-      a temporary network/API failure occurred.
+      Important:
+      Do NOT immediately remove the token
+      because a temporary API/network error
+      should not log the customer out.
     */
 
+    return;
+
   }
 
 }
 
-/* =========================================================
-   TIER SYSTEM
-========================================================= */
-
-function updateTier(user){
-
-  let tier =
-    Number(user.tier || 0);
-
-  const emailVerified =
-    user.email_verified === true ||
-    user.email_confirmed === true ||
-    user.email_verified_at;
-
-  const kycStatus =
-    String(
-      user.kyc_status ||
-      ""
-    ).toLowerCase();
-
-  const kycApproved =
-    kycStatus === "approved" ||
-    kycStatus === "verified" ||
-    user.kyc_verified === true;
-
-  if(!tier){
-
-    if(kycApproved){
-      tier=2;
-    }else if(emailVerified){
-      tier=1;
-    }else{
-      tier=0;
-    }
-
-  }
-
-  /*
-    Tier 3 is deliberately NOT granted merely because
-    a user has money. It should ultimately come from
-    the backend/admin eligibility system.
-  */
-
-  if(
-    user.investment_eligible === true ||
-    user.tier === 3
-  ){
-    tier=3;
-  }
-
-  const badge =
-    document.getElementById("tierBadge");
-
-  badge.textContent =
-    tier >= 3
-      ? "Tier 3"
-      : tier >= 2
-        ? "Tier 2"
-        : tier >= 1
-          ? "Tier 1"
-          : "Verification Required";
-
-  ["tier1Step","tier2Step","tier3Step"]
-    .forEach(id=>{
-      document
-        .getElementById(id)
-        .classList.remove("active");
-    });
-
-  if(tier>=1){
-    document
-      .getElementById("tier1Step")
-      .classList.add("active");
-  }
-
-  if(tier>=2){
-    document
-      .getElementById("tier2Step")
-      .classList.add("active");
-  }
-
-  if(tier>=3){
-    document
-      .getElementById("tier3Step")
-      .classList.add("active");
-  }
-
-  window.coinforestTier=tier;
-}
 
 /* =========================================================
    WALLET DISPLAY
@@ -3428,12 +3569,16 @@ function formatMoney(
 
   return "$"+
     Number(value || 0)
-      .toLocaleString("en-US",{
-        minimumFractionDigits:decimals,
-        maximumFractionDigits:decimals
-      });
+      .toLocaleString(
+        "en-US",
+        {
+          minimumFractionDigits:decimals,
+          maximumFractionDigits:decimals
+        }
+      );
 
 }
+
 
 function updateWalletDisplay(){
 
@@ -3441,363 +3586,149 @@ function updateWalletDisplay(){
     mainWalletBalance +
     profitWalletBalance;
 
-  document.getElementById(
-    "totalBalance"
-  ).textContent=
+
+  document
+    .getElementById("mainWallet")
+    .textContent =
+    formatMoney(mainWalletBalance);
+
+
+  document
+    .getElementById("profitWallet")
+    .textContent =
+    formatMoney(profitWalletBalance);
+
+
+  document
+    .getElementById("walletMain")
+    .textContent =
+    formatMoney(mainWalletBalance);
+
+
+  document
+    .getElementById("walletProfit")
+    .textContent =
+    formatMoney(profitWalletBalance);
+
+
+  document
+    .getElementById("totalBalance")
+    .textContent =
     formatMoney(total);
 
-  document.getElementById(
-    "mainWallet"
-  ).textContent=
-    formatMoney(mainWalletBalance);
-
-  document.getElementById(
-    "profitWallet"
-  ).textContent=
-    formatMoney(profitWalletBalance);
-
-  document.getElementById(
-    "walletMain"
-  ).textContent=
-    formatMoney(mainWalletBalance);
-
-  document.getElementById(
-    "walletProfit"
-  ).textContent=
-    formatMoney(profitWalletBalance);
-
-  document.getElementById(
-    "investmentBalance"
-  ).textContent=
-    formatMoney(mainWalletBalance);
-
 }
+
 
 /* =========================================================
-   INVESTMENT DATA
+   PAYMENT METHOD
 ========================================================= */
 
-const investmentPlans={
+function selectMethod(
+  element,
+  hiddenId,
+  value
+){
 
-  Starter:{
-    rate:15,
-    min:100,
-    max:1500,
-    description:
-      "The Starter schema is designed for customers entering the CoinForest investment environment. It provides a lower entry threshold while maintaining the same account verification requirements."
-  },
+  const container =
+    element.parentElement;
 
-  Growth:{
-    rate:25,
-    min:750,
-    max:5500,
-    description:
-      "The Growth schema is intended for customers ready to allocate a larger amount through their Main Wallet and who meet the applicable CoinForest account requirements."
-  },
 
-  Silver:{
-    rate:35,
-    min:5500,
-    max:25000,
-    description:
-      "The Silver schema is a higher allocation tier for customers who have progressed beyond the entry-level investment range and satisfy the required account eligibility."
-  },
+  container
+    .querySelectorAll(".method")
+    .forEach(button=>{
 
-  Gold:{
-    rate:45,
-    min:25000,
-    max:75000,
-    description:
-      "The Gold schema represents a premium allocation range. Customers must satisfy the applicable verification and balance requirements before proceeding."
-  },
+      button.classList.remove("active");
 
-  Platinum:{
-    rate:50,
-    min:75000,
-    max:null,
-    description:
-      "The Platinum schema is the highest displayed allocation tier and is intended for customers whose Main Wallet balance and account eligibility satisfy the required threshold."
-  }
+    });
 
-};
 
-function openInvestment(planName){
+  element.classList.add("active");
 
-  if(
-    window.coinforestTier &&
-    window.coinforestTier < 3
-  ){
 
-    showToast(
-      "Investment access requires Tier 3 eligibility."
-    );
+  document
+    .getElementById(hiddenId)
+    .value =
+    value;
 
-    return;
-  }
 
-  const select =
-    document.getElementById(
-      "investmentPlan"
-    );
+  if(hiddenId==="depositMethod"){
 
-  if(planName &&
-     investmentPlans[planName]){
-
-    select.value=planName;
-
-  }
-
-  updateInvestmentInfo();
-
-  openModal(
-    "investmentModal"
-  );
-
-}
-
-function updateInvestmentInfo(){
-
-  const plan =
-    investmentPlans[
-      document.getElementById(
-        "investmentPlan"
-      ).value
-    ];
-
-  if(!plan)return;
-
-  let range =
-    formatMoney(plan.min);
-
-  if(plan.max){
-    range +=
-      " – "+
-      formatMoney(plan.max);
-  }else{
-    range +=
-      "+";
-  }
-
-  document.getElementById(
-    "investmentDescription"
-  ).textContent=
-    plan.description;
-
-  document.getElementById(
-    "investmentInfo"
-  ).innerHTML=
-    "Schema return: <strong>"+
-    plan.rate+
-    "%</strong><br>"+
-    "Investment range: <strong>"+
-    range+
-    "</strong><br>"+
-    "Payment source: <strong>Main Wallet only</strong>.<br>"+
-    "Profit Wallet cannot be used for investments.<br>"+
-    "Available Main Wallet balance: <strong>"+
-    formatMoney(mainWalletBalance)+
-    "</strong>";
-
-  validateInvestmentAmount();
-
-}
-
-function validateInvestmentAmount(){
-
-  const input =
-    document.getElementById(
-      "investmentAmount"
-    );
-
-  const amount =
-    Number(input.value);
-
-  const plan =
-    investmentPlans[
-      document.getElementById(
-        "investmentPlan"
-      ).value
-    ];
-
-  if(!plan)return;
-
-  if(
-    amount &&
-    amount > mainWalletBalance
-  ){
-
-    input.setCustomValidity(
-      "Investment amount cannot exceed your Main Wallet balance."
-    );
-
-  }else{
-
-    input.setCustomValidity("");
+    document
+      .getElementById("depositBankField")
+      .style.display =
+      value==="Bank Transfer"
+        ? "block"
+        : "none";
 
   }
 
 }
 
-/* =========================================================
-   INVESTMENT SUBMISSION
-========================================================= */
-
-function submitInvestment(){
-
-  if(
-    !window.coinforestTier ||
-    window.coinforestTier < 3
-  ){
-
-    showToast(
-      "Your account must reach Tier 3 before investing."
-    );
-
-    return;
-  }
-
-  const planName =
-    document.getElementById(
-      "investmentPlan"
-    ).value;
-
-  const plan =
-    investmentPlans[planName];
-
-  const amount =
-    Number(
-      document.getElementById(
-        "investmentAmount"
-      ).value
-    );
-
-  if(!amount || amount<=0){
-
-    showToast(
-      "Please enter a valid investment amount."
-    );
-
-    return;
-  }
-
-  if(amount < plan.min){
-
-    showToast(
-      "The minimum for this schema is "+
-      formatMoney(plan.min)+"."
-    );
-
-    return;
-  }
-
-  if(
-    plan.max &&
-    amount > plan.max
-  ){
-
-    showToast(
-      "The maximum for this schema is "+
-      formatMoney(plan.max)+"."
-    );
-
-    return;
-  }
-
-  if(amount > mainWalletBalance){
-
-    showToast(
-      "You cannot invest more than your Main Wallet balance."
-    );
-
-    return;
-  }
-
-  /*
-    This dashboard currently uses the development workflow.
-    No balance is changed in the browser.
-    Final investment processing must be performed by
-    the authenticated server/API.
-  */
-
-  showToast(
-    "Investment review created for "+
-    planName+
-    ". Final processing will be handled by the account system."
-  );
-
-  closeModal(
-    "investmentModal"
-  );
-
-}
 
 /* =========================================================
    DEPOSIT
 ========================================================= */
 
-function getSelectedRadio(name){
-
-  const selected =
-    document.querySelector(
-      'input[name="'+name+'"]:checked'
-    );
-
-  return selected
-    ? selected.value
-    : null;
-
-}
-
 function submitDeposit(){
 
   const amount =
     Number(
-      document.getElementById(
-        "depositAmount"
-      ).value
+      document
+        .getElementById("depositAmount")
+        .value
     );
 
+
   const method =
-    getSelectedRadio(
-      "depositMethod"
-    );
+    document
+      .getElementById("depositMethod")
+      .value;
+
 
   if(!amount || amount<=0){
 
-    showToast(
+    alert(
       "Please enter a valid deposit amount."
     );
 
     return;
+
   }
 
-  if(!method){
 
-    showToast(
-      "Please select a payment method."
+  if(
+    method==="Bank Transfer" &&
+    !document
+      .getElementById("depositReference")
+      .value
+      .trim()
+  ){
+
+    alert(
+      "Please enter your bank transfer reference."
     );
 
     return;
+
   }
 
-  showToast(
-    "Deposit request received via "+
-    (
-      method==="wallet"
-        ? "Wallet"
-        : "Bank Transfer"
-    )+"."
+
+  alert(
+    "Deposit request received using "+
+    method+
+    ". The deposit workflow will be connected to the CoinForest account system."
   );
 
-  document.getElementById(
-    "depositAmount"
-  ).value="";
 
-  closeModal(
-    "depositModal"
-  );
+  document
+    .getElementById("depositAmount")
+    .value="";
+
+
+  closeModal("depositModal");
 
 }
+
 
 /* =========================================================
    WITHDRAWAL
@@ -3805,156 +3736,461 @@ function submitDeposit(){
 
 function submitWithdrawal(){
 
+  const from =
+    document
+      .getElementById("withdrawFrom")
+      .value;
+
+
+  const to =
+    document
+      .getElementById("withdrawTo")
+      .value;
+
+
+  const account =
+    document
+      .getElementById("withdrawAccount")
+      .value
+      .trim();
+
+
   const amount =
     Number(
-      document.getElementById(
-        "withdrawAmount"
-      ).value
+      document
+        .getElementById("withdrawAmount")
+        .value
     );
 
-  const method =
-    getSelectedRadio(
-      "withdrawMethod"
+
+  const available =
+    from==="Main Wallet"
+      ? mainWalletBalance
+      : profitWalletBalance;
+
+
+  if(!account){
+
+    alert(
+      "Please enter the registered bank account."
     );
+
+    return;
+
+  }
+
 
   if(!amount || amount<=0){
 
-    showToast(
+    alert(
       "Please enter a valid withdrawal amount."
     );
 
     return;
+
   }
 
-  if(!method){
 
-    showToast(
-      "Please select a payment method."
-    );
+  if(amount>available){
+
+    document
+      .getElementById("withdrawWarning")
+      .classList.add("show");
 
     return;
+
   }
 
-  if(amount > mainWalletBalance){
 
-    showToast(
-      "Withdrawal amount exceeds your Main Wallet balance."
-    );
+  document
+    .getElementById("withdrawWarning")
+    .classList.remove("show");
 
-    return;
-  }
 
-  showToast(
-    "Withdrawal request received via "+
-    (
-      method==="wallet"
-        ? "Wallet"
-        : "Bank Transfer"
-    )+"."
+  alert(
+    "Withdrawal request received.\n\n"+
+    "Withdraw from: "+from+
+    "\nWithdraw to: "+to+
+    "\nAmount: "+formatMoney(amount)
   );
 
-  document.getElementById(
-    "withdrawAmount"
-  ).value="";
 
-  closeModal(
-    "withdrawModal"
-  );
+  document
+    .getElementById("withdrawAmount")
+    .value="";
+
+
+  closeModal("withdrawModal");
 
 }
 
+
 /* =========================================================
-   SEND MONEY
+   SEND TRANSFER
 ========================================================= */
 
-function submitSendMoney(){
+function submitTransfer(){
 
   const recipient =
-    document.getElementById(
-      "recipient"
-    ).value.trim();
+    document
+      .getElementById("recipient")
+      .value
+      .trim();
+
 
   const amount =
     Number(
-      document.getElementById(
-        "sendAmount"
-      ).value
+      document
+        .getElementById("sendAmount")
+        .value
     );
 
-  const method =
-    document.getElementById(
-      "sendMethod"
-    ).value;
 
   if(!recipient){
 
-    showToast(
-      "Please enter the recipient."
+    alert(
+      "Please enter the recipient username."
     );
 
     return;
+
   }
+
 
   if(!amount || amount<=0){
 
-    showToast(
+    alert(
       "Please enter a valid amount."
     );
 
     return;
+
   }
 
-  if(amount > mainWalletBalance){
 
-    showToast(
-      "Transfer amount exceeds your Main Wallet balance."
-    );
+  if(amount>mainWalletBalance){
+
+    document
+      .getElementById("sendWarning")
+      .classList.add("show");
 
     return;
+
   }
 
-  showToast(
-    "Transfer request prepared via "+
-    (
-      method==="wallet"
-        ? "Wallet"
-        : "Bank Transfer"
-    )+"."
+
+  document
+    .getElementById("sendWarning")
+    .classList.remove("show");
+
+
+  alert(
+    "Transfer request received for "+
+    formatMoney(amount)+
+    "."
   );
 
-  document.getElementById(
-    "recipient"
-  ).value="";
 
-  document.getElementById(
-    "sendAmount"
-  ).value="";
+  document
+    .getElementById("sendAmount")
+    .value="";
 
-  document.getElementById(
-    "sendNote"
-  ).value="";
 
-  closeModal(
-    "sendModal"
-  );
+  document
+    .getElementById("recipient")
+    .value="";
+
+
+  closeModal("sendModal");
 
 }
 
+
 /* =========================================================
-   CUSTOMER → ADMIN CHAT
+   INVESTMENT SCHEMAS
 ========================================================= */
 
-async function loadChat(){
+const investmentPlans = {
 
-  const box =
-    document.getElementById(
-      "chatMessages"
+  Starter:{
+    rate:15,
+    min:100,
+    max:1500
+  },
+
+  Growth:{
+    rate:25,
+    min:750,
+    max:5500
+  },
+
+  Silver:{
+    rate:35,
+    min:5500,
+    max:25000
+  },
+
+  Gold:{
+    rate:45,
+    min:25000,
+    max:75000
+  },
+
+  Platinum:{
+    rate:50,
+    min:75000,
+    max:Infinity
+  }
+
+};
+
+
+function selectPlan(plan){
+
+  document
+    .getElementById("investmentPlan")
+    .value =
+    plan;
+
+
+  updateInvestmentLimits();
+
+
+  openModal("investmentModal");
+
+}
+
+
+function updateInvestmentLimits(){
+
+  const planName =
+    document
+      .getElementById("investmentPlan")
+      .value;
+
+
+  const plan =
+    investmentPlans[planName];
+
+
+  const input =
+    document
+      .getElementById("investmentAmount");
+
+
+  input.min =
+    plan.min;
+
+
+  if(plan.max!==Infinity){
+
+    input.max =
+      plan.max;
+
+  }else{
+
+    input.removeAttribute("max");
+
+  }
+
+
+  input.placeholder =
+    plan.max===Infinity
+      ? "$75,000+"
+      : "$"+plan.min.toLocaleString()+
+        " - $"+plan.max.toLocaleString();
+
+
+  checkInvestmentAmount();
+
+}
+
+
+function checkInvestmentAmount(){
+
+  const planName =
+    document
+      .getElementById("investmentPlan")
+      .value;
+
+
+  const plan =
+    investmentPlans[planName];
+
+
+  const amount =
+    Number(
+      document
+        .getElementById("investmentAmount")
+        .value
     );
 
+
+  const warning =
+    document
+      .getElementById("investmentWarning");
+
+
+  if(!amount){
+
+    warning.classList.remove("show");
+
+    return;
+
+  }
+
+
+  const belowMinimum =
+    amount < plan.min;
+
+
+  const aboveMaximum =
+    plan.max!==Infinity &&
+    amount > plan.max;
+
+
+  const aboveBalance =
+    amount > mainWalletBalance;
+
+
+  if(
+    belowMinimum ||
+    aboveMaximum ||
+    aboveBalance
+  ){
+
+    warning.classList.add("show");
+
+  }else{
+
+    warning.classList.remove("show");
+
+  }
+
+}
+
+
+function submitInvestment(){
+
+  const planName =
+    document
+      .getElementById("investmentPlan")
+      .value;
+
+
+  const plan =
+    investmentPlans[planName];
+
+
+  const amount =
+    Number(
+      document
+        .getElementById("investmentAmount")
+        .value
+    );
+
+
+  if(!amount || amount<=0){
+
+    alert(
+      "Please enter a valid investment amount."
+    );
+
+    return;
+
+  }
+
+
+  if(amount<plan.min){
+
+    alert(
+      planName+
+      " requires a minimum investment of "+
+      formatMoney(plan.min)+"."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    plan.max!==Infinity &&
+    amount>plan.max
+  ){
+
+    alert(
+      planName+
+      " allows investments up to "+
+      formatMoney(plan.max)+"."
+    );
+
+    return;
+
+  }
+
+
   /*
-    Try the expected API first.
-    If it is not available yet, keep the chat interface
-    usable without breaking the dashboard.
+    Critical rule:
+    Profit Wallet is NEVER used for investments.
+  */
+
+  if(amount>mainWalletBalance){
+
+    alert(
+      "Insufficient Main Wallet balance.\n\n"+
+      "Investment funding must come from your Main Wallet. "+
+      "Profit Wallet cannot be used for investment funding."
+    );
+
+    return;
+
+  }
+
+
+  alert(
+    "Investment request received.\n\n"+
+    "Schema: "+planName+
+    "\nReturn: "+plan.rate+"%"+
+    "\nAmount: "+formatMoney(amount)+
+    "\nPayment source: Main Wallet"
+  );
+
+
+  document
+    .getElementById("investmentAmount")
+    .value="";
+
+
+  closeModal("investmentModal");
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+function openChat(){
+
+  openModal("chatModal");
+
+  loadChatMessages();
+
+}
+
+
+async function loadChatMessages(){
+
+  const box =
+    document
+      .getElementById("chatMessages");
+
+
+  /*
+    Try the CoinForest chat API if it exists.
+    The UI remains available even while the backend
+    chat endpoint is being connected.
   */
 
   try{
@@ -3973,50 +4209,62 @@ async function loadChat(){
         }
       );
 
+
     if(!response.ok){
-      return;
+
+      throw new Error(
+        "Chat endpoint unavailable"
+      );
+
     }
+
 
     const data =
       await response.json();
 
+
     if(
-      !data ||
-      !Array.isArray(data.messages)
+      data &&
+      Array.isArray(data.messages) &&
+      data.messages.length
     ){
+
+      box.innerHTML="";
+
+
+      data.messages.forEach(message=>{
+
+        const item =
+          document.createElement("div");
+
+
+        item.className =
+          "chat-message "+
+          (
+            message.sender_role==="admin"
+              ? "admin"
+              : "user"
+          );
+
+
+        item.textContent =
+          message.message ||
+          "";
+
+
+        box.appendChild(item);
+
+      });
+
+
+      box.scrollTop =
+        box.scrollHeight;
+
+
       return;
+
     }
 
-    if(data.messages.length===0){
-      return;
-    }
-
-    box.innerHTML="";
-
-    data.messages.forEach(message=>{
-
-      const div =
-        document.createElement(
-          "div"
-        );
-
-      div.className =
-        "message "+
-        (
-          message.sender_role==="admin"
-            ? "admin"
-            : "customer"
-        );
-
-      div.textContent =
-        message.message || "";
-
-      box.appendChild(div);
-
-    });
-
-    box.scrollTop =
-      box.scrollHeight;
 
   }catch(error){
 
@@ -4027,30 +4275,79 @@ async function loadChat(){
 
   }
 
+
+  box.innerHTML=`
+    <div class="chat-empty">
+      <strong>CoinForest Support</strong><br><br>
+      Your customer/admin chat is ready on the dashboard.
+      Send a message below to contact support.
+    </div>
+  `;
+
 }
+
 
 async function sendChatMessage(){
 
   const input =
-    document.getElementById(
-      "chatInput"
-    );
+    document
+      .getElementById("chatInput");
+
 
   const message =
     input.value.trim();
 
+
   if(!message){
 
-    showToast(
-      "Please type a message."
-    );
-
     return;
+
   }
 
+
+  input.value="";
+
+
+  const box =
+    document
+      .getElementById("chatMessages");
+
+
+  const messageElement =
+    document.createElement("div");
+
+
+  messageElement.className =
+    "chat-message user";
+
+
+  messageElement.textContent =
+    message;
+
+
   /*
-    Try the server chat endpoint.
+    Remove empty message if present.
   */
+
+  const empty =
+    box.querySelector(".chat-empty");
+
+
+  if(empty){
+
+    empty.remove();
+
+  }
+
+
+  box.appendChild(
+    messageElement
+  );
+
+
+  box.scrollTop =
+    box.scrollHeight;
+
 
   try{
 
@@ -4059,159 +4356,46 @@ async function sendChatMessage(){
         "/api/chat/messages",
         {
           method:"POST",
+
           headers:{
             "Authorization":
               "Bearer "+token,
+
             "Content-Type":
+              "application/json",
+
+            "Accept":
               "application/json"
           },
+
           body:JSON.stringify({
-            message
+            message:message
           })
+
         }
       );
 
-    if(response.ok){
 
-      input.value="";
+    if(!response.ok){
 
-      await loadChat();
-
-      showToast(
-        "Message sent to CoinForest Support."
+      throw new Error(
+        "Message endpoint unavailable"
       );
 
-      return;
     }
+
 
   }catch(error){
 
     console.log(
-      "Chat send error:",
+      "Chat backend connection pending:",
       error
     );
 
   }
 
-  /*
-    If backend chat is not deployed yet, don't pretend
-    that the message was permanently stored.
-  */
-
-  showToast(
-    "Support chat is ready, but the chat API still needs to be connected."
-  );
-
 }
 
-/* =========================================================
-   LANGUAGE SYSTEM
-========================================================= */
-
-const translations={
-
-  en:{
-    dashboard:"Dashboard",
-    wallets:"Wallets",
-    investments:"Investments",
-    transactions:"Transactions",
-    transfers:"Transfers",
-    profile:"Profile",
-    settings:"Settings",
-    support:"Support",
-    logout:"Log out",
-    welcomeBack:"Welcome back",
-    dashboardSubtitle:
-      "Manage your digital assets and monitor your portfolio."
-  },
-
-  fr:{
-    dashboard:"Tableau de bord",
-    wallets:"Portefeuilles",
-    investments:"Investissements",
-    transactions:"Transactions",
-    transfers:"Transferts",
-    profile:"Profil",
-    settings:"Paramètres",
-    support:"Assistance",
-    logout:"Déconnexion",
-    welcomeBack:"Bon retour",
-    dashboardSubtitle:
-      "Gérez vos actifs numériques et suivez votre portefeuille."
-  },
-
-  es:{
-    dashboard:"Panel",
-    wallets:"Billeteras",
-    investments:"Inversiones",
-    transactions:"Transacciones",
-    transfers:"Transferencias",
-    profile:"Perfil",
-    settings:"Configuración",
-    support:"Soporte",
-    logout:"Cerrar sesión",
-    welcomeBack:"Bienvenido de nuevo",
-    dashboardSubtitle:
-      "Administra tus activos digitales y supervisa tu cartera."
-  },
-
-  de:{
-    dashboard:"Dashboard",
-    wallets:"Wallets",
-    investments:"Investitionen",
-    transactions:"Transaktionen",
-    transfers:"Überweisungen",
-    profile:"Profil",
-    settings:"Einstellungen",
-    support:"Support",
-    logout:"Abmelden",
-    welcomeBack:"Willkommen zurück",
-    dashboardSubtitle:
-      "Verwalten Sie Ihre digitalen Vermögenswerte und Ihr Portfolio."
-  }
-
-};
-
-function applyLanguage(language){
-
-  const dictionary =
-    translations[language] ||
-    translations.en;
-
-  document
-    .querySelectorAll("[data-i18n]")
-    .forEach(element=>{
-
-      const key =
-        element.getAttribute(
-          "data-i18n"
-        );
-
-      if(dictionary[key]){
-        element.textContent =
-          dictionary[key];
-      }
-
-    });
-
-  localStorage.setItem(
-    "coinforest_language",
-    language
-  );
-
-}
-
-function initializeLanguage(){
-
-  const saved =
-    localStorage.getItem(
-      "coinforest_language"
-    ) ||
-    "en";
-
-  applyLanguage(saved);
-
-}
 
 /* =========================================================
    LOGOUT
@@ -4238,81 +4422,22 @@ async function logoutUser(){
 
   }
 
+
   localStorage.removeItem(
     "coinforest_token"
   );
+
 
   window.location.href="/";
 
 }
 
-/* =========================================================
-   CLOSE MODALS
-========================================================= */
-
-document
-  .querySelectorAll(".modal")
-  .forEach(modal=>{
-
-    modal.addEventListener(
-      "click",
-      event=>{
-
-        if(event.target===modal){
-
-          modal.classList.remove(
-            "active"
-          );
-
-        }
-
-      }
-    );
-
-  });
-
-/* =========================================================
-   INVESTMENT SELECT
-========================================================= */
-
-document
-  .getElementById("investmentPlan")
-  .addEventListener(
-    "change",
-    updateInvestmentInfo
-  );
-
-/* =========================================================
-   ESCAPE KEY
-========================================================= */
-
-document.addEventListener(
-  "keydown",
-  event=>{
-
-    if(event.key==="Escape"){
-
-      const modal =
-        document.querySelector(
-          ".modal.active"
-        );
-
-      if(modal){
-        modal.classList.remove(
-          "active"
-        );
-      }
-
-    }
-
-  }
-);
 
 /* =========================================================
    MARKET SIMULATION
 ========================================================= */
 
-const markets={
+const markets = {
 
   BTC:{
     price:104820,
@@ -4343,80 +4468,64 @@ const markets={
   },
 
   SOL:{
-    price:0,
+    price:182.40,
     decimals:2,
     priceId:"solPrice",
     changeId:"solChange"
   },
 
   XRP:{
-    price:0,
+    price:2.91,
     decimals:2,
     priceId:"xrpPrice",
     changeId:"xrpChange"
   },
 
   ADA:{
-    price:0,
-    decimals:4,
+    price:.81,
+    decimals:2,
     priceId:"adaPrice",
     changeId:"adaChange"
   },
 
-  DOT:{
-    price:0,
-    decimals:4,
-    priceId:"dotPrice",
-    changeId:"dotChange"
+  DOGE:{
+    price:.24,
+    decimals:2,
+    priceId:"dogePrice",
+    changeId:"dogeChange"
   }
 
 };
+
 
 function updateMarketCoin(symbol){
 
   const coin =
     markets[symbol];
 
-  if(!coin)return;
-
-  /*
-    Only move coins that have a positive configured
-    development value. Zero-value placeholders stay at zero.
-  */
-
-  if(coin.price<=0){
-    return;
-  }
 
   let movement;
+
 
   if(symbol==="USDT"){
 
     movement =
-      (Math.random()-.5)*0.0015;
-
-  }else if(symbol==="BTC"){
-
-    movement =
-      (Math.random()-.5)*0.0022;
-
-  }else if(symbol==="ETH"){
-
-    movement =
-      (Math.random()-.5)*0.0028;
+      (Math.random()-.5)*.0015;
 
   }else{
 
     movement =
-      (Math.random()-.5)*0.003;
+      (Math.random()-.5)*.0025;
 
   }
 
+
   coin.price =
-    coin.price*
-    (1+movement);
+    coin.price*(1+movement);
+
 
   let change;
+
 
   if(symbol==="USDT"){
 
@@ -4430,15 +4539,28 @@ function updateMarketCoin(symbol){
 
   }
 
+
   const priceElement =
-    document.getElementById(
-      coin.priceId
-    );
+    document
+      .getElementById(
+        coin.priceId
+      );
+
 
   const changeElement =
-    document.getElementById(
-      coin.changeId
-    );
+    document
+      .getElementById(
+        coin.changeId
+      );
+
+
+  if(!priceElement ||
+     !changeElement){
+
+    return;
+
+  }
+
 
   priceElement.textContent =
     formatMoney(
@@ -4446,18 +4568,22 @@ function updateMarketCoin(symbol){
       coin.decimals
     );
 
+
   const positive =
     change>=0;
+
 
   changeElement.textContent =
     (positive?"+":"")+
     change.toFixed(2)+
     "%";
 
+
   changeElement.classList.toggle(
     "up",
     positive
   );
+
 
   changeElement.classList.toggle(
     "down",
@@ -4465,6 +4591,7 @@ function updateMarketCoin(symbol){
   );
 
 }
+
 
 function updateMarkets(){
 
@@ -4475,22 +4602,78 @@ function updateMarkets(){
 
 }
 
+
 setInterval(
   updateMarkets,
   2500
 );
 
+
 /* =========================================================
-   INITIALIZATION
+   INVESTMENT INITIALIZATION
 ========================================================= */
 
-initializeLanguage();
+document
+  .getElementById("investmentPlan")
+  .addEventListener(
+    "change",
+    updateInvestmentLimits
+  );
+
+
+document
+  .getElementById("withdrawAmount")
+  .addEventListener(
+    "input",
+    function(){
+
+      const from =
+        document
+          .getElementById("withdrawFrom")
+          .value;
+
+
+      const amount =
+        Number(this.value);
+
+
+      const available =
+        from==="Main Wallet"
+          ? mainWalletBalance
+          : profitWalletBalance;
+
+
+      document
+        .getElementById("withdrawWarning")
+        .classList.toggle(
+          "show",
+          amount>available
+        );
+
+    }
+  );
+
+
+document
+  .getElementById("sendAmount")
+  .addEventListener(
+    "input",
+    function(){
+
+      document
+        .getElementById("sendWarning")
+        .classList.toggle(
+          "show",
+          Number(this.value)>mainWalletBalance
+        );
+
+    }
+  );
+
+
+updateInvestmentLimits();
 
 loadUser();
-
-updateInvestmentInfo();
-
-loadChat();
 
 </script>
 
