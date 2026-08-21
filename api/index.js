@@ -1293,32 +1293,195 @@ async function health() {
    ROUTER
 ===================================================== */
 
-export default async function handler(
-  request
-) {
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status:204,
-      headers
-    });
+/*
+   Vercel is loading this file as a Node-style
+   Serverless Function.
+
+   The application logic above still uses the standard
+   Web Request / Response API, so we create a Web Request
+   internally and then write the resulting Response
+   through Vercel's Node-style res object.
+
+   This keeps the existing authentication/database logic
+   unchanged while fixing the Vercel response handling.
+*/
+
+function createWebRequest(req) {
+  const protocol =
+    req.headers["x-forwarded-proto"] ||
+    "https";
+
+  const host =
+    req.headers["x-forwarded-host"] ||
+    req.headers.host ||
+    "coinforest.vercel.app";
+
+  const rawUrl =
+    String(req.url || "/");
+
+  const absoluteUrl =
+    rawUrl.startsWith("http://") ||
+    rawUrl.startsWith("https://")
+      ? rawUrl
+      : `${protocol}://${host}${rawUrl}`;
+
+  const requestHeaders =
+    new Headers();
+
+  for (
+    const [key, value]
+    of Object.entries(req.headers || {})
+  ) {
+    if (Array.isArray(value)) {
+      requestHeaders.set(
+        key,
+        value.join(", ")
+      );
+    } else if (value !== undefined) {
+      requestHeaders.set(
+        key,
+        String(value)
+      );
+    }
   }
 
+  let body;
+
+  if (
+    req.method !== "GET" &&
+    req.method !== "HEAD"
+  ) {
+    if (
+      req.body !== undefined &&
+      req.body !== null
+    ) {
+      if (
+        typeof req.body === "string"
+      ) {
+        body = req.body;
+      } else if (
+        Buffer.isBuffer(req.body)
+      ) {
+        body = req.body;
+      } else {
+        body =
+          JSON.stringify(req.body);
+
+        if (
+          !requestHeaders.has(
+            "content-type"
+          )
+        ) {
+          requestHeaders.set(
+            "content-type",
+            "application/json"
+          );
+        }
+      }
+    }
+  }
+
+  return new Request(
+    absoluteUrl,
+    {
+      method:
+        req.method || "GET",
+
+      headers:
+        requestHeaders,
+
+      body
+    }
+  );
+}
+
+async function writeWebResponse(
+  res,
+  webResponse
+) {
+  res.statusCode =
+    webResponse.status;
+
+  webResponse.headers.forEach(
+    (value, key) => {
+      res.setHeader(
+        key,
+        value
+      );
+    }
+  );
+
+  const responseBody =
+    await webResponse.text();
+
+  res.end(responseBody);
+}
+
+/* =====================================================
+   VERCEL NODE HANDLER
+===================================================== */
+
+export default async function handler(
+  req,
+  res
+) {
   try {
-    const rawUrl = String(request.url || "/");
+    const request =
+      createWebRequest(req);
 
-const url = new URL(
-  rawUrl,
-  "https://coinforest.vercel.app"
-);
+    if (
+      request.method === "OPTIONS"
+    ) {
+      res.statusCode = 204;
 
-const path = url.pathname;
+      res.setHeader(
+        "Access-Control-Allow-Origin",
+        "*"
+      );
+
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization"
+      );
+
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, OPTIONS"
+      );
+
+      res.end();
+
+      return;
+    }
+
+    const url =
+      new URL(request.url);
+
+    const path =
+      url.pathname;
+
+    /* =================================================
+       HEALTH
+    ================================================= */
 
     if (
       request.method === "GET" &&
       path === "/api/health"
     ) {
-      return await health();
+      const result =
+        await health();
+
+      await writeWebResponse(
+        res,
+        result
+      );
+
+      return;
     }
+
+    /* =================================================
+       REGISTER
+    ================================================= */
 
     if (
       request.method === "POST" &&
@@ -1327,11 +1490,23 @@ const path = url.pathname;
       const body =
         await request.json();
 
-      return await register(
-        request,
-        body
+      const result =
+        await register(
+          request,
+          body
+        );
+
+      await writeWebResponse(
+        res,
+        result
       );
+
+      return;
     }
+
+    /* =================================================
+       LOGIN
+    ================================================= */
 
     if (
       request.method === "POST" &&
@@ -1340,8 +1515,20 @@ const path = url.pathname;
       const body =
         await request.json();
 
-      return await login(body);
+      const result =
+        await login(body);
+
+      await writeWebResponse(
+        res,
+        result
+      );
+
+      return;
     }
+
+    /* =================================================
+       VERIFY EMAIL
+    ================================================= */
 
     if (
       request.method === "POST" &&
@@ -1350,10 +1537,22 @@ const path = url.pathname;
       const body =
         await request.json();
 
-      return await verifyEmail(
-        body.token
+      const result =
+        await verifyEmail(
+          body.token
+        );
+
+      await writeWebResponse(
+        res,
+        result
       );
+
+      return;
     }
+
+    /* =================================================
+       RESEND VERIFICATION
+    ================================================= */
 
     if (
       request.method === "POST" &&
@@ -1362,11 +1561,23 @@ const path = url.pathname;
       const body =
         await request.json();
 
-      return await resendVerification(
-        request,
-        body
+      const result =
+        await resendVerification(
+          request,
+          body
+        );
+
+      await writeWebResponse(
+        res,
+        result
       );
+
+      return;
     }
+
+    /* =================================================
+       FORGOT PASSWORD
+    ================================================= */
 
     if (
       request.method === "POST" &&
@@ -1375,11 +1586,23 @@ const path = url.pathname;
       const body =
         await request.json();
 
-      return await forgotPassword(
-        request,
-        body
+      const result =
+        await forgotPassword(
+          request,
+          body
+        );
+
+      await writeWebResponse(
+        res,
+        result
       );
+
+      return;
     }
+
+    /* =================================================
+       RESET PASSWORD
+    ================================================= */
 
     if (
       request.method === "POST" &&
@@ -1388,28 +1611,71 @@ const path = url.pathname;
       const body =
         await request.json();
 
-      return await resetPassword(body);
+      const result =
+        await resetPassword(body);
+
+      await writeWebResponse(
+        res,
+        result
+      );
+
+      return;
     }
+
+    /* =================================================
+       LOGOUT
+    ================================================= */
 
     if (
       request.method === "POST" &&
       path === "/api/auth/logout"
     ) {
-      return await logout(request);
+      const result =
+        await logout(request);
+
+      await writeWebResponse(
+        res,
+        result
+      );
+
+      return;
     }
+
+    /* =================================================
+       CURRENT USER
+    ================================================= */
 
     if (
       request.method === "GET" &&
       path === "/api/auth/me"
     ) {
-      return await me(request);
+      const result =
+        await me(request);
+
+      await writeWebResponse(
+        res,
+        result
+      );
+
+      return;
     }
 
-    return response(404, {
-      success:false,
-      error:"API route not found.",
-      path
-    });
+    /* =================================================
+       404
+    ================================================= */
+
+    const result =
+      response(404, {
+        success: false,
+        error:
+          "API route not found.",
+        path
+      });
+
+    await writeWebResponse(
+      res,
+      result
+    );
 
   } catch (error) {
     console.error(
@@ -1417,10 +1683,29 @@ const path = url.pathname;
       error
     );
 
-    return response(500, {
-      success:false,
-      error:
-        "Internal server error."
-    });
+    /*
+       Always send a response so the
+       Vercel function cannot hang
+       after an exception.
+    */
+
+    if (
+      res.headersSent
+    ) {
+      res.end();
+      return;
+    }
+
+    const result =
+      response(500, {
+        success: false,
+        error:
+          "Internal server error."
+      });
+
+    await writeWebResponse(
+      res,
+      result
+    );
   }
-      }
+     }
