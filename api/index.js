@@ -1297,24 +1297,25 @@ async function health() {
    Vercel is loading this file as a Node-style
    Serverless Function.
 
-   The application logic above still uses the standard
-   Web Request / Response API, so we create a Web Request
-   internally and then write the resulting Response
-   through Vercel's Node-style res object.
-
-   This keeps the existing authentication/database logic
-   unchanged while fixing the Vercel response handling.
+   The application functions above use the existing
+   request/response logic. This adapter keeps those
+   functions intact while correctly writing the final
+   response through Vercel's Node-style res object.
 */
 
 function createWebRequest(req) {
   const protocol =
-    req.headers["x-forwarded-proto"] ||
-    "https";
+    String(
+      req.headers["x-forwarded-proto"] ||
+      "https"
+    ).split(",")[0].trim();
 
   const host =
-    req.headers["x-forwarded-host"] ||
-    req.headers.host ||
-    "coinforest.vercel.app";
+    String(
+      req.headers["x-forwarded-host"] ||
+      req.headers.host ||
+      "coinforest.vercel.app"
+    ).split(",")[0].trim();
 
   const rawUrl =
     String(req.url || "/");
@@ -1337,7 +1338,9 @@ function createWebRequest(req) {
         key,
         value.join(", ")
       );
-    } else if (value !== undefined) {
+    } else if (
+      value !== undefined
+    ) {
       requestHeaders.set(
         key,
         String(value)
@@ -1386,10 +1389,8 @@ function createWebRequest(req) {
     {
       method:
         req.method || "GET",
-
       headers:
         requestHeaders,
-
       body
     }
   );
@@ -1399,6 +1400,10 @@ async function writeWebResponse(
   res,
   webResponse
 ) {
+  if (res.headersSent) {
+    return;
+  }
+
   res.statusCode =
     webResponse.status;
 
@@ -1428,6 +1433,10 @@ export default async function handler(
   try {
     const request =
       createWebRequest(req);
+
+    /* =================================================
+       OPTIONS / CORS
+    ================================================= */
 
     if (
       request.method === "OPTIONS"
@@ -1683,12 +1692,6 @@ export default async function handler(
       error
     );
 
-    /*
-       Always send a response so the
-       Vercel function cannot hang
-       after an exception.
-    */
-
     if (
       res.headersSent
     ) {
@@ -1708,4 +1711,4 @@ export default async function handler(
       result
     );
   }
-     }
+        }
