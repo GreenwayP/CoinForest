@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#07111f">
-<title>CoinForest — Decentralized Finance</title>
+<title>CoinForest — Digital Finance</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -22,11 +22,17 @@ button{font:inherit}
 :root{
 --green:#20e080;
 --green2:#12b866;
+--gold:#f6c453;
+--gold2:#d99b20;
 --dark:#07111f;
 --dark2:#0b192b;
 --muted:#91a0b5;
 --card:#0d1c2f;
---border:rgba(255,255,255,.09)
+--border:rgba(255,255,255,.09);
+--red:#ff5b6e;
+--purple:#9b7cff;
+--blue:#4ca6ff;
+--cyan:#22d3c5;
 }
 
 /* HEADER */
@@ -75,14 +81,23 @@ color:#04100a
 background:#38ed94;
 transform:translateY(-2px)
 }
+.btn-gold{
+background:linear-gradient(135deg,#f6c453,#d99b20);
+color:#161006;
+box-shadow:0 8px 25px rgba(246,196,83,.18)
+}
+.btn-gold:hover{
+transform:translateY(-2px);
+box-shadow:0 12px 30px rgba(246,196,83,.28)
+}
 .btn-outline{
 border:1px solid rgba(255,255,255,.22);
 background:transparent;
 color:#fff
 }
 .btn-outline:hover{
-border-color:var(--green);
-color:var(--green)
+border-color:var(--gold);
+color:var(--gold)
 }
 
 /* HERO */
@@ -94,8 +109,8 @@ display:flex;
 align-items:center;
 overflow:hidden;
 background:
-radial-gradient(circle at 78% 35%,rgba(32,224,128,.16),transparent 28%),
-radial-gradient(circle at 30% 70%,rgba(28,100,180,.15),transparent 30%),
+radial-gradient(circle at 78% 35%,rgba(246,196,83,.12),transparent 25%),
+radial-gradient(circle at 35% 70%,rgba(32,224,128,.10),transparent 30%),
 linear-gradient(135deg,#07111f,#0b1d31)
 }
 .hero:before{
@@ -106,7 +121,7 @@ height:600px;
 right:-180px;
 top:100px;
 border-radius:50%;
-background:rgba(32,224,128,.06);
+background:rgba(246,196,83,.05);
 filter:blur(5px)
 }
 .hero-content{
@@ -119,19 +134,20 @@ display:inline-flex;
 align-items:center;
 gap:8px;
 padding:8px 14px;
-border:1px solid rgba(32,224,128,.25);
-background:rgba(32,224,128,.07);
+border:1px solid rgba(246,196,83,.3);
+background:rgba(246,196,83,.07);
 border-radius:30px;
-color:var(--green);
+color:var(--gold);
 font-size:13px;
 font-weight:700;
 margin-bottom:24px
 }
 .dot{
-width:7px;height:7px;
+width:7px;
+height:7px;
 border-radius:50%;
-background:var(--green);
-box-shadow:0 0 12px var(--green)
+background:var(--gold);
+box-shadow:0 0 12px var(--gold)
 }
 .hero h1{
 font-size:clamp(48px,7vw,86px);
@@ -139,7 +155,12 @@ line-height:1.02;
 letter-spacing:-4px;
 margin-bottom:25px
 }
-.hero h1 span{color:var(--green)}
+.hero h1 span{
+background:linear-gradient(90deg,#20e080,#f6c453);
+-webkit-background-clip:text;
+background-clip:text;
+color:transparent
+}
 .hero p{
 font-size:18px;
 color:#aebdce;
@@ -151,31 +172,54 @@ display:flex;
 gap:13px;
 flex-wrap:wrap
 }
+
+/* HERO MARKET CARD */
 .hero-card{
 position:absolute;
 right:8%;
-top:190px;
-width:360px;
+top:170px;
+width:370px;
 padding:24px;
-background:rgba(13,28,47,.82);
-border:1px solid var(--border);
+background:rgba(13,28,47,.88);
+border:1px solid rgba(246,196,83,.16);
 border-radius:18px;
 box-shadow:0 30px 80px rgba(0,0,0,.35);
-backdrop-filter:blur(18px)
+backdrop-filter:blur(18px);
+z-index:3
 }
 .chart-head{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:20px
+margin-bottom:18px
 }
 .chart-head strong{font-size:15px}
+.live-label{
+font-size:11px;
+color:var(--green);
+display:flex;
+align-items:center;
+gap:5px
+}
+.live-dot{
+width:6px;
+height:6px;
+border-radius:50%;
+background:var(--green);
+box-shadow:0 0 8px var(--green)
+}
 .price{
-font-size:28px;
+font-size:30px;
 font-weight:800;
 margin-bottom:3px
 }
-.positive{color:var(--green);font-size:13px}
+.hero-change{
+font-size:13px;
+font-weight:700
+}
+.positive{color:var(--green)}
+.negative{color:var(--red)}
+
 .fake-chart{
 height:130px;
 position:relative;
@@ -194,6 +238,7 @@ border-top:1px solid var(--border);
 font-size:13px;
 color:var(--muted)
 }
+.asset-row strong{color:#fff}
 
 /* STATS */
 .stats{
@@ -222,7 +267,7 @@ color:var(--muted)
 
 /* TICKER */
 .ticker{
-height:55px;
+height:60px;
 display:flex;
 align-items:center;
 overflow:hidden;
@@ -233,23 +278,44 @@ white-space:nowrap
 .ticker-track{
 display:flex;
 gap:38px;
-animation:scroll 28s linear infinite
+animation:scroll 30s linear infinite
 }
 .coin{
 font-size:13px;
-color:#b8c5d5
+color:#b8c5d5;
+display:flex;
+align-items:center;
+gap:7px
 }
-.coin b{color:#fff;margin-right:7px}
-.up{color:var(--green)}
+.coin b{color:#fff}
+.coin-price{font-weight:700}
+.coin-change{font-weight:700}
+.coin-up{color:var(--green)}
+.coin-down{color:var(--red)}
+.coin-icon{
+width:25px;
+height:25px;
+border-radius:50%;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+font-weight:900;
+color:#07111f
+}
+.btc-icon{background:var(--gold)}
+.eth-icon{background:var(--purple);color:#fff}
+.bnb-icon{background:#f0b90b}
+.sol-icon{background:linear-gradient(135deg,#20e0c5,#8a5cff);color:#fff}
+.xrp-icon{background:var(--blue);color:#fff}
+.ada-icon{background:#2775ca;color:#fff}
 @keyframes scroll{
 from{transform:translateX(0)}
 to{transform:translateX(-50%)}
 }
 
 /* SECTIONS */
-section{
-padding:110px 6%
-}
+section{padding:110px 6%}
 .section-label{
 color:var(--green);
 font-size:13px;
@@ -270,14 +336,10 @@ color:var(--muted);
 font-size:16px
 }
 .center{text-align:center}
-.center .section-text{
-margin:0 auto
-}
+.center .section-text{margin:0 auto}
 
 /* ABOUT */
-.about{
-background:#07111f
-}
+.about{background:#07111f}
 .about-grid{
 margin-top:55px;
 display:grid;
@@ -290,7 +352,7 @@ min-height:410px;
 border-radius:24px;
 position:relative;
 background:
-radial-gradient(circle at 50% 45%,rgba(32,224,128,.16),transparent 30%),
+radial-gradient(circle at 50% 45%,rgba(246,196,83,.13),transparent 30%),
 linear-gradient(145deg,#0c2137,#081321);
 border:1px solid var(--border);
 display:flex;
@@ -301,7 +363,7 @@ overflow:hidden
 .orbit{
 width:230px;
 height:230px;
-border:1px solid rgba(32,224,128,.28);
+border:1px solid rgba(246,196,83,.28);
 border-radius:50%;
 display:flex;
 align-items:center;
@@ -317,16 +379,17 @@ border-radius:50%
 .orbit:before{width:310px;height:120px;transform:rotate(35deg)}
 .orbit:after{width:120px;height:310px;transform:rotate(35deg)}
 .orbit-core{
-width:95px;height:95px;
+width:95px;
+height:95px;
 border-radius:50%;
-background:linear-gradient(135deg,var(--green),#0c9c59);
+background:linear-gradient(135deg,var(--gold),#d99b20);
 display:flex;
 align-items:center;
 justify-content:center;
 font-size:35px;
 font-weight:900;
 color:#04100a;
-box-shadow:0 0 55px rgba(32,224,128,.3)
+box-shadow:0 0 55px rgba(246,196,83,.3)
 }
 .about-list{
 margin-top:30px;
@@ -353,9 +416,7 @@ font-weight:900
 .about-item p{font-size:14px;color:var(--muted)}
 
 /* FEATURES */
-.features{
-background:#091827
-}
+.features{background:#091827}
 .feature-grid{
 margin-top:55px;
 display:grid;
@@ -371,12 +432,13 @@ transition:.3s
 }
 .feature:hover{
 transform:translateY(-6px);
-border-color:rgba(32,224,128,.35)
+border-color:rgba(246,196,83,.35)
 }
 .icon{
-width:48px;height:48px;
+width:48px;
+height:48px;
 border-radius:12px;
-background:rgba(32,224,128,.1);
+background:rgba(246,196,83,.1);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -387,9 +449,7 @@ margin-bottom:22px
 .feature p{color:var(--muted);font-size:14px}
 
 /* MARKETS */
-.markets{
-background:#07111f
-}
+.markets{background:#07111f}
 .market-grid{
 margin-top:50px;
 display:grid;
@@ -400,22 +460,51 @@ gap:15px
 padding:20px;
 background:#0c1c2e;
 border:1px solid var(--border);
-border-radius:13px
+border-radius:13px;
+transition:.25s
+}
+.market:hover{
+transform:translateY(-4px);
+border-color:rgba(246,196,83,.28)
 }
 .market-top{
 display:flex;
 justify-content:space-between;
 margin-bottom:15px
 }
+.market-name-wrap{
+display:flex;
+align-items:center;
+gap:9px
+}
+.market-coin-icon{
+width:30px;
+height:30px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:12px;
+font-weight:900;
+color:#07111f
+}
 .market-name{font-weight:700}
-.market-symbol{font-size:12px;color:var(--muted)}
-.market-price{font-size:23px;font-weight:800}
-.market-change{color:var(--green);font-size:13px}
+.market-symbol{
+font-size:12px;
+color:var(--muted)
+}
+.market-price{
+font-size:23px;
+font-weight:800;
+margin-top:6px
+}
+.market-change{
+font-size:13px;
+font-weight:700
+}
 
 /* SERVICES */
-.services{
-background:#091827
-}
+.services{background:#091827}
 .services-grid{
 margin-top:55px;
 display:grid;
@@ -430,7 +519,7 @@ border-radius:16px
 }
 .service-number{
 font-size:13px;
-color:var(--green);
+color:var(--gold);
 font-weight:800;
 margin-bottom:20px
 }
@@ -441,7 +530,7 @@ margin-bottom:20px
 .cta{
 padding:100px 6%;
 background:
-radial-gradient(circle at 50% 0,rgba(32,224,128,.13),transparent 35%),
+radial-gradient(circle at 50% 0,rgba(246,196,83,.13),transparent 35%),
 #07111f;
 text-align:center
 }
@@ -449,7 +538,7 @@ text-align:center
 max-width:1000px;
 margin:auto;
 padding:75px 35px;
-border:1px solid rgba(32,224,128,.16);
+border:1px solid rgba(246,196,83,.18);
 border-radius:25px;
 background:linear-gradient(145deg,#0c2033,#091625)
 }
@@ -465,9 +554,7 @@ margin:0 auto 30px
 }
 
 /* TESTIMONIALS */
-.testimonials{
-background:#091827
-}
+.testimonials{background:#091827}
 .testimonial-grid{
 margin-top:55px;
 display:grid;
@@ -478,7 +565,12 @@ gap:20px
 padding:30px;
 border:1px solid var(--border);
 background:#0c1c2e;
-border-radius:16px
+border-radius:16px;
+transition:.25s
+}
+.testimonial:hover{
+transform:translateY(-4px);
+border-color:rgba(246,196,83,.22)
 }
 .stars{color:#f5c542;margin-bottom:17px}
 .testimonial p{
@@ -492,7 +584,8 @@ align-items:center;
 gap:12px
 }
 .avatar{
-width:42px;height:42px;
+width:42px;
+height:42px;
 border-radius:50%;
 background:linear-gradient(135deg,#173b58,#20e080);
 display:flex;
@@ -570,7 +663,10 @@ letter-spacing:-2px;
 font-size:52px
 }
 .hero p{font-size:16px}
-.stats{grid-template-columns:repeat(2,1fr);padding:30px 5%}
+.stats{
+grid-template-columns:repeat(2,1fr);
+padding:30px 5%
+}
 .stat:nth-child(2){border-right:0}
 .stat:nth-child(-n+2){border-bottom:1px solid var(--border)}
 section{padding:80px 5%}
@@ -597,7 +693,7 @@ section{padding:80px 5%}
 
     <div class="nav-buttons">
       <a class="btn btn-outline" href="login.html">Login</a>
-      <a class="btn btn-green" href="login.html">Register</a>
+      <a class="btn btn-gold" href="login.html">Register</a>
     </div>
   </nav>
 </header>
@@ -622,7 +718,7 @@ section{padding:80px 5%}
     </p>
 
     <div class="hero-buttons">
-      <a class="btn btn-green" href="login.html">Get Started</a>
+      <a class="btn btn-gold" href="login.html">Get Started</a>
       <a class="btn btn-outline" href="#about">Explore CoinForest</a>
     </div>
 
@@ -631,19 +727,26 @@ section{padding:80px 5%}
   <div class="hero-card">
 
     <div class="chart-head">
-      <strong>Portfolio Overview</strong>
-      <span class="positive">+8.42%</span>
+      <strong>Bitcoin Overview</strong>
+
+      <span class="live-label">
+        <span class="live-dot"></span>
+        LIVE
+      </span>
     </div>
 
-    <div class="price">$24,680.50</div>
-    <div class="positive">+$1,920.40 today</div>
+    <div class="price" id="heroPrice">$67,420.00</div>
+
+    <div id="heroChange" class="hero-change positive">
+      +2.41%
+    </div>
 
     <div class="fake-chart">
       <svg viewBox="0 0 360 130" preserveAspectRatio="none">
         <defs>
           <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#20e080" stop-opacity=".35"/>
-            <stop offset="1" stop-color="#20e080" stop-opacity="0"/>
+            <stop offset="0" stop-color="#f6c453" stop-opacity=".35"/>
+            <stop offset="1" stop-color="#f6c453" stop-opacity="0"/>
           </linearGradient>
         </defs>
 
@@ -669,7 +772,7 @@ section{padding:80px 5%}
              S280 50 300 25
              S330 42 360 10"
           fill="none"
-          stroke="#20e080"
+          stroke="#f6c453"
           stroke-width="3"/>
       </svg>
     </div>
@@ -708,23 +811,7 @@ section{padding:80px 5%}
 </div>
 
 <div class="ticker">
-  <div class="ticker-track">
-
-    <div class="coin"><b>BTC</b>$67,420 <span class="up">+2.41%</span></div>
-    <div class="coin"><b>ETH</b>$3,540 <span class="up">+1.82%</span></div>
-    <div class="coin"><b>BNB</b>$612 <span class="up">+0.94%</span></div>
-    <div class="coin"><b>SOL</b>$181 <span class="up">+3.17%</span></div>
-    <div class="coin"><b>XRP</b>$0.61 <span class="up">+1.06%</span></div>
-    <div class="coin"><b>ADA</b>$0.42 <span class="up">+0.87%</span></div>
-
-    <div class="coin"><b>BTC</b>$67,420 <span class="up">+2.41%</span></div>
-    <div class="coin"><b>ETH</b>$3,540 <span class="up">+1.82%</span></div>
-    <div class="coin"><b>BNB</b>$612 <span class="up">+0.94%</span></div>
-    <div class="coin"><b>SOL</b>$181 <span class="up">+3.17%</span></div>
-    <div class="coin"><b>XRP</b>$0.61 <span class="up">+1.06%</span></div>
-    <div class="coin"><b>ADA</b>$0.42 <span class="up">+0.87%</span></div>
-
-  </div>
+  <div class="ticker-track" id="tickerTrack"></div>
 </div>
 
 <section class="about" id="about">
@@ -837,14 +924,15 @@ section{padding:80px 5%}
 
   <div class="center">
 
-    <div class="section-label">Market Overview</div>
+    <div class="section-label">Live Market Overview</div>
 
     <h2 class="section-title">
       Explore Digital Asset Markets
     </h2>
 
     <p class="section-text">
-      Follow selected market information from one organized interface.
+      Follow selected digital assets with continuously changing
+      market displays.
     </p>
 
   </div>
@@ -853,46 +941,58 @@ section{padding:80px 5%}
 
     <div class="market">
       <div class="market-top">
-        <div>
-          <div class="market-name">Bitcoin</div>
-          <div class="market-symbol">BTC</div>
+        <div class="market-name-wrap">
+          <div class="market-coin-icon btc-icon">₿</div>
+          <div>
+            <div class="market-name">Bitcoin</div>
+            <div class="market-symbol">BTC</div>
+          </div>
         </div>
-        <div class="market-change">+2.41%</div>
+        <div id="btcChange" class="market-change">+2.41%</div>
       </div>
-      <div class="market-price">$67,420</div>
+      <div id="btcPrice" class="market-price">$67,420</div>
     </div>
 
     <div class="market">
       <div class="market-top">
-        <div>
-          <div class="market-name">Ethereum</div>
-          <div class="market-symbol">ETH</div>
+        <div class="market-name-wrap">
+          <div class="market-coin-icon eth-icon">Ξ</div>
+          <div>
+            <div class="market-name">Ethereum</div>
+            <div class="market-symbol">ETH</div>
+          </div>
         </div>
-        <div class="market-change">+1.82%</div>
+        <div id="ethChange" class="market-change">+1.82%</div>
       </div>
-      <div class="market-price">$3,540</div>
+      <div id="ethPrice" class="market-price">$3,540</div>
     </div>
 
     <div class="market">
       <div class="market-top">
-        <div>
-          <div class="market-name">Solana</div>
-          <div class="market-symbol">SOL</div>
+        <div class="market-name-wrap">
+          <div class="market-coin-icon sol-icon">S</div>
+          <div>
+            <div class="market-name">Solana</div>
+            <div class="market-symbol">SOL</div>
+          </div>
         </div>
-        <div class="market-change">+3.17%</div>
+        <div id="solChange" class="market-change">+3.17%</div>
       </div>
-      <div class="market-price">$181</div>
+      <div id="solPrice" class="market-price">$181</div>
     </div>
 
     <div class="market">
       <div class="market-top">
-        <div>
-          <div class="market-name">BNB</div>
-          <div class="market-symbol">BNB</div>
+        <div class="market-name-wrap">
+          <div class="market-coin-icon bnb-icon">B</div>
+          <div>
+            <div class="market-name">BNB</div>
+            <div class="market-symbol">BNB</div>
+          </div>
         </div>
-        <div class="market-change">+0.94%</div>
+        <div id="bnbChange" class="market-change">+0.94%</div>
       </div>
-      <div class="market-price">$612</div>
+      <div id="bnbPrice" class="market-price">$612</div>
     </div>
 
   </div>
@@ -974,7 +1074,7 @@ section{padding:80px 5%}
       organized digital financial platform.
     </p>
 
-    <a class="btn btn-green" href="login.html">
+    <a class="btn btn-gold" href="login.html">
       Create Your Account
     </a>
 
@@ -1083,7 +1183,6 @@ section{padding:80px 5%}
 
     <div>
       <h4>Resources</h4>
-      <a href="#faq">FAQ</a>
       <a href="#markets">Market Overview</a>
       <a href="#contact">Support</a>
     </div>
@@ -1096,5 +1195,392 @@ section{padding:80px 5%}
 
 </footer>
 
+<script>
+
+/* =====================================================
+   COIN MARKET DISPLAY
+   Visual simulated market movement for the landing page.
+   ===================================================== */
+
+const coins = {
+
+  BTC:{
+    price:67420,
+    decimals:2,
+    min:62000,
+    max:72000,
+    change:2.41
+  },
+
+  ETH:{
+    price:3540,
+    decimals:2,
+    min:3000,
+    max:3900,
+    change:1.82
+  },
+
+  SOL:{
+    price:181,
+    decimals:2,
+    min:145,
+    max:215,
+    change:3.17
+  },
+
+  BNB:{
+    price:612,
+    decimals:2,
+    min:540,
+    max:680,
+    change:.94
+  }
+
+};
+
+
+/* TICKER */
+
+const tickerTrack =
+  document.getElementById("tickerTrack");
+
+const tickerCoins = [
+  ["BTC","₿","btc-icon"],
+  ["ETH","Ξ","eth-icon"],
+  ["BNB","B","bnb-icon"],
+  ["SOL","S","sol-icon"],
+  ["XRP","X","xrp-icon"],
+  ["ADA","A","ada-icon"]
+];
+
+function createTickerCoin(symbol,icon,iconClass){
+
+  const coin =
+    document.createElement("div");
+
+  coin.className="coin";
+
+  coin.innerHTML=`
+    <span class="coin-icon ${iconClass}">
+      ${icon}
+    </span>
+
+    <b>${symbol}</b>
+
+    <span
+      id="tickerPrice-${symbol}"
+      class="coin-price">
+      —
+    </span>
+
+    <span
+      id="tickerChange-${symbol}"
+      class="coin-change">
+      —
+    </span>
+  `;
+
+  return coin;
+}
+
+
+/* Create two copies so the ticker loops smoothly */
+
+tickerCoins.forEach(item=>{
+  tickerTrack.appendChild(
+    createTickerCoin(...item)
+  );
+});
+
+tickerCoins.forEach(item=>{
+  tickerTrack.appendChild(
+    createTickerCoin(...item)
+  );
+});
+
+
+function formatPrice(value){
+
+  if(value < 1){
+    return "$" + value.toFixed(4);
+  }
+
+  if(value < 1000){
+    return "$" + value.toFixed(2);
+  }
+
+  return "$" +
+    value.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+}
+
+
+function updateTickerCoin(symbol,price,change){
+
+  document
+    .querySelectorAll(
+      `[id="tickerPrice-${symbol}"]`
+    )
+    .forEach(element=>{
+      element.textContent =
+        formatPrice(price);
+    });
+
+  document
+    .querySelectorAll(
+      `[id="tickerChange-${symbol}"]`
+    )
+    .forEach(element=>{
+
+      element.textContent =
+        (change >= 0 ? "+" : "") +
+        change.toFixed(2) +
+        "%";
+
+      element.classList.toggle(
+        "coin-up",
+        change >= 0
+      );
+
+      element.classList.toggle(
+        "coin-down",
+        change < 0
+      );
+
+    });
+
+}
+
+
+/* =====================================================
+   MAIN MARKET CARDS
+   ===================================================== */
+
+function updateMarket(symbol){
+
+  const coin = coins[symbol];
+
+  /*
+    Small random movement.
+    This keeps the display alive without huge jumps.
+  */
+
+  const movement =
+    (Math.random() - .5) *
+    coin.price *
+    .0025;
+
+  coin.price += movement;
+
+  if(coin.price < coin.min)
+    coin.price = coin.min;
+
+  if(coin.price > coin.max)
+    coin.price = coin.max;
+
+  /*
+    Slowly change percentage.
+  */
+
+  coin.change +=
+    (Math.random() - .5) * .7;
+
+  if(coin.change > 9)
+    coin.change = 9;
+
+  if(coin.change < -9)
+    coin.change = -9;
+
+
+  const priceElement =
+    document.getElementById(
+      symbol.toLowerCase()+"Price"
+    );
+
+  const changeElement =
+    document.getElementById(
+      symbol.toLowerCase()+"Change"
+    );
+
+
+  if(priceElement){
+
+    priceElement.textContent =
+      formatPrice(coin.price);
+
+  }
+
+
+  if(changeElement){
+
+    changeElement.textContent =
+      (coin.change >= 0 ? "+" : "") +
+      coin.change.toFixed(2) +
+      "%";
+
+    changeElement.classList.toggle(
+      "positive",
+      coin.change >= 0
+    );
+
+    changeElement.classList.toggle(
+      "negative",
+      coin.change < 0
+    );
+
+  }
+
+
+  updateTickerCoin(
+    symbol,
+    coin.price,
+    coin.change
+  );
+
+}
+
+
+/* =====================================================
+   XRP / ADA TICKER
+   ===================================================== */
+
+let xrpPrice = .61;
+let adaPrice = .42;
+
+let xrpChange = 1.06;
+let adaChange = .87;
+
+
+function updateSmallCoin(
+  symbol,
+  state
+){
+
+  state.price +=
+    (Math.random()-.5) *
+    state.price *
+    .006;
+
+  state.change +=
+    (Math.random()-.5) *
+    .7;
+
+  if(symbol==="XRP"){
+    if(state.price<.48)
+      state.price=.48;
+
+    if(state.price> .75)
+      state.price=.75;
+  }
+
+  if(symbol==="ADA"){
+    if(state.price<.32)
+      state.price=.32;
+
+    if(state.price> .55)
+      state.price=.55;
+  }
+
+  updateTickerCoin(
+    symbol,
+    state.price,
+    state.change
+  );
+
+}
+
+
+const xrp={
+  price:xrpPrice,
+  change:xrpChange
+};
+
+const ada={
+  price:adaPrice,
+  change:adaChange
+};
+
+
+/* =====================================================
+   HERO BITCOIN
+   ===================================================== */
+
+function updateHero(){
+
+  const btc =
+    coins.BTC;
+
+  const price =
+    document.getElementById(
+      "heroPrice"
+    );
+
+  const change =
+    document.getElementById(
+      "heroChange"
+    );
+
+  price.textContent =
+    formatPrice(btc.price);
+
+  change.textContent =
+    (btc.change >= 0 ? "+" : "") +
+    btc.change.toFixed(2) +
+    "%";
+
+  change.classList.toggle(
+    "positive",
+    btc.change >= 0
+  );
+
+  change.classList.toggle(
+    "negative",
+    btc.change < 0
+  );
+
+}
+
+
+/* =====================================================
+   UPDATE ALL MARKETS
+   ===================================================== */
+
+function refreshMarkets(){
+
+  updateMarket("BTC");
+  updateMarket("ETH");
+  updateMarket("SOL");
+  updateMarket("BNB");
+
+  updateSmallCoin("XRP",xrp);
+  updateSmallCoin("ADA",ada);
+
+  updateHero();
+
+}
+
+
+/* Initial values */
+
+refreshMarkets();
+
+
+/*
+  Update every 2.5 seconds so the market
+  cards visibly change over time.
+*/
+
+setInterval(
+  refreshMarkets,
+  2500
+);
+
+</script>
+
 </body>
-                                        </html>
+          </html>
