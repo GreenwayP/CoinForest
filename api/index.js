@@ -29,11 +29,11 @@ function hashToken(value) {
   return crypto
     .createHash("sha256")
     .update(String(value))
-    .digesemail);
+    
 }
 
 function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toString("hex");
+  const salt = crypto.randomBytes(16).toStrin.digest("hex");g("hex");
 
   const derivedKey = crypto.scryptSync(
     String(password),
@@ -951,4 +951,4 @@ export default async function handler(req, res) {
       })
     );
   }
-      }
+      
