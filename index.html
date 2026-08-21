@@ -40,12 +40,12 @@ position:fixed;
 inset:0;
 pointer-events:none;
 background:
-radial-gradient(circle at 15% 20%,rgba(246,196,83,.025),transparent 25%),
-radial-gradient(circle at 85% 75%,rgba(246,196,83,.025),transparent 25%);
+radial-gradient(circle at 15% 20%,rgba(246,196,83,.035),transparent 25%),
+radial-gradient(circle at 85% 75%,rgba(246,196,83,.035),transparent 25%);
 z-index:-1
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 header{
 position:absolute;
@@ -95,9 +95,7 @@ padding:10px;
 outline:none
 }
 
-.language option{
-background:#0b192b
-}
+.language option{background:#0b192b}
 
 .btn{
 border:0;
@@ -130,7 +128,7 @@ border-color:var(--gold);
 color:var(--gold)
 }
 
-/* HERO */
+/* ================= HERO ================= */
 
 .hero{
 min-height:800px;
@@ -213,7 +211,7 @@ gap:13px;
 flex-wrap:wrap
 }
 
-/* PHONE */
+/* ================= PHONE ================= */
 
 .phone{
 position:absolute;
@@ -250,7 +248,8 @@ border-radius:31px;
 overflow:hidden;
 background:
 linear-gradient(160deg,#0d1e31,#07111f);
-padding:42px 15px 15px
+padding:42px 15px 15px;
+position:relative
 }
 
 .phone-top{
@@ -259,48 +258,96 @@ justify-content:space-between;
 align-items:center;
 font-size:11px;
 color:#9aaabd;
-margin-bottom:18px
+margin-bottom:13px
 }
 
 .phone-brand{
 font-weight:800;
 font-size:17px;
-color:#fff
+margin-bottom:10px
 }
 
 .phone-brand span{color:var(--gold)}
 
+.phone-view{
+display:none;
+animation:phoneViewIn .45s ease
+}
+
+.phone-view.active{
+display:block
+}
+
+@keyframes phoneViewIn{
+from{
+opacity:0;
+transform:translateX(18px)
+}
+to{
+opacity:1;
+transform:translateX(0)
+}
+}
+
 .phone-balance{
-padding:18px;
+padding:15px;
 border:1px solid rgba(246,196,83,.16);
 background:linear-gradient(145deg,#13263b,#0b192b);
 border-radius:17px;
-margin-bottom:13px
+margin-bottom:10px
 }
 
 .phone-balance small{
 display:block;
 color:#7f91a6;
-font-size:10px
+font-size:9px
 }
 
 .phone-balance strong{
 display:block;
-font-size:27px;
-margin:5px 0
+font-size:25px;
+margin:3px 0
 }
 
 .phone-profit{
 color:var(--gold);
-font-size:11px
+font-size:10px
 }
 
+.phone-mini-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
+margin-top:9px
+}
+
+.phone-mini-card{
+background:#0d2033;
+border:1px solid rgba(246,196,83,.08);
+border-radius:10px;
+padding:9px
+}
+
+.phone-mini-card small{
+display:block;
+font-size:8px;
+color:#75879c
+}
+
+.phone-mini-card strong{
+display:block;
+font-size:12px;
+margin-top:2px
+}
+
+.phone-positive{color:#f6c453!important}
+.phone-negative{color:#ff5b6e!important}
+
 .phone-chart{
-height:90px;
-margin:15px 0;
+height:75px;
+margin:11px 0;
 border-radius:12px;
-background:
-linear-gradient(180deg,rgba(246,196,83,.1),transparent);
+background:linear-gradient(180deg,rgba(246,196,83,.1),transparent);
 position:relative;
 overflow:hidden
 }
@@ -311,59 +358,188 @@ height:100%
 }
 
 .phone-title{
-font-size:12px;
+font-size:11px;
 font-weight:800;
-margin:12px 0 8px
+margin:9px 0 7px
 }
 
 .phone-activity{
 display:flex;
 align-items:center;
-gap:9px;
-padding:9px;
-border-radius:10px;
+gap:8px;
+padding:8px;
+border-radius:9px;
 background:#0d2033;
-margin-bottom:7px
+margin-bottom:6px
 }
 
 .phone-icon{
-width:27px;
-height:27px;
+width:26px;
+height:26px;
 border-radius:8px;
 background:rgba(246,196,83,.12);
 display:flex;
 align-items:center;
 justify-content:center;
 color:var(--gold);
-font-size:12px
+font-size:11px
 }
 
-.phone-activity div:last-child{
-font-size:10px
+.phone-activity strong{
+font-size:10px;
+display:block
 }
 
 .phone-activity small{
 display:block;
-color:#77899d
+color:#77899d;
+font-size:8px
+}
+
+.phone-success{
+border:1px solid rgba(246,196,83,.2);
+background:rgba(246,196,83,.06);
+border-radius:13px;
+padding:15px;
+text-align:center;
+margin-top:8px
+}
+
+.phone-success-icon{
+width:43px;
+height:43px;
+margin:0 auto 8px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(145deg,#ffe48b,#d99b20);
+color:#111;
+font-weight:900;
+font-size:20px
+}
+
+.phone-success strong{
+font-size:13px;
+display:block
+}
+
+.phone-success small{
+color:#8191a4;
+font-size:9px
+}
+
+.phone-chat{
+background:#0a1727;
+border-radius:12px;
+padding:9px;
+margin-top:7px
+}
+
+.chat-head{
+display:flex;
+align-items:center;
+gap:7px;
+padding-bottom:7px;
+border-bottom:1px solid rgba(246,196,83,.08);
+font-size:10px;
+font-weight:800
+}
+
+.chat-status{
+width:6px;
+height:6px;
+border-radius:50%;
+background:var(--gold);
+box-shadow:0 0 8px var(--gold)
+}
+
+.chat-message{
+max-width:85%;
+padding:7px 9px;
+border-radius:9px;
+font-size:8px;
+margin-top:7px;
+line-height:1.35
+}
+
+.chat-message.admin{
+background:#14263a;
+color:#b8c5d5
+}
+
+.chat-message.customer{
+background:linear-gradient(135deg,#d99b20,#f6c453);
+color:#151006;
+margin-left:auto
+}
+
+.phone-send{
+margin-top:8px;
+background:#0d2033;
+border-radius:12px;
+padding:11px
+}
+
+.send-row{
+display:flex;
+justify-content:space-between;
+font-size:9px;
+padding:4px 0
+}
+
+.send-row span:first-child{color:#7d8fa4}
+.send-row strong{font-size:9px}
+
+.send-status{
+margin-top:7px;
+padding:7px;
+text-align:center;
+border-radius:8px;
+background:rgba(246,196,83,.08);
+color:var(--gold);
+font-size:9px;
+font-weight:800
 }
 
 .phone-bottom{
+position:absolute;
+bottom:12px;
+left:15px;
+right:15px;
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:6px;
-margin-top:10px
+gap:6px
 }
 
 .phone-bottom div{
 background:#0d2033;
-padding:8px 4px;
+padding:7px 4px;
 text-align:center;
 border-radius:9px;
-font-size:9px;
+font-size:8px;
 color:#9aaabd
 }
 
-/* FLOATING COINS */
+/* PHONE LABEL */
+
+.phone-live-label{
+position:absolute;
+right:0;
+top:50%;
+transform:translateY(-50%);
+background:rgba(10,27,44,.95);
+border:1px solid rgba(246,196,83,.2);
+border-right:0;
+padding:8px 10px;
+border-radius:10px 0 0 10px;
+font-size:8px;
+color:var(--gold);
+letter-spacing:.5px;
+z-index:8
+}
+
+/* ================= FLOATING COINS ================= */
 
 .float-coin{
 position:absolute;
@@ -385,12 +561,21 @@ z-index:3
 .float-coin.two{right:35%;top:625px;animation-delay:.7s}
 .float-coin.three{right:2%;top:390px;animation-delay:1.2s}
 
+.float-coin.four{
+right:29%;
+top:280px;
+width:35px;
+height:35px;
+font-size:12px;
+animation-delay:1.8s
+}
+
 @keyframes floatCoin{
 0%,100%{transform:translateY(0) rotate(0)}
 50%{transform:translateY(-13px) rotate(8deg)}
 }
 
-/* STATS */
+/* ================= STATS ================= */
 
 .stats{
 display:grid;
@@ -443,7 +628,7 @@ animation:pulse 1.1s infinite
 50%{opacity:.4;transform:scale(.7)}
 }
 
-/* TICKER */
+/* ================= TICKER ================= */
 
 .ticker{
 height:60px;
@@ -458,7 +643,7 @@ white-space:nowrap
 .ticker-track{
 display:flex;
 gap:38px;
-animation:scroll 20s linear infinite
+animation:scroll 17s linear infinite
 }
 
 .coin{
@@ -483,7 +668,6 @@ font-weight:800
 }
 
 .coin-up{color:var(--gold)}
-
 .coin-down{color:var(--red)}
 
 .coin-icon{
@@ -505,13 +689,16 @@ box-shadow:0 2px 10px rgba(0,0,0,.25)
 .sol-icon{background:linear-gradient(135deg,#20e0c5,#8a5cff);color:#fff}
 .xrp-icon{background:linear-gradient(135deg,#71b8ff,#2775ca);color:#fff}
 .ada-icon{background:linear-gradient(135deg,#5ca5ff,#2775ca);color:#fff}
+.doge-icon{background:linear-gradient(135deg,#ffe89a,#c9a32e)}
+.dot-icon{background:linear-gradient(135deg,#f7a9ff,#7b4de8);color:#fff}
+.avax-icon{background:linear-gradient(135deg,#ff7c86,#d51d32);color:#fff}
 
 @keyframes scroll{
 from{transform:translateX(0)}
 to{transform:translateX(-50%)}
 }
 
-/* SECTIONS */
+/* ================= SECTIONS ================= */
 
 section{padding:110px 6%}
 
@@ -539,11 +726,9 @@ font-size:16px
 
 .center{text-align:center}
 
-.center .section-text{
-margin:0 auto
-}
+.center .section-text{margin:0 auto}
 
-/* ABOUT */
+/* ================= ABOUT ================= */
 
 .about{background:#07111f}
 
@@ -652,7 +837,7 @@ font-size:14px;
 color:var(--muted)
 }
 
-/* FEATURES */
+/* ================= FEATURES ================= */
 
 .features{background:#091827}
 
@@ -699,7 +884,83 @@ color:var(--muted);
 font-size:14px
 }
 
-/* MARKETS */
+/* ================= SUPPORTED ================= */
+
+.supported{
+background:#07111f;
+padding-top:85px;
+padding-bottom:85px
+}
+
+.supported-grid{
+margin:45px auto 0;
+max-width:1050px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:18px
+}
+
+.support-card{
+position:relative;
+padding:28px;
+background:linear-gradient(145deg,#0d2034,#091625);
+border:1px solid rgba(246,196,83,.14);
+border-radius:18px;
+overflow:hidden;
+transition:.3s
+}
+
+.support-card:before{
+content:"";
+position:absolute;
+width:100px;
+height:100px;
+right:-40px;
+top:-40px;
+border-radius:50%;
+background:rgba(246,196,83,.06)
+}
+
+.support-card:hover{
+transform:translateY(-6px);
+border-color:rgba(246,196,83,.4);
+box-shadow:0 20px 50px rgba(0,0,0,.2)
+}
+
+.support-logo{
+width:58px;
+height:58px;
+border-radius:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+font-weight:900;
+background:linear-gradient(145deg,#ffe48b,#d99b20);
+color:#111;
+margin-bottom:17px
+}
+
+.support-card h3{
+font-size:19px;
+margin-bottom:5px
+}
+
+.support-card p{
+font-size:12px;
+color:var(--muted)
+}
+
+.support-tag{
+display:inline-block;
+margin-top:14px;
+font-size:9px;
+text-transform:uppercase;
+letter-spacing:1.2px;
+color:var(--gold)
+}
+
+/* ================= MARKETS ================= */
 
 .markets{background:#07111f}
 
@@ -771,7 +1032,28 @@ font-weight:800;
 margin-top:4px
 }
 
-/* SERVICES */
+.positive{color:var(--gold)}
+.negative{color:var(--red)}
+
+.market-cap{
+margin-top:15px;
+padding-top:12px;
+border-top:1px solid rgba(246,196,83,.08);
+display:flex;
+justify-content:space-between;
+font-size:11px
+}
+
+.market-cap span{color:#72849a}
+.market-cap strong{color:#dbe3ec}
+
+.market-supply{
+margin-top:5px;
+font-size:9px;
+color:#62758a
+}
+
+/* ================= SERVICES ================= */
 
 .services{background:#091827}
 
@@ -806,7 +1088,7 @@ color:var(--muted);
 font-size:14px
 }
 
-/* TEAM */
+/* ================= TEAM ================= */
 
 .team{
 background:#07111f
@@ -835,26 +1117,96 @@ border-color:rgba(246,196,83,.4)
 .team-photo{
 height:300px;
 background:
+radial-gradient(circle at 50% 35%,rgba(246,196,83,.12),transparent 25%),
 linear-gradient(145deg,#172c40,#091421);
 display:flex;
 align-items:center;
 justify-content:center;
-overflow:hidden
+overflow:hidden;
+position:relative
 }
 
-.team-photo img{
-width:100%;
-height:100%;
-object-fit:cover
+/* Self-contained portrait treatment.
+   No external image files are required. */
+
+.team-portrait{
+width:145px;
+height:185px;
+position:relative;
+display:flex;
+justify-content:center
+}
+
+.team-head{
+position:absolute;
+top:10px;
+width:78px;
+height:92px;
+border-radius:48% 48% 45% 45%;
+background:linear-gradient(145deg,#dba77d,#9b6347);
+z-index:2
+}
+
+.team-hair{
+position:absolute;
+top:0;
+width:83px;
+height:48px;
+border-radius:50% 50% 25% 25%;
+background:#24170f;
+z-index:3
+}
+
+.team-body{
+position:absolute;
+top:92px;
+width:135px;
+height:100px;
+border-radius:48px 48px 10px 10px;
+background:linear-gradient(145deg,#172c40,#0b1726)
+}
+
+.team-body:after{
+content:"CF";
+position:absolute;
+left:50%;
+top:35px;
+transform:translateX(-50%);
+color:var(--gold);
+font-size:13px;
+font-weight:900;
+letter-spacing:1px
+}
+
+.team-card:nth-child(2) .team-head{
+background:linear-gradient(145deg,#a96f4f,#70432f)
+}
+
+.team-card:nth-child(2) .team-hair{
+background:#17100c
+}
+
+.team-card:nth-child(3) .team-head{
+background:linear-gradient(145deg,#9a623f,#603722)
+}
+
+.team-card:nth-child(3) .team-hair{
+background:#0c0a08
+}
+
+.team-card:nth-child(4) .team-head{
+background:linear-gradient(145deg,#f0bd96,#c47e59)
+}
+
+.team-card:nth-child(4) .team-hair{
+background:#5b2819
 }
 
 .team-info{
 padding:20px
 }
 
-.team-info h3{
-font-size:18px
-}
+.team-info h3{font-size:18px}
 
 .team-info span{
 color:var(--gold);
@@ -867,7 +1219,7 @@ font-size:12px;
 margin-top:8px
 }
 
-/* TESTIMONIALS */
+/* ================= TESTIMONIALS ================= */
 
 .testimonials{
 background:#091827
@@ -928,10 +1280,27 @@ font-weight:800;
 color:#07111f
 }
 
-.avatar img{
+/* Self-contained testimonial avatar */
+.avatar-face{
 width:100%;
 height:100%;
-object-fit:cover
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px;
+font-weight:900;
+background:linear-gradient(145deg,#ffe48b,#d99b20);
+color:#111
+}
+
+.testimonial:nth-child(2) .avatar-face{
+background:linear-gradient(145deg,#c98b64,#74462f);
+color:#fff
+}
+
+.testimonial:nth-child(3) .avatar-face{
+background:linear-gradient(145deg,#e2ae87,#a6684c);
+color:#111
 }
 
 .person strong{
@@ -952,7 +1321,7 @@ font-size:11px;
 color:#71849a
 }
 
-/* CTA */
+/* ================= CTA ================= */
 
 .cta{
 padding:100px 6%;
@@ -983,7 +1352,7 @@ max-width:600px;
 margin:0 auto 30px
 }
 
-/* ACTIVITY POPUP */
+/* ================= ACTIVITY POPUP ================= */
 
 .activity-popup{
 position:fixed;
@@ -1016,18 +1385,22 @@ height:43px;
 min-width:43px;
 border-radius:50%;
 overflow:hidden;
-background:#172d42;
+background:linear-gradient(145deg,#ffe48b,#d99b20);
 display:flex;
 align-items:center;
 justify-content:center;
-color:var(--gold);
+color:#111;
 font-weight:800
 }
 
-.activity-avatar img{
+.activity-avatar-face{
 width:100%;
 height:100%;
-object-fit:cover
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+font-weight:900
 }
 
 .activity-content{
@@ -1046,6 +1419,13 @@ color:#b6c4d4;
 line-height:1.45
 }
 
+.activity-amount{
+font-weight:900
+}
+
+.activity-positive{color:var(--gold)}
+.activity-negative{color:var(--red)}
+
 .activity-content span{
 font-size:10px;
 color:#71849a;
@@ -1062,7 +1442,7 @@ cursor:pointer;
 font-size:17px
 }
 
-/* FOOTER */
+/* ================= FOOTER ================= */
 
 footer{
 background:#050d18;
@@ -1084,9 +1464,7 @@ max-width:330px;
 margin-top:15px
 }
 
-footer h4{
-margin-bottom:15px
-}
+footer h4{margin-bottom:15px}
 
 footer a{
 display:block;
@@ -1095,9 +1473,7 @@ font-size:13px;
 margin-bottom:9px
 }
 
-footer a:hover{
-color:var(--gold)
-}
+footer a:hover{color:var(--gold)}
 
 .copyright{
 border-top:1px solid var(--border);
@@ -1107,7 +1483,7 @@ font-size:12px;
 text-align:center
 }
 
-/* MOBILE */
+/* ================= MOBILE ================= */
 
 @media(max-width:1100px){
 
@@ -1121,6 +1497,10 @@ max-width:600px
 }
 
 .team-grid{
+grid-template-columns:repeat(2,1fr)
+}
+
+.market-grid{
 grid-template-columns:repeat(2,1fr)
 }
 
@@ -1141,6 +1521,10 @@ grid-template-columns:repeat(2,1fr)
 grid-template-columns:repeat(2,1fr)
 }
 
+.supported-grid{
+grid-template-columns:1fr
+}
+
 }
 
 @media(max-width:700px){
@@ -1159,18 +1543,14 @@ gap:10px;
 flex-wrap:wrap
 }
 
-nav>a{
-font-size:11px
-}
+nav>a{font-size:11px}
 
 .language{
 font-size:11px;
 padding:7px
 }
 
-.nav-buttons{
-display:none
-}
+.nav-buttons{display:none}
 
 .hero{
 min-height:700px;
@@ -1182,18 +1562,14 @@ letter-spacing:-2px;
 font-size:52px
 }
 
-.hero p{
-font-size:16px
-}
+.hero p{font-size:16px}
 
 .stats{
 grid-template-columns:repeat(2,1fr);
 padding:30px 5%
 }
 
-.stat:nth-child(2){
-border-right:0
-}
+.stat:nth-child(2){border-right:0}
 
 .stat:nth-child(-n+2){
 border-bottom:1px solid var(--border)
@@ -1219,6 +1595,10 @@ grid-template-columns:1fr
 left:15px;
 bottom:15px;
 width:calc(100vw - 30px)
+}
+
+.supported-grid{
+grid-template-columns:1fr
 }
 }
 </style>
@@ -1256,7 +1636,7 @@ width:calc(100vw - 30px)
 </header>
 
 
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 
 <section class="hero" id="home">
 
@@ -1285,14 +1665,18 @@ information together in one structured financial platform.
 </div>
 
 
-<!-- PHONE -->
+<!-- ================= ANIMATED PHONE ================= -->
 
 <div class="phone">
+
+<div class="phone-live-label">
+LIVE PLATFORM
+</div>
 
 <div class="phone-screen">
 
 <div class="phone-top">
-<span>9:41</span>
+<span id="phoneTime">9:41</span>
 <span>● ● ●</span>
 </div>
 
@@ -1300,20 +1684,36 @@ information together in one structured financial platform.
 Coin<span>Forest</span>
 </div>
 
-<div class="phone-balance">
 
-<small>Total Balance</small>
+<!-- INVESTMENT VIEW -->
+
+<div class="phone-view active" id="phoneViewInvestment">
+
+<div class="phone-balance">
+<small>Total Portfolio</small>
 
 <strong id="phoneBalance">
 $18,420.00
 </strong>
 
 <div class="phone-profit">
-+$2,480.50 this month
++$2,480.50 total profit
+</div>
+</div>
+
+<div class="phone-mini-grid">
+
+<div class="phone-mini-card">
+<small>Main Wallet</small>
+<strong>$15,940.00</strong>
+</div>
+
+<div class="phone-mini-card">
+<small>Profit Wallet</small>
+<strong class="phone-positive">$2,480.50</strong>
 </div>
 
 </div>
-
 
 <div class="phone-chart">
 
@@ -1349,34 +1749,242 @@ stroke-width="2.5"/>
 
 </div>
 
-
 <div class="phone-title">
-Recent Activity
+Investment Activity
+</div>
+
+<div class="phone-activity">
+<div class="phone-icon">◆</div>
+<div>
+<strong>Gold Investment</strong>
+<small>+$5,000.00 invested</small>
+</div>
 </div>
 
 <div class="phone-activity">
 <div class="phone-icon">↗</div>
 <div>
-<strong>Withdrawal</strong>
-<small>-$1,250.00</small>
+<strong>Profit Earned</strong>
+<small class="phone-positive">+$248.50 today</small>
+</div>
+</div>
+
+</div>
+
+
+<!-- WITHDRAWAL VIEW -->
+
+<div class="phone-view" id="phoneViewWithdrawal">
+
+<div class="phone-success">
+
+<div class="phone-success-icon">✓</div>
+
+<strong>Withdrawal Successful</strong>
+
+<small>Your withdrawal has been completed</small>
+
+</div>
+
+<div class="phone-balance">
+
+<small>Withdrawal Amount</small>
+
+<strong class="phone-positive">
+-$1,250.00
+</strong>
+
+<div class="phone-profit">
+Completed • Account balance updated
+</div>
+
+</div>
+
+<div class="phone-title">
+Transaction Details
+</div>
+
+<div class="phone-activity">
+<div class="phone-icon">✓</div>
+<div>
+<strong>Destination</strong>
+<small>Verified account</small>
 </div>
 </div>
 
 <div class="phone-activity">
 <div class="phone-icon">◆</div>
 <div>
-<strong>Investment</strong>
-<small>+$5,000.00</small>
+<strong>Status</strong>
+<small class="phone-positive">Completed successfully</small>
+</div>
+</div>
+
+</div>
+
+
+<!-- CHAT VIEW -->
+
+<div class="phone-view" id="phoneViewChat">
+
+<div class="phone-chat">
+
+<div class="chat-head">
+<span class="chat-status"></span>
+Customer Support
+</div>
+
+<div class="chat-message admin">
+Hello! How can we assist you today?
+</div>
+
+<div class="chat-message customer">
+I'd like to confirm my investment balance.
+</div>
+
+<div class="chat-message admin">
+Your account balance has been reviewed. Everything is up to date.
+</div>
+
+<div class="chat-message customer">
+Thank you!
+</div>
+
+</div>
+
+<div class="phone-title">
+Account Support
+</div>
+
+<div class="phone-activity">
+<div class="phone-icon">✓</div>
+<div>
+<strong>Admin connected</strong>
+<small>Support session active</small>
 </div>
 </div>
 
 <div class="phone-activity">
-<div class="phone-icon">₿</div>
+<div class="phone-icon">●</div>
 <div>
-<strong>BTC movement</strong>
-<small id="phoneBtcMovement">+$1,240.00</small>
+<strong>Secure session</strong>
+<small>Conversation protected</small>
 </div>
 </div>
+
+</div>
+
+
+<!-- SEND VIEW -->
+
+<div class="phone-view" id="phoneViewSend">
+
+<div class="phone-balance">
+
+<small>Send Transaction</small>
+
+<strong>
+$750.00
+</strong>
+
+<div class="phone-profit">
+Transfer amount
+</div>
+
+</div>
+
+<div class="phone-send">
+
+<div class="send-row">
+<span>Recipient</span>
+<strong>CF-28491</strong>
+</div>
+
+<div class="send-row">
+<span>Network</span>
+<strong>CoinForest</strong>
+</div>
+
+<div class="send-row">
+<span>Fee</span>
+<strong>$0.00</strong>
+</div>
+
+<div class="send-status">
+✓ Transaction Sent Successfully
+</div>
+
+</div>
+
+<div class="phone-title">
+Recent Transfer
+</div>
+
+<div class="phone-activity">
+<div class="phone-icon">↗</div>
+<div>
+<strong>Money Sent</strong>
+<small class="phone-negative">-$750.00</small>
+</div>
+</div>
+
+</div>
+
+
+<!-- WALLET VIEW -->
+
+<div class="phone-view" id="phoneViewWallet">
+
+<div class="phone-balance">
+
+<small>Wallet Overview</small>
+
+<strong>
+$20,900.50
+</strong>
+
+<div class="phone-profit">
+Portfolio value
+</div>
+
+</div>
+
+<div class="phone-mini-grid">
+
+<div class="phone-mini-card">
+<small>Main Wallet</small>
+<strong>$18,420.00</strong>
+</div>
+
+<div class="phone-mini-card">
+<small>Profit Wallet</small>
+<strong class="phone-positive">$2,480.50</strong>
+</div>
+
+</div>
+
+<div class="phone-title">
+Wallet Activity
+</div>
+
+<div class="phone-activity">
+<div class="phone-icon">◆</div>
+<div>
+<strong>Investment</strong>
+<small>Gold Package</small>
+</div>
+</div>
+
+<div class="phone-activity">
+<div class="phone-icon">↗</div>
+<div>
+<strong>Profit</strong>
+<small class="phone-positive">+$248.50</small>
+</div>
+</div>
+
+</div>
+
 
 <div class="phone-bottom">
 <div>Wallet</div>
@@ -1385,18 +1993,18 @@ Recent Activity
 </div>
 
 </div>
-
 </div>
 
 
 <div class="float-coin one">₿</div>
 <div class="float-coin two">Ξ</div>
 <div class="float-coin three">₿</div>
+<div class="float-coin four">◆</div>
 
 </section>
 
 
-<!-- COUNTERS -->
+<!-- ================= COUNTERS ================= -->
 
 <div class="stats">
 
@@ -1406,7 +2014,9 @@ Recent Activity
 </div>
 
 <div class="stat">
+
 <strong id="activeUsersCounter">75M+</strong>
+
 <span>Active Users</span>
 
 <span class="stat-live">
@@ -1429,7 +2039,7 @@ Active now
 </div>
 
 
-<!-- TICKER -->
+<!-- ================= TICKER ================= -->
 
 <div class="ticker">
 
@@ -1438,7 +2048,7 @@ Active now
 </div>
 
 
-<!-- ABOUT -->
+<!-- ================= ABOUT ================= -->
 
 <section class="about" id="about">
 
@@ -1500,7 +2110,7 @@ investment features into one powerful environment.
 </section>
 
 
-<!-- FEATURES -->
+<!-- ================= FEATURES ================= -->
 
 <section class="features">
 
@@ -1553,7 +2163,83 @@ presented in a structured environment.
 </section>
 
 
-<!-- MARKETS -->
+<!-- ================= SUPPORTED ================= -->
+
+<section class="supported">
+
+<div class="center">
+
+<div class="section-label">Global Connections</div>
+
+<h2 class="section-title">
+Supported by Many
+</h2>
+
+<p class="section-text">
+CoinForest continues to grow through connections across a wider
+business and digital ecosystem.
+</p>
+
+</div>
+
+<div class="supported-grid">
+
+<div class="support-card">
+
+<div class="support-logo">CB</div>
+
+<h3>Conbase</h3>
+
+<p>
+A growing name within our wider business network.
+</p>
+
+<span class="support-tag">
+Business Network
+</span>
+
+</div>
+
+
+<div class="support-card">
+
+<div class="support-logo">GE</div>
+
+<h3>Greenway Express</h3>
+
+<p>
+A logistics and service business connected to our wider ecosystem.
+</p>
+
+<span class="support-tag">
+Business Network
+</span>
+
+</div>
+
+
+<div class="support-card">
+
+<div class="support-logo">LU</div>
+
+<h3>Lunu</h3>
+
+<p>
+Part of the wider network of businesses supporting digital innovation.
+</p>
+
+<span class="support-tag">
+Business Network
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= MARKETS ================= -->
 
 <section class="markets" id="markets">
 
@@ -1567,18 +2253,21 @@ Explore Digital Asset Markets
 
 <p class="section-text">
 Follow selected digital assets with continuously changing
-market displays.
+market displays, market capitalization and price movement.
 </p>
 
 </div>
 
 <div class="market-grid">
 
+<!-- BTC -->
+
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
+
 <div class="market-coin-icon btc-icon">₿</div>
 
 <div>
@@ -1602,14 +2291,26 @@ $67,420.00
 +$1,620.45
 </div>
 
+<div class="market-cap">
+<span>Market Cap</span>
+<strong id="btcCap">$1.33T</strong>
 </div>
 
+<div class="market-supply">
+Circulating supply: 19.8M BTC
+</div>
+
+</div>
+
+
+<!-- ETH -->
 
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
+
 <div class="market-coin-icon eth-icon">Ξ</div>
 
 <div>
@@ -1633,14 +2334,26 @@ $3,540.00
 +$64.43
 </div>
 
+<div class="market-cap">
+<span>Market Cap</span>
+<strong id="ethCap">$426B</strong>
 </div>
 
+<div class="market-supply">
+Circulating supply: 120.3M ETH
+</div>
+
+</div>
+
+
+<!-- SOL -->
 
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
+
 <div class="market-coin-icon sol-icon">S</div>
 
 <div>
@@ -1664,14 +2377,26 @@ $181.00
 +$5.73
 </div>
 
+<div class="market-cap">
+<span>Market Cap</span>
+<strong id="solCap">$86.5B</strong>
 </div>
 
+<div class="market-supply">
+Circulating supply: 478M SOL
+</div>
+
+</div>
+
+
+<!-- BNB -->
 
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
+
 <div class="market-coin-icon bnb-icon">B</div>
 
 <div>
@@ -1695,6 +2420,15 @@ $612.00
 +$5.75
 </div>
 
+<div class="market-cap">
+<span>Market Cap</span>
+<strong id="bnbCap">$91B</strong>
+</div>
+
+<div class="market-supply">
+Circulating supply: 149M BNB
+</div>
+
 </div>
 
 </div>
@@ -1702,7 +2436,7 @@ $612.00
 </section>
 
 
-<!-- SERVICES -->
+<!-- ================= SERVICES ================= -->
 
 <section class="services" id="services">
 
@@ -1724,39 +2458,66 @@ ecosystem.
 <div class="services-grid">
 
 <div class="service">
-<div class="service-number">01 — WALLET MANAGEMENT</div>
+
+<div class="service-number">
+01 — WALLET MANAGEMENT
+</div>
+
 <h3>Main & Profit Wallets</h3>
+
 <p>
 Manage your available balance and profit balance through one
 organized account dashboard.
 </p>
+
 </div>
 
+
 <div class="service">
-<div class="service-number">02 — INVESTMENTS</div>
+
+<div class="service-number">
+02 — INVESTMENTS
+</div>
+
 <h3>Structured Investment Plans</h3>
+
 <p>
 Access structured investment schemas with clear periods,
 returns and account activity.
 </p>
+
 </div>
 
+
 <div class="service">
-<div class="service-number">03 — TRANSFERS</div>
+
+<div class="service-number">
+03 — TRANSFERS
+</div>
+
 <h3>Send Money</h3>
+
 <p>
 A dedicated environment for managing supported account-to-account
 transfers.
 </p>
+
 </div>
 
+
 <div class="service">
-<div class="service-number">04 — WITHDRAWALS</div>
+
+<div class="service-number">
+04 — WITHDRAWALS
+</div>
+
 <h3>Withdrawal Management</h3>
+
 <p>
 Submit and monitor withdrawal activity directly from your
 personal financial dashboard.
 </p>
+
 </div>
 
 </div>
@@ -1764,7 +2525,7 @@ personal financial dashboard.
 </section>
 
 
-<!-- TEAM -->
+<!-- ================= TEAM ================= -->
 
 <section class="team" id="team">
 
@@ -1773,7 +2534,7 @@ personal financial dashboard.
 <div class="section-label">Leadership</div>
 
 <h2 class="section-title">
-Meet the CoinForest Team
+Meet the Great Brains Behind CoinForest
 </h2>
 
 <p class="section-text">
@@ -1785,48 +2546,128 @@ financial experience.
 
 <div class="team-grid">
 
+
 <div class="team-card">
+
 <div class="team-photo">
-<img src="assets/people/team-1.jpg" alt="CoinForest team member">
+
+<div class="team-portrait">
+
+<div class="team-head"></div>
+<div class="team-hair"></div>
+<div class="team-body"></div>
+
 </div>
+
+</div>
+
 <div class="team-info">
+
 <h3>Alexander Morgan</h3>
-<span>Chief Executive Officer</span>
-<p>Leading platform strategy and long-term development.</p>
-</div>
+
+<span>
+Chief Executive Officer
+</span>
+
+<p>
+Leading platform strategy and long-term development.
+</p>
+
 </div>
 
-<div class="team-card">
-<div class="team-photo">
-<img src="assets/people/team-2.jpg" alt="CoinForest team member">
 </div>
+
+
+<div class="team-card">
+
+<div class="team-photo">
+
+<div class="team-portrait">
+
+<div class="team-head"></div>
+<div class="team-hair"></div>
+<div class="team-body"></div>
+
+</div>
+
+</div>
+
 <div class="team-info">
+
 <h3>Amara Williams</h3>
-<span>Chief Technology Officer</span>
-<p>Overseeing technology, architecture and platform innovation.</p>
-</div>
+
+<span>
+Chief Technology Officer
+</span>
+
+<p>
+Overseeing technology, architecture and platform innovation.
+</p>
+
 </div>
 
-<div class="team-card">
-<div class="team-photo">
-<img src="assets/people/team-3.jpg" alt="CoinForest team member">
 </div>
+
+
+<div class="team-card">
+
+<div class="team-photo">
+
+<div class="team-portrait">
+
+<div class="team-head"></div>
+<div class="team-hair"></div>
+<div class="team-body"></div>
+
+</div>
+
+</div>
+
 <div class="team-info">
+
 <h3>Daniel Okafor</h3>
-<span>Financial Operations Director</span>
-<p>Focused on financial systems and operational structure.</p>
-</div>
+
+<span>
+Financial Operations Director
+</span>
+
+<p>
+Focused on financial systems and operational structure.
+</p>
+
 </div>
 
+</div>
+
+
 <div class="team-card">
+
 <div class="team-photo">
-<img src="assets/people/team-4.jpg" alt="CoinForest team member">
+
+<div class="team-portrait">
+
+<div class="team-head"></div>
+<div class="team-hair"></div>
+<div class="team-body"></div>
+
 </div>
+
+</div>
+
 <div class="team-info">
+
 <h3>Sophia Laurent</h3>
-<span>Customer Experience Director</span>
-<p>Focused on usability, support and customer experience.</p>
+
+<span>
+Customer Experience Director
+</span>
+
+<p>
+Focused on usability, support and customer experience.
+</p>
+
 </div>
+
 </div>
 
 </div>
@@ -1834,13 +2675,15 @@ financial experience.
 </section>
 
 
-<!-- TESTIMONIALS -->
+<!-- ================= TESTIMONIALS ================= -->
 
 <section class="testimonials">
 
 <div class="center">
 
-<div class="section-label">Testimonials</div>
+<div class="section-label">
+Testimonials
+</div>
 
 <h2 class="section-title">
 What Our Users Say
@@ -1861,13 +2704,15 @@ A platform designed around clarity, accessibility and confidence.
 </section>
 
 
-<!-- CTA -->
+<!-- ================= CTA ================= -->
 
 <section class="cta">
 
 <div class="cta-box">
 
-<div class="section-label">Get Started</div>
+<div class="section-label">
+Get Started
+</div>
 
 <h2>
 Empower Your Finances.<br>
@@ -1888,7 +2733,7 @@ Create Your Account
 </section>
 
 
-<!-- FOOTER -->
+<!-- ================= FOOTER ================= -->
 
 <footer id="contact">
 
@@ -1908,25 +2753,34 @@ investments and financial tools together.
 </div>
 
 <div>
+
 <h4>Company</h4>
+
 <a href="#home">Home</a>
 <a href="#about">About Us</a>
 <a href="#services">Services</a>
 <a href="#contact">Contact</a>
+
 </div>
 
 <div>
+
 <h4>Platform</h4>
+
 <a href="login.html">Login</a>
 <a href="login.html">Register</a>
 <a href="#markets">Markets</a>
 <a href="dashboard.html">Dashboard</a>
+
 </div>
 
 <div>
+
 <h4>Resources</h4>
+
 <a href="#markets">Market Overview</a>
 <a href="#contact">Support</a>
+
 </div>
 
 </div>
@@ -1938,7 +2792,7 @@ investments and financial tools together.
 </footer>
 
 
-<!-- ACTIVITY POPUP -->
+<!-- ================= ACTIVITY POPUP ================= -->
 
 <div class="activity-popup" id="activityPopup">
 
@@ -1977,7 +2831,9 @@ let activeUsers=75000000;
 let downloads=100000000;
 
 function formatMillions(value){
+
 return Math.round(value/1000000)+"M+";
+
 }
 
 function updatePlatformCounters(){
@@ -1992,7 +2848,10 @@ if(activeUsers>90000000)
 activeUsers=90000000;
 
 if(Math.random()>.45){
-downloads+=Math.floor(Math.random()*12000)+1000;
+
+downloads+=
+Math.floor(Math.random()*12000)+1000;
+
 }
 
 document.getElementById("activeUsersCounter")
@@ -2018,28 +2877,32 @@ BTC:{
 price:67420,
 min:62000,
 max:72000,
-change:2.41
+change:2.41,
+supply:19800000
 },
 
 ETH:{
 price:3540,
 min:3000,
 max:3900,
-change:1.82
+change:1.82,
+supply:120300000
 },
 
 SOL:{
 price:181,
 min:145,
 max:215,
-change:3.17
+change:3.17,
+supply:478000000
 },
 
 BNB:{
 price:612,
 min:540,
 max:680,
-change:.94
+change:.94,
+supply:149000000
 }
 
 };
@@ -2052,7 +2915,9 @@ change:.94
 function formatPrice(value){
 
 if(value<1){
+
 return "$"+value.toFixed(4);
+
 }
 
 return "$"+value.toLocaleString(
@@ -2067,6 +2932,35 @@ maximumFractionDigits:2
 
 
 /* =========================================================
+   MARKET CAP FORMAT
+========================================================= */
+
+function formatMarketCap(value){
+
+if(value>=1000000000000){
+
+return "$"+
+(value/1000000000000).toFixed(2)+
+"T";
+
+}
+
+if(value>=1000000000){
+
+return "$"+
+(value/1000000000).toFixed(1)+
+"B";
+
+}
+
+return "$"+
+(value/1000000).toFixed(1)+
+"M";
+
+}
+
+
+/* =========================================================
    TICKER
 ========================================================= */
 
@@ -2074,13 +2968,27 @@ const tickerTrack=
 document.getElementById("tickerTrack");
 
 const tickerCoins=[
+
 ["BTC","₿","btc-icon"],
+
 ["ETH","Ξ","eth-icon"],
+
 ["BNB","B","bnb-icon"],
+
 ["SOL","S","sol-icon"],
+
 ["XRP","X","xrp-icon"],
-["ADA","A","ada-icon"]
+
+["ADA","A","ada-icon"],
+
+["DOGE","Ð","doge-icon"],
+
+["DOT","D","dot-icon"],
+
+["AVAX","A","avax-icon"]
+
 ];
+
 
 function createTickerCoin(symbol,icon,iconClass){
 
@@ -2114,26 +3022,40 @@ return coin;
 
 }
 
+
 tickerCoins.forEach(item=>{
+
 tickerTrack.appendChild(
 createTickerCoin(...item)
 );
+
 });
 
 tickerCoins.forEach(item=>{
+
 tickerTrack.appendChild(
 createTickerCoin(...item)
 );
+
 });
 
 
-function updateTickerCoin(symbol,price,change,movement){
+function updateTickerCoin(
+symbol,
+price,
+change,
+movement
+){
 
 document
 .querySelectorAll(`[id="tickerPrice-${symbol}"]`)
 .forEach(element=>{
-element.textContent=formatPrice(price);
+
+element.textContent=
+formatPrice(price);
+
 });
+
 
 document
 .querySelectorAll(`[id="tickerChange-${symbol}"]`)
@@ -2154,6 +3076,7 @@ change<0
 );
 
 });
+
 
 document
 .querySelectorAll(`[id="tickerMovement-${symbol}"]`)
@@ -2213,6 +3136,7 @@ coin.change=9;
 if(coin.change<-9)
 coin.change=-9;
 
+
 const priceElement=
 document.getElementById(
 symbol.toLowerCase()+"Price"
@@ -2228,9 +3152,14 @@ document.getElementById(
 symbol.toLowerCase()+"Movement"
 );
 
-if(priceElement)
+
+if(priceElement){
+
 priceElement.textContent=
 formatPrice(coin.price);
+
+}
+
 
 if(changeElement){
 
@@ -2250,6 +3179,7 @@ coin.change<0
 
 }
 
+
 if(movementElement){
 
 movementElement.textContent=
@@ -2267,6 +3197,24 @@ actualMovement<0
 );
 
 }
+
+
+/* Dynamic market cap */
+
+const capElement=
+document.getElementById(
+symbol.toLowerCase()+"Cap"
+);
+
+if(capElement){
+
+capElement.textContent=
+formatMarketCap(
+coin.price*coin.supply
+);
+
+}
+
 
 updateTickerCoin(
 symbol,
@@ -2292,6 +3240,22 @@ price:.42,
 change:.87
 };
 
+const doge={
+price:.14,
+change:1.42
+};
+
+const dot={
+price:4.32,
+change:-.42
+};
+
+const avax={
+price:26.4,
+change:1.27
+};
+
+
 function updateSmallCoin(symbol,state){
 
 const previous=state.price;
@@ -2304,6 +3268,7 @@ state.price*
 state.change+=
 (Math.random()-.5)*.8;
 
+
 if(symbol==="XRP"){
 
 if(state.price<.48)
@@ -2313,6 +3278,7 @@ if(state.price>.75)
 state.price=.75;
 
 }
+
 
 if(symbol==="ADA"){
 
@@ -2324,11 +3290,46 @@ state.price=.55;
 
 }
 
+
+if(symbol==="DOGE"){
+
+if(state.price<.09)
+state.price=.09;
+
+if(state.price>.22)
+state.price=.22;
+
+}
+
+
+if(symbol==="DOT"){
+
+if(state.price<3)
+state.price=3;
+
+if(state.price>7)
+state.price=7;
+
+}
+
+
+if(symbol==="AVAX"){
+
+if(state.price<18)
+state.price=18;
+
+if(state.price>38)
+state.price=38;
+
+}
+
+
 if(state.change>9)
 state.change=9;
 
 if(state.change<-9)
 state.change=-9;
+
 
 updateTickerCoin(
 symbol,
@@ -2341,40 +3342,130 @@ state.price-previous
 
 
 /* =========================================================
-   PHONE
+   PHONE BALANCE
 ========================================================= */
 
-function updatePhone(){
+let phoneBaseBalance=18420;
 
-const btc=coins.BTC;
+function updatePhoneBalance(){
 
-const balance=
-18000+
-Math.random()*900;
+phoneBaseBalance+=
+(Math.random()-.5)*65;
 
-document.getElementById("phoneBalance")
-.textContent=formatPrice(balance);
+if(phoneBaseBalance<17500)
+phoneBaseBalance=17500;
 
-const phoneMovement=
-(btc.price-67420)*.15;
+if(phoneBaseBalance>20500)
+phoneBaseBalance=20500;
 
 const element=
-document.getElementById("phoneBtcMovement");
+document.getElementById(
+"phoneBalance"
+);
+
+if(element){
 
 element.textContent=
-(phoneMovement>=0?"+":"-")+
-formatPrice(Math.abs(phoneMovement));
+formatPrice(phoneBaseBalance);
 
-element.className=
-phoneMovement>=0
-?"coin-up"
-:"coin-down";
+}
 
 }
 
 
 /* =========================================================
-   MARKET REFRESH — FASTER
+   PHONE CLOCK
+========================================================= */
+
+function updatePhoneTime(){
+
+const now=new Date();
+
+let hours=now.getHours();
+
+let minutes=now.getMinutes();
+
+hours=
+hours.toString().padStart(2,"0");
+
+minutes=
+minutes.toString().padStart(2,"0");
+
+const element=
+document.getElementById("phoneTime");
+
+if(element){
+
+element.textContent=
+hours+":"+minutes;
+
+}
+
+}
+
+
+/* =========================================================
+   PHONE ANIMATION
+========================================================= */
+
+const phoneViews=[
+
+"phoneViewInvestment",
+"phoneViewWithdrawal",
+"phoneViewChat",
+"phoneViewSend",
+"phoneViewWallet"
+
+];
+
+let phoneViewIndex=0;
+
+function showPhoneView(){
+
+phoneViews.forEach(id=>{
+
+const element=
+document.getElementById(id);
+
+if(element){
+
+element.classList.remove("active");
+
+}
+
+});
+
+const current=
+document.getElementById(
+phoneViews[phoneViewIndex]
+);
+
+if(current){
+
+current.classList.add("active");
+
+}
+
+phoneViewIndex++;
+
+if(phoneViewIndex>=phoneViews.length){
+
+phoneViewIndex=0;
+
+}
+
+}
+
+showPhoneView();
+
+setInterval(
+showPhoneView,
+2600
+);
+
+
+/* =========================================================
+   MARKET REFRESH — FAST
 ========================================================= */
 
 function refreshMarkets(){
@@ -2386,8 +3477,12 @@ updateMarket("BNB");
 
 updateSmallCoin("XRP",xrp);
 updateSmallCoin("ADA",ada);
+updateSmallCoin("DOGE",doge);
+updateSmallCoin("DOT",dot);
+updateSmallCoin("AVAX",avax);
 
-updatePhone();
+updatePhoneBalance();
+updatePhoneTime();
 
 }
 
@@ -2410,7 +3505,6 @@ const testimonials=[
 name:"James Reynolds",
 role:"Digital Consultant",
 avatar:"JR",
-image:"assets/people/testimonial-01.jpg",
 text:"The dashboard gives me a much clearer view of my wallets and account activity. Everything feels organized."
 },
 
@@ -2418,7 +3512,6 @@ text:"The dashboard gives me a much clearer view of my wallets and account activ
 name:"Aisha Bello",
 role:"Business Consultant",
 avatar:"AB",
-image:"assets/people/testimonial-02.jpg",
 text:"I appreciate how clearly the wallet information is presented. It makes the platform easy to understand."
 },
 
@@ -2426,7 +3519,6 @@ text:"I appreciate how clearly the wallet information is presented. It makes the
 name:"Liam Carter",
 role:"Technology Specialist",
 avatar:"LC",
-image:"assets/people/testimonial-03.jpg",
 text:"The interface feels modern and straightforward. I can find the information I need quickly."
 },
 
@@ -2434,7 +3526,6 @@ text:"The interface feels modern and straightforward. I can find the information
 name:"Sofia Laurent",
 role:"Financial Analyst",
 avatar:"SL",
-image:"assets/people/testimonial-04.jpg",
 text:"The structure of the platform makes the different financial sections easy to follow."
 },
 
@@ -2442,7 +3533,6 @@ text:"The structure of the platform makes the different financial sections easy 
 name:"Daniel Okafor",
 role:"Entrepreneur",
 avatar:"DO",
-image:"assets/people/testimonial-05.jpg",
 text:"The wallet layout gives me a very clear overview of my account."
 },
 
@@ -2450,7 +3540,6 @@ text:"The wallet layout gives me a very clear overview of my account."
 name:"Maria Santos",
 role:"Independent Consultant",
 avatar:"MS",
-image:"assets/people/testimonial-06.jpg",
 text:"I like the clean presentation and how the important information is kept accessible."
 },
 
@@ -2458,7 +3547,6 @@ text:"I like the clean presentation and how the important information is kept ac
 name:"Michael Johnson",
 role:"Business Owner",
 avatar:"MJ",
-image:"assets/people/testimonial-07.jpg",
 text:"The overall platform feels polished and easy to navigate."
 },
 
@@ -2466,7 +3554,6 @@ text:"The overall platform feels polished and easy to navigate."
 name:"Priya Sharma",
 role:"Investment Researcher",
 avatar:"PS",
-image:"assets/people/testimonial-08.jpg",
 text:"The market information and account tools work together nicely."
 },
 
@@ -2474,7 +3561,6 @@ text:"The market information and account tools work together nicely."
 name:"David Wilson",
 role:"Entrepreneur",
 avatar:"DW",
-image:"assets/people/testimonial-09.jpg",
 text:"Everything is presented clearly, from the market overview to the account sections."
 },
 
@@ -2482,7 +3568,6 @@ text:"Everything is presented clearly, from the market overview to the account s
 name:"Fatima Abdullahi",
 role:"Digital Strategist",
 avatar:"FA",
-image:"assets/people/testimonial-10.jpg",
 text:"The platform gives the financial dashboard a very organized feel."
 },
 
@@ -2490,7 +3575,6 @@ text:"The platform gives the financial dashboard a very organized feel."
 name:"Ethan Williams",
 role:"Technology Consultant",
 avatar:"EW",
-image:"assets/people/testimonial-11.jpg",
 text:"The modern design makes the overall experience feel smooth."
 },
 
@@ -2498,7 +3582,6 @@ text:"The modern design makes the overall experience feel smooth."
 name:"Camila Rodriguez",
 role:"Marketing Professional",
 avatar:"CR",
-image:"assets/people/testimonial-12.jpg",
 text:"I really like the combination of market information and account tools."
 },
 
@@ -2506,7 +3589,6 @@ text:"I really like the combination of market information and account tools."
 name:"Marcus Anderson",
 role:"Business Consultant",
 avatar:"MA",
-image:"assets/people/testimonial-13.jpg",
 text:"The information is presented in a way that is easy to follow."
 },
 
@@ -2514,7 +3596,6 @@ text:"The information is presented in a way that is easy to follow."
 name:"Yuki Tanaka",
 role:"Technology Specialist",
 avatar:"YT",
-image:"assets/people/testimonial-14.jpg",
 text:"The clean organization makes the dashboard much easier to understand."
 },
 
@@ -2522,7 +3603,6 @@ text:"The clean organization makes the dashboard much easier to understand."
 name:"Grace Morgan",
 role:"Digital Strategist",
 avatar:"GM",
-image:"assets/people/testimonial-15.jpg",
 text:"I especially like how quickly I can see the important account information."
 },
 
@@ -2530,7 +3610,6 @@ text:"I especially like how quickly I can see the important account information.
 name:"Christopher Lee",
 role:"Technology Consultant",
 avatar:"CL",
-image:"assets/people/testimonial-16.jpg",
 text:"The modern design and organized dashboard make the experience very smooth."
 },
 
@@ -2538,7 +3617,6 @@ text:"The modern design and organized dashboard make the experience very smooth.
 name:"Kwame Mensah",
 role:"Business Owner",
 avatar:"KM",
-image:"assets/people/testimonial-17.jpg",
 text:"The platform keeps the important financial information easy to access."
 },
 
@@ -2546,7 +3624,6 @@ text:"The platform keeps the important financial information easy to access."
 name:"Isabella Rossi",
 role:"Financial Consultant",
 avatar:"IR",
-image:"assets/people/testimonial-18.jpg",
 text:"The presentation is professional and the navigation is very straightforward."
 },
 
@@ -2554,7 +3631,6 @@ text:"The presentation is professional and the navigation is very straightforwar
 name:"Noah Thompson",
 role:"Entrepreneur",
 avatar:"NT",
-image:"assets/people/testimonial-19.jpg",
 text:"The dashboard gives me a clear picture of my account activity."
 },
 
@@ -2562,7 +3638,6 @@ text:"The dashboard gives me a clear picture of my account activity."
 name:"Zainab Yusuf",
 role:"Operations Manager",
 avatar:"ZY",
-image:"assets/people/testimonial-20.jpg",
 text:"The structure makes it easy to understand the different wallet sections."
 },
 
@@ -2570,7 +3645,6 @@ text:"The structure makes it easy to understand the different wallet sections."
 name:"Lucas Silva",
 role:"Digital Consultant",
 avatar:"LS",
-image:"assets/people/testimonial-21.jpg",
 text:"I like how the market overview and financial tools are presented together."
 },
 
@@ -2578,7 +3652,6 @@ text:"I like how the market overview and financial tools are presented together.
 name:"Hannah Brown",
 role:"Marketing Director",
 avatar:"HB",
-image:"assets/people/testimonial-22.jpg",
 text:"The platform has a clean and professional feel."
 },
 
@@ -2586,7 +3659,6 @@ text:"The platform has a clean and professional feel."
 name:"Raj Patel",
 role:"Technology Entrepreneur",
 avatar:"RP",
-image:"assets/people/testimonial-23.jpg",
 text:"The account interface is simple to navigate and easy to understand."
 },
 
@@ -2594,7 +3666,6 @@ text:"The account interface is simple to navigate and easy to understand."
 name:"Chloe Martin",
 role:"Financial Analyst",
 avatar:"CM",
-image:"assets/people/testimonial-24.jpg",
 text:"The wallet information is presented in a very clear format."
 },
 
@@ -2602,7 +3673,6 @@ text:"The wallet information is presented in a very clear format."
 name:"Samuel Adeyemi",
 role:"Business Consultant",
 avatar:"SA",
-image:"assets/people/testimonial-25.jpg",
 text:"The overall experience feels organized and professional."
 },
 
@@ -2610,7 +3680,6 @@ text:"The overall experience feels organized and professional."
 name:"Elena Garcia",
 role:"Independent Consultant",
 avatar:"EG",
-image:"assets/people/testimonial-26.jpg",
 text:"The clean layout makes it easy to move through the platform."
 },
 
@@ -2618,7 +3687,6 @@ text:"The clean layout makes it easy to move through the platform."
 name:"Omar Hassan",
 role:"Digital Finance Specialist",
 avatar:"OH",
-image:"assets/people/testimonial-27.jpg",
 text:"The dashboard provides a clear view of the important account details."
 },
 
@@ -2626,7 +3694,6 @@ text:"The dashboard provides a clear view of the important account details."
 name:"Amelia Clark",
 role:"Investment Consultant",
 avatar:"AC",
-image:"assets/people/testimonial-28.jpg",
 text:"The platform brings the key financial tools together in a very organized environment."
 }
 
@@ -2635,7 +3702,10 @@ text:"The platform brings the key financial tools together in a very organized e
 let testimonialIndex=0;
 
 const testimonialGrid=
-document.getElementById("testimonialGrid");
+document.getElementById(
+"testimonialGrid"
+);
+
 
 function renderTestimonials(){
 
@@ -2657,7 +3727,9 @@ card.className="testimonial";
 
 card.innerHTML=`
 
-<div class="stars">★★★★★</div>
+<div class="stars">
+★★★★★
+</div>
 
 <p>
 “${item.text}”
@@ -2667,11 +3739,9 @@ card.innerHTML=`
 
 <div class="avatar">
 
-<img
-src="${item.image}"
-alt="${item.name}"
-onerror="this.style.display='none';this.parentElement.textContent='${item.avatar}'"
->
+<div class="avatar-face">
+${item.avatar}
+</div>
 
 </div>
 
@@ -2695,7 +3765,8 @@ testimonialGrid.appendChild(card);
 
 }
 
-const start=testimonialIndex+1;
+const start=
+testimonialIndex+1;
 
 const end=
 Math.min(
@@ -2703,14 +3774,15 @@ testimonialIndex+3,
 testimonials.length
 );
 
-document.getElementById("testimonialCounter")
+document
+.getElementById(
+"testimonialCounter"
+)
 .textContent=
 `${start}–${end} of 28`;
 
 }
 
-
-/* FIRST DISPLAY */
 
 renderTestimonials();
 
@@ -2720,7 +3792,9 @@ renderTestimonials();
 setInterval(()=>{
 
 const cards=
-document.querySelectorAll(".testimonial");
+document.querySelectorAll(
+".testimonial"
+);
 
 cards.forEach(card=>{
 card.classList.add("fade");
@@ -2730,8 +3804,12 @@ setTimeout(()=>{
 
 testimonialIndex+=3;
 
-if(testimonialIndex>=testimonials.length)
+if(testimonialIndex>=
+testimonials.length){
+
 testimonialIndex=0;
+
+}
 
 renderTestimonials();
 
@@ -2751,7 +3829,7 @@ type:"withdrawal",
 icon:"↗",
 name:"Daniel M.",
 amount:"$4,850",
-image:"assets/people/testimonial-05.jpg",
+positive:false,
 message:"successfully completed a withdrawal."
 },
 
@@ -2760,7 +3838,7 @@ type:"investment",
 icon:"◆",
 name:"Sophia R.",
 amount:"$12,500",
-image:"assets/people/testimonial-04.jpg",
+positive:true,
 message:"successfully invested in the Gold package."
 },
 
@@ -2769,7 +3847,7 @@ type:"investment",
 icon:"◆",
 name:"Marcus T.",
 amount:"$5,000",
-image:"assets/people/testimonial-13.jpg",
+positive:true,
 message:"successfully invested in the Silver package."
 },
 
@@ -2778,7 +3856,7 @@ type:"withdrawal",
 icon:"↗",
 name:"Olivia K.",
 amount:"$2,750",
-image:"assets/people/testimonial-22.jpg",
+positive:false,
 message:"successfully completed a withdrawal."
 },
 
@@ -2787,7 +3865,7 @@ type:"investment",
 icon:"◆",
 name:"James W.",
 amount:"$1,500",
-image:"assets/people/testimonial-03.jpg",
+positive:true,
 message:"successfully invested in the Growth package."
 },
 
@@ -2796,7 +3874,7 @@ type:"withdrawal",
 icon:"↗",
 name:"Emily P.",
 amount:"$7,200",
-image:"assets/people/testimonial-15.jpg",
+positive:false,
 message:"successfully completed a withdrawal."
 },
 
@@ -2805,7 +3883,7 @@ type:"investment",
 icon:"◆",
 name:"Nathan C.",
 amount:"$25,000",
-image:"assets/people/testimonial-11.jpg",
+positive:true,
 message:"successfully invested in the Gold package."
 },
 
@@ -2814,7 +3892,7 @@ type:"withdrawal",
 icon:"↗",
 name:"Michael B.",
 amount:"$3,400",
-image:"assets/people/testimonial-07.jpg",
+positive:false,
 message:"successfully completed a withdrawal."
 },
 
@@ -2823,7 +3901,7 @@ type:"investment",
 icon:"◆",
 name:"Sarah L.",
 amount:"$8,000",
-image:"assets/people/testimonial-12.jpg",
+positive:true,
 message:"successfully invested in the Silver package."
 },
 
@@ -2832,7 +3910,7 @@ type:"withdrawal",
 icon:"↗",
 name:"David A.",
 amount:"$6,150",
-image:"assets/people/testimonial-09.jpg",
+positive:false,
 message:"successfully completed a withdrawal."
 }
 
@@ -2841,55 +3919,92 @@ message:"successfully completed a withdrawal."
 let activityIndex=0;
 let activityTimer;
 
+
 function showActivity(){
 
 const item=
 activities[activityIndex];
 
 const avatar=
-document.getElementById("activityAvatar");
+document.getElementById(
+"activityAvatar"
+);
 
 avatar.innerHTML=`
 
-<img
-src="${item.image}"
-alt="${item.name}"
-onerror="this.style.display='none';this.parentElement.textContent='${item.name.substring(0,2).toUpperCase()}'"
->
+<div class="activity-avatar-face">
+${item.name.substring(0,2).toUpperCase()}
+</div>
 
 `;
 
-document.getElementById("activityTitle")
-.textContent=
+document.getElementById(
+"activityTitle"
+).textContent=
 item.type==="withdrawal"
-?"Withdrawal completed"
-:"Investment completed";
+?
+"Withdrawal completed"
+:
+"Investment completed";
 
-document.getElementById("activityMessage")
-.textContent=
-item.name+" "+item.message+
-" Amount: "+item.amount;
 
-document.getElementById("activityTime")
-.textContent="Just now";
+const amountPrefix=
+item.positive
+?
+"+"
+:
+"-";
+
+
+document.getElementById(
+"activityMessage"
+).innerHTML=
+item.name+
+" "+
+item.message+
+` <span class="activity-amount ${
+item.positive
+?
+"activity-positive"
+:
+"activity-negative"
+}">${amountPrefix}${item.amount}</span>`;
+
+
+document.getElementById(
+"activityTime"
+).textContent=
+"Just now";
+
 
 const popup=
-document.getElementById("activityPopup");
+document.getElementById(
+"activityPopup"
+);
 
 popup.classList.add("show");
 
 clearTimeout(activityTimer);
 
-activityTimer=setTimeout(()=>{
+activityTimer=
+setTimeout(()=>{
+
 popup.classList.remove("show");
-},4800);
+
+},4200);
+
 
 activityIndex++;
 
-if(activityIndex>=activities.length)
+if(activityIndex>=
+activities.length){
+
 activityIndex=0;
 
 }
+
+}
+
 
 function hideActivity(){
 
@@ -2904,12 +4019,12 @@ document
 
 setTimeout(
 showActivity,
-2500
+1800
 );
 
 setInterval(
 showActivity,
-7000
+6200
 );
 
 
@@ -2945,9 +4060,12 @@ explore:"Explorar CoinForest"
 
 };
 
+
 document
 .getElementById("languageSelect")
-.addEventListener("change",function(){
+.addEventListener(
+"change",
+function(){
 
 const language=
 translations[this.value];
@@ -2958,12 +4076,16 @@ document
 `<span class="dot"></span>${language.badge}`;
 
 document
-.querySelectorAll(".hero-buttons .btn")[0]
+.querySelectorAll(
+".hero-buttons .btn"
+)[0]
 .textContent=
 language.getStarted;
 
 document
-.querySelectorAll(".hero-buttons .btn")[1]
+.querySelectorAll(
+".hero-buttons .btn"
+)[1]
 .textContent=
 language.explore;
 
