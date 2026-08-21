@@ -29,7 +29,7 @@ function hashToken(value) {
   return crypto
     .createHash("sha256")
     .update(String(value))
-    .digest("hex");
+    .digesemail);
 }
 
 function hashPassword(password) {
@@ -523,14 +523,6 @@ async function login(body) {
     });
   }
 
-  if (!user.email_verified_at) {
-    return response(403, {
-      success: false,
-      email_verified: false,
-      error:
-        "Please confirm your email address before signing in."
-    });
-  }
 
   await sql`
     UPDATE auth_credentials
@@ -577,7 +569,7 @@ async function login(body) {
       last_name: user.last_name,
       username: user.username,
       role: user.role_name,
-      email_verified: true
+      email_verified: !!user.email_verified_at
     }
   });
 }
