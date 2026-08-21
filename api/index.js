@@ -122,7 +122,7 @@ async function sendEmail({ to, subject, html }) {
       },
       body: JSON.stringify({
         from:
-          "CoinForest <greenwayexpress101@gmail.com>",
+  "CoinForest <onboarding@resend.dev>", 
         to: [to],
         subject,
         html
