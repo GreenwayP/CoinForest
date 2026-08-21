@@ -672,39 +672,67 @@ function closeModal(id){
 }
 
 /* USER */
-async function loadUser(){
+ async function loadUser(){
   try{
-    const response=await fetch("/api/auth/me",{
-      headers:{Authorization:"Bearer "+token}
+    const response = await fetch("/api/auth/me", {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Accept": "application/json"
+      }
     });
 
-    if(!response.ok){
+    const data = await response.json();
+
+    if(!response.ok || !data.success || !data.user){
+      console.error("Authentication check failed:", data);
+
       localStorage.removeItem("coinforest_token");
-      window.location.href="/";
+      localStorage.removeItem("coinforest_user");
+
+      window.location.href = "login.html";
       return;
     }
 
-    const data=await response.json();
+    const user = data.user;
 
-    if(!data.success || !data.user){
-      localStorage.removeItem("coinforest_token");
-      window.location.href="/";
-      return;
-    }
+    const name =
+      user.first_name ||
+      user.full_name ||
+      user.username ||
+      "CoinForest Member";
 
-    const user=data.user;
+    document.getElementById("welcomeName").textContent =
+      "Hello, " + name;
 
-    const name=user.first_name||user.full_name||user.username||"CoinForest Member";
+    document.getElementById("profileName").textContent =
+      name;
 
-    document.getElementById("welcomeName").textContent="Hello, "+name;
-    document.getElementById("profileName").textContent=name;
-    document.getElementById("profileEmail").textContent=user.email||"Account";
+    document.getElementById("profileEmail").textContent =
+      user.email || "Account";
 
-    const initials=((user.first_name||"C")[0]+(user.last_name||"F")[0]).toUpperCase();
-    document.getElementById("avatar").textContent=initials;
+    const initials =
+      (
+        (user.first_name || "C")[0] +
+        (user.last_name || "F")[0]
+      ).toUpperCase();
+
+    document.getElementById("avatar").textContent =
+      initials;
 
   }catch(error){
-    console.error(error);
+
+    console.error(
+      "CoinForest authentication error:",
+      error
+    );
+
+    /*
+      Do NOT immediately destroy the session when
+      a temporary network/server error occurs.
+    */
+
+    return;
   }
 }
 
