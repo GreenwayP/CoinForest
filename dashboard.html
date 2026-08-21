@@ -685,14 +685,9 @@ function closeModal(id){
     const data = await response.json();
 
     if(!response.ok || !data.success || !data.user){
-      console.error("Authentication check failed:", data);
-
-      localStorage.removeItem("coinforest_token");
-      localStorage.removeItem("coinforest_user");
-
-      window.location.href = "login.html";
-      return;
-    }
+  console.error("Authentication check failed:", response.status, data);
+  return;
+  }
 
     const user = data.user;
 
