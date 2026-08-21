@@ -264,6 +264,26 @@ margin-bottom:3px
 font-size:13px;
 color:var(--muted)
 }
+.stat-live{
+display:inline-flex;
+align-items:center;
+gap:6px;
+font-size:10px!important;
+color:var(--green)!important;
+margin-top:3px
+}
+.stat-live-dot{
+width:6px;
+height:6px;
+border-radius:50%;
+background:var(--green);
+box-shadow:0 0 9px var(--green);
+animation:pulse 1.5s infinite
+}
+@keyframes pulse{
+0%,100%{opacity:1;transform:scale(1)}
+50%{opacity:.45;transform:scale(.7)}
+}
 
 /* TICKER */
 .ticker{
@@ -293,22 +313,23 @@ gap:7px
 .coin-up{color:var(--green)}
 .coin-down{color:var(--red)}
 .coin-icon{
-width:25px;
-height:25px;
+width:27px;
+height:27px;
 border-radius:50%;
 display:inline-flex;
 align-items:center;
 justify-content:center;
 font-size:11px;
 font-weight:900;
-color:#07111f
+color:#07111f;
+box-shadow:0 2px 10px rgba(0,0,0,.25)
 }
-.btc-icon{background:var(--gold)}
-.eth-icon{background:var(--purple);color:#fff}
-.bnb-icon{background:#f0b90b}
+.btc-icon{background:linear-gradient(135deg,#ffd86a,#d99b20)}
+.eth-icon{background:linear-gradient(135deg,#b8a5ff,#6855d9);color:#fff}
+.bnb-icon{background:linear-gradient(135deg,#ffe36b,#e0a900)}
 .sol-icon{background:linear-gradient(135deg,#20e0c5,#8a5cff);color:#fff}
-.xrp-icon{background:var(--blue);color:#fff}
-.ada-icon{background:#2775ca;color:#fff}
+.xrp-icon{background:linear-gradient(135deg,#71b8ff,#2775ca);color:#fff}
+.ada-icon{background:linear-gradient(135deg,#5ca5ff,#2775ca);color:#fff}
 @keyframes scroll{
 from{transform:translateX(0)}
 to{transform:translateX(-50%)}
@@ -555,27 +576,28 @@ margin:0 auto 30px
 
 /* TESTIMONIALS */
 .testimonials{background:#091827}
-.testimonial-grid{
-margin-top:55px;
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px
+.testimonial-wrap{
+max-width:900px;
+margin:55px auto 0;
+position:relative
 }
 .testimonial{
-padding:30px;
-border:1px solid var(--border);
+padding:35px;
+border:1px solid rgba(246,196,83,.13);
 background:#0c1c2e;
-border-radius:16px;
-transition:.25s
+border-radius:18px;
+box-shadow:0 20px 60px rgba(0,0,0,.18);
+min-height:225px;
+transition:opacity .35s,transform .35s
 }
-.testimonial:hover{
-transform:translateY(-4px);
-border-color:rgba(246,196,83,.22)
+.stars{
+color:#f5c542;
+letter-spacing:2px;
+margin-bottom:17px
 }
-.stars{color:#f5c542;margin-bottom:17px}
 .testimonial p{
 color:#bdc9d7;
-font-size:14px;
+font-size:16px;
 margin-bottom:25px
 }
 .person{
@@ -584,8 +606,8 @@ align-items:center;
 gap:12px
 }
 .avatar{
-width:42px;
-height:42px;
+width:46px;
+height:46px;
 border-radius:50%;
 background:linear-gradient(135deg,#173b58,#20e080);
 display:flex;
@@ -596,6 +618,88 @@ color:#07111f
 }
 .person strong{display:block;font-size:14px}
 .person span{display:block;font-size:12px;color:var(--muted)}
+.testimonial-dots{
+display:flex;
+justify-content:center;
+gap:7px;
+margin-top:18px
+}
+.testimonial-dot{
+width:7px;
+height:7px;
+border-radius:50%;
+background:#33445a;
+transition:.25s
+}
+.testimonial-dot.active{
+width:22px;
+border-radius:10px;
+background:var(--gold)
+}
+
+/* ACTIVITY POPUP */
+.activity-popup{
+position:fixed;
+left:22px;
+bottom:22px;
+width:min(370px,calc(100vw - 44px));
+background:rgba(10,27,44,.97);
+border:1px solid rgba(246,196,83,.28);
+border-radius:15px;
+padding:15px 17px;
+box-shadow:0 20px 60px rgba(0,0,0,.4);
+z-index:1000;
+display:flex;
+gap:12px;
+align-items:flex-start;
+transform:translateY(140px);
+opacity:0;
+pointer-events:none;
+transition:.45s ease
+}
+.activity-popup.show{
+transform:translateY(0);
+opacity:1
+}
+.activity-icon{
+width:40px;
+height:40px;
+min-width:40px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(246,196,83,.12);
+color:var(--gold);
+font-size:19px
+}
+.activity-content{
+min-width:0
+}
+.activity-content strong{
+font-size:13px;
+display:block;
+margin-bottom:3px
+}
+.activity-content p{
+font-size:12px;
+color:#b6c4d4;
+line-height:1.45
+}
+.activity-content span{
+font-size:10px;
+color:#71849a;
+display:block;
+margin-top:4px
+}
+.activity-close{
+margin-left:auto;
+border:0;
+background:none;
+color:#71849a;
+cursor:pointer;
+font-size:17px
+}
 
 /* FOOTER */
 footer{
@@ -637,7 +741,6 @@ text-align:center
 .about-grid{grid-template-columns:1fr}
 .market-grid{grid-template-columns:repeat(2,1fr)}
 .feature-grid{grid-template-columns:repeat(2,1fr)}
-.testimonial-grid{grid-template-columns:1fr}
 .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:700px){
@@ -675,6 +778,11 @@ section{padding:80px 5%}
 .market-grid{grid-template-columns:1fr}
 .footer-grid{grid-template-columns:1fr}
 .about-visual{min-height:330px}
+.activity-popup{
+left:15px;
+bottom:15px;
+width:calc(100vw - 30px)
+}
 }
 </style>
 </head>
@@ -682,559 +790,585 @@ section{padding:80px 5%}
 <body>
 
 <header>
-  <a class="logo" href="#">Coin<span>Forest</span></a>
+<a class="logo" href="#">Coin<span>Forest</span></a>
 
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About Us</a>
-    <a href="#services">Services</a>
-    <a href="#markets">Markets</a>
-    <a href="#contact">Contact</a>
+<nav>
+<a href="#home">Home</a>
+<a href="#about">About Us</a>
+<a href="#services">Services</a>
+<a href="#markets">Markets</a>
+<a href="#contact">Contact</a>
 
-    <div class="nav-buttons">
-      <a class="btn btn-outline" href="login.html">Login</a>
-      <a class="btn btn-gold" href="login.html">Register</a>
-    </div>
-  </nav>
+<div class="nav-buttons">
+<a class="btn btn-outline" href="login.html">Login</a>
+<a class="btn btn-gold" href="login.html">Register</a>
+</div>
+</nav>
 </header>
 
 <section class="hero" id="home">
 
-  <div class="hero-content">
+<div class="hero-content">
 
-    <div class="badge">
-      <span class="dot"></span>
-      The future of digital finance
-    </div>
+<div class="badge">
+<span class="dot"></span>
+The future of digital finance
+</div>
 
-    <h1>
-      Decentralized <span>Finance</span>
-    </h1>
+<h1>
+Decentralized <span>Finance</span>
+</h1>
 
-    <p>
-      Resilient. Secure. Built for the modern digital-asset journey.
-      CoinForest brings wallets, investments, transfers and market
-      information together in one structured financial platform.
-    </p>
+<p>
+Resilient. Secure. Built for the modern digital-asset journey.
+CoinForest brings wallets, investments, transfers and market
+information together in one structured financial platform.
+</p>
 
-    <div class="hero-buttons">
-      <a class="btn btn-gold" href="login.html">Get Started</a>
-      <a class="btn btn-outline" href="#about">Explore CoinForest</a>
-    </div>
-
-  </div>
-
-  <div class="hero-card">
-
-    <div class="chart-head">
-      <strong>Bitcoin Overview</strong>
-
-      <span class="live-label">
-        <span class="live-dot"></span>
-        LIVE
-      </span>
-    </div>
-
-    <div class="price" id="heroPrice">$67,420.00</div>
-
-    <div id="heroChange" class="hero-change positive">
-      +2.41%
-    </div>
-
-    <div class="fake-chart">
-      <svg viewBox="0 0 360 130" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#f6c453" stop-opacity=".35"/>
-            <stop offset="1" stop-color="#f6c453" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-
-        <path
-          d="M0 105
-             C25 90 35 96 55 82
-             S85 95 105 70
-             S130 75 150 60
-             S180 75 200 45
-             S230 65 250 42
-             S280 50 300 25
-             S330 42 360 10
-             L360 130 L0 130 Z"
-          fill="url(#g)"/>
-
-        <path
-          d="M0 105
-             C25 90 35 96 55 82
-             S85 95 105 70
-             S130 75 150 60
-             S180 75 200 45
-             S230 65 250 42
-             S280 50 300 25
-             S330 42 360 10"
-          fill="none"
-          stroke="#f6c453"
-          stroke-width="3"/>
-      </svg>
-    </div>
-
-    <div class="asset-row">
-      <span>Available Balance</span>
-      <strong>$18,420.00</strong>
-    </div>
-
-  </div>
-
-</section>
-
-<div class="stats">
-
-  <div class="stat">
-    <strong>24/7</strong>
-    <span>Platform Access</span>
-  </div>
-
-  <div class="stat">
-    <strong>100%</strong>
-    <span>Account Visibility</span>
-  </div>
-
-  <div class="stat">
-    <strong>2</strong>
-    <span>Wallet Structure</span>
-  </div>
-
-  <div class="stat">
-    <strong>∞</strong>
-    <span>Growth Possibilities</span>
-  </div>
+<div class="hero-buttons">
+<a class="btn btn-gold" href="login.html">Get Started</a>
+<a class="btn btn-outline" href="#about">Explore CoinForest</a>
+</div>
 
 </div>
 
+<div class="hero-card">
+
+<div class="chart-head">
+<strong>Bitcoin Overview</strong>
+
+<span class="live-label">
+<span class="live-dot"></span>
+LIVE
+</span>
+</div>
+
+<div class="price" id="heroPrice">$67,420.00</div>
+
+<div id="heroChange" class="hero-change positive">
++2.41%
+</div>
+
+<div class="fake-chart">
+<svg viewBox="0 0 360 130" preserveAspectRatio="none">
+<defs>
+<linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0" stop-color="#f6c453" stop-opacity=".35"/>
+<stop offset="1" stop-color="#f6c453" stop-opacity="0"/>
+</linearGradient>
+</defs>
+
+<path
+d="M0 105 C25 90 35 96 55 82
+S85 95 105 70 S130 75 150 60
+S180 75 200 45 S230 65 250 42
+S280 50 300 25 S330 42 360 10
+L360 130 L0 130 Z"
+fill="url(#g)"/>
+
+<path
+d="M0 105 C25 90 35 96 55 82
+S85 95 105 70 S130 75 150 60
+S180 75 200 45 S230 65 250 42
+S280 50 300 25 S330 42 360 10"
+fill="none"
+stroke="#f6c453"
+stroke-width="3"/>
+</svg>
+</div>
+
+<div class="asset-row">
+<span>Available Balance</span>
+<strong>$18,420.00</strong>
+</div>
+
+</div>
+</section>
+
+<!-- PLATFORM COUNTERS -->
+<div class="stats">
+
+<div class="stat">
+<strong id="downloadsCounter">100M+</strong>
+<span>Downloads</span>
+</div>
+
+<div class="stat">
+<strong id="activeUsersCounter">75M+</strong>
+<span>Active Users</span>
+<span class="stat-live">
+<span class="stat-live-dot"></span>
+Active now
+</span>
+</div>
+
+<div class="stat">
+<strong>24/7</strong>
+<span>Platform Access</span>
+</div>
+
+<div class="stat">
+<strong>100%</strong>
+<span>Account Visibility</span>
+</div>
+
+</div>
+
+<!-- TICKER -->
 <div class="ticker">
-  <div class="ticker-track" id="tickerTrack"></div>
+<div class="ticker-track" id="tickerTrack"></div>
 </div>
 
 <section class="about" id="about">
 
-  <div class="about-grid">
+<div class="about-grid">
 
-    <div class="about-visual">
-      <div class="orbit">
-        <div class="orbit-core">CF</div>
-      </div>
-    </div>
+<div class="about-visual">
+<div class="orbit">
+<div class="orbit-core">CF</div>
+</div>
+</div>
 
-    <div>
+<div>
 
-      <div class="section-label">About CoinForest</div>
+<div class="section-label">About CoinForest</div>
 
-      <h2 class="section-title">
-        Shaping the Future of Digital Finance Together
-      </h2>
+<h2 class="section-title">
+Shaping the Future of Digital Finance Together
+</h2>
 
-      <p class="section-text">
-        CoinForest is designed around a modern digital-asset experience,
-        bringing financial tools, wallet management and structured
-        investment features into one powerful environment.
-      </p>
+<p class="section-text">
+CoinForest is designed around a modern digital-asset experience,
+bringing financial tools, wallet management and structured
+investment features into one powerful environment.
+</p>
 
-      <div class="about-list">
+<div class="about-list">
 
-        <div class="about-item">
-          <div class="check">✓</div>
-          <div>
-            <h3>Structured Financial Experience</h3>
-            <p>Everything organized around your personal financial dashboard.</p>
-          </div>
-        </div>
+<div class="about-item">
+<div class="check">✓</div>
+<div>
+<h3>Structured Financial Experience</h3>
+<p>Everything organized around your personal financial dashboard.</p>
+</div>
+</div>
 
-        <div class="about-item">
-          <div class="check">✓</div>
-          <div>
-            <h3>Wallet Visibility</h3>
-            <p>Keep your Main Wallet and Profit Wallet clearly separated.</p>
-          </div>
-        </div>
+<div class="about-item">
+<div class="check">✓</div>
+<div>
+<h3>Wallet Visibility</h3>
+<p>Keep your Main Wallet and Profit Wallet clearly separated.</p>
+</div>
+</div>
 
-        <div class="about-item">
-          <div class="check">✓</div>
-          <div>
-            <h3>Account Security</h3>
-            <p>Authentication and account controls built into the platform.</p>
-          </div>
-        </div>
+<div class="about-item">
+<div class="check">✓</div>
+<div>
+<h3>Account Security</h3>
+<p>Authentication and account controls built into the platform.</p>
+</div>
+</div>
 
-      </div>
-
-    </div>
-
-  </div>
-
+</div>
+</div>
+</div>
 </section>
 
 <section class="features">
 
-  <div class="center">
-    <div class="section-label">Why Choose CoinForest</div>
+<div class="center">
+<div class="section-label">Why Choose CoinForest</div>
+<h2 class="section-title">
+Elevating Your Financial Experience
+</h2>
+<p class="section-text">
+Built to give users a clear, modern and organized way to interact
+with their digital financial environment.
+</p>
+</div>
 
-    <h2 class="section-title">
-      Elevating Your Financial Experience
-    </h2>
+<div class="feature-grid">
 
-    <p class="section-text">
-      Built to give users a clear, modern and organized way to interact
-      with their digital financial environment.
-    </p>
-  </div>
+<div class="feature">
+<div class="icon">⚡</div>
+<h3>Cutting-Edge Technology</h3>
+<p>
+A modern platform architecture designed for speed,
+accessibility and a smooth digital experience.
+</p>
+</div>
 
-  <div class="feature-grid">
+<div class="feature">
+<div class="icon">◈</div>
+<h3>User Empowerment</h3>
+<p>
+Give every user the tools and information needed to understand
+and manage their account.
+</p>
+</div>
 
-    <div class="feature">
-      <div class="icon">⚡</div>
-      <h3>Cutting-Edge Technology</h3>
-      <p>
-        A modern platform architecture designed for speed,
-        accessibility and a smooth digital experience.
-      </p>
-    </div>
+<div class="feature">
+<div class="icon">✓</div>
+<h3>Transparent & Secure</h3>
+<p>
+Account activity, wallet information and platform actions are
+presented in a structured environment.
+</p>
+</div>
 
-    <div class="feature">
-      <div class="icon">◈</div>
-      <h3>User Empowerment</h3>
-      <p>
-        Give every user the tools and information needed to understand
-        and manage their account.
-      </p>
-    </div>
-
-    <div class="feature">
-      <div class="icon">✓</div>
-      <h3>Transparent & Secure</h3>
-      <p>
-        Account activity, wallet information and platform actions are
-        presented in a structured environment.
-      </p>
-    </div>
-
-  </div>
-
+</div>
 </section>
 
 <section class="markets" id="markets">
 
-  <div class="center">
+<div class="center">
 
-    <div class="section-label">Live Market Overview</div>
+<div class="section-label">Live Market Overview</div>
 
-    <h2 class="section-title">
-      Explore Digital Asset Markets
-    </h2>
+<h2 class="section-title">
+Explore Digital Asset Markets
+</h2>
 
-    <p class="section-text">
-      Follow selected digital assets with continuously changing
-      market displays.
-    </p>
+<p class="section-text">
+Follow selected digital assets with continuously changing
+market displays.
+</p>
 
-  </div>
+</div>
 
-  <div class="market-grid">
+<div class="market-grid">
 
-    <div class="market">
-      <div class="market-top">
-        <div class="market-name-wrap">
-          <div class="market-coin-icon btc-icon">₿</div>
-          <div>
-            <div class="market-name">Bitcoin</div>
-            <div class="market-symbol">BTC</div>
-          </div>
-        </div>
-        <div id="btcChange" class="market-change">+2.41%</div>
-      </div>
-      <div id="btcPrice" class="market-price">$67,420</div>
-    </div>
+<div class="market">
+<div class="market-top">
+<div class="market-name-wrap">
+<div class="market-coin-icon btc-icon">₿</div>
+<div>
+<div class="market-name">Bitcoin</div>
+<div class="market-symbol">BTC</div>
+</div>
+</div>
+<div id="btcChange" class="market-change">+2.41%</div>
+</div>
+<div id="btcPrice" class="market-price">$67,420</div>
+</div>
 
-    <div class="market">
-      <div class="market-top">
-        <div class="market-name-wrap">
-          <div class="market-coin-icon eth-icon">Ξ</div>
-          <div>
-            <div class="market-name">Ethereum</div>
-            <div class="market-symbol">ETH</div>
-          </div>
-        </div>
-        <div id="ethChange" class="market-change">+1.82%</div>
-      </div>
-      <div id="ethPrice" class="market-price">$3,540</div>
-    </div>
+<div class="market">
+<div class="market-top">
+<div class="market-name-wrap">
+<div class="market-coin-icon eth-icon">Ξ</div>
+<div>
+<div class="market-name">Ethereum</div>
+<div class="market-symbol">ETH</div>
+</div>
+</div>
+<div id="ethChange" class="market-change">+1.82%</div>
+</div>
+<div id="ethPrice" class="market-price">$3,540</div>
+</div>
 
-    <div class="market">
-      <div class="market-top">
-        <div class="market-name-wrap">
-          <div class="market-coin-icon sol-icon">S</div>
-          <div>
-            <div class="market-name">Solana</div>
-            <div class="market-symbol">SOL</div>
-          </div>
-        </div>
-        <div id="solChange" class="market-change">+3.17%</div>
-      </div>
-      <div id="solPrice" class="market-price">$181</div>
-    </div>
+<div class="market">
+<div class="market-top">
+<div class="market-name-wrap">
+<div class="market-coin-icon sol-icon">S</div>
+<div>
+<div class="market-name">Solana</div>
+<div class="market-symbol">SOL</div>
+</div>
+</div>
+<div id="solChange" class="market-change">+3.17%</div>
+</div>
+<div id="solPrice" class="market-price">$181</div>
+</div>
 
-    <div class="market">
-      <div class="market-top">
-        <div class="market-name-wrap">
-          <div class="market-coin-icon bnb-icon">B</div>
-          <div>
-            <div class="market-name">BNB</div>
-            <div class="market-symbol">BNB</div>
-          </div>
-        </div>
-        <div id="bnbChange" class="market-change">+0.94%</div>
-      </div>
-      <div id="bnbPrice" class="market-price">$612</div>
-    </div>
+<div class="market">
+<div class="market-top">
+<div class="market-name-wrap">
+<div class="market-coin-icon bnb-icon">B</div>
+<div>
+<div class="market-name">BNB</div>
+<div class="market-symbol">BNB</div>
+</div>
+</div>
+<div id="bnbChange" class="market-change">+0.94%</div>
+</div>
+<div id="bnbPrice" class="market-price">$612</div>
+</div>
 
-  </div>
-
+</div>
 </section>
 
 <section class="services" id="services">
 
-  <div class="center">
+<div class="center">
 
-    <div class="section-label">Our Services</div>
+<div class="section-label">Our Services</div>
 
-    <h2 class="section-title">
-      Unlock Your Financial Potential
-    </h2>
+<h2 class="section-title">
+Unlock Your Financial Potential
+</h2>
 
-    <p class="section-text">
-      Explore the core financial tools planned for the CoinForest
-      ecosystem.
-    </p>
+<p class="section-text">
+Explore the core financial tools planned for the CoinForest
+ecosystem.
+</p>
 
-  </div>
+</div>
 
-  <div class="services-grid">
+<div class="services-grid">
 
-    <div class="service">
-      <div class="service-number">01 — WALLET MANAGEMENT</div>
-      <h3>Main & Profit Wallets</h3>
-      <p>
-        Manage your available balance and profit balance through one
-        organized account dashboard.
-      </p>
-    </div>
+<div class="service">
+<div class="service-number">01 — WALLET MANAGEMENT</div>
+<h3>Main & Profit Wallets</h3>
+<p>
+Manage your available balance and profit balance through one
+organized account dashboard.
+</p>
+</div>
 
-    <div class="service">
-      <div class="service-number">02 — INVESTMENTS</div>
-      <h3>Structured Investment Plans</h3>
-      <p>
-        Access structured investment schemas with clear periods,
-        returns and account activity.
-      </p>
-    </div>
+<div class="service">
+<div class="service-number">02 — INVESTMENTS</div>
+<h3>Structured Investment Plans</h3>
+<p>
+Access structured investment schemas with clear periods,
+returns and account activity.
+</p>
+</div>
 
-    <div class="service">
-      <div class="service-number">03 — TRANSFERS</div>
-      <h3>Send Money</h3>
-      <p>
-        A dedicated environment for managing supported account-to-account
-        transfers.
-      </p>
-    </div>
+<div class="service">
+<div class="service-number">03 — TRANSFERS</div>
+<h3>Send Money</h3>
+<p>
+A dedicated environment for managing supported account-to-account
+transfers.
+</p>
+</div>
 
-    <div class="service">
-      <div class="service-number">04 — WITHDRAWALS</div>
-      <h3>Withdrawal Management</h3>
-      <p>
-        Submit and monitor withdrawal activity directly from your
-        personal financial dashboard.
-      </p>
-    </div>
+<div class="service">
+<div class="service-number">04 — WITHDRAWALS</div>
+<h3>Withdrawal Management</h3>
+<p>
+Submit and monitor withdrawal activity directly from your
+personal financial dashboard.
+</p>
+</div>
 
-  </div>
-
+</div>
 </section>
 
 <section class="cta">
 
-  <div class="cta-box">
+<div class="cta-box">
 
-    <div class="section-label">Get Started</div>
+<div class="section-label">Get Started</div>
 
-    <h2>
-      Empower Your Finances.<br>
-      Embrace Freedom.
-    </h2>
+<h2>
+Empower Your Finances.<br>
+Embrace Freedom.
+</h2>
 
-    <p>
-      Create your CoinForest account and experience a modern,
-      organized digital financial platform.
-    </p>
+<p>
+Create your CoinForest account and experience a modern,
+organized digital financial platform.
+</p>
 
-    <a class="btn btn-gold" href="login.html">
-      Create Your Account
-    </a>
+<a class="btn btn-gold" href="login.html">
+Create Your Account
+</a>
 
-  </div>
-
+</div>
 </section>
 
+<!-- ROTATING TESTIMONIALS -->
 <section class="testimonials">
 
-  <div class="center">
+<div class="center">
 
-    <div class="section-label">Testimonials</div>
+<div class="section-label">Testimonials</div>
 
-    <h2 class="section-title">
-      What Our Users Say
-    </h2>
+<h2 class="section-title">
+What Our Users Say
+</h2>
 
-    <p class="section-text">
-      A platform designed around clarity, accessibility and confidence.
-    </p>
+<p class="section-text">
+A platform designed around clarity, accessibility and confidence.
+</p>
 
-  </div>
+</div>
 
-  <div class="testimonial-grid">
+<div class="testimonial-wrap">
 
-    <div class="testimonial">
-      <div class="stars">★★★★★</div>
-      <p>
-        “The dashboard gives me a much clearer view of my wallets and
-        account activity. Everything feels organized.”
-      </p>
+<div class="testimonial" id="testimonialCard">
 
-      <div class="person">
-        <div class="avatar">JR</div>
-        <div>
-          <strong>James Reynolds</strong>
-          <span>Digital Consultant</span>
-        </div>
-      </div>
-    </div>
+<div class="stars">★★★★★</div>
 
-    <div class="testimonial">
-      <div class="stars">★★★★★</div>
-      <p>
-        “I like how simple the platform is. The wallet structure makes
-        it easy to understand my account.”
-      </p>
+<p id="testimonialText">
+“The dashboard gives me a much clearer view of my wallets and
+account activity. Everything feels organized.”
+</p>
 
-      <div class="person">
-        <div class="avatar">ST</div>
-        <div>
-          <strong>Sarah Thompson</strong>
-          <span>Financial Analyst</span>
-        </div>
-      </div>
-    </div>
+<div class="person">
 
-    <div class="testimonial">
-      <div class="stars">★★★★★</div>
-      <p>
-        “CoinForest brings the important parts of the financial
-        experience together in one place.”
-      </p>
+<div class="avatar" id="testimonialAvatar">JR</div>
 
-      <div class="person">
-        <div class="avatar">MR</div>
-        <div>
-          <strong>Michael Rodriguez</strong>
-          <span>Entrepreneur</span>
-        </div>
-      </div>
-    </div>
+<div>
+<strong id="testimonialName">James Reynolds</strong>
+<span id="testimonialRole">Digital Consultant</span>
+</div>
 
-  </div>
+</div>
+</div>
 
+<div class="testimonial-dots" id="testimonialDots"></div>
+
+</div>
 </section>
 
 <footer id="contact">
 
-  <div class="footer-grid">
+<div class="footer-grid">
 
-    <div class="footer-brand">
-      <a class="logo" href="#">Coin<span>Forest</span></a>
+<div class="footer-brand">
+<a class="logo" href="#">Coin<span>Forest</span></a>
 
-      <p>
-        A modern digital-asset platform designed to bring wallets,
-        investments and financial tools together.
-      </p>
-    </div>
+<p>
+A modern digital-asset platform designed to bring wallets,
+investments and financial tools together.
+</p>
+</div>
 
-    <div>
-      <h4>Company</h4>
-      <a href="#home">Home</a>
-      <a href="#about">About Us</a>
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-    </div>
+<div>
+<h4>Company</h4>
+<a href="#home">Home</a>
+<a href="#about">About Us</a>
+<a href="#services">Services</a>
+<a href="#contact">Contact</a>
+</div>
 
-    <div>
-      <h4>Platform</h4>
-      <a href="login.html">Login</a>
-      <a href="login.html">Register</a>
-      <a href="#markets">Markets</a>
-      <a href="dashboard.html">Dashboard</a>
-    </div>
+<div>
+<h4>Platform</h4>
+<a href="login.html">Login</a>
+<a href="login.html">Register</a>
+<a href="#markets">Markets</a>
+<a href="dashboard.html">Dashboard</a>
+</div>
 
-    <div>
-      <h4>Resources</h4>
-      <a href="#markets">Market Overview</a>
-      <a href="#contact">Support</a>
-    </div>
+<div>
+<h4>Resources</h4>
+<a href="#markets">Market Overview</a>
+<a href="#contact">Support</a>
+</div>
 
-  </div>
+</div>
 
-  <div class="copyright">
-    © 2026 CoinForest. All rights reserved.
-  </div>
+<div class="copyright">
+© 2026 CoinForest. All rights reserved.
+</div>
 
 </footer>
+
+<!-- ACTIVITY NOTIFICATION -->
+<div class="activity-popup" id="activityPopup">
+
+<div class="activity-icon" id="activityIcon">↗</div>
+
+<div class="activity-content">
+<strong id="activityTitle">Recent Activity</strong>
+<p id="activityMessage"></p>
+<span id="activityTime">Just now</span>
+</div>
+
+<button class="activity-close" onclick="hideActivity()">×</button>
+
+</div>
 
 <script>
 
 /* =====================================================
+   PLATFORM COUNTERS
+   ===================================================== */
+
+let activeUsers = 75_000_000;
+let downloads = 100_000_000;
+
+function formatMillions(value){
+return Math.round(value / 1000000) + "M+";
+}
+
+function updatePlatformCounters(){
+
+/*
+  Small natural-looking movement.
+  Active users never fall below 60M.
+*/
+
+const movement =
+Math.floor(Math.random() * 30001) - 15000;
+
+activeUsers += movement;
+
+if(activeUsers < 60_000_000){
+activeUsers = 60_000_000;
+}
+
+if(activeUsers > 90_000_000){
+activeUsers = 90_000_000;
+}
+
+/* Downloads gradually increase */
+
+if(Math.random() > .45){
+downloads += Math.floor(Math.random() * 12000) + 1000;
+}
+
+document.getElementById("activeUsersCounter")
+.textContent = formatMillions(activeUsers);
+
+document.getElementById("downloadsCounter")
+.textContent = formatMillions(downloads);
+
+}
+
+updatePlatformCounters();
+
+setInterval(
+updatePlatformCounters,
+7000
+);
+
+
+/* =====================================================
    COIN MARKET DISPLAY
-   Visual simulated market movement for the landing page.
    ===================================================== */
 
 const coins = {
 
-  BTC:{
-    price:67420,
-    decimals:2,
-    min:62000,
-    max:72000,
-    change:2.41
-  },
+BTC:{
+price:67420,
+min:62000,
+max:72000,
+change:2.41
+},
 
-  ETH:{
-    price:3540,
-    decimals:2,
-    min:3000,
-    max:3900,
-    change:1.82
-  },
+ETH:{
+price:3540,
+min:3000,
+max:3900,
+change:1.82
+},
 
-  SOL:{
-    price:181,
-    decimals:2,
-    min:145,
-    max:215,
-    change:3.17
-  },
+SOL:{
+price:181,
+min:145,
+max:215,
+change:3.17
+},
 
-  BNB:{
-    price:612,
-    decimals:2,
-    min:540,
-    max:680,
-    change:.94
-  }
+BNB:{
+price:612,
+min:540,
+max:680,
+change:.94
+}
 
 };
 
@@ -1242,345 +1376,602 @@ const coins = {
 /* TICKER */
 
 const tickerTrack =
-  document.getElementById("tickerTrack");
+document.getElementById("tickerTrack");
 
 const tickerCoins = [
-  ["BTC","₿","btc-icon"],
-  ["ETH","Ξ","eth-icon"],
-  ["BNB","B","bnb-icon"],
-  ["SOL","S","sol-icon"],
-  ["XRP","X","xrp-icon"],
-  ["ADA","A","ada-icon"]
+["BTC","₿","btc-icon"],
+["ETH","Ξ","eth-icon"],
+["BNB","B","bnb-icon"],
+["SOL","S","sol-icon"],
+["XRP","X","xrp-icon"],
+["ADA","A","ada-icon"]
 ];
 
 function createTickerCoin(symbol,icon,iconClass){
 
-  const coin =
-    document.createElement("div");
+const coin=document.createElement("div");
 
-  coin.className="coin";
+coin.className="coin";
 
-  coin.innerHTML=`
-    <span class="coin-icon ${iconClass}">
-      ${icon}
-    </span>
+coin.innerHTML=`
+<span class="coin-icon ${iconClass}">
+${icon}
+</span>
 
-    <b>${symbol}</b>
+<b>${symbol}</b>
 
-    <span
-      id="tickerPrice-${symbol}"
-      class="coin-price">
-      —
-    </span>
+<span id="tickerPrice-${symbol}" class="coin-price">—</span>
 
-    <span
-      id="tickerChange-${symbol}"
-      class="coin-change">
-      —
-    </span>
-  `;
+<span id="tickerChange-${symbol}" class="coin-change">—</span>
+`;
 
-  return coin;
+return coin;
 }
 
-
-/* Create two copies so the ticker loops smoothly */
-
 tickerCoins.forEach(item=>{
-  tickerTrack.appendChild(
-    createTickerCoin(...item)
-  );
+tickerTrack.appendChild(
+createTickerCoin(...item)
+);
 });
 
 tickerCoins.forEach(item=>{
-  tickerTrack.appendChild(
-    createTickerCoin(...item)
-  );
+tickerTrack.appendChild(
+createTickerCoin(...item)
+);
 });
 
 
 function formatPrice(value){
 
-  if(value < 1){
-    return "$" + value.toFixed(4);
-  }
+if(value < 1){
+return "$"+value.toFixed(4);
+}
 
-  if(value < 1000){
-    return "$" + value.toFixed(2);
-  }
+if(value < 1000){
+return "$"+value.toFixed(2);
+}
 
-  return "$" +
-    value.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    );
+return "$"+value.toLocaleString(
+"en-US",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
 }
 
 
 function updateTickerCoin(symbol,price,change){
 
-  document
-    .querySelectorAll(
-      `[id="tickerPrice-${symbol}"]`
-    )
-    .forEach(element=>{
-      element.textContent =
-        formatPrice(price);
-    });
+document
+.querySelectorAll(`[id="tickerPrice-${symbol}"]`)
+.forEach(element=>{
+element.textContent=formatPrice(price);
+});
 
-  document
-    .querySelectorAll(
-      `[id="tickerChange-${symbol}"]`
-    )
-    .forEach(element=>{
+document
+.querySelectorAll(`[id="tickerChange-${symbol}"]`)
+.forEach(element=>{
 
-      element.textContent =
-        (change >= 0 ? "+" : "") +
-        change.toFixed(2) +
-        "%";
+element.textContent=
+(change>=0?"+":"")+
+change.toFixed(2)+"%";
 
-      element.classList.toggle(
-        "coin-up",
-        change >= 0
-      );
+element.classList.toggle(
+"coin-up",
+change>=0
+);
 
-      element.classList.toggle(
-        "coin-down",
-        change < 0
-      );
+element.classList.toggle(
+"coin-down",
+change<0
+);
 
-    });
+});
 
 }
 
 
-/* =====================================================
-   MAIN MARKET CARDS
-   ===================================================== */
+/* MAIN MARKET CARDS */
 
 function updateMarket(symbol){
 
-  const coin = coins[symbol];
+const coin=coins[symbol];
 
-  /*
-    Small random movement.
-    This keeps the display alive without huge jumps.
-  */
+const movement=
+(Math.random()-.5)*
+coin.price*
+.0025;
 
-  const movement =
-    (Math.random() - .5) *
-    coin.price *
-    .0025;
+coin.price+=movement;
 
-  coin.price += movement;
+if(coin.price<coin.min)
+coin.price=coin.min;
 
-  if(coin.price < coin.min)
-    coin.price = coin.min;
-
-  if(coin.price > coin.max)
-    coin.price = coin.max;
-
-  /*
-    Slowly change percentage.
-  */
-
-  coin.change +=
-    (Math.random() - .5) * .7;
-
-  if(coin.change > 9)
-    coin.change = 9;
-
-  if(coin.change < -9)
-    coin.change = -9;
-
-
-  const priceElement =
-    document.getElementById(
-      symbol.toLowerCase()+"Price"
-    );
-
-  const changeElement =
-    document.getElementById(
-      symbol.toLowerCase()+"Change"
-    );
-
-
-  if(priceElement){
-
-    priceElement.textContent =
-      formatPrice(coin.price);
-
-  }
-
-
-  if(changeElement){
-
-    changeElement.textContent =
-      (coin.change >= 0 ? "+" : "") +
-      coin.change.toFixed(2) +
-      "%";
-
-    changeElement.classList.toggle(
-      "positive",
-      coin.change >= 0
-    );
-
-    changeElement.classList.toggle(
-      "negative",
-      coin.change < 0
-    );
-
-  }
-
-
-  updateTickerCoin(
-    symbol,
-    coin.price,
-    coin.change
-  );
-
-}
-
-
-/* =====================================================
-   XRP / ADA TICKER
-   ===================================================== */
-
-let xrpPrice = .61;
-let adaPrice = .42;
-
-let xrpChange = 1.06;
-let adaChange = .87;
-
-
-function updateSmallCoin(
-  symbol,
-  state
-){
-
-  state.price +=
-    (Math.random()-.5) *
-    state.price *
-    .006;
-
-  state.change +=
-    (Math.random()-.5) *
-    .7;
-
-  if(symbol==="XRP"){
-    if(state.price<.48)
-      state.price=.48;
-
-    if(state.price> .75)
-      state.price=.75;
-  }
-
-  if(symbol==="ADA"){
-    if(state.price<.32)
-      state.price=.32;
-
-    if(state.price> .55)
-      state.price=.55;
-  }
-
-  updateTickerCoin(
-    symbol,
-    state.price,
-    state.change
-  );
-
-}
-
-
-const xrp={
-  price:xrpPrice,
-  change:xrpChange
-};
-
-const ada={
-  price:adaPrice,
-  change:adaChange
-};
-
-
-/* =====================================================
-   HERO BITCOIN
-   ===================================================== */
-
-function updateHero(){
-
-  const btc =
-    coins.BTC;
-
-  const price =
-    document.getElementById(
-      "heroPrice"
-    );
-
-  const change =
-    document.getElementById(
-      "heroChange"
-    );
-
-  price.textContent =
-    formatPrice(btc.price);
-
-  change.textContent =
-    (btc.change >= 0 ? "+" : "") +
-    btc.change.toFixed(2) +
-    "%";
-
-  change.classList.toggle(
-    "positive",
-    btc.change >= 0
-  );
-
-  change.classList.toggle(
-    "negative",
-    btc.change < 0
-  );
-
-}
-
-
-/* =====================================================
-   UPDATE ALL MARKETS
-   ===================================================== */
-
-function refreshMarkets(){
-
-  updateMarket("BTC");
-  updateMarket("ETH");
-  updateMarket("SOL");
-  updateMarket("BNB");
-
-  updateSmallCoin("XRP",xrp);
-  updateSmallCoin("ADA",ada);
-
-  updateHero();
-
-}
-
-
-/* Initial values */
-
-refreshMarkets();
+if(coin.price>coin.max)
+coin.price=coin.max;
 
 
 /*
-  Update every 2.5 seconds so the market
-  cards visibly change over time.
+  This allows the market to visibly move
+  in both directions.
 */
 
-setInterval(
-  refreshMarkets,
-  2500
+coin.change+=
+(Math.random()-.5)*1.25;
+
+if(coin.change>9)
+coin.change=9;
+
+if(coin.change<-9)
+coin.change=-9;
+
+
+const priceElement=
+document.getElementById(
+symbol.toLowerCase()+"Price"
 );
+
+const changeElement=
+document.getElementById(
+symbol.toLowerCase()+"Change"
+);
+
+if(priceElement){
+priceElement.textContent=
+formatPrice(coin.price);
+}
+
+if(changeElement){
+
+changeElement.textContent=
+(coin.change>=0?"+":"")+
+coin.change.toFixed(2)+"%";
+
+changeElement.classList.toggle(
+"positive",
+coin.change>=0
+);
+
+changeElement.classList.toggle(
+"negative",
+coin.change<0
+);
+
+}
+
+updateTickerCoin(
+symbol,
+coin.price,
+coin.change
+);
+
+}
+
+
+/* XRP / ADA */
+
+const xrp={
+price:.61,
+change:1.06
+};
+
+const ada={
+price:.42,
+change:.87
+};
+
+
+function updateSmallCoin(symbol,state){
+
+state.price+=
+(Math.random()-.5)*
+state.price*
+.006;
+
+state.change+=
+(Math.random()-.5)*1.1;
+
+if(symbol==="XRP"){
+if(state.price<.48)
+state.price=.48;
+
+if(state.price>.75)
+state.price=.75;
+}
+
+if(symbol==="ADA"){
+if(state.price<.32)
+state.price=.32;
+
+if(state.price>.55)
+state.price=.55;
+}
+
+if(state.change>9)
+state.change=9;
+
+if(state.change<-9)
+state.change=-9;
+
+updateTickerCoin(
+symbol,
+state.price,
+state.change
+);
+
+}
+
+
+/* HERO */
+
+function updateHero(){
+
+const btc=coins.BTC;
+
+const price=
+document.getElementById("heroPrice");
+
+const change=
+document.getElementById("heroChange");
+
+price.textContent=
+formatPrice(btc.price);
+
+change.textContent=
+(btc.change>=0?"+":"")+
+btc.change.toFixed(2)+"%";
+
+change.classList.toggle(
+"positive",
+btc.change>=0
+);
+
+change.classList.toggle(
+"negative",
+btc.change<0
+);
+
+}
+
+
+/* REFRESH MARKETS */
+
+function refreshMarkets(){
+
+updateMarket("BTC");
+updateMarket("ETH");
+updateMarket("SOL");
+updateMarket("BNB");
+
+updateSmallCoin("XRP",xrp);
+updateSmallCoin("ADA",ada);
+
+updateHero();
+
+}
+
+refreshMarkets();
+
+setInterval(
+refreshMarkets,
+2500
+);
+
+
+/* =====================================================
+   ROTATING PRIVATE-REFERENCE ACTIVITY
+   ===================================================== */
+
+const activities=[
+
+{
+type:"withdrawal",
+icon:"↗",
+name:"Daniel M.",
+amount:"$4,850",
+message:"successfully completed a withdrawal."
+},
+
+{
+type:"investment",
+icon:"◆",
+name:"Sophia R.",
+amount:"$12,500",
+message:"successfully invested in the Gold package."
+},
+
+{
+type:"investment",
+icon:"◆",
+name:"Marcus T.",
+amount:"$5,000",
+message:"successfully invested in the Silver package."
+},
+
+{
+type:"withdrawal",
+icon:"↗",
+name:"Olivia K.",
+amount:"$2,750",
+message:"successfully completed a withdrawal."
+},
+
+{
+type:"investment",
+icon:"◆",
+name:"James W.",
+amount:"$1,500",
+message:"successfully invested in the Growth package."
+},
+
+{
+type:"withdrawal",
+icon:"↗",
+name:"Emily P.",
+amount:"$7,200",
+message:"successfully completed a withdrawal."
+},
+
+{
+type:"investment",
+icon:"◆",
+name:"Nathan C.",
+amount:"$25,000",
+message:"successfully invested in the Gold package."
+},
+
+{
+type:"withdrawal",
+icon:"↗",
+name:"Michael B.",
+amount:"$3,400",
+message:"successfully completed a withdrawal."
+},
+
+{
+type:"investment",
+icon:"◆",
+name:"Sarah L.",
+amount:"$8,000",
+message:"successfully invested in the Silver package."
+},
+
+{
+type:"withdrawal",
+icon:"↗",
+name:"David A.",
+amount:"$6,150",
+message:"successfully completed a withdrawal."
+}
+
+];
+
+let activityIndex=0;
+let activityTimer;
+
+function showActivity(){
+
+const item=
+activities[activityIndex];
+
+document.getElementById("activityIcon")
+.textContent=item.icon;
+
+document.getElementById("activityTitle")
+.textContent=
+item.type==="withdrawal"
+?"Withdrawal completed"
+:"Investment completed";
+
+document.getElementById("activityMessage")
+.textContent=
+item.name+" "+item.message+
+" Amount: "+item.amount;
+
+document.getElementById("activityTime")
+.textContent="Just now";
+
+const popup=
+document.getElementById("activityPopup");
+
+popup.classList.add("show");
+
+clearTimeout(activityTimer);
+
+activityTimer=setTimeout(()=>{
+popup.classList.remove("show");
+},6000);
+
+activityIndex++;
+
+if(activityIndex>=activities.length)
+activityIndex=0;
+
+}
+
+function hideActivity(){
+document
+.getElementById("activityPopup")
+.classList.remove("show");
+}
+
+setTimeout(
+showActivity,
+3500
+);
+
+setInterval(
+showActivity,
+9500
+);
+
+
+/* =====================================================
+   ROTATING TESTIMONIALS
+   ===================================================== */
+
+const testimonials=[
+
+{
+name:"James Reynolds",
+role:"Digital Consultant",
+avatar:"JR",
+text:"The dashboard gives me a much clearer view of my wallets and account activity. Everything feels organized."
+},
+
+{
+name:"Sarah Thompson",
+role:"Financial Analyst",
+avatar:"ST",
+text:"I like how simple the platform is. The wallet structure makes it easy to understand my account."
+},
+
+{
+name:"Michael Rodriguez",
+role:"Entrepreneur",
+avatar:"MR",
+text:"CoinForest brings the important parts of the financial experience together in one place."
+},
+
+{
+name:"Daniel Carter",
+role:"Business Owner",
+avatar:"DC",
+text:"The clean layout makes it easy to move around the platform and quickly find the information I need."
+},
+
+{
+name:"Olivia Bennett",
+role:"Independent Consultant",
+avatar:"OB",
+text:"I appreciate how clearly the wallet balances and financial information are presented."
+},
+
+{
+name:"Nathan Williams",
+role:"Technology Specialist",
+avatar:"NW",
+text:"The overall experience feels modern and straightforward. The dashboard is particularly easy to navigate."
+},
+
+{
+name:"Emily Parker",
+role:"Marketing Professional",
+avatar:"EP",
+text:"I really like the combination of the market information and account tools in one environment."
+},
+
+{
+name:"Marcus Johnson",
+role:"Business Consultant",
+avatar:"MJ",
+text:"The interface feels polished and the information is presented in a way that is easy to follow."
+},
+
+{
+name:"Sophia Anderson",
+role:"Investment Researcher",
+avatar:"SA",
+text:"The structured wallet approach makes the financial dashboard much easier for me to understand."
+},
+
+{
+name:"David Wilson",
+role:"Entrepreneur",
+avatar:"DW",
+text:"Everything is presented clearly, from the market overview to the account sections."
+},
+
+{
+name:"Grace Morgan",
+role:"Digital Strategist",
+avatar:"GM",
+text:"The platform has a very clean feel. I especially like how quickly I can see the important account information."
+},
+
+{
+name:"Christopher Lee",
+role:"Technology Consultant",
+avatar:"CL",
+text:"The modern design and organized dashboard make the overall experience feel very smooth."
+}
+
+];
+
+let testimonialIndex=0;
+
+const testimonialDots=
+document.getElementById("testimonialDots");
+
+testimonials.forEach((_,index)=>{
+
+const dot=
+document.createElement("div");
+
+dot.className=
+"testimonial-dot"+
+(index===0?" active":"");
+
+testimonialDots.appendChild(dot);
+
+});
+
+
+function displayTestimonial(index){
+
+const card=
+document.getElementById("testimonialCard");
+
+card.style.opacity="0";
+card.style.transform="translateY(8px)";
+
+setTimeout(()=>{
+
+const item=testimonials[index];
+
+document.getElementById("testimonialText")
+.textContent="“"+item.text+"”";
+
+document.getElementById("testimonialName")
+.textContent=item.name;
+
+document.getElementById("testimonialRole")
+.textContent=item.role;
+
+document.getElementById("testimonialAvatar")
+.textContent=item.avatar;
+
+document
+.querySelectorAll(".testimonial-dot")
+.forEach((dot,i)=>{
+dot.classList.toggle(
+"active",
+i===index
+);
+});
+
+card.style.opacity="1";
+card.style.transform="translateY(0)";
+
+},300);
+
+}
+
+
+setInterval(()=>{
+
+testimonialIndex++;
+
+if(testimonialIndex>=testimonials.length)
+testimonialIndex=0;
+
+displayTestimonial(testimonialIndex);
+
+},5500);
 
 </script>
 
 </body>
-          </html>
+  </html>
