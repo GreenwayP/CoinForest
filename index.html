@@ -1,1078 +1,1100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CoinForest</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>CoinForest — Decentralized Finance</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+font-family:Inter,Arial,sans-serif;
+background:#07111f;
+color:#fff;
+line-height:1.6;
+overflow-x:hidden
+}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
-    }
+:root{
+--green:#20e080;
+--green2:#12b866;
+--dark:#07111f;
+--dark2:#0b192b;
+--muted:#91a0b5;
+--card:#0d1c2f;
+--border:rgba(255,255,255,.09)
+}
 
-    header {
-      background: #0b1728;
-      color: white;
-      padding: 18px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+/* HEADER */
+header{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+z-index:20;
+padding:22px 6%;
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+.logo{
+font-size:25px;
+font-weight:800;
+letter-spacing:-1px
+}
+.logo span{color:var(--green)}
+nav{
+display:flex;
+align-items:center;
+gap:28px
+}
+nav a{
+font-size:14px;
+color:#d5deea;
+transition:.2s
+}
+nav a:hover{color:var(--green)}
+.nav-buttons{display:flex;gap:10px}
+.btn{
+border:0;
+border-radius:8px;
+padding:12px 20px;
+font-weight:700;
+cursor:pointer;
+transition:.25s
+}
+.btn-green{
+background:var(--green);
+color:#04100a
+}
+.btn-green:hover{
+background:#38ed94;
+transform:translateY(-2px)
+}
+.btn-outline{
+border:1px solid rgba(255,255,255,.22);
+background:transparent;
+color:#fff
+}
+.btn-outline:hover{
+border-color:var(--green);
+color:var(--green)
+}
 
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-    }
+/* HERO */
+.hero{
+min-height:780px;
+padding:150px 6% 100px;
+position:relative;
+display:flex;
+align-items:center;
+overflow:hidden;
+background:
+radial-gradient(circle at 78% 35%,rgba(32,224,128,.16),transparent 28%),
+radial-gradient(circle at 30% 70%,rgba(28,100,180,.15),transparent 30%),
+linear-gradient(135deg,#07111f,#0b1d31)
+}
+.hero:before{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+right:-180px;
+top:100px;
+border-radius:50%;
+background:rgba(32,224,128,.06);
+filter:blur(5px)
+}
+.hero-content{
+max-width:760px;
+position:relative;
+z-index:2
+}
+.badge{
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:8px 14px;
+border:1px solid rgba(32,224,128,.25);
+background:rgba(32,224,128,.07);
+border-radius:30px;
+color:var(--green);
+font-size:13px;
+font-weight:700;
+margin-bottom:24px
+}
+.dot{
+width:7px;height:7px;
+border-radius:50%;
+background:var(--green);
+box-shadow:0 0 12px var(--green)
+}
+.hero h1{
+font-size:clamp(48px,7vw,86px);
+line-height:1.02;
+letter-spacing:-4px;
+margin-bottom:25px
+}
+.hero h1 span{color:var(--green)}
+.hero p{
+font-size:18px;
+color:#aebdce;
+max-width:650px;
+margin-bottom:32px
+}
+.hero-buttons{
+display:flex;
+gap:13px;
+flex-wrap:wrap
+}
+.hero-card{
+position:absolute;
+right:8%;
+top:190px;
+width:360px;
+padding:24px;
+background:rgba(13,28,47,.82);
+border:1px solid var(--border);
+border-radius:18px;
+box-shadow:0 30px 80px rgba(0,0,0,.35);
+backdrop-filter:blur(18px)
+}
+.chart-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px
+}
+.chart-head strong{font-size:15px}
+.price{
+font-size:28px;
+font-weight:800;
+margin-bottom:3px
+}
+.positive{color:var(--green);font-size:13px}
+.fake-chart{
+height:130px;
+position:relative;
+margin-top:15px;
+overflow:hidden
+}
+.fake-chart svg{
+width:100%;
+height:100%
+}
+.asset-row{
+display:flex;
+justify-content:space-between;
+padding-top:15px;
+border-top:1px solid var(--border);
+font-size:13px;
+color:var(--muted)
+}
 
-    nav {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 18px;
-    }
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+padding:45px 6%;
+background:#091727;
+border-top:1px solid var(--border);
+border-bottom:1px solid var(--border)
+}
+.stat{
+text-align:center;
+padding:10px;
+border-right:1px solid var(--border)
+}
+.stat:last-child{border-right:0}
+.stat strong{
+display:block;
+font-size:34px;
+margin-bottom:3px
+}
+.stat span{
+font-size:13px;
+color:var(--muted)
+}
 
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-size: 14px;
-    }
+/* TICKER */
+.ticker{
+height:55px;
+display:flex;
+align-items:center;
+overflow:hidden;
+background:#050d18;
+border-bottom:1px solid var(--border);
+white-space:nowrap
+}
+.ticker-track{
+display:flex;
+gap:38px;
+animation:scroll 28s linear infinite
+}
+.coin{
+font-size:13px;
+color:#b8c5d5
+}
+.coin b{color:#fff;margin-right:7px}
+.up{color:var(--green)}
+@keyframes scroll{
+from{transform:translateX(0)}
+to{transform:translateX(-50%)}
+}
 
-    nav a:hover {
-      color: #2ecc71;
-    }
+/* SECTIONS */
+section{
+padding:110px 6%
+}
+.section-label{
+color:var(--green);
+font-size:13px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:2px;
+margin-bottom:13px
+}
+.section-title{
+font-size:clamp(35px,5vw,58px);
+line-height:1.08;
+letter-spacing:-2px;
+margin-bottom:18px
+}
+.section-text{
+max-width:650px;
+color:var(--muted);
+font-size:16px
+}
+.center{text-align:center}
+.center .section-text{
+margin:0 auto
+}
 
-    .hero {
-      min-height: 70vh;
-      display: flex;
-      align-items: center;
-      padding: 60px 6%;
-      background: linear-gradient(135deg, #0b1728, #123b63);
-      color: white;
-    }
+/* ABOUT */
+.about{
+background:#07111f
+}
+.about-grid{
+margin-top:55px;
+display:grid;
+grid-template-columns:1.05fr .95fr;
+gap:70px;
+align-items:center
+}
+.about-visual{
+min-height:410px;
+border-radius:24px;
+position:relative;
+background:
+radial-gradient(circle at 50% 45%,rgba(32,224,128,.16),transparent 30%),
+linear-gradient(145deg,#0c2137,#081321);
+border:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden
+}
+.orbit{
+width:230px;
+height:230px;
+border:1px solid rgba(32,224,128,.28);
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative
+}
+.orbit:before,.orbit:after{
+content:"";
+position:absolute;
+border:1px solid rgba(32,224,128,.15);
+border-radius:50%
+}
+.orbit:before{width:310px;height:120px;transform:rotate(35deg)}
+.orbit:after{width:120px;height:310px;transform:rotate(35deg)}
+.orbit-core{
+width:95px;height:95px;
+border-radius:50%;
+background:linear-gradient(135deg,var(--green),#0c9c59);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:35px;
+font-weight:900;
+color:#04100a;
+box-shadow:0 0 55px rgba(32,224,128,.3)
+}
+.about-list{
+margin-top:30px;
+display:grid;
+gap:20px
+}
+.about-item{
+display:flex;
+gap:15px
+}
+.check{
+width:31px;
+height:31px;
+min-width:31px;
+border-radius:50%;
+background:rgba(32,224,128,.1);
+color:var(--green);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:900
+}
+.about-item h3{font-size:17px;margin-bottom:3px}
+.about-item p{font-size:14px;color:var(--muted)}
 
-    .hero-content {
-      max-width: 700px;
-    }
+/* FEATURES */
+.features{
+background:#091827
+}
+.feature-grid{
+margin-top:55px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px
+}
+.feature{
+padding:30px;
+border:1px solid var(--border);
+background:#0c1c2e;
+border-radius:16px;
+transition:.3s
+}
+.feature:hover{
+transform:translateY(-6px);
+border-color:rgba(32,224,128,.35)
+}
+.icon{
+width:48px;height:48px;
+border-radius:12px;
+background:rgba(32,224,128,.1);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+margin-bottom:22px
+}
+.feature h3{margin-bottom:10px;font-size:19px}
+.feature p{color:var(--muted);font-size:14px}
 
-    .hero h1 {
-      font-size: clamp(40px, 7vw, 72px);
-      line-height: 1.05;
-      margin-bottom: 22px;
-    }
+/* MARKETS */
+.markets{
+background:#07111f
+}
+.market-grid{
+margin-top:50px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px
+}
+.market{
+padding:20px;
+background:#0c1c2e;
+border:1px solid var(--border);
+border-radius:13px
+}
+.market-top{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px
+}
+.market-name{font-weight:700}
+.market-symbol{font-size:12px;color:var(--muted)}
+.market-price{font-size:23px;font-weight:800}
+.market-change{color:var(--green);font-size:13px}
 
-    .hero p {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #d8e4f2;
-      margin-bottom: 30px;
-    }
+/* SERVICES */
+.services{
+background:#091827
+}
+.services-grid{
+margin-top:55px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:20px
+}
+.service{
+padding:30px;
+background:#0c1c2e;
+border:1px solid var(--border);
+border-radius:16px
+}
+.service-number{
+font-size:13px;
+color:var(--green);
+font-weight:800;
+margin-bottom:20px
+}
+.service h3{font-size:22px;margin-bottom:10px}
+.service p{color:var(--muted);font-size:14px}
 
-    .buttons {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
+/* CTA */
+.cta{
+padding:100px 6%;
+background:
+radial-gradient(circle at 50% 0,rgba(32,224,128,.13),transparent 35%),
+#07111f;
+text-align:center
+}
+.cta-box{
+max-width:1000px;
+margin:auto;
+padding:75px 35px;
+border:1px solid rgba(32,224,128,.16);
+border-radius:25px;
+background:linear-gradient(145deg,#0c2033,#091625)
+}
+.cta h2{
+font-size:clamp(36px,5vw,58px);
+line-height:1.08;
+margin-bottom:18px
+}
+.cta p{
+color:var(--muted);
+max-width:600px;
+margin:0 auto 30px
+}
 
-    .btn {
-      display: inline-block;
-      padding: 14px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-    }
+/* TESTIMONIALS */
+.testimonials{
+background:#091827
+}
+.testimonial-grid{
+margin-top:55px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px
+}
+.testimonial{
+padding:30px;
+border:1px solid var(--border);
+background:#0c1c2e;
+border-radius:16px
+}
+.stars{color:#f5c542;margin-bottom:17px}
+.testimonial p{
+color:#bdc9d7;
+font-size:14px;
+margin-bottom:25px
+}
+.person{
+display:flex;
+align-items:center;
+gap:12px
+}
+.avatar{
+width:42px;height:42px;
+border-radius:50%;
+background:linear-gradient(135deg,#173b58,#20e080);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+color:#07111f
+}
+.person strong{display:block;font-size:14px}
+.person span{display:block;font-size:12px;color:var(--muted)}
 
-    .primary {
-      background: #2ecc71;
-      color: #07150d;
-    }
+/* FOOTER */
+footer{
+background:#050d18;
+padding:65px 6% 25px;
+border-top:1px solid var(--border)
+}
+.footer-grid{
+display:grid;
+grid-template-columns:1.4fr repeat(3,1fr);
+gap:50px;
+padding-bottom:50px
+}
+.footer-brand p{
+color:var(--muted);
+font-size:14px;
+max-width:330px;
+margin-top:15px
+}
+footer h4{margin-bottom:15px}
+footer a{
+display:block;
+color:var(--muted);
+font-size:13px;
+margin-bottom:9px
+}
+footer a:hover{color:var(--green)}
+.copyright{
+border-top:1px solid var(--border);
+padding-top:22px;
+color:#68798e;
+font-size:12px;
+text-align:center
+}
 
-    .secondary {
-      border: 1px solid #ffffff66;
-      color: white;
-      background: transparent;
-    }
-
-    .section {
-      padding: 70px 6%;
-    }
-
-    .section h2 {
-      font-size: 32px;
-      margin-bottom: 14px;
-    }
-
-    .section-intro {
-      color: #64748b;
-      margin-bottom: 35px;
-      line-height: 1.6;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 26px;
-      box-shadow: 0 8px 25px rgba(0,0,0,.06);
-    }
-
-    .card h3 {
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: #64748b;
-      line-height: 1.6;
-    }
-
-    footer {
-      background: #0b1728;
-      color: #aebdce;
-      text-align: center;
-      padding: 30px 6%;
-    }
-
-    /* AUTH MODAL */
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(3, 10, 20, .75);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .auth-box {
-      width: 100%;
-      max-width: 430px;
-      background: white;
-      border-radius: 18px;
-      padding: 30px;
-      position: relative;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-    }
-
-    .auth-box h2 {
-      margin-bottom: 8px;
-      color: #0b1728;
-    }
-
-    .auth-subtitle {
-      color: #64748b;
-      margin-bottom: 24px;
-      line-height: 1.5;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 14px;
-      right: 17px;
-      border: none;
-      background: transparent;
-      font-size: 26px;
-      cursor: pointer;
-      color: #64748b;
-    }
-
-    .auth-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 22px;
-    }
-
-    .auth-tab {
-      flex: 1;
-      padding: 11px;
-      border: 1px solid #dbe2ea;
-      background: #f8fafc;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .auth-tab.active {
-      background: #0b1728;
-      color: white;
-      border-color: #0b1728;
-    }
-
-    .auth-form {
-      display: none;
-    }
-
-    .auth-form.active {
-      display: block;
-    }
-
-    .field {
-      margin-bottom: 15px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #334155;
-    }
-
-    .field input {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .field input:focus {
-      border-color: #2ecc71;
-    }
-
-    .auth-submit {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 9px;
-      background: #2ecc71;
-      color: #07150d;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 15px;
-      margin-top: 5px;
-    }
-
-    .auth-submit:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .message {
-      display: none;
-      padding: 11px 13px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .message.show {
-      display: block;
-    }
-
-    .message.error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .message.success {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .user-status {
-      display: none;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-status.active {
-      display: flex;
-    }
-
-    .logout-btn {
-      border: 1px solid #ffffff55;
-      background: transparent;
-      color: white;
-      padding: 8px 13px;
-      border-radius: 7px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 700px) {
-      header {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      nav {
-        justify-content: center;
-      }
-
-      .hero {
-        min-height: 60vh;
-        padding-top: 45px;
-        padding-bottom: 45px;
-      }
-
-      .auth-box {
-        padding: 25px 20px;
-      }
-    }
-  </style>
+/* MOBILE */
+@media(max-width:1000px){
+.hero-card{display:none}
+.about-grid{grid-template-columns:1fr}
+.market-grid{grid-template-columns:repeat(2,1fr)}
+.feature-grid{grid-template-columns:repeat(2,1fr)}
+.testimonial-grid{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+header{
+padding:18px 5%;
+position:absolute;
+flex-wrap:wrap;
+gap:15px
+}
+nav{
+width:100%;
+justify-content:center;
+gap:15px
+}
+nav>a{font-size:12px}
+.nav-buttons{display:none}
+.hero{
+min-height:700px;
+padding:145px 5% 80px
+}
+.hero h1{
+letter-spacing:-2px;
+font-size:52px
+}
+.hero p{font-size:16px}
+.stats{grid-template-columns:repeat(2,1fr);padding:30px 5%}
+.stat:nth-child(2){border-right:0}
+.stat:nth-child(-n+2){border-bottom:1px solid var(--border)}
+section{padding:80px 5%}
+.feature-grid,
+.services-grid,
+.market-grid{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr}
+.about-visual{min-height:330px}
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">CoinForest</div>
+  <a class="logo" href="#">Coin<span>Forest</span></a>
 
   <nav>
-    <a href="#about">About</a>
+    <a href="#home">Home</a>
+    <a href="#about">About Us</a>
     <a href="#services">Services</a>
     <a href="#markets">Markets</a>
-    <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
 
-    <div id="guestActions">
-      <button class="btn primary" onclick="openAuth('register')">
-        Get Started
-      </button>
-    </div>
-
-    <div id="userStatus" class="user-status">
-      <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="nav-buttons">
+      <a class="btn btn-outline" href="login.html">Login</a>
+      <a class="btn btn-green" href="login.html">Register</a>
     </div>
   </nav>
 </header>
 
-<section class="hero">
+<section class="hero" id="home">
+
   <div class="hero-content">
 
-    <h1>Build Your Digital Asset Journey</h1>
+    <div class="badge">
+      <span class="dot"></span>
+      The future of digital finance
+    </div>
+
+    <h1>
+      Decentralized <span>Finance</span>
+    </h1>
 
     <p>
-      CoinForest provides a modern platform for managing digital assets,
-      monitoring markets and accessing a structured financial dashboard.
+      Resilient. Secure. Built for the modern digital-asset journey.
+      CoinForest brings wallets, investments, transfers and market
+      information together in one structured financial platform.
     </p>
 
-    <div class="buttons">
-      <button class="btn primary" onclick="openAuth('register')">
-        Get Started
-      </button>
-
-      <button class="btn secondary" onclick="openAuth('login')">
-        Login
-      </button>
+    <div class="hero-buttons">
+      <a class="btn btn-green" href="login.html">Get Started</a>
+      <a class="btn btn-outline" href="#about">Explore CoinForest</a>
     </div>
 
   </div>
-</section>
 
-<section class="section" id="about">
-  <h2>About CoinForest</h2>
+  <div class="hero-card">
 
-  <p class="section-intro">
-    A modern digital-asset platform designed around a secure,
-    structured and user-friendly experience.
-  </p>
-
-  <div class="cards">
-
-    <div class="card">
-      <h3>Secure Platform</h3>
-      <p>
-        Designed with authentication, authorization and account security
-        in mind.
-      </p>
+    <div class="chart-head">
+      <strong>Portfolio Overview</strong>
+      <span class="positive">+8.42%</span>
     </div>
 
-    <div class="card">
-      <h3>Wallet Management</h3>
-      <p>
-        Manage your main and profit wallet through one organized platform.
-      </p>
+    <div class="price">$24,680.50</div>
+    <div class="positive">+$1,920.40 today</div>
+
+    <div class="fake-chart">
+      <svg viewBox="0 0 360 130" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#20e080" stop-opacity=".35"/>
+            <stop offset="1" stop-color="#20e080" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M0 105
+             C25 90 35 96 55 82
+             S85 95 105 70
+             S130 75 150 60
+             S180 75 200 45
+             S230 65 250 42
+             S280 50 300 25
+             S330 42 360 10
+             L360 130 L0 130 Z"
+          fill="url(#g)"/>
+
+        <path
+          d="M0 105
+             C25 90 35 96 55 82
+             S85 95 105 70
+             S130 75 150 60
+             S180 75 200 45
+             S230 65 250 42
+             S280 50 300 25
+             S330 42 360 10"
+          fill="none"
+          stroke="#20e080"
+          stroke-width="3"/>
+      </svg>
     </div>
 
-    <div class="card">
-      <h3>Transparent Activity</h3>
-      <p>
-        Track deposits, investments, transfers and withdrawals from
-        your account.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<section class="section" id="services">
-  <h2>Our Services</h2>
-
-  <div class="cards">
-
-    <div class="card">
-      <h3>Digital Wallets</h3>
-      <p>
-        Access your main and profit wallet from your personal dashboard.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Investments</h3>
-      <p>
-        Explore structured investment schemas available on the platform.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Transfers</h3>
-      <p>
-        Send funds between supported CoinForest accounts.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Market Overview</h3>
-      <p>
-        Monitor supported digital assets and market information.
-      </p>
+    <div class="asset-row">
+      <span>Available Balance</span>
+      <strong>$18,420.00</strong>
     </div>
 
   </div>
+
 </section>
 
-<section class="section" id="markets">
-  <h2>Markets</h2>
+<div class="stats">
 
-  <p class="section-intro">
-    Market data will be connected to the CoinForest platform as
-    development progresses.
-  </p>
-</section>
-
-<section class="section" id="faq">
-  <h2>Frequently Asked Questions</h2>
-
-  <div class="cards">
-
-    <div class="card">
-      <h3>How do I create an account?</h3>
-      <p>
-        Select Get Started and complete the CoinForest registration form.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Can I manage my wallets?</h3>
-      <p>
-        Yes. The user dashboard will contain Main Wallet and Profit Wallet
-        management.
-      </p>
-    </div>
-
+  <div class="stat">
+    <strong>24/7</strong>
+    <span>Platform Access</span>
   </div>
-</section>
 
-<section class="section" id="contact">
-  <h2>Contact CoinForest</h2>
+  <div class="stat">
+    <strong>100%</strong>
+    <span>Account Visibility</span>
+  </div>
 
-  <p class="section-intro">
-    Customer support and ticket management will be available through
-    the platform.
-  </p>
-</section>
+  <div class="stat">
+    <strong>2</strong>
+    <span>Wallet Structure</span>
+  </div>
 
-<footer>
-  © 2026 CoinForest. All rights reserved.
-</footer>
+  <div class="stat">
+    <strong>∞</strong>
+    <span>Growth Possibilities</span>
+  </div>
 
+</div>
 
-<!-- AUTH MODAL -->
+<div class="ticker">
+  <div class="ticker-track">
 
-<div class="modal" id="authModal">
+    <div class="coin"><b>BTC</b>$67,420 <span class="up">+2.41%</span></div>
+    <div class="coin"><b>ETH</b>$3,540 <span class="up">+1.82%</span></div>
+    <div class="coin"><b>BNB</b>$612 <span class="up">+0.94%</span></div>
+    <div class="coin"><b>SOL</b>$181 <span class="up">+3.17%</span></div>
+    <div class="coin"><b>XRP</b>$0.61 <span class="up">+1.06%</span></div>
+    <div class="coin"><b>ADA</b>$0.42 <span class="up">+0.87%</span></div>
 
-  <div class="auth-box">
-
-    <button class="close-btn" onclick="closeAuth()">×</button>
-
-    <h2 id="authTitle">Create your CoinForest account</h2>
-
-    <p class="auth-subtitle" id="authSubtitle">
-      Create an account to access your CoinForest dashboard.
-    </p>
-
-    <div class="auth-tabs">
-
-      <button
-        class="auth-tab active"
-        id="registerTab"
-        onclick="switchAuth('register')">
-        Register
-      </button>
-
-      <button
-        class="auth-tab"
-        id="loginTab"
-        onclick="switchAuth('login')">
-        Login
-      </button>
-
-    </div>
-
-    <div id="authMessage" class="message"></div>
-
-
-    <!-- REGISTER -->
-
-    <form
-      id="registerForm"
-      class="auth-form active"
-      onsubmit="registerUser(event)">
-
-      <div class="field">
-        <label>First name</label>
-        <input
-          type="text"
-          id="registerFirstName"
-          required>
-      </div>
-
-      <div class="field">
-        <label>Last name</label>
-        <input
-          type="text"
-          id="registerLastName"
-          required>
-      </div>
-
-      <div class="field">
-        <label>Username</label>
-        <input
-          type="text"
-          id="registerUsername"
-          required>
-      </div>
-
-      <div class="field">
-        <label>Email</label>
-        <input
-          type="email"
-          id="registerEmail"
-          required>
-      </div>
-
-      <div class="field">
-        <label>Password</label>
-        <input
-          type="password"
-          id="registerPassword"
-          minlength="6"
-          required>
-      </div>
-
-      <button
-        class="auth-submit"
-        id="registerSubmit"
-        type="submit">
-        Create Account
-      </button>
-
-    </form>
-
-
-    <!-- LOGIN -->
-
-    <form
-      id="loginForm"
-      class="auth-form"
-      onsubmit="loginUser(event)">
-
-      <div class="field">
-        <label>Email</label>
-        <input
-          type="email"
-          id="loginEmail"
-          required>
-      </div>
-
-      <div class="field">
-        <label>Password</label>
-        <input
-          type="password"
-          id="loginPassword"
-          required>
-      </div>
-
-      <button
-        class="auth-submit"
-        id="loginSubmit"
-        type="submit">
-        Login
-      </button>
-
-    </form>
+    <div class="coin"><b>BTC</b>$67,420 <span class="up">+2.41%</span></div>
+    <div class="coin"><b>ETH</b>$3,540 <span class="up">+1.82%</span></div>
+    <div class="coin"><b>BNB</b>$612 <span class="up">+0.94%</span></div>
+    <div class="coin"><b>SOL</b>$181 <span class="up">+3.17%</span></div>
+    <div class="coin"><b>XRP</b>$0.61 <span class="up">+1.06%</span></div>
+    <div class="coin"><b>ADA</b>$0.42 <span class="up">+0.87%</span></div>
 
   </div>
 </div>
 
+<section class="about" id="about">
+
+  <div class="about-grid">
+
+    <div class="about-visual">
+      <div class="orbit">
+        <div class="orbit-core">CF</div>
+      </div>
+    </div>
+
+    <div>
+
+      <div class="section-label">About CoinForest</div>
+
+      <h2 class="section-title">
+        Shaping the Future of Digital Finance Together
+      </h2>
+
+      <p class="section-text">
+        CoinForest is designed around a modern digital-asset experience,
+        bringing financial tools, wallet management and structured
+        investment features into one powerful environment.
+      </p>
 
-<script>
+      <div class="about-list">
 
-const API_BASE = "";
+        <div class="about-item">
+          <div class="check">✓</div>
+          <div>
+            <h3>Structured Financial Experience</h3>
+            <p>Everything organized around your personal financial dashboard.</p>
+          </div>
+        </div>
+
+        <div class="about-item">
+          <div class="check">✓</div>
+          <div>
+            <h3>Wallet Visibility</h3>
+            <p>Keep your Main Wallet and Profit Wallet clearly separated.</p>
+          </div>
+        </div>
+
+        <div class="about-item">
+          <div class="check">✓</div>
+          <div>
+            <h3>Account Security</h3>
+            <p>Authentication and account controls built into the platform.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="features">
+
+  <div class="center">
+    <div class="section-label">Why Choose CoinForest</div>
+
+    <h2 class="section-title">
+      Elevating Your Financial Experience
+    </h2>
+
+    <p class="section-text">
+      Built to give users a clear, modern and organized way to interact
+      with their digital financial environment.
+    </p>
+  </div>
+
+  <div class="feature-grid">
+
+    <div class="feature">
+      <div class="icon">⚡</div>
+      <h3>Cutting-Edge Technology</h3>
+      <p>
+        A modern platform architecture designed for speed,
+        accessibility and a smooth digital experience.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="icon">◈</div>
+      <h3>User Empowerment</h3>
+      <p>
+        Give every user the tools and information needed to understand
+        and manage their account.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="icon">✓</div>
+      <h3>Transparent & Secure</h3>
+      <p>
+        Account activity, wallet information and platform actions are
+        presented in a structured environment.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="markets" id="markets">
+
+  <div class="center">
+
+    <div class="section-label">Market Overview</div>
+
+    <h2 class="section-title">
+      Explore Digital Asset Markets
+    </h2>
+
+    <p class="section-text">
+      Follow selected market information from one organized interface.
+    </p>
+
+  </div>
+
+  <div class="market-grid">
+
+    <div class="market">
+      <div class="market-top">
+        <div>
+          <div class="market-name">Bitcoin</div>
+          <div class="market-symbol">BTC</div>
+        </div>
+        <div class="market-change">+2.41%</div>
+      </div>
+      <div class="market-price">$67,420</div>
+    </div>
+
+    <div class="market">
+      <div class="market-top">
+        <div>
+          <div class="market-name">Ethereum</div>
+          <div class="market-symbol">ETH</div>
+        </div>
+        <div class="market-change">+1.82%</div>
+      </div>
+      <div class="market-price">$3,540</div>
+    </div>
+
+    <div class="market">
+      <div class="market-top">
+        <div>
+          <div class="market-name">Solana</div>
+          <div class="market-symbol">SOL</div>
+        </div>
+        <div class="market-change">+3.17%</div>
+      </div>
+      <div class="market-price">$181</div>
+    </div>
+
+    <div class="market">
+      <div class="market-top">
+        <div>
+          <div class="market-name">BNB</div>
+          <div class="market-symbol">BNB</div>
+        </div>
+        <div class="market-change">+0.94%</div>
+      </div>
+      <div class="market-price">$612</div>
+    </div>
+
+  </div>
+
+</section>
 
+<section class="services" id="services">
 
-/* -------------------------------------------------------
-   AUTH UI
-------------------------------------------------------- */
+  <div class="center">
 
-function openAuth(mode = "login") {
-  document
-    .getElementById("authModal")
-    .classList.add("active");
-
-  switchAuth(mode);
-}
-
-function closeAuth() {
-  document
-    .getElementById("authModal")
-    .classList.remove("active");
-
-  clearMessage();
-}
-
-function switchAuth(mode) {
-
-  const registerForm =
-    document.getElementById("registerForm");
-
-  const loginForm =
-    document.getElementById("loginForm");
-
-  const registerTab =
-    document.getElementById("registerTab");
-
-  const loginTab =
-    document.getElementById("loginTab");
-
-  const title =
-    document.getElementById("authTitle");
-
-  const subtitle =
-    document.getElementById("authSubtitle");
-
-  clearMessage();
-
-  if (mode === "register") {
-
-    registerForm.classList.add("active");
-    loginForm.classList.remove("active");
-
-    registerTab.classList.add("active");
-    loginTab.classList.remove("active");
-
-    title.textContent =
-      "Create your CoinForest account";
-
-    subtitle.textContent =
-      "Create an account to access your CoinForest dashboard.";
-
-  } else {
-
-    registerForm.classList.remove("active");
-    loginForm.classList.add("active");
-
-    registerTab.classList.remove("active");
-    loginTab.classList.add("active");
-
-    title.textContent =
-      "Welcome back";
-
-    subtitle.textContent =
-      "Login to access your CoinForest account.";
-
-  }
-}
-
-
-/* -------------------------------------------------------
-   MESSAGE
-------------------------------------------------------- */
-
-function showMessage(message, type = "error") {
-
-  const element =
-    document.getElementById("authMessage");
-
-  element.textContent = message;
-
-  element.className =
-    "message show " + type;
-}
-
-function clearMessage() {
-
-  const element =
-    document.getElementById("authMessage");
-
-  element.textContent = "";
-
-  element.className = "message";
-}
-
-
-/* -------------------------------------------------------
-   REGISTER
-------------------------------------------------------- */
-
-async function registerUser(event) {
-
-  event.preventDefault();
-
-  const button =
-    document.getElementById("registerSubmit");
-
-  button.disabled = true;
-  button.textContent = "Creating account...";
-
-  clearMessage();
-
-  const payload = {
-
-    first_name:
-      document.getElementById("registerFirstName").value.trim(),
-
-    last_name:
-      document.getElementById("registerLastName").value.trim(),
-
-    username:
-      document.getElementById("registerUsername").value.trim(),
-
-    email:
-      document.getElementById("registerEmail").value.trim(),
-
-    password:
-      document.getElementById("registerPassword").value
-
-  };
-
-  try {
-
-    const response =
-      await fetch(
-        API_BASE + "/api/auth/register",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify(payload)
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.error || "Unable to create account."
-      );
-    }
-
-    showMessage(
-      "Account created successfully. You can now log in.",
-      "success"
-    );
-
-    document.getElementById("registerForm").reset();
-
-    setTimeout(() => {
-      switchAuth("login");
-
-      document.getElementById("loginEmail").value =
-        payload.email;
-    }, 900);
-
-  } catch (error) {
-
-    console.error("Registration error:", error);
-
-    showMessage(
-      error.message || "Unable to create account."
-    );
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Create Account";
-
-  }
-}
-
-
-/* -------------------------------------------------------
-   LOGIN
-------------------------------------------------------- */
-
-async function loginUser(event) {
-
-  event.preventDefault();
-
-  const button =
-    document.getElementById("loginSubmit");
-
-  button.disabled = true;
-  button.textContent = "Logging in...";
-
-  clearMessage();
-
-  const payload = {
-
-    email:
-      document.getElementById("loginEmail").value.trim(),
-
-    password:
-      document.getElementById("loginPassword").value
-
-  };
-
-  try {
-
-    const response =
-      await fetch(
-        API_BASE + "/api/auth/login",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify(payload)
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.error || "Unable to login."
-      );
-    }
-
-    if (!data.token) {
-      throw new Error(
-        "Login succeeded but no session token was returned."
-      );
-    }
-
-    localStorage.setItem(
-      "coinforest_token",
-      data.token
-    );
-
-    showMessage(
-      "Login successful. Opening your dashboard...",
-      "success"
-    );
-
-    setTimeout(() => {
-
-      window.location.href =
-        "/dashboard.html";
-
-    }, 700);
-
-  } catch (error) {
-
-    console.error("Login error:", error);
-
-    showMessage(
-      error.message || "Unable to login."
-    );
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Login";
-
-  }
-}
-
-
-/* -------------------------------------------------------
-   LOGOUT
-------------------------------------------------------- */
-
-async function logout() {
-
-  const token =
-    localStorage.getItem("coinforest_token");
-
-  if (!token) {
-    updateGuestState();
-    return;
-  }
-
-  try {
-
-    await fetch(
-      API_BASE + "/api/auth/logout",
-      {
-        method: "POST",
-
-        headers: {
-          "Authorization":
-            "Bearer " + token
-        }
-      }
-    );
-
-  } catch (error) {
-
-    console.error("Logout error:", error);
-
-  }
-
-  localStorage.removeItem("coinforest_token");
-
-  updateGuestState();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-}
-
-
-/* -------------------------------------------------------
-   CURRENT USER CHECK
-------------------------------------------------------- */
-
-async function checkCurrentUser() {
-
-  const token =
-    localStorage.getItem("coinforest_token");
-
-  if (!token) {
-    updateGuestState();
-    return;
-  }
-
-  try {
-
-    const response =
-      await fetch(
-        API_BASE + "/api/auth/me",
-        {
-          method: "GET",
-
-          headers: {
-            "Authorization":
-              "Bearer " + token
-          }
-        }
-      );
-
-    if (!response.ok) {
-
-      localStorage.removeItem(
-        "coinforest_token"
-      );
-
-      updateGuestState();
-
-      return;
-    }
-
-    const data =
-      await response.json();
-
-    if (data.success && data.user) {
-
-      document.getElementById(
-        "guestActions"
-      ).style.display = "none";
-
-      document.getElementById(
-        "userStatus"
-      ).classList.add("active");
-
-    } else {
-
-      localStorage.removeItem(
-        "coinforest_token"
-      );
-
-      updateGuestState();
-
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Authentication check failed:",
-      error
-    );
-
-    updateGuestState();
-  }
-}
-
-
-/* -------------------------------------------------------
-   GUEST STATE
-------------------------------------------------------- */
-
-function updateGuestState() {
-
-  document.getElementById(
-    "guestActions"
-  ).style.display = "block";
-
-  document.getElementById(
-    "userStatus"
-  ).classList.remove("active");
-}
-
-
-/* -------------------------------------------------------
-   MODAL BACKDROP
-------------------------------------------------------- */
-
-document
-  .getElementById("authModal")
-  .addEventListener("click", function(event) {
-
-    if (event.target === this) {
-      closeAuth();
-    }
-
-  });
-
-
-/* -------------------------------------------------------
-   INITIALIZE
-------------------------------------------------------- */
-
-checkCurrentUser();
-
-</script>
+    <div class="section-label">Our Services</div>
+
+    <h2 class="section-title">
+      Unlock Your Financial Potential
+    </h2>
+
+    <p class="section-text">
+      Explore the core financial tools planned for the CoinForest
+      ecosystem.
+    </p>
+
+  </div>
+
+  <div class="services-grid">
+
+    <div class="service">
+      <div class="service-number">01 — WALLET MANAGEMENT</div>
+      <h3>Main & Profit Wallets</h3>
+      <p>
+        Manage your available balance and profit balance through one
+        organized account dashboard.
+      </p>
+    </div>
+
+    <div class="service">
+      <div class="service-number">02 — INVESTMENTS</div>
+      <h3>Structured Investment Plans</h3>
+      <p>
+        Access structured investment schemas with clear periods,
+        returns and account activity.
+      </p>
+    </div>
+
+    <div class="service">
+      <div class="service-number">03 — TRANSFERS</div>
+      <h3>Send Money</h3>
+      <p>
+        A dedicated environment for managing supported account-to-account
+        transfers.
+      </p>
+    </div>
+
+    <div class="service">
+      <div class="service-number">04 — WITHDRAWALS</div>
+      <h3>Withdrawal Management</h3>
+      <p>
+        Submit and monitor withdrawal activity directly from your
+        personal financial dashboard.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <div class="cta-box">
+
+    <div class="section-label">Get Started</div>
+
+    <h2>
+      Empower Your Finances.<br>
+      Embrace Freedom.
+    </h2>
+
+    <p>
+      Create your CoinForest account and experience a modern,
+      organized digital financial platform.
+    </p>
+
+    <a class="btn btn-green" href="login.html">
+      Create Your Account
+    </a>
+
+  </div>
+
+</section>
+
+<section class="testimonials">
+
+  <div class="center">
+
+    <div class="section-label">Testimonials</div>
+
+    <h2 class="section-title">
+      What Our Users Say
+    </h2>
+
+    <p class="section-text">
+      A platform designed around clarity, accessibility and confidence.
+    </p>
+
+  </div>
+
+  <div class="testimonial-grid">
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p>
+        “The dashboard gives me a much clearer view of my wallets and
+        account activity. Everything feels organized.”
+      </p>
+
+      <div class="person">
+        <div class="avatar">JR</div>
+        <div>
+          <strong>James Reynolds</strong>
+          <span>Digital Consultant</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p>
+        “I like how simple the platform is. The wallet structure makes
+        it easy to understand my account.”
+      </p>
+
+      <div class="person">
+        <div class="avatar">ST</div>
+        <div>
+          <strong>Sarah Thompson</strong>
+          <span>Financial Analyst</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p>
+        “CoinForest brings the important parts of the financial
+        experience together in one place.”
+      </p>
+
+      <div class="person">
+        <div class="avatar">MR</div>
+        <div>
+          <strong>Michael Rodriguez</strong>
+          <span>Entrepreneur</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<footer id="contact">
+
+  <div class="footer-grid">
+
+    <div class="footer-brand">
+      <a class="logo" href="#">Coin<span>Forest</span></a>
+
+      <p>
+        A modern digital-asset platform designed to bring wallets,
+        investments and financial tools together.
+      </p>
+    </div>
+
+    <div>
+      <h4>Company</h4>
+      <a href="#home">Home</a>
+      <a href="#about">About Us</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <div>
+      <h4>Platform</h4>
+      <a href="login.html">Login</a>
+      <a href="login.html">Register</a>
+      <a href="#markets">Markets</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+
+    <div>
+      <h4>Resources</h4>
+      <a href="#faq">FAQ</a>
+      <a href="#markets">Market Overview</a>
+      <a href="#contact">Support</a>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 CoinForest. All rights reserved.
+  </div>
+
+</footer>
 
 </body>
-  </html>
+                                        </html>
