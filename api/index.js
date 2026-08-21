@@ -1304,11 +1304,19 @@ export default async function handler(
   }
 
   try {
-    const url =
-      new URL(request.url);
+    const rawUrl = request.url || "/";
 
-    const path =
-      url.pathname;
+const url =
+  rawUrl.startsWith("http://") ||
+  rawUrl.startsWith("https://")
+    ? new URL(rawUrl)
+    : new URL(
+        rawUrl,
+        `https://${request.headers.get("host") || "coinforest.vercel.app"}`
+      );
+
+const path =
+  url.pathname;
 
     if (
       request.method === "GET" &&
