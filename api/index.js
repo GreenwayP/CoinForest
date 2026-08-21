@@ -1283,16 +1283,9 @@ async function logout(request) {
 ===================================================== */
 
 async function health() {
-  const result =
-    await sql`
-      SELECT NOW() AS current_time
-    `;
-
   return response(200, {
-    success:true,
-    database:"connected",
-    current_time:
-      result[0].current_time
+    success: true,
+    message: "CoinForest API is running."
   });
 }
 
