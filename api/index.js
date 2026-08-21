@@ -523,7 +523,6 @@ async function login(body) {
     });
   }
 
-
   await sql`
     UPDATE auth_credentials
     SET
@@ -573,6 +572,7 @@ async function login(body) {
     }
   });
 }
+ 
 
 async function verifyEmail(token) {
   const cleanToken = String(token || "").trim();
