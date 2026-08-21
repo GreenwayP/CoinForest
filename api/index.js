@@ -29,7 +29,7 @@ function hashToken(value) {
   return crypto
     .createHash("sha256")
     .update(String(value))
-    
+    .digest("hex");
 }
 
 function hashPassword(password) {
