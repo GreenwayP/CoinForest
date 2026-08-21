@@ -1,1 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Verify Email | CoinForest</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(46, 204, 113, .18),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          #06111f,
+          #0b2037 55%,
+          #123b63
+        );
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+
+      color: #172033;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+
+      background: #ffffff;
+
+      border-radius: 24px;
+
+      padding: 45px 35px;
+
+      text-align: center;
+
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, .35);
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+      margin-bottom: 35px;
+    }
+
+    .logo span {
+      color: #2ecc71;
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+
+      margin: 0 auto 25px;
+
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 32px;
+      font-weight: bold;
+
+      background: #ecfdf3;
+      color: #159957;
+    }
+
+    .icon.error {
+      background: #fff1f1;
+      color: #b42318;
+    }
+
+    h1 {
+      color: #10233a;
+
+      font-size: 30px;
+
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #718096;
+
+      font-size: 14px;
+
+      line-height: 1.7;
+
+      margin-bottom: 25px;
+    }
+
+    .status {
+      color: #718096;
+
+      font-size: 14px;
+
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      min-width: 190px;
+      height: 50px;
+
+      padding: 0 22px;
+
+      border-radius: 11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2ecc71,
+          #20b963
+        );
+
+      color: #06140c;
+
+      font-size: 15px;
+      font-weight: 800;
+
+      text-decoration: none;
+
+      box-shadow:
+        0 8px 20px rgba(46,204,113,.20);
+
+      transition: .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 11px 25px rgba(46,204,113,.28);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .footer {
+      margin-top: 30px;
+
+      color: #9aa8b8;
+
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 38px 22px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .logo {
+        font-size: 27px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card">
+
+    <div class="logo">
+      Coin<span>Forest</span>
+    </div>
+
+
+    <!-- VERIFYING -->
+
+    <section id="loading">
+
+      <div class="icon">
+        ✓
+      </div>
+
+      <h1>
+        Verifying your email
+      </h1>
+
+      <p class="status">
+        Please wait while we confirm your CoinForest account.
+      </p>
+
+    </section>
+
+
+    <!-- SUCCESS -->
+
+    <section id="success" class="hidden">
+
+      <div class="icon">
+        ✓
+      </div>
+
+      <h1>
+        Email confirmed
+      </h1>
+
+      <p>
+        Your CoinForest account has been successfully verified.
+        You can now sign in to your account.
+      </p>
+
+      <a
+        class="btn"
+        href="login.html"
+      >
+        Continue to Sign In
+      </a>
+
+    </section>
+
+
+    <!-- ERROR -->
+
+    <section id="error" class="hidden">
+
+      <div class="icon error">
+        !
+      </div>
+
+      <h1>
+        Verification failed
+      </h1>
+
+      <p id="errorMessage">
+        This verification link is invalid or has expired.
+      </p>
+
+      <a
+        class="btn"
+        href="register.html"
+      >
+        Create Account
+      </a>
+
+    </section>
+
+
+    <div class="footer">
+      © 2026 CoinForest. All rights reserved.
+    </div>
+
+  </main>
+
+
+  <script>
+
+    const loading =
+      document.getElementById("loading");
+
+    const success =
+      document.getElementById("success");
+
+    const error =
+      document.getElementById("error");
+
+    const errorMessage =
+      document.getElementById("errorMessage");
+
+
+    function showSuccess() {
+
+      loading.classList.add("hidden");
+
+      error.classList.add("hidden");
+
+      success.classList.remove("hidden");
+
+    }
+
+
+    function showError(message) {
+
+      loading.classList.add("hidden");
+
+      success.classList.add("hidden");
+
+      error.classList.remove("hidden");
+
+      if (message) {
+        errorMessage.textContent = message;
+      }
+
+    }
+
+
+    async function verifyEmail() {
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      const token =
+        params.get("token");
+
+
+      if (!token) {
+
+        showError(
+          "No verification token was found in this link."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/auth/verify-email?token=" +
+            encodeURIComponent(token),
+            {
+              method: "GET"
+            }
+          );
+
+
+        let data = {};
+
+        try {
+          data = await response.json();
+        } catch (_) {
+          data = {};
+        }
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "This verification link is invalid or has expired."
+          );
+
+        }
+
+
+        showSuccess();
+
+
+      } catch (err) {
+
+        console.error(
+          "CoinForest email verification error:",
+          err
+        );
+
+
+        showError(
+          err.message ||
+          "Unable to verify your email address."
+        );
+
+      }
+
+    }
+
+
+    verifyEmail();
+
+  </script>
+
+</body>
+  </html>
