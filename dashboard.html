@@ -7,274 +7,1152 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-
+:root{
+  --bg:#f5f7fb;
+  --card:#fff;
+  --dark:#071525;
+  --dark2:#0d2238;
+  --green:#20c879;
+  --green2:#13a866;
+  --text:#142033;
+  --muted:#718096;
+  --border:#e7ebf1;
+  --danger:#ef5350;
+}
 body{
-  font-family:Arial,sans-serif;
-  background:#f4f7fb;
-  color:#172033;
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button{font:inherit}
+a{text-decoration:none;color:inherit}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:245px;
+  background:var(--dark);
+  color:#fff;
+  padding:25px 16px;
+  z-index:100;
+}
+.logo{
+  font-size:25px;
+  font-weight:800;
+  padding:0 15px 30px;
+  letter-spacing:-.5px;
+}
+.logo span{color:var(--green)}
+.menu-title{
+  color:#71859a;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  padding:12px 15px 8px;
+}
+.menu a{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 15px;
+  border-radius:10px;
+  margin:4px 0;
+  color:#aebccc;
+  font-size:14px;
+  transition:.2s;
+}
+.menu a:hover,.menu a.active{
+  background:#102b44;
+  color:#fff;
+}
+.menu a.active{
+  border-left:3px solid var(--green);
+}
+.icon{
+  width:22px;
+  text-align:center;
+  font-size:17px;
+}
+.sidebar-bottom{
+  position:absolute;
+  bottom:22px;
+  left:16px;
+  right:16px;
+}
+.logout{
+  width:100%;
+  border:1px solid #294157;
+  background:transparent;
+  color:#b8c6d4;
+  padding:11px;
+  border-radius:9px;
+  cursor:pointer;
 }
 
-header{
-  background:#0b1728;
-  color:white;
-  padding:18px 6%;
+/* MAIN */
+.main{
+  margin-left:245px;
+  min-height:100vh;
+}
+.topbar{
+  height:72px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 35px;
+}
+.mobile-menu{
+  display:none;
+  border:0;
+  background:none;
+  font-size:25px;
+  cursor:pointer;
+}
+.welcome small{
+  color:var(--muted);
+  font-size:12px;
+}
+.welcome strong{
+  display:block;
+  margin-top:3px;
+  font-size:17px;
+}
+.profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.avatar{
+  width:39px;
+  height:39px;
+  border-radius:50%;
+  background:var(--green);
+  color:#062014;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+.profile-info{
+  line-height:1.2;
+}
+.profile-info strong{
+  font-size:13px;
+}
+.profile-info small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+/* CONTENT */
+.content{
+  padding:30px 35px 50px;
+}
+.page-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+.page-title h1{
+  font-size:25px;
+}
+.page-title p{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+}
+.action-buttons{
+  display:flex;
+  gap:9px;
+}
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:11px 17px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+}
+.btn-green{
+  background:var(--green);
+  color:#052014;
+}
+.btn-dark{
+  background:var(--dark);
+  color:#fff;
+}
+
+/* HERO BALANCE */
+.balance-card{
+  background:linear-gradient(135deg,#071525,#103b5b);
+  color:#fff;
+  border-radius:18px;
+  padding:28px;
+  margin-bottom:22px;
+  position:relative;
+  overflow:hidden;
+}
+.balance-card:after{
+  content:"";
+  position:absolute;
+  width:250px;
+  height:250px;
+  right:-80px;
+  top:-100px;
+  border:35px solid rgba(32,200,121,.09);
+  border-radius:50%;
+}
+.balance-label{
+  color:#9bb0c4;
+  font-size:13px;
+}
+.total-balance{
+  font-size:37px;
+  font-weight:800;
+  margin:7px 0 22px;
+}
+.balance-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.balance-item{
+  border-left:1px solid rgba(255,255,255,.14);
+  padding-left:18px;
+}
+.balance-item:first-child{
+  border-left:0;
+  padding-left:0;
+}
+.balance-item span{
+  color:#9bb0c4;
+  font-size:11px;
+}
+.balance-item strong{
+  display:block;
+  margin-top:6px;
+  font-size:18px;
+}
+.positive{color:#39dd91}
+
+/* CARDS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-bottom:24px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:20px;
+}
+.stat-top{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-
-.logo{
-  font-size:24px;
+.stat-icon{
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:#e9faf2;
+  color:var(--green2);
+  font-size:18px;
+}
+.stat-label{
+  color:var(--muted);
+  font-size:12px;
+}
+.stat-value{
+  font-size:22px;
   font-weight:800;
+  margin-top:14px;
+}
+.stat-change{
+  font-size:11px;
+  margin-top:7px;
+  color:var(--green2);
 }
 
-.logout{
-  border:0;
-  background:#ef4444;
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:700;
-}
-
-.container{
-  width:min(1200px,92%);
-  margin:30px auto;
-}
-
-.welcome{
-  background:linear-gradient(135deg,#0b1728,#123b63);
-  color:white;
-  padding:30px;
-  border-radius:18px;
-  margin-bottom:25px;
-  box-shadow:0 12px 30px rgba(0,0,0,.12);
-}
-
-.welcome h1{
-  margin-bottom:8px;
-}
-
-.welcome p{
-  color:#cbd5e1;
-}
-
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
+  grid-template-columns:1.45fr 1fr;
+  gap:22px;
+  margin-bottom:22px;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:19px;
+}
+.card-head h2{
+  font-size:16px;
+}
+.card-head a{
+  color:var(--green2);
+  font-size:12px;
+  font-weight:700;
 }
 
-.card{
-  background:white;
-  padding:25px;
-  border-radius:16px;
-  box-shadow:0 8px 25px rgba(0,0,0,.06);
-}
-
-.card h3{
-  margin-bottom:12px;
-}
-
-.balance{
-  font-size:30px;
-  font-weight:800;
-  color:#123b63;
-}
-
+/* QUICK ACTIONS */
 .actions{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  grid-template-columns:repeat(3,1fr);
   gap:12px;
-  margin-top:20px;
+}
+.action{
+  border:1px solid var(--border);
+  background:#fbfcfe;
+  border-radius:12px;
+  padding:17px 12px;
+  cursor:pointer;
+  text-align:left;
+}
+.action:hover{
+  border-color:#a8e9c9;
+  background:#f5fffa;
+}
+.action-icon{
+  font-size:20px;
+  margin-bottom:12px;
+}
+.action strong{
+  display:block;
+  font-size:13px;
+}
+.action span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:4px;
 }
 
-.action{
-  border:0;
-  padding:14px;
-  border-radius:10px;
-  background:#123b63;
-  color:white;
+/* WALLET */
+.wallet-list{
+  display:grid;
+  gap:12px;
+}
+.wallet{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:11px;
+}
+.wallet-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.wallet-icon{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#edf9f3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.wallet-name{
   font-weight:700;
+  font-size:13px;
+}
+.wallet-sub{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+.wallet-value{
+  font-weight:800;
+  font-size:14px;
+}
+
+/* INVESTMENT */
+.plans{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.plan{
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:18px;
+  background:#fff;
+}
+.plan.featured{
+  border-color:var(--green);
+  box-shadow:0 7px 22px rgba(32,200,121,.1);
+}
+.plan h3{
+  font-size:15px;
+}
+.plan-rate{
+  color:var(--green2);
+  font-size:23px;
+  font-weight:800;
+  margin:12px 0 4px;
+}
+.plan-period{
+  color:var(--muted);
+  font-size:10px;
+}
+.plan-line{
+  border-top:1px solid var(--border);
+  margin:14px 0;
+}
+.plan small{
+  color:var(--muted);
+  font-size:10px;
+}
+.plan button{
+  width:100%;
+  margin-top:15px;
+  padding:10px;
+  border-radius:8px;
+  border:0;
+  background:var(--dark);
+  color:#fff;
+  font-size:11px;
   cursor:pointer;
 }
 
-.action:hover{
-  opacity:.9;
+/* TRANSACTIONS */
+.transactions{
+  width:100%;
+  border-collapse:collapse;
 }
-
+.transactions th{
+  text-align:left;
+  color:#8a96a7;
+  font-size:10px;
+  text-transform:uppercase;
+  padding:9px 6px;
+  border-bottom:1px solid var(--border);
+}
+.transactions td{
+  padding:13px 6px;
+  border-bottom:1px solid #f0f2f5;
+  font-size:12px;
+}
 .status{
-  margin-top:20px;
-  padding:14px;
-  background:#eef6ff;
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:700;
+}
+.status.completed{
+  background:#dcfce9;
+  color:#15803d;
+}
+.status.pending{
+  background:#fff7d6;
+  color:#a16207;
+}
+.status.failed{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+.amount-plus{color:#159957;font-weight:700}
+.amount-minus{color:#dc3c3c;font-weight:700}
+
+/* MARKET */
+.market-strip{
+  background:#081827;
+  color:white;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:22px;
+}
+.market-title{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:15px;
+}
+.market-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.coin{
+  background:#102638;
   border-radius:10px;
-  color:#164e7a;
+  padding:13px;
+}
+.coin-top{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+}
+.coin-price{
+  font-size:16px;
+  font-weight:800;
+  margin-top:9px;
+}
+.coin-change{
+  color:#36da8e;
+  font-size:10px;
+  margin-top:4px;
 }
 
+/* MODALS */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(3,10,20,.72);
+  z-index:500;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal.active{display:flex}
+.modal-box{
+  width:100%;
+  max-width:430px;
+  background:#fff;
+  border-radius:17px;
+  padding:26px;
+  position:relative;
+}
+.modal-box h2{
+  font-size:20px;
+  margin-bottom:7px;
+}
+.modal-box p{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:20px;
+}
+.close{
+  position:absolute;
+  right:17px;
+  top:12px;
+  border:0;
+  background:none;
+  font-size:25px;
+  cursor:pointer;
+}
+.field{
+  margin-bottom:14px;
+}
+.field label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+.field input,.field select{
+  width:100%;
+  padding:12px;
+  border:1px solid #dce2e9;
+  border-radius:8px;
+  outline:none;
+}
+.modal-submit{
+  width:100%;
+  padding:13px;
+  border:0;
+  background:var(--green);
+  border-radius:9px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* MOBILE */
+@media(max-width:1100px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .plans{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:850px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mobile-menu{display:block}
+  .topbar{padding:0 18px}
+  .content{padding:22px 18px 40px}
+  .grid{grid-template-columns:1fr}
+  .market-grid{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:600px){
-  header{
-    padding:16px 4%;
+  .page-title{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:15px;
   }
-
-  .container{
-    width:94%;
+  .balance-row{grid-template-columns:1fr}
+  .balance-item{
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.14);
+    padding:12px 0 0;
   }
-
-  .welcome{
-    padding:22px;
-  }
+  .stats{grid-template-columns:1fr 1fr}
+  .actions{grid-template-columns:1fr 1fr}
+  .plans{grid-template-columns:1fr}
+  .profile-info{display:none}
+  .transactions th:nth-child(2),
+  .transactions td:nth-child(2){display:none}
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">CoinForest</div>
-  <button class="logout" id="logoutBtn">Logout</button>
+<aside class="sidebar" id="sidebar">
+  <div class="logo">Coin<span>Forest</span></div>
+
+  <div class="menu-title">Main Menu</div>
+
+  <nav class="menu">
+    <a href="#" class="active"><span class="icon">⌂</span> Dashboard</a>
+    <a href="wallet.html"><span class="icon">◉</span> Wallets</a>
+    <a href="#investments"><span class="icon">▣</span> Investments</a>
+    <a href="#transactions"><span class="icon">↕</span> Transactions</a>
+    <a href="#"><span class="icon">⇄</span> Transfers</a>
+  </nav>
+
+  <div class="menu-title">Account</div>
+
+  <nav class="menu">
+    <a href="#"><span class="icon">♙</span> Profile</a>
+    <a href="#"><span class="icon">⚙</span> Settings</a>
+    <a href="#"><span class="icon">?</span> Support</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="logout" onclick="logoutUser()">Log out</button>
+  </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:15px">
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+    <div class="welcome">
+      <small>Welcome back</small>
+      <strong id="welcomeName">CoinForest Member</strong>
+    </div>
+  </div>
+
+  <div class="profile">
+    <div class="avatar" id="avatar">CF</div>
+    <div class="profile-info">
+      <strong id="profileName">CoinForest Member</strong>
+      <small id="profileEmail">Account</small>
+    </div>
+  </div>
 </header>
 
-<main class="container">
+<div class="content">
 
-  <section class="welcome">
-    <h1 id="welcomeTitle">Welcome to CoinForest</h1>
-    <p id="welcomeText">Loading your account...</p>
+  <div class="page-title">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Manage your digital assets and monitor your portfolio.</p>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-green" onclick="openModal('depositModal')">+ Deposit</button>
+      <button class="btn btn-dark" onclick="openModal('sendModal')">Send Money</button>
+    </div>
+  </div>
+
+  <section class="balance-card">
+    <div class="balance-label">Total Portfolio Balance</div>
+    <div class="total-balance" id="totalBalance">$0.00</div>
+
+    <div class="balance-row">
+      <div class="balance-item">
+        <span>Main Wallet</span>
+        <strong id="mainWallet">$0.00</strong>
+      </div>
+
+      <div class="balance-item">
+        <span>Profit Wallet</span>
+        <strong id="profitWallet">$0.00</strong>
+      </div>
+
+      <div class="balance-item">
+        <span>This Week</span>
+        <strong class="positive" id="weeklyProfit">+$0.00</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+
+    <div class="card">
+      <div class="stat-top">
+        <span class="stat-label">Total Deposits</span>
+        <div class="stat-icon">↓</div>
+      </div>
+      <div class="stat-value" id="totalDeposits">$0.00</div>
+      <div class="stat-change">Account deposits</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <span class="stat-label">Invested</span>
+        <div class="stat-icon">▣</div>
+      </div>
+      <div class="stat-value" id="totalInvested">$0.00</div>
+      <div class="stat-change">Active investments</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <span class="stat-label">Withdrawals</span>
+        <div class="stat-icon">↑</div>
+      </div>
+      <div class="stat-value" id="withdrawals">$0.00</div>
+      <div class="stat-change">Total withdrawn</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <span class="stat-label">Account Status</span>
+        <div class="stat-icon">✓</div>
+      </div>
+      <div class="stat-value" style="font-size:18px">Active</div>
+      <div class="stat-change">Account in good standing</div>
+    </div>
+
+  </section>
+
+  <section class="market-strip">
+    <div class="market-title">Market Overview</div>
+
+    <div class="market-grid">
+
+      <div class="coin">
+        <div class="coin-top"><strong>BTC</strong><span>Bitcoin</span></div>
+        <div class="coin-price">$104,820.00</div>
+        <div class="coin-change">+2.41%</div>
+      </div>
+
+      <div class="coin">
+        <div class="coin-top"><strong>ETH</strong><span>Ethereum</span></div>
+        <div class="coin-price">$3,842.12</div>
+        <div class="coin-change">+1.83%</div>
+      </div>
+
+      <div class="coin">
+        <div class="coin-top"><strong>USDT</strong><span>Tether</span></div>
+        <div class="coin-price">$1.00</div>
+        <div class="coin-change">+0.02%</div>
+      </div>
+
+      <div class="coin">
+        <div class="coin-top"><strong>BNB</strong><span>BNB</span></div>
+        <div class="coin-price">$716.35</div>
+        <div class="coin-change">+1.27%</div>
+      </div>
+
+    </div>
   </section>
 
   <section class="grid">
 
     <div class="card">
-      <h3>Main Wallet</h3>
-      <div class="balance">$0.00</div>
-      <p>Available balance</p>
+      <div class="card-head">
+        <h2>Quick Actions</h2>
+      </div>
+
+      <div class="actions">
+
+        <button class="action" onclick="openModal('depositModal')">
+          <div class="action-icon">💳</div>
+          <strong>Deposit</strong>
+          <span>Add funds to wallet</span>
+        </button>
+
+        <button class="action" onclick="openModal('investmentModal')">
+          <div class="action-icon">📈</div>
+          <strong>Invest</strong>
+          <span>Start an investment</span>
+        </button>
+
+        <button class="action" onclick="openModal('withdrawModal')">
+          <div class="action-icon">💸</div>
+          <strong>Withdraw</strong>
+          <span>Withdraw your funds</span>
+        </button>
+
+        <button class="action" onclick="openModal('sendModal')">
+          <div class="action-icon">↗</div>
+          <strong>Send Money</strong>
+          <span>Transfer to another user</span>
+        </button>
+
+        <button class="action" onclick="window.location.href='wallet.html'">
+          <div class="action-icon">👛</div>
+          <strong>Wallet Exchange</strong>
+          <span>Manage your wallets</span>
+        </button>
+
+        <button class="action" onclick="alert('Support will be available soon.')">
+          <div class="action-icon">💬</div>
+          <strong>Support</strong>
+          <span>Contact CoinForest</span>
+        </button>
+
+      </div>
     </div>
 
     <div class="card">
-      <h3>Profit Wallet</h3>
-      <div class="balance">$0.00</div>
-      <p>Investment profits</p>
-    </div>
+      <div class="card-head">
+        <h2>My Wallets</h2>
+        <a href="wallet.html">View all</a>
+      </div>
 
-    <div class="card">
-      <h3>Account Status</h3>
-      <div class="status" id="accountStatus">
-        Checking account...
+      <div class="wallet-list">
+
+        <div class="wallet">
+          <div class="wallet-left">
+            <div class="wallet-icon">💼</div>
+            <div>
+              <div class="wallet-name">Main Wallet</div>
+              <div class="wallet-sub">Available balance</div>
+            </div>
+          </div>
+          <div class="wallet-value" id="walletMain">$0.00</div>
+        </div>
+
+        <div class="wallet">
+          <div class="wallet-left">
+            <div class="wallet-icon">📊</div>
+            <div>
+              <div class="wallet-name">Profit Wallet</div>
+              <div class="wallet-sub">Investment earnings</div>
+            </div>
+          </div>
+          <div class="wallet-value" id="walletProfit">$0.00</div>
+        </div>
+
       </div>
     </div>
 
   </section>
 
-  <section class="card" style="margin-top:20px">
-
-    <h2>Quick Actions</h2>
-
-    <div class="actions">
-      <button class="action">Deposit</button>
-      <button class="action">Send</button>
-      <button class="action">Withdraw</button>
-      <button class="action">Swap</button>
-      <button class="action">Invest</button>
+  <section class="card" id="investments" style="margin-bottom:22px">
+    <div class="card-head">
+      <h2>Investment Plans</h2>
+      <a href="#">View plans</a>
     </div>
 
+    <div class="plans">
+
+      <div class="plan">
+        <h3>Starter</h3>
+        <div class="plan-rate">5%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-line"></div>
+        <small>Designed for new investors</small>
+        <button onclick="openModal('investmentModal')">Invest Now</button>
+      </div>
+
+      <div class="plan">
+        <h3>Growth</h3>
+        <div class="plan-rate">10%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-line"></div>
+        <small>Balanced growth strategy</small>
+        <button onclick="openModal('investmentModal')">Invest Now</button>
+      </div>
+
+      <div class="plan featured">
+        <h3>Silver</h3>
+        <div class="plan-rate">15%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-line"></div>
+        <small>For experienced investors</small>
+        <button onclick="openModal('investmentModal')">Invest Now</button>
+      </div>
+
+      <div class="plan">
+        <h3>Gold</h3>
+        <div class="plan-rate">25%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-line"></div>
+        <small>Premium investment option</small>
+        <button onclick="openModal('investmentModal')">Invest Now</button>
+      </div>
+
+    </div>
   </section>
 
+  <section class="card" id="transactions">
+    <div class="card-head">
+      <h2>Recent Transactions</h2>
+      <a href="#">View all</a>
+    </div>
+
+    <div style="overflow-x:auto">
+
+      <table class="transactions">
+        <thead>
+          <tr>
+            <th>Transaction</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+
+        <tbody id="transactionBody">
+          <tr>
+            <td>No transactions yet</td>
+            <td>—</td>
+            <td><span class="status pending">Pending</span></td>
+            <td>$0.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </section>
+
+</div>
 </main>
 
+
+<!-- DEPOSIT -->
+<div class="modal" id="depositModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('depositModal')">×</button>
+    <h2>Deposit Funds</h2>
+    <p>Add funds to your CoinForest Main Wallet.</p>
+
+    <div class="field">
+      <label>Amount</label>
+      <input type="number" id="depositAmount" min="1" placeholder="Enter amount">
+    </div>
+
+    <button class="modal-submit" onclick="submitDemoAction('depositAmount','Deposit')">
+      Continue
+    </button>
+  </div>
+</div>
+
+
+<!-- WITHDRAW -->
+<div class="modal" id="withdrawModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('withdrawModal')">×</button>
+    <h2>Withdraw Funds</h2>
+    <p>Request a withdrawal from your Main Wallet.</p>
+
+    <div class="field">
+      <label>Amount</label>
+      <input type="number" id="withdrawAmount" min="1" placeholder="Enter amount">
+    </div>
+
+    <button class="modal-submit" onclick="submitDemoAction('withdrawAmount','Withdrawal')">
+      Request Withdrawal
+    </button>
+  </div>
+</div>
+
+
+<!-- SEND -->
+<div class="modal" id="sendModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('sendModal')">×</button>
+    <h2>Send Money</h2>
+    <p>Transfer funds to another CoinForest account.</p>
+
+    <div class="field">
+      <label>Recipient Username</label>
+      <input type="text" id="recipient" placeholder="@username">
+    </div>
+
+    <div class="field">
+      <label>Amount</label>
+      <input type="number" id="sendAmount" min="1" placeholder="Enter amount">
+    </div>
+
+    <button class="modal-submit" onclick="submitDemoAction('sendAmount','Transfer')">
+      Send Money
+    </button>
+  </div>
+</div>
+
+
+<!-- INVESTMENT -->
+<div class="modal" id="investmentModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('investmentModal')">×</button>
+    <h2>Start Investment</h2>
+    <p>Select an investment plan.</p>
+
+    <div class="field">
+      <label>Plan</label>
+      <select id="investmentPlan">
+        <option>Starter</option>
+        <option>Growth</option>
+        <option>Silver</option>
+        <option>Gold</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Amount</label>
+      <input type="number" id="investmentAmount" min="1" placeholder="Enter amount">
+    </div>
+
+    <button class="modal-submit" onclick="submitDemoAction('investmentAmount','Investment')">
+      Start Investment
+    </button>
+  </div>
+</div>
+
+
 <script>
-const API_BASE = "";
+const token = localStorage.getItem("coinforest_token");
+
+if(!token){
+  window.location.href="/";
+}
+
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("open");
+}
+
+function openModal(id){
+  document.getElementById(id).classList.add("active");
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove("active");
+}
 
 async function loadUser(){
 
-  const token = localStorage.getItem("coinforest_token");
-
-  if(!token){
-    window.location.href = "index.html";
-    return;
-  }
-
   try{
 
-    const response = await fetch(
-      API_BASE + "/api/auth/me",
-      {
-        method:"GET",
-        headers:{
-          "Authorization":"Bearer " + token
-        }
+    const response=await fetch("/api/auth/me",{
+      headers:{
+        Authorization:"Bearer "+token
       }
-    );
+    });
 
-    const data = await response.json();
-
-    if(!response.ok || !data.success){
-
+    if(!response.ok){
       localStorage.removeItem("coinforest_token");
-      window.location.href = "index.html";
+      window.location.href="/";
       return;
     }
 
-    const user = data.user;
+    const data=await response.json();
+
+    if(!data.success || !data.user){
+      localStorage.removeItem("coinforest_token");
+      window.location.href="/";
+      return;
+    }
+
+    const user=data.user;
 
     const name =
       user.first_name ||
+      user.full_name ||
       user.username ||
-      user.email;
+      "CoinForest Member";
 
-    document.getElementById("welcomeTitle").textContent =
-      "Welcome, " + name;
+    document.getElementById("welcomeName").textContent =
+      "Hello, "+name;
 
-    document.getElementById("welcomeText").textContent =
-      user.email;
+    document.getElementById("profileName").textContent =
+      name;
 
-    document.getElementById("accountStatus").textContent =
-      "Account: " +
-      user.status +
-      " • KYC: " +
-      user.kyc_status;
+    document.getElementById("profileEmail").textContent =
+      user.email || "Account";
+
+    const initials =
+      ((user.first_name||"C")[0]+
+       (user.last_name||"F")[0]).toUpperCase();
+
+    document.getElementById("avatar").textContent=initials;
 
   }catch(error){
 
     console.error(error);
 
-    document.getElementById("welcomeText").textContent =
-      "Unable to load your account.";
   }
 }
 
-document
-  .getElementById("logoutBtn")
-  .addEventListener("click", async()=>{
+function submitDemoAction(inputId,type){
 
-    const token =
-      localStorage.getItem("coinforest_token");
+  const input=document.getElementById(inputId);
+  const amount=Number(input.value);
 
-    try{
+  if(!amount || amount<=0){
+    alert("Please enter a valid amount.");
+    return;
+  }
 
-      if(token){
+  alert(
+    type+
+    " request received. The transaction workflow will be connected to your CoinForest account system next."
+  );
 
-        await fetch(
-          API_BASE + "/api/auth/logout",
-          {
-            method:"POST",
-            headers:{
-              "Authorization":"Bearer " + token
-            }
-          }
-        );
-      }
+  input.value="";
 
-    }catch(error){
-      console.error(error);
-    }
-
-    localStorage.removeItem("coinforest_token");
-
-    window.location.href = "index.html";
+  document.querySelectorAll(".modal").forEach(m=>{
+    m.classList.remove("active");
   });
+}
+
+async function logoutUser(){
+
+  try{
+
+    await fetch("/api/auth/logout",{
+      method:"POST",
+      headers:{
+        Authorization:"Bearer "+token
+      }
+    });
+
+  }catch(error){
+    console.error(error);
+  }
+
+  localStorage.removeItem("coinforest_token");
+  window.location.href="/";
+}
+
+document.querySelectorAll(".modal").forEach(modal=>{
+
+  modal.addEventListener("click",e=>{
+    if(e.target===modal){
+      modal.classList.remove("active");
+    }
+  });
+
+});
 
 loadUser();
 </script>
 
 </body>
-</html>
+          </html>
