@@ -3146,15 +3146,22 @@ testimonialGrid.innerHTML="";
 
 for(let i=0;i<3;i++){
 
-const index=
-(testimonialIndex+i)%
-testimonials.length;
+const index=(testimonialIndex+i)%testimonials.length;
+const item=testimonials[index];
 
-const item=
-testimonials[index];
+const skinTones=[
+"#8d5a35","#6f432c","#d09a70","#9b643b",
+"#b9784f","#e0aa7d","#70432d","#c68b62"
+];
 
-const card=
-document.createElement("div");
+const hairColors=[
+"#17110f","#241711","#4a2b20","#11100f"
+];
+
+const tone=skinTones[index%skinTones.length];
+const hair=hairColors[index%hairColors.length];
+
+const card=document.createElement("div");
 
 card.className="testimonial";
 
@@ -3162,31 +3169,59 @@ card.innerHTML=`
 
 <div class="stars">★★★★★</div>
 
-<p>
-“${item.text}”
-</p>
+<p>“${item.text}”</p>
 
 <div class="person">
 
 <div class="avatar">
 
-<img
-src="${item.image}"
-alt="${item.name}"
-onerror="this.style.display='none';this.parentElement.textContent='${item.avatar}'"
->
+<svg viewBox="0 0 100 100"
+width="48"
+height="48"
+aria-label="${item.name}">
+
+<defs>
+<linearGradient id="goldFace${index}" x1="0" x2="1">
+<stop offset="0" stop-color="${tone}"/>
+<stop offset="1" stop-color="#f0bd91"/>
+</linearGradient>
+</defs>
+
+<rect width="100" height="100" fill="#13263b"/>
+
+<circle
+cx="50"
+cy="43"
+r="25"
+fill="url(#goldFace${index})"/>
+
+<path
+d="M25 43 Q28 14 50 14 Q72 14 75 43
+Q68 27 50 27 Q32 27 25 43"
+fill="${hair}"/>
+
+<circle cx="41" cy="43" r="2.5" fill="#07111f"/>
+<circle cx="59" cy="43" r="2.5" fill="#07111f"/>
+
+<path
+d="M42 55 Q50 60 58 55"
+fill="none"
+stroke="#542e20"
+stroke-width="2"/>
+
+<path
+d="M22 100 Q24 69 50 68 Q76 69 78 100"
+fill="#d99b20"/>
+
+</svg>
 
 </div>
 
 <div>
 
-<strong>
-${item.name}
-</strong>
+<strong>${item.name}</strong>
 
-<span>
-${item.role}
-</span>
+<span>${item.role}</span>
 
 </div>
 
@@ -3200,18 +3235,15 @@ testimonialGrid.appendChild(card);
 
 const start=testimonialIndex+1;
 
-const end=
-Math.min(
+const end=Math.min(
 testimonialIndex+3,
 testimonials.length
 );
 
 document.getElementById("testimonialCounter")
-.textContent=
-`${start}–${end} of 28`;
+.textContent=`${start}–${end} of 28`;
 
 }
-
 
 /* FIRST DISPLAY */
 
