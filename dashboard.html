@@ -82,7 +82,7 @@ a{text-decoration:none;color:inherit}
   margin:4px 0;
   color:#aebccc;
   font-size:13px;
-  font-weight:600;
+  font-weight:700;
   transition:.2s;
 }
 
@@ -137,7 +137,7 @@ a{text-decoration:none;color:inherit}
   padding:0 32px;
   position:sticky;
   top:0;
-  z-index:500;
+  z-index:2000;
 }
 
 .top-left{
@@ -165,6 +165,8 @@ a{text-decoration:none;color:inherit}
   font-size:20px;
   color:var(--dark);
   box-shadow:0 4px 12px rgba(0,0,0,.04);
+  position:relative;
+  z-index:2100;
 }
 
 .welcome small{
@@ -544,14 +546,13 @@ a{text-decoration:none;color:inherit}
 .action strong{
   display:block;
   font-size:12px;
-  font-weight:700;
+  font-weight:800;
 }
 
 .action span{
   display:block;
   color:var(--muted);
   font-size:9px;
-  font-weight:400;
   margin-top:4px;
 }
 
@@ -697,14 +698,6 @@ a{text-decoration:none;color:inherit}
   color:#111;
 }
 
-.sol-icon{
-  background:linear-gradient(135deg,#9945ff,#14f195);
-}
-
-.xrp-icon{
-  background:linear-gradient(135deg,#111,#555);
-}
-
 .coin-price{
   font-size:15px;
   font-weight:900;
@@ -775,10 +768,6 @@ a{text-decoration:none;color:inherit}
   font-size:25px;
   font-weight:900;
   margin:11px 0 2px;
-}
-
-.plan.featured .plan-rate{
-  color:var(--gold2);
 }
 
 .plan-period{
@@ -1061,8 +1050,10 @@ a{text-decoration:none;color:inherit}
 }
 
 @media(max-width:950px){
+
   .sidebar{
     transform:translateX(-100%);
+    z-index:1000;
   }
 
   .sidebar.open{
@@ -1086,9 +1077,25 @@ a{text-decoration:none;color:inherit}
   .market-grid{
     grid-template-columns:repeat(3,1fr);
   }
+
+  /*
+    The topbar remains above the sidebar.
+    The back button therefore stays visible
+    in its original position whenever the
+    mobile sidebar is opened.
+  */
+
+  .topbar{
+    z-index:2000;
+  }
+
+  .back-button{
+    z-index:2100;
+  }
 }
 
 @media(max-width:700px){
+
   .topbar{
     padding:0 14px;
   }
@@ -1137,6 +1144,7 @@ a{text-decoration:none;color:inherit}
 }
 
 @media(max-width:480px){
+
   .topbar{
     height:66px;
   }
@@ -1203,22 +1211,23 @@ a{text-decoration:none;color:inherit}
 
   <nav class="menu">
 
-    <a href="#" class="active">
+    <!-- FIXED: Dashboard now points to the actual dashboard page -->
+    <a href="dashboard.html" class="active" onclick="closeSidebar()">
       <span class="icon">⌂</span>
       <span data-i18n="dashboard">Dashboard</span>
     </a>
 
-    <a href="wallet.html">
+    <a href="wallet.html" onclick="closeSidebar()">
       <span class="icon">◉</span>
       <span data-i18n="wallets">Wallets</span>
     </a>
 
-    <a href="investment.html">
+    <a href="investment.html" onclick="closeSidebar()">
       <span class="icon">▣</span>
       <span data-i18n="investments">Investments</span>
     </a>
 
-    <a href="#transactions">
+    <a href="#transactions" onclick="closeSidebar()">
       <span class="icon">↕</span>
       <span data-i18n="transactions">Transactions</span>
     </a>
@@ -1269,6 +1278,7 @@ a{text-decoration:none;color:inherit}
 
     <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
+    <!-- Back button remains in its original position -->
     <button
       class="back-button"
       onclick="goBack()"
@@ -1300,8 +1310,6 @@ a{text-decoration:none;color:inherit}
 
 <div class="content">
 
-<!-- ================= PAGE TITLE ================= -->
-
 <div class="page-title">
 
   <div>
@@ -1330,8 +1338,6 @@ a{text-decoration:none;color:inherit}
   </div>
 
 </div>
-
-<!-- ================= HERO BOARD ================= -->
 
 <section class="hero-board">
 
@@ -1381,8 +1387,6 @@ a{text-decoration:none;color:inherit}
   </div>
 
 </section>
-
-<!-- ================= STATS ================= -->
 
 <section class="stats-board">
 
@@ -1458,8 +1462,6 @@ a{text-decoration:none;color:inherit}
 
 </section>
 
-<!-- ================= MARKET ================= -->
-
 <section class="market-board">
 
   <div class="market-head">
@@ -1520,8 +1522,6 @@ a{text-decoration:none;color:inherit}
 
 </section>
 
-<!-- ================= ACTION + WALLET BOARD ================= -->
-
 <section class="board-grid">
 
   <div class="card">
@@ -1538,6 +1538,7 @@ a{text-decoration:none;color:inherit}
         <span data-i18n="addFunds">Add funds to wallet</span>
       </button>
 
+      <!-- FIXED: Investment now opens the actual investment page -->
       <button class="action" onclick="window.location.href='investment.html'">
         <div class="action-icon">📈</div>
         <strong data-i18n="invest">Invest</strong>
@@ -1642,8 +1643,6 @@ a{text-decoration:none;color:inherit}
 
 </section>
 
-<!-- ================= INVESTMENT PLANS ================= -->
-
 <section class="card investment-board" id="investments">
 
   <div class="card-head">
@@ -1663,14 +1662,9 @@ a{text-decoration:none;color:inherit}
   <div class="plans">
 
     <div class="plan">
-
       <h3>Starter</h3>
-
       <div class="plan-rate">15%</div>
-
-      <div class="plan-period" data-i18n="return">
-        Return
-      </div>
+      <div class="plan-period" data-i18n="return">Return</div>
 
       <div class="plan-range">
         <span data-i18n="investmentRange">Investment range</span>
@@ -1683,21 +1677,15 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="selectPlan('Starter',15,100,1500)">
+      <button onclick="goToInvestment('Starter')">
         Invest Now
       </button>
-
     </div>
 
     <div class="plan">
-
       <h3>Growth</h3>
-
       <div class="plan-rate">25%</div>
-
-      <div class="plan-period" data-i18n="return">
-        Return
-      </div>
+      <div class="plan-period" data-i18n="return">Return</div>
 
       <div class="plan-range">
         <span data-i18n="investmentRange">Investment range</span>
@@ -1710,10 +1698,9 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="selectPlan('Growth',25,750,5500)">
+      <button onclick="goToInvestment('Growth')">
         Invest Now
       </button>
-
     </div>
 
     <div class="plan featured">
@@ -1721,12 +1708,8 @@ a{text-decoration:none;color:inherit}
       <span class="plan-badge">POPULAR</span>
 
       <h3>Silver</h3>
-
       <div class="plan-rate">35%</div>
-
-      <div class="plan-period" data-i18n="return">
-        Return
-      </div>
+      <div class="plan-period" data-i18n="return">Return</div>
 
       <div class="plan-range">
         <span data-i18n="investmentRange">Investment range</span>
@@ -1739,21 +1722,15 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="selectPlan('Silver',35,5500,25000)">
+      <button onclick="goToInvestment('Silver')">
         Invest Now
       </button>
-
     </div>
 
     <div class="plan">
-
       <h3>Gold</h3>
-
       <div class="plan-rate">45%</div>
-
-      <div class="plan-period" data-i18n="return">
-        Return
-      </div>
+      <div class="plan-period" data-i18n="return">Return</div>
 
       <div class="plan-range">
         <span data-i18n="investmentRange">Investment range</span>
@@ -1766,21 +1743,15 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="selectPlan('Gold',45,25000,75000)">
+      <button onclick="goToInvestment('Gold')">
         Invest Now
       </button>
-
     </div>
 
     <div class="plan">
-
       <h3>Platinum</h3>
-
       <div class="plan-rate">50%</div>
-
-      <div class="plan-period" data-i18n="return">
-        Return
-      </div>
+      <div class="plan-period" data-i18n="return">Return</div>
 
       <div class="plan-range">
         <span data-i18n="investmentRange">Investment range</span>
@@ -1793,17 +1764,14 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="selectPlan('Platinum',50,75000,null)">
+      <button onclick="goToInvestment('Platinum')">
         Invest Now
       </button>
-
     </div>
 
   </div>
 
 </section>
-
-<!-- ================= TRANSACTIONS + BONUS ================= -->
 
 <section class="transactions-board" id="transactions">
 
@@ -1880,8 +1848,6 @@ a{text-decoration:none;color:inherit}
 </div>
 </main>
 
-<!-- ================= CHAT BUTTON ================= -->
-
 <button
   class="chat-float"
   onclick="openChat()"
@@ -1906,6 +1872,7 @@ a{text-decoration:none;color:inherit}
     </p>
 
     <div class="field">
+
       <label data-i18n="paymentMethod">Payment Method</label>
 
       <div class="method-grid">
@@ -1930,9 +1897,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="amount">
-        Amount
-      </label>
+      <label data-i18n="amount">Amount</label>
 
       <input
         type="number"
@@ -1976,15 +1941,8 @@ a{text-decoration:none;color:inherit}
       </label>
 
       <select id="withdrawFrom">
-
-        <option value="main">
-          Main Wallet
-        </option>
-
-        <option value="profit">
-          Profit Wallet
-        </option>
-
+        <option value="main">Main Wallet</option>
+        <option value="profit">Profit Wallet</option>
       </select>
 
     </div>
@@ -1996,11 +1954,7 @@ a{text-decoration:none;color:inherit}
       </label>
 
       <select id="withdrawTo">
-
-        <option value="bank">
-          Bank Account
-        </option>
-
+        <option value="bank">Bank Account</option>
       </select>
 
     </div>
@@ -2066,11 +2020,7 @@ a{text-decoration:none;color:inherit}
       </label>
 
       <select id="sendSource">
-
-        <option value="main">
-          Main Wallet
-        </option>
-
+        <option value="main">Main Wallet</option>
       </select>
 
     </div>
@@ -2094,81 +2044,6 @@ a{text-decoration:none;color:inherit}
       onclick="submitDemoAction('sendAmount','Transfer')"
       data-i18n="sendMoney">
       Send Money
-    </button>
-
-  </div>
-
-</div>
-
-<!-- ================= INVESTMENT MODAL ================= -->
-
-<div class="modal" id="investmentModal">
-
-  <div class="modal-box">
-
-    <button class="close" onclick="closeModal('investmentModal')">×</button>
-
-    <h2 data-i18n="startInvestment">
-      Start Investment
-    </h2>
-
-    <p id="investmentDescription">
-      Investment payment can only be made from your Main Wallet. Profit Wallet funds cannot be used for investment.
-    </p>
-
-    <div class="field">
-
-      <label data-i18n="plan">
-        Plan
-      </label>
-
-      <select id="investmentPlan">
-
-        <option value="Starter">Starter — 15%</option>
-        <option value="Growth">Growth — 25%</option>
-        <option value="Silver">Silver — 35%</option>
-        <option value="Gold">Gold — 45%</option>
-        <option value="Platinum">Platinum — 50%</option>
-
-      </select>
-
-    </div>
-
-    <div class="field">
-
-      <label data-i18n="paymentWallet">
-        Payment Wallet
-      </label>
-
-      <select id="investmentWallet">
-
-        <option value="main">
-          Main Wallet
-        </option>
-
-      </select>
-
-    </div>
-
-    <div class="field">
-
-      <label data-i18n="amount">
-        Amount
-      </label>
-
-      <input
-        type="number"
-        id="investmentAmount"
-        min="1"
-        placeholder="Enter investment amount">
-
-    </div>
-
-    <button
-      class="modal-submit"
-      onclick="submitInvestment()"
-      data-i18n="startInvestment">
-      Start Investment
     </button>
 
   </div>
@@ -2245,10 +2120,6 @@ function goBack(){
 
 }
 
-window.addEventListener("popstate",function(){
-  /* Browser / Android back button naturally remains enabled. */
-});
-
 /* =========================================================
    SIDEBAR
    ========================================================= */
@@ -2259,6 +2130,15 @@ function toggleSidebar(){
     .getElementById("sidebar")
     .classList
     .toggle("open");
+
+}
+
+function closeSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList
+    .remove("open");
 
 }
 
@@ -2385,89 +2265,21 @@ async function loadUser(){
 }
 
 /* =========================================================
-   INVESTMENT SELECTION
+   INVESTMENT PAGE NAVIGATION
    ========================================================= */
 
-function selectPlan(
-  name,
-  rate,
-  minimum,
-  maximum
-){
+function goToInvestment(plan){
 
-  document.getElementById("investmentPlan").value=name;
+  /*
+    The investment page is now the dedicated
+    destination for investment actions.
+    The selected plan is passed in the URL
+    so investment.html can use it later.
+  */
 
-  const input=
-    document.getElementById("investmentAmount");
-
-  input.min=minimum;
-
-  if(maximum){
-    input.max=maximum;
-    input.placeholder=
-      "$"+minimum.toLocaleString()+
-      " - $"+maximum.toLocaleString();
-  }else{
-    input.removeAttribute("max");
-    input.placeholder=
-      "$"+minimum.toLocaleString()+"+";
-  }
-
-  document.getElementById("investmentDescription").textContent=
-    name+
-    " plan — "+rate+
-    "% return. Investment payment must come from the Main Wallet only. Profit Wallet funds cannot be used for investment.";
-
-  openModal("investmentModal");
-
-}
-
-/* =========================================================
-   INVESTMENT VALIDATION
-   ========================================================= */
-
-function submitInvestment(){
-
-  const plan=
-    document.getElementById("investmentPlan").value;
-
-  const amount=
-    Number(
-      document.getElementById("investmentAmount").value
-    );
-
-  if(!amount || amount<=0){
-
-    alert("Please enter a valid investment amount.");
-
-    return;
-  }
-
-  const mainBalance=
-    Number(
-      document
-        .getElementById("mainWallet")
-        .textContent
-        .replace(/[$,]/g,"")
-    ) || 0;
-
-  if(amount>mainBalance){
-
-    alert(
-      "Investment cannot exceed your available Main Wallet balance."
-    );
-
-    return;
-  }
-
-  alert(
-    plan+
-    " investment request received. The server-side investment workflow will validate the balance before creating the investment."
-  );
-
-  document.getElementById("investmentAmount").value="";
-
-  closeModal("investmentModal");
+  window.location.href=
+    "investment.html?plan="+
+    encodeURIComponent(plan);
 
 }
 
@@ -2524,7 +2336,7 @@ function submitDemoAction(
 }
 
 /* =========================================================
-   SUPPORT / CUSTOMER ADMIN CHAT
+   SUPPORT
    ========================================================= */
 
 function openChat(){
@@ -2773,7 +2585,7 @@ const translations={
     quickActions:"Quick Actions",
     addFunds:"Add funds to wallet",
     invest:"Invest",
-    startInvestment:"Start Investment",
+    startInvestment:"Start an investment",
     withdraw:"Withdraw",
     withdrawFunds:"Withdraw your funds",
     transferUser:"Transfer to another user",
@@ -3035,4 +2847,4 @@ loadUser();
 </script>
 
 </body>
-  </html>
+      </html>
