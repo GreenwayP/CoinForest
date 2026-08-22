@@ -1,28 +1,28 @@
 import coinforestHandler from "../../api/index.js";
 
-export default async function handler(event) {
-  const requestHeaders = {};
+export const config = {
+  path: "/api/*"
+};
 
-  for (const [key, value] of Object.entries(event.headers || {})) {
-    if (value !== undefined) {
-      requestHeaders[key] = Array.isArray(value)
-        ? value.join(", ")
-        : String(value);
-    }
-  }
+export default async function handler(request) {
+  const url = new URL(request.url);
 
-  let body = event.body || undefined;
+  const headers = {};
 
-  if (event.isBase64Encoded && body) {
-    body = Buffer.from(body, "base64").toString("utf8");
+  request.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
+
+  let body;
+
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    body = await request.text();
   }
 
   const req = {
-    method: event.httpMethod || "GET",
-    url:
-      event.rawUrl ||
-      `https://${requestHeaders.host || "coinforest.netlify.app"}${event.path || "/"}`,
-    headers: requestHeaders,
+    method: request.method,
+    url: url.toString(),
+    headers,
     body
   };
 
