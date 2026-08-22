@@ -186,13 +186,11 @@
     ===================================================== */
 
     .form-area {
-      padding: 35px 50px 50px;
+      padding: 50px;
 
       display: flex;
 
-      align-items: flex-start;
-
-      justify-content: center;
+      align-items: center;
     }
 
     .form-container {
@@ -200,7 +198,9 @@
 
       max-width: 420px;
 
-      margin: 20px auto 0;
+      margin: auto;
+
+      transform: translateY(-22px);
     }
 
     .form-header {
@@ -472,13 +472,11 @@
       }
 
       .form-area {
-        padding: 25px 25px 35px;
-
-        align-items: flex-start;
+        padding: 35px 25px;
       }
 
       .form-container {
-        margin-top: 5px;
+        transform: translateY(-12px);
       }
     }
 
@@ -489,7 +487,11 @@
       }
 
       .form-area {
-        padding: 25px 20px 30px;
+        padding: 30px 20px;
+      }
+
+      .form-container {
+        transform: translateY(-8px);
       }
 
       .form-header h2 {
@@ -600,8 +602,6 @@
               type="email"
               placeholder="you@example.com"
               autocomplete="off"
-              autocapitalize="none"
-              spellcheck="false"
               required
             >
 
@@ -713,7 +713,7 @@
 
 
     /* =====================================================
-       MESSAGE
+       MESSAGE HELPER
     ===================================================== */
 
     function showMessage(text, type) {
@@ -726,25 +726,11 @@
     }
 
 
-    function clearMessage() {
-
-      message.textContent = "";
-
-      message.className =
-        "message";
-
-    }
-
-
     /* =====================================================
-       RESET LOGIN FORM
+       RESET LOGIN BUTTON
     ===================================================== */
 
-    function resetLoginForm() {
-
-      emailInput.value = "";
-
-      passwordInput.value = "";
+    function resetLoginButton() {
 
       button.disabled = false;
 
@@ -753,26 +739,29 @@
     }
 
 
-    /*
-      Always start with a completely clean login form.
-      This prevents old credentials from appearing when
-      the page is reopened after logout or navigation.
-    */
+    /* =====================================================
+       CLEAR LOGIN FIELDS
+    ===================================================== */
 
-    window.addEventListener(
-      "pageshow",
-      function () {
+    function clearLoginFields() {
 
-        resetLoginForm();
+      emailInput.value = "";
 
-        clearMessage();
+      passwordInput.value = "";
 
-      }
-    );
+      /*
+         Also clear any browser/autofill state
+         when possible.
+      */
+
+      form.reset();
+
+    }
 
 
     /* =====================================================
        FORGOT PASSWORD
+       Temporary notification only.
     ===================================================== */
 
     forgotPassword.addEventListener(
@@ -781,10 +770,8 @@
 
         event.preventDefault();
 
-        clearMessage();
-
         showMessage(
-          "Password reset request sent. Please contact CoinForest support for assistance.",
+          "Request sent. Password recovery will be available once the CoinForest email service is configured.",
           "success"
         );
 
@@ -808,7 +795,6 @@
             .trim()
             .toLowerCase();
 
-
         const password =
           passwordInput.value;
 
@@ -820,21 +806,20 @@
             "error"
           );
 
+          resetLoginButton();
+
           return;
 
         }
 
-
-        /*
-          Prevent duplicate submissions.
-        */
 
         button.disabled = true;
 
         button.textContent =
           "Signing in...";
 
-        clearMessage();
+        message.className =
+          "message";
 
 
         try {
@@ -865,7 +850,7 @@
             data =
               await response.json();
 
-          } catch (jsonError) {
+          } catch {
 
             data = {};
 
@@ -892,7 +877,7 @@
 
 
           /*
-            Save authentication information first.
+             Save authentication session.
           */
 
           localStorage.setItem(
@@ -912,29 +897,12 @@
 
 
           /*
-            IMPORTANT:
-            Immediately remove the customer's credentials
-            from the visible login form after successful
-            authentication.
+             IMPORTANT:
+             Clear the visible login credentials
+             immediately after successful authentication.
           */
 
-          emailInput.value = "";
-
-          passwordInput.value = "";
-
-
-          /*
-            Also remove browser autocomplete values where
-            supported.
-          */
-
-          form.reset();
-
-
-          button.disabled = true;
-
-          button.textContent =
-            "Signed In";
+          clearLoginFields();
 
 
           showMessage(
@@ -944,15 +912,18 @@
 
 
           /*
-            Redirect to the dashboard.
+             Return button to its normal state
+             before leaving this page.
           */
+
+          resetLoginButton();
+
 
           setTimeout(
             function () {
 
-              window.location.replace(
-                "dashboard.html"
-              );
+              window.location.href =
+                "dashboard.html";
 
             },
             700
@@ -967,14 +938,6 @@
           );
 
 
-          /*
-            Make absolutely sure the credentials are not
-            retained after a failed attempt.
-          */
-
-          passwordInput.value = "";
-
-
           showMessage(
             error.message ||
             "Unable to connect to the CoinForest server.",
@@ -983,16 +946,52 @@
 
 
           /*
-            Restore the login button so the customer can
-            immediately try again without refreshing.
+             Always restore the button after
+             a failed login attempt.
           */
 
-          button.disabled = false;
-
-          button.textContent =
-            "Sign In";
+          resetLoginButton();
 
         }
+
+      }
+    );
+
+
+    /* =====================================================
+       CLEAR STALE FORM VALUES WHEN PAGE IS SHOWN
+       ===================================================== */
+
+    window.addEventListener(
+      "pageshow",
+      function () {
+
+        clearLoginFields();
+
+        resetLoginButton();
+
+      }
+    );
+
+
+    /* =====================================================
+       EXTRA PROTECTION AGAINST BROWSER RESTORATION
+       ===================================================== */
+
+    window.addEventListener(
+      "load",
+      function () {
+
+        setTimeout(
+          function () {
+
+            clearLoginFields();
+
+            resetLoginButton();
+
+          },
+          50
+        );
 
       }
     );
