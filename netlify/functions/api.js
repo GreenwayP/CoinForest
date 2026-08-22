@@ -1,52 +1,31 @@
 import coinforestHandler from "../../api/index.js";
 
 export default async function handler(event) {
-  const headers = {};
+  const headers = new Headers();
 
   for (const [key, value] of Object.entries(event.headers || {})) {
-    headers[key] = Array.isArray(value)
-      ? value.join(", ")
-      : String(value);
+    if (value !== undefined) {
+      headers.set(
+        key,
+        Array.isArray(value) ? value.join(", ") : String(value)
+      );
+    }
   }
 
-  const req = {
-    method: event.httpMethod || "GET",
-    url: event.rawUrl || event.path || "/",
-    headers,
-    body: event.body || undefined
-  };
-
-  let responseBody = "";
-  const responseHeaders = {};
-  let statusCode = 200;
-
-  const res = {
-    headersSent: false,
-
-    setHeader(name, value) {
-      responseHeaders[name] = value;
-    },
-
-    end(body = "") {
-      responseBody = body;
-      this.headersSent = true;
+  const request = new Request(
+    event.rawUrl || `https://${event.headers?.host || "coinforest.netlify.app"}${event.path || "/"}`,
+    {
+      method: event.httpMethod || "GET",
+      headers,
+      body:
+        event.httpMethod !== "GET" &&
+        event.httpMethod !== "HEAD"
+          ? event.body || undefined
+          : undefined
     }
-  };
+  );
 
-  Object.defineProperty(res, "statusCode", {
-    get() {
-      return statusCode;
-    },
-    set(value) {
-      statusCode = value;
-    }
-  });
+  const response = await coinforestHandler(request);
 
-  await coinforestHandler(req, res);
-
-  return {
-    statusCode,
-    headers: responseHeaders,
-    body: responseBody
-  };
+  return response;
 }
