@@ -16,6 +16,7 @@
     body {
       font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
+
       background:
         radial-gradient(
           circle at top right,
@@ -185,11 +186,13 @@
     ===================================================== */
 
     .form-area {
-      padding: 50px;
+      padding: 35px 50px 50px;
 
       display: flex;
 
-      align-items: center;
+      align-items: flex-start;
+
+      justify-content: center;
     }
 
     .form-container {
@@ -197,7 +200,7 @@
 
       max-width: 420px;
 
-      margin: auto;
+      margin: 20px auto 0;
     }
 
     .form-header {
@@ -297,6 +300,8 @@
       font-size: 12px;
 
       font-weight: 700;
+
+      cursor: pointer;
     }
 
     .forgot:hover {
@@ -467,7 +472,13 @@
       }
 
       .form-area {
-        padding: 35px 25px;
+        padding: 25px 25px 35px;
+
+        align-items: flex-start;
+      }
+
+      .form-container {
+        margin-top: 5px;
       }
     }
 
@@ -478,7 +489,7 @@
       }
 
       .form-area {
-        padding: 30px 20px;
+        padding: 25px 20px 30px;
       }
 
       .form-header h2 {
@@ -502,26 +513,22 @@
         Coin<span>Forest</span>
       </div>
 
-
       <div class="visual-content">
 
         <div class="badge">
           DIGITAL ASSET PLATFORM
         </div>
 
-
         <h1>
           Welcome back to
           <span>CoinForest.</span>
         </h1>
-
 
         <p>
           Sign in to access your CoinForest account,
           manage your wallets, investments, transfers,
           transactions and account activity.
         </p>
-
 
         <div class="features">
 
@@ -530,18 +537,15 @@
             Secure account authentication
           </div>
 
-
           <div class="feature">
             <div class="check">✓</div>
             Personal wallet management
           </div>
 
-
           <div class="feature">
             <div class="check">✓</div>
             Investment and transaction tracking
           </div>
-
 
           <div class="feature">
             <div class="check">✓</div>
@@ -551,7 +555,6 @@
         </div>
 
       </div>
-
 
       <div class="copyright">
         © 2026 CoinForest. All rights reserved.
@@ -581,7 +584,7 @@
         </div>
 
 
-        <form id="loginForm">
+        <form id="loginForm" autocomplete="off">
 
           <!-- EMAIL -->
 
@@ -596,7 +599,9 @@
               name="email"
               type="email"
               placeholder="you@example.com"
-              autocomplete="email"
+              autocomplete="off"
+              autocapitalize="none"
+              spellcheck="false"
               required
             >
 
@@ -615,20 +620,20 @@
 
               <a
                 class="forgot"
-                href="forgot-password.html"
+                href="#"
+                id="forgotPassword"
               >
                 Forgot password?
               </a>
 
             </div>
 
-
             <input
               id="password"
               name="password"
               type="password"
               placeholder="Enter your password"
-              autocomplete="current-password"
+              autocomplete="new-password"
               required
             >
 
@@ -697,6 +702,19 @@
     const message =
       document.getElementById("message");
 
+    const emailInput =
+      document.getElementById("email");
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const forgotPassword =
+      document.getElementById("forgotPassword");
+
+
+    /* =====================================================
+       MESSAGE
+    ===================================================== */
 
     function showMessage(text, type) {
 
@@ -708,6 +726,76 @@
     }
 
 
+    function clearMessage() {
+
+      message.textContent = "";
+
+      message.className =
+        "message";
+
+    }
+
+
+    /* =====================================================
+       RESET LOGIN FORM
+    ===================================================== */
+
+    function resetLoginForm() {
+
+      emailInput.value = "";
+
+      passwordInput.value = "";
+
+      button.disabled = false;
+
+      button.textContent = "Sign In";
+
+    }
+
+
+    /*
+      Always start with a completely clean login form.
+      This prevents old credentials from appearing when
+      the page is reopened after logout or navigation.
+    */
+
+    window.addEventListener(
+      "pageshow",
+      function () {
+
+        resetLoginForm();
+
+        clearMessage();
+
+      }
+    );
+
+
+    /* =====================================================
+       FORGOT PASSWORD
+    ===================================================== */
+
+    forgotPassword.addEventListener(
+      "click",
+      function (event) {
+
+        event.preventDefault();
+
+        clearMessage();
+
+        showMessage(
+          "Password reset request sent. Please contact CoinForest support for assistance.",
+          "success"
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       LOGIN
+    ===================================================== */
+
     form.addEventListener(
       "submit",
       async function (event) {
@@ -716,17 +804,13 @@
 
 
         const email =
-          document
-            .getElementById("email")
-            .value
+          emailInput.value
             .trim()
             .toLowerCase();
 
 
         const password =
-          document
-            .getElementById("password")
-            .value;
+          passwordInput.value;
 
 
         if (!email || !password) {
@@ -737,16 +821,20 @@
           );
 
           return;
+
         }
 
+
+        /*
+          Prevent duplicate submissions.
+        */
 
         button.disabled = true;
 
         button.textContent =
           "Signing in...";
 
-        message.className =
-          "message";
+        clearMessage();
 
 
         try {
@@ -770,8 +858,18 @@
             );
 
 
-          const data =
-            await response.json();
+          let data = {};
+
+          try {
+
+            data =
+              await response.json();
+
+          } catch (jsonError) {
+
+            data = {};
+
+          }
 
 
           if (!response.ok) {
@@ -794,8 +892,7 @@
 
 
           /*
-             Store the authentication token locally
-             so protected CoinForest pages can use it.
+            Save authentication information first.
           */
 
           localStorage.setItem(
@@ -814,6 +911,32 @@
           }
 
 
+          /*
+            IMPORTANT:
+            Immediately remove the customer's credentials
+            from the visible login form after successful
+            authentication.
+          */
+
+          emailInput.value = "";
+
+          passwordInput.value = "";
+
+
+          /*
+            Also remove browser autocomplete values where
+            supported.
+          */
+
+          form.reset();
+
+
+          button.disabled = true;
+
+          button.textContent =
+            "Signed In";
+
+
           showMessage(
             "Login successful. Redirecting...",
             "success"
@@ -821,15 +944,15 @@
 
 
           /*
-             Give the success message a moment
-             before opening the dashboard.
+            Redirect to the dashboard.
           */
 
           setTimeout(
             function () {
 
-              window.location.href =
-                "dashboard.html";
+              window.location.replace(
+                "dashboard.html"
+              );
 
             },
             700
@@ -844,12 +967,25 @@
           );
 
 
+          /*
+            Make absolutely sure the credentials are not
+            retained after a failed attempt.
+          */
+
+          passwordInput.value = "";
+
+
           showMessage(
             error.message ||
             "Unable to connect to the CoinForest server.",
             "error"
           );
 
+
+          /*
+            Restore the login button so the customer can
+            immediately try again without refreshing.
+          */
 
           button.disabled = false;
 
