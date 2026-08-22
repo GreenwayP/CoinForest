@@ -42,11 +42,9 @@ inset:0;
 pointer-events:none;
 background:
 radial-gradient(circle at 15% 20%,rgba(246,196,83,.025),transparent 25%),
-radial-gradient(circle at 85% 75%,rgba(246,196,83,.025),transparent 25%);
+radial-gradient(circle at 85% 75%,rgba(76,166,255,.025),transparent 25%);
 z-index:-1
 }
-
-/* HEADER */
 
 header{
 position:absolute;
@@ -71,7 +69,7 @@ letter-spacing:-1px
 nav{
 display:flex;
 align-items:center;
-gap:25px
+gap:23px
 }
 
 nav a{
@@ -97,9 +95,7 @@ outline:none;
 cursor:pointer
 }
 
-.language option{
-background:#0b192b
-}
+.language option{background:#0b192b}
 
 .btn{
 border:0;
@@ -107,7 +103,10 @@ border-radius:8px;
 padding:12px 20px;
 font-weight:700;
 cursor:pointer;
-transition:.25s
+transition:.25s;
+display:inline-flex;
+align-items:center;
+justify-content:center
 }
 
 .btn-gold{
@@ -131,8 +130,6 @@ color:#fff
 border-color:var(--gold);
 color:var(--gold)
 }
-
-/* HERO */
 
 .hero{
 min-height:800px;
@@ -215,7 +212,7 @@ gap:13px;
 flex-wrap:wrap
 }
 
-/* PHONE */
+/* HERO DEVICE */
 
 .phone{
 position:absolute;
@@ -250,8 +247,7 @@ z-index:10
 height:100%;
 border-radius:31px;
 overflow:hidden;
-bteamund:
-linear-gradient(160deg,#0d1e31,#07111f);
+background:linear-gradient(160deg,#0d1e31,#07111f);
 padding:42px 15px 15px;
 position:relative
 }
@@ -325,8 +321,7 @@ gap:9px;
 padding:9px;
 border-radius:10px;
 background:#0d2033;
-margin-bottom:7px;
-transition:.25s
+margin-bottom:7px
 }
 
 .phone-icon{
@@ -374,8 +369,6 @@ animation:phoneSlide .45s ease
 0%{opacity:0;transform:translateY(10px)}
 100%{opacity:1;transform:translateY(0)}
 }
-
-/* FLOATING COINS */
 
 .float-coin{
 position:absolute;
@@ -486,17 +479,12 @@ gap:7px
 
 .coin-price{font-weight:700}
 
-.coin-change{
-font-weight:700
-}
-
-.coin-movement{
-font-size:11px;
-font-weight:800
+.coin-change,.coin-movement{
+font-weight:700;
+font-size:11px
 }
 
 .coin-up{color:var(--gold)!important}
-
 .coin-down{color:var(--red)!important}
 
 .coin-icon{
@@ -526,7 +514,7 @@ from{transform:translateX(0)}
 to{transform:translateX(-50%)}
 }
 
-/* SECTIONS */
+/* GENERAL */
 
 section{padding:110px 6%}
 
@@ -553,10 +541,7 @@ font-size:16px
 }
 
 .center{text-align:center}
-
-.center .section-text{
-margin:0 auto
-}
+.center .section-text{margin:0 auto}
 
 /* ABOUT */
 
@@ -582,16 +567,6 @@ display:flex;
 align-items:center;
 justify-content:center;
 overflow:hidden
-}
-
-.about-visual:after{
-content:"₿  Ξ  ◈  ◆  ₿";
-position:absolute;
-font-size:28px;
-letter-spacing:30px;
-color:rgba(246,196,83,.08);
-transform:rotate(-15deg);
-white-space:nowrap
 }
 
 .orbit{
@@ -639,9 +614,7 @@ color:#04100a;
 box-shadow:0 0 55px rgba(246,196,83,.3)
 }
 
-@keyframes orbitSpin{
-to{transform:rotate(360deg)}
-}
+@keyframes orbitSpin{to{transform:rotate(360deg)}}
 
 .about-list{
 margin-top:30px;
@@ -667,15 +640,8 @@ justify-content:center;
 font-weight:900
 }
 
-.about-item h3{
-font-size:17px;
-margin-bottom:3px
-}
-
-.about-item p{
-font-size:14px;
-color:var(--muted)
-}
+.about-item h3{font-size:17px;margin-bottom:3px}
+.about-item p{font-size:14px;color:var(--muted)}
 
 /* FEATURES */
 
@@ -714,17 +680,170 @@ margin-bottom:22px;
 color:var(--gold)
 }
 
-.feature h3{
-margin-bottom:10px;
-font-size:19px
+.feature h3{margin-bottom:10px;font-size:19px}
+.feature p{color:var(--muted);font-size:14px}
+
+/* PRESENTATION */
+
+.presentation{background:#07111f}
+
+.device-showcase{
+margin-top:55px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:22px
 }
 
-.feature p{
-color:var(--muted);
-font-size:14px
+.device-card{
+position:relative;
+min-height:410px;
+border-radius:22px;
+overflow:hidden;
+border:1px solid var(--border);
+background:
+radial-gradient(circle at 50% 30%,rgba(246,196,83,.09),transparent 40%),
+linear-gradient(145deg,#0d2034,#081421);
+display:flex;
+align-items:flex-end;
+justify-content:center;
+padding:35px 20px 0
 }
 
-/* SUPPORTED BY */
+.device-card:nth-child(2),
+.device-card:nth-child(5){
+background:
+radial-gradient(circle at 50% 25%,rgba(76,166,255,.09),transparent 40%),
+linear-gradient(145deg,#0d2034,#081421)
+}
+
+.person-silhouette{
+position:absolute;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+width:150px;
+height:300px;
+background:linear-gradient(90deg,#172a3e,#203b53,#102134);
+border-radius:75px 75px 20px 20px;
+opacity:.8
+}
+
+.person-silhouette:before{
+content:"";
+position:absolute;
+top:-78px;
+left:37px;
+width:76px;
+height:76px;
+border-radius:50%;
+background:linear-gradient(135deg,#a76c43,#e0a37a)
+}
+
+.person-silhouette:after{
+content:"";
+position:absolute;
+top:40px;
+right:-32px;
+width:65px;
+height:150px;
+border-radius:35px;
+background:#1a3046;
+transform:rotate(-15deg)
+}
+
+.mini-device{
+position:relative;
+z-index:3;
+width:185px;
+height:350px;
+border:7px solid #202c3a;
+border-radius:30px;
+background:#030912;
+padding:7px;
+box-shadow:0 25px 55px rgba(0,0,0,.55);
+transform:rotate(-5deg)
+}
+
+.device-card:nth-child(even) .mini-device{
+transform:rotate(5deg)
+}
+
+.mini-screen{
+height:100%;
+border-radius:21px;
+background:#081525;
+overflow:hidden;
+padding:25px 10px 10px
+}
+
+.mini-brand{
+font-size:12px;
+font-weight:800;
+margin-bottom:13px
+}
+
+.mini-brand span{color:var(--gold)}
+
+.mini-balance{
+background:linear-gradient(135deg,#132a40,#0c1b2d);
+border:1px solid rgba(246,196,83,.15);
+padding:12px;
+border-radius:13px;
+margin-bottom:10px
+}
+
+.mini-balance small{
+display:block;
+font-size:7px;
+color:#8092a6
+}
+
+.mini-balance strong{
+display:block;
+font-size:18px;
+margin-top:3px
+}
+
+.mini-chart{
+height:75px;
+margin:10px 0;
+background:linear-gradient(180deg,rgba(246,196,83,.12),transparent);
+border-radius:10px
+}
+
+.mini-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:8px;
+margin-bottom:5px;
+background:#0d2033;
+border-radius:8px;
+font-size:7px
+}
+
+.mini-row b{color:var(--gold)}
+
+.device-caption{
+position:absolute;
+top:22px;
+left:22px;
+right:22px;
+z-index:5
+}
+
+.device-caption strong{
+display:block;
+font-size:17px;
+margin-bottom:4px
+}
+
+.device-caption span{
+font-size:11px;
+color:#8394a8
+}
+
+/* SUPPORTED */
 
 .supported{
 background:#07111f;
@@ -750,14 +869,7 @@ align-items:center;
 justify-content:center;
 gap:12px;
 font-size:18px;
-font-weight:800;
-transition:.3s
-}
-
-.supported-company:hover{
-transform:translateY(-5px);
-border-color:rgba(246,196,83,.4);
-box-shadow:0 15px 40px rgba(0,0,0,.25)
+font-weight:800
 }
 
 .company-mark{
@@ -828,29 +940,10 @@ color:#07111f
 }
 
 .market-name{font-weight:700}
-
-.market-symbol{
-font-size:12px;
-color:var(--muted)
-}
-
-.market-price{
-font-size:23px;
-font-weight:800;
-margin-top:6px
-}
-
-.market-change{
-font-size:13px;
-font-weight:700
-}
-
-.market-movement{
-font-size:11px;
-font-weight:800;
-margin-top:4px
-}
-
+.market-symbol{font-size:12px;color:var(--muted)}
+.market-price{font-size:23px;font-weight:800;margin-top:6px}
+.market-change{font-size:13px;font-weight:700}
+.market-movement{font-size:11px;font-weight:800;margin-top:4px}
 .positive{color:var(--gold)}
 .negative{color:var(--red)}
 
@@ -869,9 +962,93 @@ color:#dce5ef;
 font-size:12px
 }
 
+/* INVESTMENTS */
+
+.investments{
+background:#091827
+}
+
+.plan-grid{
+margin-top:55px;
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:15px
+}
+
+.plan{
+position:relative;
+padding:25px 20px;
+border:1px solid var(--border);
+background:#0c1c2e;
+border-radius:18px;
+transition:.3s
+}
+
+.plan:hover{
+transform:translateY(-6px);
+border-color:rgba(246,196,83,.4)
+}
+
+.plan.popular{
+border-color:rgba(246,196,83,.65);
+box-shadow:0 20px 55px rgba(246,196,83,.08)
+}
+
+.popular-label{
+position:absolute;
+top:-11px;
+right:17px;
+background:linear-gradient(135deg,#ffe08a,#d99b20);
+color:#171006;
+font-size:9px;
+font-weight:900;
+padding:5px 10px;
+border-radius:20px
+}
+
+.plan-number{
+font-size:11px;
+font-weight:800;
+color:var(--gold);
+letter-spacing:1px
+}
+
+.plan h3{
+font-size:22px;
+margin:9px 0
+}
+
+.plan-return{
+font-size:37px;
+font-weight:900;
+background:linear-gradient(90deg,#fff0ae,#f6c453);
+-webkit-background-clip:text;
+background-clip:text;
+color:transparent
+}
+
+.plan-return span{
+font-size:14px;
+color:#8fa0b4
+}
+
+.plan-range{
+margin-top:13px;
+padding-top:13px;
+border-top:1px solid rgba(246,196,83,.09);
+color:#aab8c8;
+font-size:12px
+}
+
+.plan-period{
+margin-top:7px;
+font-size:11px;
+color:#71849a
+}
+
 /* SERVICES */
 
-.services{background:#091827}
+.services{background:#07111f}
 
 .services-grid{
 margin-top:55px;
@@ -904,115 +1081,71 @@ color:var(--muted);
 font-size:14px
 }
 
+/* TEAM */
 
-<!-- TEAM -->
+.team{
+background:#091827
+}
 
-<section class="team" id="team">
+.team-grid{
+margin-top:55px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px
+}
 
-<div class="center">
+.team-card{
+background:#0c1c2e;
+border:1px solid var(--border);
+border-radius:18px;
+overflow:hidden;
+transition:.3s
+}
 
-<div class="section-label">Leadership</div>
+.team-card:hover{
+transform:translateY(-5px);
+border-color:rgba(246,196,83,.35)
+}
 
-<h2 class="section-title">
-Meet the Great Brains Behind CoinForest
-</h2>
+.team-photo{
+height:280px;
+overflow:hidden;
+background:linear-gradient(145deg,#152e45,#0a1727);
+position:relative
+}
 
-<p class="section-text">
-Meet the people behind the vision, technology and financial experience
-that continue to shape CoinForest.
-</p>
+.team-photo img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block
+}
 
-</div>
+.team-info{
+padding:20px
+}
 
-<div class="team-grid">
+.team-info h3{
+font-size:18px;
+margin-bottom:3px
+}
 
-<div class="team-card">
+.team-info span{
+color:var(--gold);
+font-size:11px;
+font-weight:700
+}
 
-<div class="team-photo">
-<img
-src="assets/people/team-1.jpg"
-alt="Alexander Morgan"
-loading="lazy"
-onerror="this.style.display='none';this.parentElement.classList.add('image-fallback');this.parentElement.innerHTML='<div class=&quot;team-fallback&quot;>AM</div>'"
->
-</div>
-
-<div class="team-info">
-<h3>Alexander Morgan</h3>
-<span>Chief Executive Officer</span>
-<p>Leading CoinForest strategy, vision and long-term platform development.</p>
-</div>
-
-</div>
-
-
-<div class="team-card">
-
-<div class="team-photo">
-<img
-src="assets/people/team-2.jpg"
-alt="Amara Williams"
-loading="lazy"
-onerror="this.style.display='none';this.parentElement.classList.add('image-fallback');this.parentElement.innerHTML='<div class=&quot;team-fallback&quot;>AW</div>'"
->
-</div>
-
-<div class="team-info">
-<h3>Amara Williams</h3>
-<span>Chief Technology Officer</span>
-<p>Overseeing technology, architecture and the continued evolution of CoinForest.</p>
-</div>
-
-</div>
-
-
-<div class="team-card">
-
-<div class="team-photo">
-<img
-src="assets/people/team-3.jpg"
-alt="Daniel Okafor"
-loading="lazy"
-onerror="this.style.display='none';this.parentElement.classList.add('image-fallback');this.parentElement.innerHTML='<div class=&quot;team-fallback&quot;>DO</div>'"
->
-</div>
-
-<div class="team-info">
-<h3>Daniel Okafor</h3>
-<span>Financial Operations Director</span>
-<p>Focused on financial systems, operational structure and platform efficiency.</p>
-</div>
-
-</div>
-
-
-<div class="team-card">
-
-<div class="team-photo">
-<img
-src="assets/people/team-4.jpg"
-alt="Sophia Laurent"
-loading="lazy"
-onerror="this.style.display='none';this.parentElement.classList.add('image-fallback');this.parentElement.innerHTML='<div class=&quot;team-fallback&quot;>SL</div>'"
->
-</div>
-
-<div class="team-info">
-<h3>Sophia Laurent</h3>
-<span>Customer Experience Director</span>
-<p>Focused on usability, customer experience and the human side of CoinForest.</p>
-</div>
-
-</div>
-
-</div>
-
-</section>
+.team-info p{
+font-size:12px;
+color:var(--muted);
+margin-top:10px
+}
 
 /* TESTIMONIALS */
 
 .testimonials{
-background:#091827
+background:#07111f
 }
 
 .testimonial-grid{
@@ -1062,40 +1195,38 @@ height:48px;
 min-width:48px;
 border-radius:50%;
 overflow:hidden;
-background:linear-gradient(135deg,#173b58,#d99b20);
+background:#173b58;
 display:flex;
 align-items:center;
 justify-content:center;
 font-weight:800;
-color:#07111f
+color:var(--gold)
 }
 
-<!-- TESTIMONIALS -->
+.avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
 
-<section class="testimonials">
+.person strong{
+display:block;
+font-size:13px
+}
 
-<div class="center">
+.person span{
+display:block;
+font-size:11px;
+color:#71849a;
+margin-top:2px
+}
 
-<div class="section-label">Testimonials</div>
-
-<h2 class="section-title">
-What Our Users Say
-</h2>
-
-<p class="section-text">
-A modern financial experience built around clarity, accessibility
-and a structured digital-asset environment.
-</p>
-
-</div>
-
-<div class="testimonial-grid" id="testimonialGrid"></div>
-
-<div class="testimonial-counter" id="testimonialCounter">
-1–3 of 28
-</div>
-
-</section>
+.testimonial-counter{
+text-align:center;
+font-size:11px;
+color:#71849a;
+margin-top:25px
+}
 
 /* CTA */
 
@@ -1128,7 +1259,7 @@ max-width:600px;
 margin:0 auto 30px
 }
 
-/* ACTIVITY POPUP */
+/* POPUP */
 
 .activity-popup{
 position:fixed;
@@ -1229,9 +1360,7 @@ max-width:330px;
 margin-top:15px
 }
 
-footer h4{
-margin-bottom:15px
-}
+footer h4{margin-bottom:15px}
 
 footer a{
 display:block;
@@ -1240,9 +1369,7 @@ font-size:13px;
 margin-bottom:9px
 }
 
-footer a:hover{
-color:var(--gold)
-}
+footer a:hover{color:var(--gold)}
 
 .copyright{
 border-top:1px solid var(--border);
@@ -1252,29 +1379,28 @@ font-size:12px;
 text-align:center
 }
 
-/* MOBILE */
+/* RESPONSIVE */
 
-@media(max-width:1100px){
+@media(max-width:1200px){
 
-.phone{
-right:3%;
-transform:scale(.88)
-}
-
-.hero-content{
-max-width:600px
+.plan-grid{
+grid-template-columns:repeat(3,1fr)
 }
 
 .team-grid{
 grid-template-columns:repeat(2,1fr)
 }
 
+.phone{
+right:2%;
+transform:scale(.88)
 }
 
-@media(max-width:900px){
+}
 
-.phone,
-.float-coin{
+@media(max-width:1000px){
+
+.phone,.float-coin{
 display:none
 }
 
@@ -1288,6 +1414,10 @@ grid-template-columns:repeat(2,1fr)
 
 .supported-grid{
 grid-template-columns:1fr
+}
+
+.device-showcase{
+grid-template-columns:repeat(2,1fr)
 }
 
 }
@@ -1304,17 +1434,18 @@ gap:15px
 nav{
 width:100%;
 justify-content:center;
-gap:10px;
+gap:9px;
 flex-wrap:wrap
 }
 
 nav>a{
-font-size:11px
+font-size:10px
 }
 
 .language{
-font-size:11px;
-padding:7px
+font-size:10px;
+padding:7px;
+max-width:95px
 }
 
 .nav-buttons{
@@ -1356,8 +1487,19 @@ padding:80px 5%
 .services-grid,
 .market-grid,
 .team-grid,
-.testimonial-grid{
+.testimonial-grid,
+.device-showcase,
+.plan-grid{
 grid-template-columns:1fr
+}
+
+.about-grid{
+grid-template-columns:1fr;
+gap:40px
+}
+
+.about-visual{
+min-height:320px
 }
 
 .footer-grid{
@@ -1374,6 +1516,15 @@ width:calc(100vw - 30px)
 padding-top:60px;
 padding-bottom:60px
 }
+
+.device-card{
+min-height:430px
+}
+
+.plan{
+padding:28px
+}
+
 }
 </style>
 </head>
@@ -1382,27 +1533,37 @@ padding-bottom:60px
 
 <header>
 
-<a class="logo" href="#">Coin<span>Forest</span></a>
+<a class="logo" href="#home">
+Coin<span>Forest</span>
+</a>
 
 <nav>
 
-<a href="#home">Home</a>
-<a href="#about">About Us</a>
-<a href="#services">Services</a>
-<a href="#markets">Markets</a>
-<a href="#team">Team</a>
-<a href="#contact">Contact</a>
+<a href="#home" data-i18n="navHome">Home</a>
+<a href="#about" data-i18n="navAbout">About Us</a>
+<a href="#services" data-i18n="navServices">Services</a>
+<a href="#markets" data-i18n="navMarkets">Markets</a>
+<a href="#team" data-i18n="navTeam">Team</a>
+<a href="#contact" data-i18n="navContact">Contact</a>
 
-<select class="language" id="languageSelect">
+<select class="language" id="languageSelect" aria-label="Language">
 <option value="en">English</option>
 <option value="fr">Français</option>
 <option value="es">Español</option>
 <option value="pt">Português</option>
+<option value="de">Deutsch</option>
+<option value="it">Italiano</option>
+<option value="nl">Nederlands</option>
+<option value="pl">Polski</option>
+<option value="ru">Русский</option>
+<option value="ar">العربية</option>
+<option value="zh">中文</option>
+<option value="ja">日本語</option>
 </select>
 
 <div class="nav-buttons">
-<a class="btn btn-outline" href="login.html">Login</a>
-<a class="btn btn-gold" href="login.html">Register</a>
+<a class="btn btn-outline" href="login.html" data-i18n="login">Login</a>
+<a class="btn btn-gold" href="login.html" data-i18n="register">Register</a>
 </div>
 
 </nav>
@@ -1422,24 +1583,29 @@ padding-bottom:60px
 </div>
 
 <h1>
-Decentralized <span>Finance</span>
+Decentralized <span data-i18n="finance">Finance</span>
 </h1>
 
 <p data-i18n="heroText">
-Resilient. Secure. Built for the modern digital-asset journey.
-CoinForest brings wallets, investments, transfers and market
-information together in one structured financial platform.
+CoinForest brings wallets, investments, transfers and digital
+asset market information together in one structured financial
+environment built for the modern digital-asset journey.
 </p>
 
 <div class="hero-buttons">
-<a class="btn btn-gold" href="login.html" data-i18n="getStarted">Get Started</a>
-<a class="btn btn-outline" href="#about" data-i18n="explore">Explore CoinForest</a>
-</div>
+
+<a class="btn btn-gold" href="login.html" data-i18n="getStarted">
+Get Started
+</a>
+
+<a class="btn btn-outline" href="#about" data-i18n="explore">
+Explore CoinForest
+</a>
 
 </div>
 
+</div>
 
-<!-- PHONE -->
 
 <div class="phone">
 
@@ -1456,18 +1622,15 @@ Coin<span>Forest</span>
 
 <div class="phone-balance">
 
-<small id="phoneBalanceLabel">Total Balance</small>
+<small data-i18n="totalBalance">Total Balance</small>
 
-<strong id="phoneBalance">
-$18,420.00
-</strong>
+<strong id="phoneBalance">$18,420.00</strong>
 
 <div class="phone-profit" id="phoneProfit">
 +$2,480.50 this month
 </div>
 
 </div>
-
 
 <div class="phone-chart">
 
@@ -1503,45 +1666,42 @@ stroke-width="2.5"/>
 
 </div>
 
-
 <div class="phone-title" id="phoneActivityTitle">
-Recent Activity
+Investment Portfolio
 </div>
 
-<div class="phone-activity phone-slide" id="phoneActivityOne">
-<div class="phone-icon" id="phoneIconOne">↗</div>
+<div class="phone-activity" id="phoneActivityOne">
+<div class="phone-icon" id="phoneIconOne">◆</div>
 <div>
-<strong id="phoneActivityOneTitle">Withdrawal</strong>
-<small id="phoneActivityOneText">-$1,250.00</small>
+<strong id="phoneActivityOneTitle">Gold Investment</strong>
+<small id="phoneActivityOneText">+$5,000.00</small>
 </div>
 </div>
 
-<div class="phone-activity" id="phoneActivityTwo">
-<div class="phone-icon" id="phoneIconTwo">◆</div>
+<div class="phone-activity">
+<div class="phone-icon" id="phoneIconTwo">↗</div>
 <div>
-<strong id="phoneActivityTwoTitle">Investment</strong>
-<small id="phoneActivityTwoText">+$5,000.00</small>
+<strong id="phoneActivityTwoTitle">Profit Earned</strong>
+<small id="phoneActivityTwoText">+$2,480.50</small>
 </div>
 </div>
 
-<div class="phone-activity" id="phoneActivityThree">
+<div class="phone-activity">
 <div class="phone-icon" id="phoneIconThree">₿</div>
 <div>
-<strong id="phoneActivityThreeTitle">BTC movement</strong>
+<strong id="phoneActivityThreeTitle">BTC Position</strong>
 <small id="phoneActivityThreeText">+$1,240.00</small>
 </div>
 </div>
 
 <div class="phone-bottom">
-<div>Wallet</div>
-<div>Invest</div>
-<div>Transfer</div>
+<div data-i18n="wallet">Wallet</div>
+<div data-i18n="invest">Invest</div>
+<div data-i18n="transfer">Transfer</div>
 </div>
 
 </div>
-
 </div>
-
 
 <div class="float-coin one">₿</div>
 <div class="float-coin two">Ξ</div>
@@ -1550,24 +1710,22 @@ Recent Activity
 </section>
 
 
-<!-- COUNTERS -->
+<!-- STATS -->
 
 <div class="stats">
 
 <div class="stat">
-<strong id="downloadsCounter">100M+</strong>
+<strong>100M+</strong>
 <span data-i18n="downloads">Downloads</span>
 </div>
 
 <div class="stat">
-<strong id="activeUsersCounter">75M+</strong>
+<strong>75M+</strong>
 <span data-i18n="activeUsers">Active Users</span>
-
 <span class="stat-live">
 <span class="stat-live-dot"></span>
-Active now
+<span data-i18n="activeNow">Active now</span>
 </span>
-
 </div>
 
 <div class="stat">
@@ -1586,9 +1744,7 @@ Active now
 <!-- TICKER -->
 
 <div class="ticker">
-
 <div class="ticker-track" id="tickerTrack"></div>
-
 </div>
 
 
@@ -1608,13 +1764,15 @@ Active now
 
 <div>
 
-<div class="section-label">About CoinForest</div>
+<div class="section-label" data-i18n="aboutLabel">
+About CoinForest
+</div>
 
-<h2 class="section-title">
+<h2 class="section-title" data-i18n="aboutTitle">
 Shaping the Future of Digital Finance Together
 </h2>
 
-<p class="section-text">
+<p class="section-text" data-i18n="aboutText">
 CoinForest is designed around a modern digital-asset experience,
 bringing financial tools, wallet management and structured
 investment features into one powerful environment.
@@ -1625,24 +1783,30 @@ investment features into one powerful environment.
 <div class="about-item">
 <div class="check">✓</div>
 <div>
-<h3>Structured Financial Experience</h3>
-<p>Everything organized around your personal financial dashboard.</p>
+<h3 data-i18n="structuredTitle">Structured Financial Experience</h3>
+<p data-i18n="structuredText">
+Everything organized around your personal financial dashboard.
+</p>
 </div>
 </div>
 
 <div class="about-item">
 <div class="check">✓</div>
 <div>
-<h3>Wallet Visibility</h3>
-<p>Keep your Main Wallet and Profit Wallet clearly separated.</p>
+<h3 data-i18n="walletVisibilityTitle">Wallet Visibility</h3>
+<p data-i18n="walletVisibilityText">
+Keep your Main Wallet and Profit Wallet clearly separated.
+</p>
 </div>
 </div>
 
 <div class="about-item">
 <div class="check">✓</div>
 <div>
-<h3>Account Security</h3>
-<p>Authentication and account controls built into the platform.</p>
+<h3 data-i18n="securityTitle">Account Security</h3>
+<p data-i18n="securityText">
+Authentication and account controls built into the platform.
+</p>
 </div>
 </div>
 
@@ -1660,13 +1824,15 @@ investment features into one powerful environment.
 
 <div class="center">
 
-<div class="section-label">Why Choose CoinForest</div>
+<div class="section-label" data-i18n="whyLabel">
+Why Choose CoinForest
+</div>
 
-<h2 class="section-title">
+<h2 class="section-title" data-i18n="whyTitle">
 Elevating Your Financial Experience
 </h2>
 
-<p class="section-text">
+<p class="section-text" data-i18n="whyText">
 Built to give users a clear, modern and organized way to interact
 with their digital financial environment.
 </p>
@@ -1677,8 +1843,8 @@ with their digital financial environment.
 
 <div class="feature">
 <div class="icon">⚡</div>
-<h3>Cutting-Edge Technology</h3>
-<p>
+<h3 data-i18n="feature1Title">Cutting-Edge Technology</h3>
+<p data-i18n="feature1Text">
 A modern platform architecture designed for speed,
 accessibility and a smooth digital experience.
 </p>
@@ -1686,8 +1852,8 @@ accessibility and a smooth digital experience.
 
 <div class="feature">
 <div class="icon">◈</div>
-<h3>User Empowerment</h3>
-<p>
+<h3 data-i18n="feature2Title">User Empowerment</h3>
+<p data-i18n="feature2Text">
 Give every user the tools and information needed to understand
 and manage their account.
 </p>
@@ -1695,8 +1861,8 @@ and manage their account.
 
 <div class="feature">
 <div class="icon">✓</div>
-<h3>Transparent & Secure</h3>
-<p>
+<h3 data-i18n="feature3Title">Transparent & Secure</h3>
+<p data-i18n="feature3Text">
 Account activity, wallet information and platform actions are
 presented in a structured environment.
 </p>
@@ -1707,21 +1873,354 @@ presented in a structured environment.
 </section>
 
 
-<!-- SUPPORTED BY -->
+<!-- DEVICE PRESENTATION -->
+
+<section class="presentation">
+
+<div class="center">
+
+<div class="section-label" data-i18n="experienceLabel">
+Inside CoinForest
+</div>
+
+<h2 class="section-title" data-i18n="experienceTitle">
+A Financial Experience Designed Around You
+</h2>
+
+<p class="section-text" data-i18n="experienceText">
+Explore the core screens and account experiences that make the
+CoinForest environment simple to navigate.
+</p>
+
+</div>
+
+<div class="device-showcase">
+
+
+<div class="device-card">
+
+<div class="device-caption">
+<strong data-i18n="scene1Title">Main Wallet</strong>
+<span data-i18n="scene1Text">A clear view of available account funds.</span>
+</div>
+
+<div class="person-silhouette"></div>
+
+<div class="mini-device">
+
+<div class="mini-screen">
+
+<div class="mini-brand">
+Coin<span>Forest</span>
+</div>
+
+<div class="mini-balance">
+<small>Main Wallet</small>
+<strong>$18,420</strong>
+</div>
+
+<div class="mini-chart">
+<svg viewBox="0 0 180 75" preserveAspectRatio="none">
+<path d="M0 65 C20 52 30 60 45 48 S70 52 88 39 S110 45 130 29 S155 31 180 12"
+fill="none" stroke="#f6c453" stroke-width="2"/>
+</svg>
+</div>
+
+<div class="mini-row">
+<span>Available</span>
+<b>$18,420</b>
+</div>
+
+<div class="mini-row">
+<span>Pending</span>
+<b>$0.00</b>
+</div>
+
+<div class="mini-row">
+<span>Activity</span>
+<b>View</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="device-card">
+
+<div class="device-caption">
+<strong data-i18n="scene2Title">Profit Wallet</strong>
+<span data-i18n="scene2Text">Separate visibility for accumulated returns.</span>
+</div>
+
+<div class="person-silhouette"></div>
+
+<div class="mini-device">
+
+<div class="mini-screen">
+
+<div class="mini-brand">
+Coin<span>Forest</span>
+</div>
+
+<div class="mini-balance">
+<small>Profit Wallet</small>
+<strong>$4,820</strong>
+</div>
+
+<div class="mini-chart">
+<svg viewBox="0 0 180 75" preserveAspectRatio="none">
+<path d="M0 60 C25 66 35 43 52 50 S78 36 94 42 S120 22 140 28 S160 15 180 8"
+fill="none" stroke="#22d3c5" stroke-width="2"/>
+</svg>
+</div>
+
+<div class="mini-row">
+<span>Monthly Return</span>
+<b>+$820</b>
+</div>
+
+<div class="mini-row">
+<span>Growth</span>
+<b>+18.2%</b>
+</div>
+
+<div class="mini-row">
+<span>Status</span>
+<b>Active</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="device-card">
+
+<div class="device-caption">
+<strong data-i18n="scene3Title">Investment Dashboard</strong>
+<span data-i18n="scene3Text">Monitor active financial positions.</span>
+</div>
+
+<div class="person-silhouette"></div>
+
+<div class="mini-device">
+
+<div class="mini-screen">
+
+<div class="mini-brand">
+Coin<span>Forest</span>
+</div>
+
+<div class="mini-balance">
+<small>Portfolio Value</small>
+<strong>$27,840</strong>
+</div>
+
+<div class="mini-row">
+<span>Gold</span>
+<b>45%</b>
+</div>
+
+<div class="mini-row">
+<span>Silver</span>
+<b>35%</b>
+</div>
+
+<div class="mini-row">
+<span>Growth</span>
+<b>25%</b>
+</div>
+
+<div class="mini-row">
+<span>Starter</span>
+<b>15%</b>
+</div>
+
+<div class="mini-row">
+<span>Performance</span>
+<b>+12.8%</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="device-card">
+
+<div class="device-caption">
+<strong data-i18n="scene4Title">Investment Plans</strong>
+<span data-i18n="scene4Text">Compare available plan structures.</span>
+</div>
+
+<div class="person-silhouette"></div>
+
+<div class="mini-device">
+
+<div class="mini-screen">
+
+<div class="mini-brand">
+Coin<span>Forest</span>
+</div>
+
+<div class="mini-row">
+<span>Starter</span>
+<b>15%</b>
+</div>
+
+<div class="mini-row">
+<span>Growth</span>
+<b>25%</b>
+</div>
+
+<div class="mini-row">
+<span>Silver</span>
+<b>35%</b>
+</div>
+
+<div class="mini-row">
+<span>Gold</span>
+<b>45%</b>
+</div>
+
+<div class="mini-row">
+<span>Platinum</span>
+<b>50%</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="device-card">
+
+<div class="device-caption">
+<strong data-i18n="scene5Title">Account Activity</strong>
+<span data-i18n="scene5Text">Review recent account actions.</span>
+</div>
+
+<div class="person-silhouette"></div>
+
+<div class="mini-device">
+
+<div class="mini-screen">
+
+<div class="mini-brand">
+Coin<span>Forest</span>
+</div>
+
+<div class="mini-balance">
+<small>Activity</small>
+<strong>Recent</strong>
+</div>
+
+<div class="mini-row">
+<span>Investment</span>
+<b>Completed</b>
+</div>
+
+<div class="mini-row">
+<span>Wallet</span>
+<b>Updated</b>
+</div>
+
+<div class="mini-row">
+<span>Transfer</span>
+<b>Processed</b>
+</div>
+
+<div class="mini-row">
+<span>Security</span>
+<b>Verified</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="device-card">
+
+<div class="device-caption">
+<strong data-i18n="scene6Title">Digital Asset Overview</strong>
+<span data-i18n="scene6Text">A compact view of selected markets.</span>
+</div>
+
+<div class="person-silhouette"></div>
+
+<div class="mini-device">
+
+<div class="mini-screen">
+
+<div class="mini-brand">
+Coin<span>Forest</span>
+</div>
+
+<div class="mini-row">
+<span>BTC</span>
+<b>$67,420</b>
+</div>
+
+<div class="mini-row">
+<span>ETH</span>
+<b>$3,540</b>
+</div>
+
+<div class="mini-row">
+<span>SOL</span>
+<b>$181</b>
+</div>
+
+<div class="mini-row">
+<span>BNB</span>
+<b>$612</b>
+</div>
+
+<div class="mini-row">
+<span>Market</span>
+<b>Live</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SUPPORTED -->
 
 <section class="supported">
 
 <div class="center">
 
-<div class="section-label">Global Support</div>
+<div class="section-label" data-i18n="ecosystemLabel">
+Digital Finance Ecosystem
+</div>
 
-<h2 class="section-title">
-Supported by Many
+<h2 class="section-title" data-i18n="ecosystemTitle">
+Built for a Connected Financial Future
 </h2>
 
-<p class="section-text">
-CoinForest is presented alongside a growing network of brands,
-businesses and digital-finance communities.
+<p class="section-text" data-i18n="ecosystemText">
+CoinForest brings core financial tools together in one structured
+digital environment.
 </p>
 
 </div>
@@ -1729,24 +2228,24 @@ businesses and digital-finance communities.
 <div class="supported-grid">
 
 <div class="supported-company">
-<div class="company-mark">G</div>
-<span>Greenway Express</span>
+<div class="company-mark">W</div>
+<span data-i18n="ecosystemWallet">Wallet Management</span>
 </div>
 
 <div class="supported-company">
-<div class="company-mark">C</div>
-<span>Conbase</span>
+<div class="company-mark">I</div>
+<span data-i18n="ecosystemInvest">Investment Tools</span>
 </div>
 
 <div class="supported-company">
-<div class="company-mark">L</div>
-<span>Lunu</span>
+<div class="company-mark">M</div>
+<span data-i18n="ecosystemMarkets">Market Information</span>
 </div>
 
 </div>
 
-<div class="supported-note">
-Supported by many companies and digital communities.
+<div class="supported-note" data-i18n="ecosystemNote">
+Core platform capabilities are presented for account and financial management.
 </div>
 
 </section>
@@ -1758,13 +2257,15 @@ Supported by many companies and digital communities.
 
 <div class="center">
 
-<div class="section-label">Live Market Overview</div>
+<div class="section-label" data-i18n="marketLabel">
+Market Overview
+</div>
 
-<h2 class="section-title">
+<h2 class="section-title" data-i18n="marketTitle">
 Explore Digital Asset Markets
 </h2>
 
-<p class="section-text">
+<p class="section-text" data-i18n="marketText">
 Follow selected digital assets with continuously changing
 market displays, prices, movements and market capitalization.
 </p>
@@ -1773,35 +2274,25 @@ market displays, prices, movements and market capitalization.
 
 <div class="market-grid">
 
-<!-- BTC -->
-
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
 <div class="market-coin-icon btc-icon">₿</div>
-
 <div>
 <div class="market-name">Bitcoin</div>
 <div class="market-symbol">BTC</div>
 </div>
+</div>
+
+<div id="btcChange" class="market-change positive">+2.41%</div>
 
 </div>
 
-<div id="btcChange" class="market-change positive">
-+2.41%
-</div>
+<div id="btcPrice" class="market-price">$67,420.00</div>
 
-</div>
-
-<div id="btcPrice" class="market-price">
-$67,420.00
-</div>
-
-<div id="btcMovement" class="market-movement positive">
-+$1,620.45
-</div>
+<div id="btcMovement" class="market-movement positive">+$1,620.45</div>
 
 <div class="market-cap">
 <span>Market Cap</span>
@@ -1811,35 +2302,25 @@ $67,420.00
 </div>
 
 
-<!-- ETH -->
-
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
 <div class="market-coin-icon eth-icon">Ξ</div>
-
 <div>
 <div class="market-name">Ethereum</div>
 <div class="market-symbol">ETH</div>
 </div>
+</div>
+
+<div id="ethChange" class="market-change positive">+1.82%</div>
 
 </div>
 
-<div id="ethChange" class="market-change positive">
-+1.82%
-</div>
+<div id="ethPrice" class="market-price">$3,540.00</div>
 
-</div>
-
-<div id="ethPrice" class="market-price">
-$3,540.00
-</div>
-
-<div id="ethMovement" class="market-movement positive">
-+$64.43
-</div>
+<div id="ethMovement" class="market-movement positive">+$64.43</div>
 
 <div class="market-cap">
 <span>Market Cap</span>
@@ -1849,35 +2330,25 @@ $3,540.00
 </div>
 
 
-<!-- SOL -->
-
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
 <div class="market-coin-icon sol-icon">S</div>
-
 <div>
 <div class="market-name">Solana</div>
 <div class="market-symbol">SOL</div>
 </div>
+</div>
+
+<div id="solChange" class="market-change positive">+3.17%</div>
 
 </div>
 
-<div id="solChange" class="market-change positive">
-+3.17%
-</div>
+<div id="solPrice" class="market-price">$181.00</div>
 
-</div>
-
-<div id="solPrice" class="market-price">
-$181.00
-</div>
-
-<div id="solMovement" class="market-movement positive">
-+$5.73
-</div>
+<div id="solMovement" class="market-movement positive">+$5.73</div>
 
 <div class="market-cap">
 <span>Market Cap</span>
@@ -1887,39 +2358,158 @@ $181.00
 </div>
 
 
-<!-- BNB -->
-
 <div class="market">
 
 <div class="market-top">
 
 <div class="market-name-wrap">
 <div class="market-coin-icon bnb-icon">B</div>
-
 <div>
 <div class="market-name">BNB</div>
 <div class="market-symbol">BNB</div>
 </div>
+</div>
+
+<div id="bnbChange" class="market-change positive">+0.94%</div>
 
 </div>
 
-<div id="bnbChange" class="market-change positive">
-+0.94%
-</div>
+<div id="bnbPrice" class="market-price">$612.00</div>
 
-</div>
-
-<div id="bnbPrice" class="market-price">
-$612.00
-</div>
-
-<div id="bnbMovement" class="market-movement positive">
-+$5.75
-</div>
+<div id="bnbMovement" class="market-movement positive">+$5.75</div>
 
 <div class="market-cap">
 <span>Market Cap</span>
 <strong id="bnbCap">$84.7B</strong>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- INVESTMENTS -->
+
+<section class="investments">
+
+<div class="center">
+
+<div class="section-label" data-i18n="plansLabel">
+Investment Plans
+</div>
+
+<h2 class="section-title" data-i18n="plansTitle">
+Structured Plans for Different Goals
+</h2>
+
+<p class="section-text" data-i18n="plansText">
+Review the current CoinForest investment-plan structure and
+compare each plan by return and starting range.
+</p>
+
+</div>
+
+<div class="plan-grid">
+
+<div class="plan">
+
+<div class="plan-number">01</div>
+<h3>Starter</h3>
+
+<div class="plan-return">
+15% <span>return</span>
+</div>
+
+<div class="plan-range">
+$100 – $1,500
+</div>
+
+<div class="plan-period">
+Structured plan
+</div>
+
+</div>
+
+
+<div class="plan">
+
+<div class="plan-number">02</div>
+<h3>Growth</h3>
+
+<div class="plan-return">
+25% <span>return</span>
+</div>
+
+<div class="plan-range">
+$750 – $5,500
+</div>
+
+<div class="plan-period">
+Structured plan
+</div>
+
+</div>
+
+
+<div class="plan popular">
+
+<div class="popular-label">POPULAR</div>
+
+<div class="plan-number">03</div>
+<h3>Silver</h3>
+
+<div class="plan-return">
+35% <span>return</span>
+</div>
+
+<div class="plan-range">
+$5,500 – $25,000
+</div>
+
+<div class="plan-period">
+Structured plan
+</div>
+
+</div>
+
+
+<div class="plan">
+
+<div class="plan-number">04</div>
+<h3>Gold</h3>
+
+<div class="plan-return">
+45% <span>return</span>
+</div>
+
+<div class="plan-range">
+$25,000 – $75,000
+</div>
+
+<div class="plan-period">
+Structured plan
+</div>
+
+</div>
+
+
+<div class="plan">
+
+<div class="plan-number">05</div>
+<h3>Platinum</h3>
+
+<div class="plan-return">
+50% <span>return</span>
+</div>
+
+<div class="plan-range">
+$75,000+
+</div>
+
+<div class="plan-period">
+Structured plan
 </div>
 
 </div>
@@ -1935,15 +2525,16 @@ $612.00
 
 <div class="center">
 
-<div class="section-label">Our Services</div>
+<div class="section-label" data-i18n="servicesLabel">
+Our Services
+</div>
 
-<h2 class="section-title">
+<h2 class="section-title" data-i18n="servicesTitle">
 Unlock Your Financial Potential
 </h2>
 
-<p class="section-text">
-Explore the core financial tools planned for the CoinForest
-ecosystem.
+<p class="section-text" data-i18n="servicesText">
+Explore the core financial tools within the CoinForest ecosystem.
 </p>
 
 </div>
@@ -1952,26 +2543,26 @@ ecosystem.
 
 <div class="service">
 <div class="service-number">01 — WALLET MANAGEMENT</div>
-<h3>Main & Profit Wallets</h3>
-<p>
-Manage your available balance and profit balance through one
-organized account dashboard.
+<h3 data-i18n="service1Title">Main & Profit Wallets</h3>
+<p data-i18n="service1Text">
+Manage available and profit balances through one organized
+account dashboard.
 </p>
 </div>
 
 <div class="service">
 <div class="service-number">02 — INVESTMENTS</div>
-<h3>Structured Investment Plans</h3>
-<p>
-Access structured investment schemas with clear periods,
-returns and account activity.
+<h3 data-i18n="service2Title">Structured Investment Plans</h3>
+<p data-i18n="service2Text">
+Review structured investment plans with clearly presented
+ranges and projected return figures.
 </p>
 </div>
 
 <div class="service">
 <div class="service-number">03 — TRANSFERS</div>
-<h3>Send Money</h3>
-<p>
+<h3 data-i18n="service3Title">Send Money</h3>
+<p data-i18n="service3Text">
 A dedicated environment for managing supported account-to-account
 transfers.
 </p>
@@ -1979,8 +2570,8 @@ transfers.
 
 <div class="service">
 <div class="service-number">04 — WITHDRAWALS</div>
-<h3>Withdrawal Management</h3>
-<p>
+<h3 data-i18n="service4Title">Withdrawal Management</h3>
+<p data-i18n="service4Text">
 Submit and monitor withdrawal activity directly from your
 personal financial dashboard.
 </p>
@@ -1997,14 +2588,16 @@ personal financial dashboard.
 
 <div class="center">
 
-<div class="section-label">Leadership</div>
+<div class="section-label" data-i18n="teamLabel">
+Leadership
+</div>
 
-<h2 class="section-title">
-Meet the Great Brains Behind CoinForest
+<h2 class="section-title" data-i18n="teamTitle">
+Meet the CoinForest Team
 </h2>
 
-<p class="section-text">
-Meet the people bringing strategy, technology, financial
+<p class="section-text" data-i18n="teamText">
+The CoinForest concept brings strategy, technology, financial
 operations and customer experience together.
 </p>
 
@@ -2015,24 +2608,15 @@ operations and customer experience together.
 <div class="team-card">
 
 <div class="team-photo">
-
-<img
-src="assets/people/team-1.jpg"
+<img src="assets/people/team-1.jpg"
 alt="Alexander Morgan"
-onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
->
-
-<div class="team-fallback">
-<div class="team-fallback-head"></div>
-<div class="team-fallback-body"></div>
-</div>
-
+onerror="this.style.display='none'">
 </div>
 
 <div class="team-info">
 <h3>Alexander Morgan</h3>
 <span>Chief Executive Officer</span>
-<p>Leading platform strategy and long-term development.</p>
+<p>Platform strategy and long-term development.</p>
 </div>
 
 </div>
@@ -2041,24 +2625,15 @@ onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
 <div class="team-card">
 
 <div class="team-photo">
-
-<img
-src="assets/people/team-2.jpg"
+<img src="assets/people/team-2.jpg"
 alt="Amara Williams"
-onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
->
-
-<div class="team-fallback">
-<div class="team-fallback-head"></div>
-<div class="team-fallback-body"></div>
-</div>
-
+onerror="this.style.display='none'">
 </div>
 
 <div class="team-info">
 <h3>Amara Williams</h3>
 <span>Chief Technology Officer</span>
-<p>Overseeing technology, architecture and platform innovation.</p>
+<p>Technology, architecture and platform innovation.</p>
 </div>
 
 </div>
@@ -2067,24 +2642,15 @@ onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
 <div class="team-card">
 
 <div class="team-photo">
-
-<img
-src="assets/people/team-3.jpg"
+<img src="assets/people/team-3.jpg"
 alt="Daniel Okafor"
-onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
->
-
-<div class="team-fallback">
-<div class="team-fallback-head"></div>
-<div class="team-fallback-body"></div>
-</div>
-
+onerror="this.style.display='none'">
 </div>
 
 <div class="team-info">
 <h3>Daniel Okafor</h3>
 <span>Financial Operations Director</span>
-<p>Focused on financial systems and operational structure.</p>
+<p>Financial systems and operational structure.</p>
 </div>
 
 </div>
@@ -2093,24 +2659,15 @@ onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
 <div class="team-card">
 
 <div class="team-photo">
-
-<img
-src="assets/people/team-4.jpg"
+<img src="assets/people/team-4.jpg"
 alt="Sophia Laurent"
-onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
->
-
-<div class="team-fallback">
-<div class="team-fallback-head"></div>
-<div class="team-fallback-body"></div>
-</div>
-
+onerror="this.style.display='none'">
 </div>
 
 <div class="team-info">
 <h3>Sophia Laurent</h3>
 <span>Customer Experience Director</span>
-<p>Focused on usability, support and customer experience.</p>
+<p>Usability, support and customer experience.</p>
 </div>
 
 </div>
@@ -2126,14 +2683,17 @@ onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
 
 <div class="center">
 
-<div class="section-label">Testimonials</div>
+<div class="section-label" data-i18n="testimonialLabel">
+Community Feedback
+</div>
 
-<h2 class="section-title">
-What Our Users Say
+<h2 class="section-title" data-i18n="testimonialTitle">
+What Users Value About the Platform
 </h2>
 
-<p class="section-text">
-A platform designed around clarity, accessibility and confidence.
+<p class="section-text" data-i18n="testimonialText">
+Examples of the kind of feedback associated with the CoinForest
+interface and account experience.
 </p>
 
 </div>
@@ -2153,19 +2713,21 @@ A platform designed around clarity, accessibility and confidence.
 
 <div class="cta-box">
 
-<div class="section-label">Get Started</div>
+<div class="section-label" data-i18n="ctaLabel">
+Get Started
+</div>
 
-<h2>
+<h2 data-i18n="ctaTitle">
 Empower Your Finances.<br>
 Embrace Freedom.
 </h2>
 
-<p>
-Create your CoinForest account and experience a modern,
-organized digital financial platform.
+<p data-i18n="ctaText">
+Create your CoinForest account and explore a modern,
+organized digital financial environment.
 </p>
 
-<a class="btn btn-gold" href="login.html">
+<a class="btn btn-gold" href="login.html" data-i18n="ctaButton">
 Create Your Account
 </a>
 
@@ -2186,7 +2748,7 @@ Create Your Account
 Coin<span>Forest</span>
 </a>
 
-<p>
+<p data-i18n="footerText">
 A modern digital-asset platform designed to bring wallets,
 investments and financial tools together.
 </p>
@@ -2194,25 +2756,25 @@ investments and financial tools together.
 </div>
 
 <div>
-<h4>Company</h4>
-<a href="#home">Home</a>
-<a href="#about">About Us</a>
-<a href="#services">Services</a>
-<a href="#contact">Contact</a>
+<h4 data-i18n="footerCompany">Company</h4>
+<a href="#home" data-i18n="navHome">Home</a>
+<a href="#about" data-i18n="navAbout">About Us</a>
+<a href="#services" data-i18n="navServices">Services</a>
+<a href="#contact" data-i18n="navContact">Contact</a>
 </div>
 
 <div>
-<h4>Platform</h4>
-<a href="login.html">Login</a>
-<a href="login.html">Register</a>
-<a href="#markets">Markets</a>
-<a href="dashboard.html">Dashboard</a>
+<h4 data-i18n="footerPlatform">Platform</h4>
+<a href="login.html" data-i18n="login">Login</a>
+<a href="login.html" data-i18n="register">Register</a>
+<a href="#markets" data-i18n="navMarkets">Markets</a>
+<a href="dashboard.html" data-i18n="dashboard">Dashboard</a>
 </div>
 
 <div>
-<h4>Resources</h4>
-<a href="#markets">Market Overview</a>
-<a href="#contact">Support</a>
+<h4 data-i18n="footerResources">Resources</h4>
+<a href="#markets" data-i18n="marketOverview">Market Overview</a>
+<a href="#contact" data-i18n="support">Support</a>
 </div>
 
 </div>
@@ -2235,18 +2797,22 @@ CF
 <div class="activity-content">
 
 <strong id="activityTitle">
-Investment completed
+Platform Update
 </strong>
 
-<p id="activityMessage"></p>
+<p id="activityMessage">
+CoinForest account activity is available.
+</p>
 
 <span id="activityTime">
-Just now
+Now
 </span>
 
 </div>
 
-<button class="activity-close" onclick="hideActivity()">
+<button class="activity-close"
+onclick="hideActivity()"
+aria-label="Close">
 ×
 </button>
 
@@ -2256,42 +2822,223 @@ Just now
 <script>
 
 /* =========================================================
-   PLATFORM COUNTERS
+   LANGUAGE SYSTEM
 ========================================================= */
 
-let activeUsers=75000000;
-let downloads=100000000;
+const translations={
 
-function formatMillions(value){
-return Math.round(value/1000000)+"M+";
+en:{
+navHome:"Home",
+navAbout:"About Us",
+navServices:"Services",
+navMarkets:"Markets",
+navTeam:"Team",
+navContact:"Contact",
+login:"Login",
+register:"Register",
+badge:"The future of digital finance",
+finance:"Finance",
+heroText:"CoinForest brings wallets, investments, transfers and digital asset market information together in one structured financial environment built for the modern digital-asset journey.",
+getStarted:"Get Started",
+explore:"Explore CoinForest",
+totalBalance:"Total Balance",
+wallet:"Wallet",
+invest:"Invest",
+transfer:"Transfer",
+downloads:"Downloads",
+activeUsers:"Active Users",
+activeNow:"Active now",
+platformAccess:"Platform Access",
+accountVisibility:"Account Visibility",
+aboutLabel:"About CoinForest",
+aboutTitle:"Shaping the Future of Digital Finance Together",
+aboutText:"CoinForest is designed around a modern digital-asset experience, bringing financial tools, wallet management and structured investment features into one powerful environment.",
+structuredTitle:"Structured Financial Experience",
+structuredText:"Everything organized around your personal financial dashboard.",
+walletVisibilityTitle:"Wallet Visibility",
+walletVisibilityText:"Keep your Main Wallet and Profit Wallet clearly separated.",
+securityTitle:"Account Security",
+securityText:"Authentication and account controls built into the platform.",
+whyLabel:"Why Choose CoinForest",
+whyTitle:"Elevating Your Financial Experience",
+whyText:"Built to give users a clear, modern and organized way to interact with their digital financial environment.",
+feature1Title:"Cutting-Edge Technology",
+feature1Text:"A modern platform architecture designed for speed, accessibility and a smooth digital experience.",
+feature2Title:"User Empowerment",
+feature2Text:"Give every user the tools and information needed to understand and manage their account.",
+feature3Title:"Transparent & Secure",
+feature3Text:"Account activity, wallet information and platform actions are presented in a structured environment.",
+experienceLabel:"Inside CoinForest",
+experienceTitle:"A Financial Experience Designed Around You",
+experienceText:"Explore the core screens and account experiences that make the CoinForest environment simple to navigate.",
+scene1Title:"Main Wallet",
+scene1Text:"A clear view of available account funds.",
+scene2Title:"Profit Wallet",
+scene2Text:"Separate visibility for accumulated returns.",
+scene3Title:"Investment Dashboard",
+scene3Text:"Monitor active financial positions.",
+scene4Title:"Investment Plans",
+scene4Text:"Compare available plan structures.",
+scene5Title:"Account Activity",
+scene5Text:"Review recent account actions.",
+scene6Title:"Digital Asset Overview",
+scene6Text:"A compact view of selected markets.",
+ecosystemLabel:"Digital Finance Ecosystem",
+ecosystemTitle:"Built for a Connected Financial Future",
+ecosystemText:"CoinForest brings core financial tools together in one structured digital environment.",
+ecosystemWallet:"Wallet Management",
+ecosystemInvest:"Investment Tools",
+ecosystemMarkets:"Market Information",
+ecosystemNote:"Core platform capabilities are presented for account and financial management.",
+marketLabel:"Market Overview",
+marketTitle:"Explore Digital Asset Markets",
+marketText:"Follow selected digital assets with continuously changing market displays, prices, movements and market capitalization.",
+plansLabel:"Investment Plans",
+plansTitle:"Structured Plans for Different Goals",
+plansText:"Review the current CoinForest investment-plan structure and compare each plan by return and starting range.",
+servicesLabel:"Our Services",
+servicesTitle:"Unlock Your Financial Potential",
+servicesText:"Explore the core financial tools within the CoinForest ecosystem.",
+service1Title:"Main & Profit Wallets",
+service1Text:"Manage available and profit balances through one organized account dashboard.",
+service2Title:"Structured Investment Plans",
+service2Text:"Review structured investment plans with clearly presented ranges and projected return figures.",
+service3Title:"Send Money",
+service3Text:"A dedicated environment for managing supported account-to-account transfers.",
+service4Title:"Withdrawal Management",
+service4Text:"Submit and monitor withdrawal activity directly from your personal financial dashboard.",
+teamLabel:"Leadership",
+teamTitle:"Meet the CoinForest Team",
+teamText:"The CoinForest concept brings strategy, technology, financial operations and customer experience together.",
+testimonialLabel:"Community Feedback",
+testimonialTitle:"What Users Value About the Platform",
+testimonialText:"Examples of the kind of feedback associated with the CoinForest interface and account experience.",
+ctaLabel:"Get Started",
+ctaTitle:"Empower Your Finances.<br>Embrace Freedom.",
+ctaText:"Create your CoinForest account and explore a modern, organized digital financial environment.",
+ctaButton:"Create Your Account",
+footerText:"A modern digital-asset platform designed to bring wallets, investments and financial tools together.",
+footerCompany:"Company",
+footerPlatform:"Platform",
+footerResources:"Resources",
+dashboard:"Dashboard",
+marketOverview:"Market Overview",
+support:"Support"
+},
+
+fr:{
+navHome:"Accueil",navAbout:"À propos",navServices:"Services",navMarkets:"Marchés",navTeam:"Équipe",navContact:"Contact",
+login:"Connexion",register:"Inscription",badge:"L'avenir de la finance numérique",finance:"Finance",
+heroText:"CoinForest réunit portefeuilles, investissements, transferts et informations sur les actifs numériques dans un environnement financier structuré.",
+getStarted:"Commencer",explore:"Explorer CoinForest",totalBalance:"Solde total",wallet:"Portefeuille",invest:"Investir",transfer:"Transfert",
+downloads:"Téléchargements",activeUsers:"Utilisateurs actifs",activeNow:"Actif maintenant",platformAccess:"Accès 24/7",accountVisibility:"Visibilité du compte",
+aboutLabel:"À propos de CoinForest",aboutTitle:"Façonner ensemble l'avenir de la finance numérique",aboutText:"CoinForest est conçu autour d'une expérience moderne des actifs numériques.",
+structuredTitle:"Expérience financière structurée",structuredText:"Tout est organisé autour de votre tableau de bord financier.",
+walletVisibilityTitle:"Visibilité du portefeuille",walletVisibilityText:"Gardez vos portefeuilles principal et bénéfices clairement séparés.",
+securityTitle:"Sécurité du compte",securityText:"Authentification et contrôles de compte intégrés.",
+whyLabel:"Pourquoi CoinForest",whyTitle:"Améliorer votre expérience financière",whyText:"Une manière claire et moderne d'interagir avec votre environnement financier.",
+feature1Title:"Technologie avancée",feature1Text:"Une architecture moderne conçue pour la rapidité et l'accessibilité.",
+feature2Title:"Autonomie utilisateur",feature2Text:"Les outils nécessaires pour comprendre et gérer votre compte.",
+feature3Title:"Transparent et sécurisé",feature3Text:"Les activités et informations du compte sont présentées clairement.",
+experienceLabel:"Dans CoinForest",experienceTitle:"Une expérience financière pensée pour vous",experienceText:"Découvrez les écrans principaux de l'environnement CoinForest.",
+scene1Title:"Portefeuille principal",scene1Text:"Une vue claire des fonds disponibles.",
+scene2Title:"Portefeuille bénéfices",scene2Text:"Une visibilité séparée des bénéfices accumulés.",
+scene3Title:"Tableau de bord investissement",scene3Text:"Suivez vos positions financières.",
+scene4Title:"Plans d'investissement",scene4Text:"Comparez les structures disponibles.",
+scene5Title:"Activité du compte",scene5Text:"Consultez les actions récentes.",
+scene6Title:"Actifs numériques",scene6Text:"Une vue compacte des marchés sélectionnés.",
+ecosystemLabel:"Écosystème financier numérique",ecosystemTitle:"Conçu pour un avenir financier connecté",ecosystemText:"Les outils financiers essentiels réunis dans un environnement structuré.",
+ecosystemWallet:"Gestion des portefeuilles",ecosystemInvest:"Outils d'investissement",ecosystemMarkets:"Informations de marché",ecosystemNote:"Les fonctionnalités principales sont présentées pour la gestion du compte.",
+marketLabel:"Aperçu du marché",marketTitle:"Explorer les marchés d'actifs numériques",marketText:"Suivez une sélection d'actifs numériques avec des données de marché dynamiques.",
+plansLabel:"Plans d'investissement",plansTitle:"Des plans structurés pour différents objectifs",plansText:"Comparez les plans actuels par rendement et fourchette.",
+servicesLabel:"Nos services",servicesTitle:"Libérez votre potentiel financier",servicesText:"Découvrez les principaux outils financiers de CoinForest.",
+service1Title:"Portefeuilles principal et bénéfices",service1Text:"Gérez vos soldes dans un tableau de bord organisé.",
+service2Title:"Plans d'investissement",service2Text:"Consultez les structures d'investissement disponibles.",
+service3Title:"Envoyer de l'argent",service3Text:"Un environnement dédié aux transferts pris en charge.",
+service4Title:"Gestion des retraits",service4Text:"Soumettez et suivez vos opérations de retrait.",
+teamLabel:"Direction",teamTitle:"L'équipe CoinForest",teamText:"Stratégie, technologie, opérations financières et expérience client.",
+testimonialLabel:"Avis de la communauté",testimonialTitle:"Ce que les utilisateurs apprécient",testimonialText:"Exemples de retours associés à l'interface CoinForest.",
+ctaLabel:"Commencer",ctaTitle:"Renforcez vos finances.<br>Embrassez la liberté.",ctaText:"Créez votre compte CoinForest et explorez un environnement financier moderne.",ctaButton:"Créer votre compte",
+footerText:"Une plateforme moderne d'actifs numériques réunissant portefeuilles, investissements et outils financiers.",footerCompany:"Entreprise",footerPlatform:"Plateforme",footerResources:"Ressources",dashboard:"Tableau de bord",marketOverview:"Aperçu du marché",support:"Support"
 }
 
-function updatePlatformCounters(){
+};
 
-activeUsers+=
-Math.floor(Math.random()*24001)-12000;
+const languageCodes=["en","fr"];
 
-if(activeUsers<60000000)
-activeUsers=60000000;
+const extraLanguages={
+es:{
+navHome:"Inicio",navAbout:"Nosotros",navServices:"Servicios",navMarkets:"Mercados",navTeam:"Equipo",navContact:"Contacto",login:"Iniciar sesión",register:"Registrarse",
+badge:"El futuro de las finanzas digitales",finance:"Finanzas",heroText:"CoinForest reúne billeteras, inversiones, transferencias e información de activos digitales en un entorno financiero estructurado.",getStarted:"Comenzar",explore:"Explorar CoinForest",totalBalance:"Saldo total",wallet:"Billetera",invest:"Invertir",transfer:"Transferir"
+},
+pt:{
+navHome:"Início",navAbout:"Sobre nós",navServices:"Serviços",navMarkets:"Mercados",navTeam:"Equipe",navContact:"Contato",login:"Entrar",register:"Registrar",badge:"O futuro das finanças digitais",finance:"Finanças",heroText:"A CoinForest reúne carteiras, investimentos, transferências e informações sobre ativos digitais em um ambiente financeiro estruturado.",getStarted:"Começar",explore:"Explorar CoinForest",totalBalance:"Saldo total",wallet:"Carteira",invest:"Investir",transfer:"Transferir"
+},
+de:{
+navHome:"Startseite",navAbout:"Über uns",navServices:"Services",navMarkets:"Märkte",navTeam:"Team",navContact:"Kontakt",login:"Anmelden",register:"Registrieren",badge:"Die Zukunft der digitalen Finanzen",finance:"Finanzen",heroText:"CoinForest verbindet Wallets, Investments, Transfers und Informationen zu digitalen Assets in einer strukturierten Finanzumgebung.",getStarted:"Starten",explore:"CoinForest entdecken",totalBalance:"Gesamtsaldo",wallet:"Wallet",invest:"Investieren",transfer:"Transfer"
+},
+it:{
+navHome:"Home",navAbout:"Chi siamo",navServices:"Servizi",navMarkets:"Mercati",navTeam:"Team",navContact:"Contatti",login:"Accedi",register:"Registrati",badge:"Il futuro della finanza digitale",finance:"Finanza",heroText:"CoinForest riunisce wallet, investimenti, trasferimenti e informazioni sugli asset digitali in un ambiente finanziario strutturato.",getStarted:"Inizia",explore:"Esplora CoinForest",totalBalance:"Saldo totale",wallet:"Wallet",invest:"Investi",transfer:"Trasferisci"
+},
+nl:{
+navHome:"Home",navAbout:"Over ons",navServices:"Diensten",navMarkets:"Markten",navTeam:"Team",navContact:"Contact",login:"Inloggen",register:"Registreren",badge:"De toekomst van digitale financiën",finance:"Financiën",heroText:"CoinForest brengt wallets, investeringen, transfers en informatie over digitale activa samen in één gestructureerde financiële omgeving.",getStarted:"Beginnen",explore:"CoinForest ontdekken",totalBalance:"Totaal saldo",wallet:"Wallet",invest:"Investeren",transfer:"Overboeken"
+},
+pl:{
+navHome:"Strona główna",navAbout:"O nas",navServices:"Usługi",navMarkets:"Rynki",navTeam:"Zespół",navContact:"Kontakt",login:"Zaloguj",register:"Zarejestruj",badge:"Przyszłość finansów cyfrowych",finance:"Finanse",heroText:"CoinForest łączy portfele, inwestycje, transfery i informacje o aktywach cyfrowych w jednym uporządkowanym środowisku.",getStarted:"Rozpocznij",explore:"Poznaj CoinForest",totalBalance:"Łączne saldo",wallet:"Portfel",invest:"Inwestuj",transfer:"Transfer"
+},
+ru:{
+navHome:"Главная",navAbout:"О нас",navServices:"Услуги",navMarkets:"Рынки",navTeam:"Команда",navContact:"Контакты",login:"Войти",register:"Регистрация",badge:"Будущее цифровых финансов",finance:"Финансы",heroText:"CoinForest объединяет кошельки, инвестиции, переводы и информацию о цифровых активах в единой структурированной среде.",getStarted:"Начать",explore:"Изучить CoinForest",totalBalance:"Общий баланс",wallet:"Кошелёк",invest:"Инвестиции",transfer:"Перевод"
+},
+ar:{
+navHome:"الرئيسية",navAbout:"من نحن",navServices:"الخدمات",navMarkets:"الأسواق",navTeam:"الفريق",navContact:"اتصل بنا",login:"تسجيل الدخول",register:"التسجيل",badge:"مستقبل التمويل الرقمي",finance:"التمويل",heroText:"تجمع CoinForest المحافظ والاستثمارات والتحويلات ومعلومات الأصول الرقمية في بيئة مالية منظمة.",getStarted:"ابدأ الآن",explore:"استكشف CoinForest",totalBalance:"الرصيد الإجمالي",wallet:"المحفظة",invest:"استثمار",transfer:"تحويل"
+},
+zh:{
+navHome:"首页",navAbout:"关于我们",navServices:"服务",navMarkets:"市场",navTeam:"团队",navContact:"联系我们",login:"登录",register:"注册",badge:"数字金融的未来",finance:"金融",heroText:"CoinForest 将钱包、投资、转账和数字资产市场信息整合到一个结构化的金融环境中。",getStarted:"开始使用",explore:"探索 CoinForest",totalBalance:"总余额",wallet:"钱包",invest:"投资",transfer:"转账"
+},
+ja:{
+navHome:"ホーム",navAbout:"概要",navServices:"サービス",navMarkets:"市場",navTeam:"チーム",navContact:"お問い合わせ",login:"ログイン",register:"登録",badge:"デジタル金融の未来",finance:"金融",heroText:"CoinForestはウォレット、投資、送金、デジタル資産市場情報を一つの金融環境にまとめます。",getStarted:"始める",explore:"CoinForestを見る",totalBalance:"総残高",wallet:"ウォレット",invest:"投資",transfer:"送金"
+}
+};
 
-if(activeUsers>90000000)
-activeUsers=90000000;
+Object.assign(translations,extraLanguages);
 
-if(Math.random()>.45){
-downloads+=Math.floor(Math.random()*12000)+1000;
+function applyLanguage(lang){
+
+const data=translations[lang]||translations.en;
+
+document.documentElement.lang=lang;
+
+document.querySelectorAll("[data-i18n]").forEach(el=>{
+
+const key=el.getAttribute("data-i18n");
+
+if(data[key]){
+el.innerHTML=data[key];
 }
 
-document.getElementById("activeUsersCounter")
-.textContent=formatMillions(activeUsers);
+});
 
-document.getElementById("downloadsCounter")
-.textContent=formatMillions(downloads);
+if(lang==="ar"){
+document.documentElement.dir="rtl";
+}else{
+document.documentElement.dir="ltr";
+}
+
+localStorage.setItem("coinforest-language",lang);
 
 }
 
-updatePlatformCounters();
+const languageSelect=document.getElementById("languageSelect");
 
-setInterval(updatePlatformCounters,6500);
+const savedLanguage=
+localStorage.getItem("coinforest-language")||"en";
+
+languageSelect.value=savedLanguage;
+applyLanguage(savedLanguage);
+
+languageSelect.addEventListener("change",e=>{
+applyLanguage(e.target.value);
+});
 
 
 /* =========================================================
@@ -2300,44 +3047,12 @@ setInterval(updatePlatformCounters,6500);
 
 const coins={
 
-BTC:{
-price:67420,
-min:62000,
-max:72000,
-change:2.41,
-supply:19850000
-},
-
-ETH:{
-price:3540,
-min:3000,
-max:3900,
-change:1.82,
-supply:120500000
-},
-
-SOL:{
-price:181,
-min:145,
-max:215,
-change:3.17,
-supply:468000000
-},
-
-BNB:{
-price:612,
-min:540,
-max:680,
-change:.94,
-supply:138000000
-}
+BTC:{price:67420,min:62000,max:72000,change:2.41,supply:19850000},
+ETH:{price:3540,min:3000,max:3900,change:1.82,supply:120500000},
+SOL:{price:181,min:145,max:215,change:3.17,supply:468000000},
+BNB:{price:612,min:540,max:680,change:.94,supply:138000000}
 
 };
-
-
-/* =========================================================
-   PRICE FORMAT
-========================================================= */
 
 function formatPrice(value){
 
@@ -2354,11 +3069,6 @@ maximumFractionDigits:2
 );
 
 }
-
-
-/* =========================================================
-   MARKET CAP
-========================================================= */
 
 function formatMarketCap(value){
 
@@ -2379,8 +3089,7 @@ const coin=coins[symbol];
 
 const cap=coin.price*coin.supply;
 
-const element=
-document.getElementById(
+const element=document.getElementById(
 symbol.toLowerCase()+"Cap"
 );
 
@@ -2395,8 +3104,7 @@ element.textContent=formatMarketCap(cap);
    TICKER
 ========================================================= */
 
-const tickerTrack=
-document.getElementById("tickerTrack");
+const tickerTrack=document.getElementById("tickerTrack");
 
 const tickerCoins=[
 ["BTC","₿","btc-icon"],
@@ -2423,17 +3131,11 @@ ${icon}
 
 <b>${symbol}</b>
 
-<span id="tickerPrice-${symbol}" class="coin-price">
-—
-</span>
+<span id="tickerPrice-${symbol}" class="coin-price">—</span>
 
-<span id="tickerChange-${symbol}" class="coin-change">
-—
-</span>
+<span id="tickerChange-${symbol}" class="coin-change">—</span>
 
-<span id="tickerMovement-${symbol}" class="coin-movement">
-—
-</span>
+<span id="tickerMovement-${symbol}" class="coin-movement">—</span>
 
 `;
 
@@ -2442,17 +3144,12 @@ return coin;
 }
 
 tickerCoins.forEach(item=>{
-tickerTrack.appendChild(
-createTickerCoin(...item)
-);
+tickerTrack.appendChild(createTickerCoin(...item));
 });
 
 tickerCoins.forEach(item=>{
-tickerTrack.appendChild(
-createTickerCoin(...item)
-);
+tickerTrack.appendChild(createTickerCoin(...item));
 });
-
 
 function updateTickerCoin(symbol,price,change,movement){
 
@@ -2470,15 +3167,8 @@ element.textContent=
 (change>=0?"+":"")+
 change.toFixed(2)+"%";
 
-element.classList.toggle(
-"coin-up",
-change>=0
-);
-
-element.classList.toggle(
-"coin-down",
-change<0
-);
+element.classList.toggle("coin-up",change>=0);
+element.classList.toggle("coin-down",change<0);
 
 });
 
@@ -2490,15 +3180,8 @@ element.textContent=
 (movement>=0?"+":"-")+
 formatPrice(Math.abs(movement));
 
-element.classList.toggle(
-"coin-up",
-movement>=0
-);
-
-element.classList.toggle(
-"coin-down",
-movement<0
-);
+element.classList.toggle("coin-up",movement>=0);
+element.classList.toggle("coin-down",movement<0);
 
 });
 
@@ -2522,42 +3205,30 @@ coin.price*
 
 coin.price+=movement;
 
-if(coin.price<coin.min)
-coin.price=coin.min;
+if(coin.price<coin.min)coin.price=coin.min;
+if(coin.price>coin.max)coin.price=coin.max;
 
-if(coin.price>coin.max)
-coin.price=coin.max;
+const actualMovement=coin.price-previousPrice;
 
-const actualMovement=
-coin.price-previousPrice;
+coin.change+=(Math.random()-.5)*.8;
 
-coin.change+=
-(Math.random()-.5)*.8;
+if(coin.change>9)coin.change=9;
+if(coin.change<-9)coin.change=-9;
 
-if(coin.change>9)
-coin.change=9;
-
-if(coin.change<-9)
-coin.change=-9;
-
-const priceElement=
-document.getElementById(
+const priceElement=document.getElementById(
 symbol.toLowerCase()+"Price"
 );
 
-const changeElement=
-document.getElementById(
+const changeElement=document.getElementById(
 symbol.toLowerCase()+"Change"
 );
 
-const movementElement=
-document.getElementById(
+const movementElement=document.getElementById(
 symbol.toLowerCase()+"Movement"
 );
 
 if(priceElement)
-priceElement.textContent=
-formatPrice(coin.price);
+priceElement.textContent=formatPrice(coin.price);
 
 if(changeElement){
 
@@ -2565,15 +3236,8 @@ changeElement.textContent=
 (coin.change>=0?"+":"")+
 coin.change.toFixed(2)+"%";
 
-changeElement.classList.toggle(
-"positive",
-coin.change>=0
-);
-
-changeElement.classList.toggle(
-"negative",
-coin.change<0
-);
+changeElement.classList.toggle("positive",coin.change>=0);
+changeElement.classList.toggle("negative",coin.change<0);
 
 }
 
@@ -2583,15 +3247,8 @@ movementElement.textContent=
 (actualMovement>=0?"+":"-")+
 formatPrice(Math.abs(actualMovement));
 
-movementElement.classList.toggle(
-"positive",
-actualMovement>=0
-);
-
-movementElement.classList.toggle(
-"negative",
-actualMovement<0
-);
+movementElement.classList.toggle("positive",actualMovement>=0);
+movementElement.classList.toggle("negative",actualMovement<0);
 
 }
 
@@ -2611,83 +3268,32 @@ updateMarketCap(symbol);
    SMALL COINS
 ========================================================= */
 
-const xrp={
-price:.61,
-change:1.06
-};
-
-const ada={
-price:.42,
-change:.87
-};
-
-const doge={
-price:.18,
-change:1.14
-};
-
-const dot={
-price:4.82,
-change:.72
-};
+const xrp={price:.61,change:1.06};
+const ada={price:.42,change:.87};
+const doge={price:.18,change:1.14};
+const dot={price:4.82,change:.72};
 
 function updateSmallCoin(symbol,state){
 
 const previous=state.price;
 
-state.price+=
-(Math.random()-.5)*
-state.price*
-.009;
+state.price+=(Math.random()-.5)*state.price*.009;
+state.change+=(Math.random()-.5)*.8;
 
-state.change+=
-(Math.random()-.5)*.8;
+const limits={
+XRP:[.48,.75],
+ADA:[.32,.55],
+DOGE:[.12,.25],
+DOT:[3.8,6.2]
+};
 
-if(symbol==="XRP"){
+const limit=limits[symbol];
 
-if(state.price<.48)
-state.price=.48;
+if(state.price<limit[0])state.price=limit[0];
+if(state.price>limit[1])state.price=limit[1];
 
-if(state.price>.75)
-state.price=.75;
-
-}
-
-if(symbol==="ADA"){
-
-if(state.price<.32)
-state.price=.32;
-
-if(state.price>.55)
-state.price=.55;
-
-}
-
-if(symbol==="DOGE"){
-
-if(state.price<.12)
-state.price=.12;
-
-if(state.price>.25)
-state.price=.25;
-
-}
-
-if(symbol==="DOT"){
-
-if(state.price<3.8)
-state.price=3.8;
-
-if(state.price>6.2)
-state.price=6.2;
-
-}
-
-if(state.change>9)
-state.change=9;
-
-if(state.change<-9)
-state.change=-9;
+if(state.change>9)state.change=9;
+if(state.change<-9)state.change=-9;
 
 updateTickerCoin(
 symbol,
@@ -2700,7 +3306,7 @@ state.price-previous
 
 
 /* =========================================================
-   PHONE ANIMATION
+   PHONE SCENES
 ========================================================= */
 
 const phoneScenes=[
@@ -2725,29 +3331,29 @@ balance:"$22,870.50",
 profit:"+$4,120.75 this month",
 title:"Withdrawal Activity",
 oneIcon:"✓",
-oneTitle:"Withdrawal Successful",
-oneText:"-$2,500.00",
+oneTitle:"Withdrawal Status",
+oneText:"Processing",
 twoIcon:"◆",
 twoTitle:"Profit Balance",
 twoText:"+$4,120.75",
 threeIcon:"↗",
 threeTitle:"Available Balance",
-threeText:"+$20,370.50"
+threeText:"$20,370.50"
 },
 
 {
 balance:"$20,370.50",
 profit:"+$3,890.20 this month",
-title:"Customer Support",
+title:"Account Overview",
 oneIcon:"●",
-oneTitle:"Admin Support",
-oneText:"Message received",
+oneTitle:"Support",
+oneText:"Connected",
 twoIcon:"✓",
-twoTitle:"Chat Session",
-twoText:"Connected",
+twoTitle:"Account",
+twoText:"Verified",
 threeIcon:"◆",
-threeTitle:"Account Verified",
-threeText:"Active"
+threeTitle:"Security",
+threeText:"Protected"
 },
 
 {
@@ -2755,14 +3361,14 @@ balance:"$24,615.20",
 profit:"+$5,210.40 this month",
 title:"Send Transaction",
 oneIcon:"↗",
-oneTitle:"Send Transaction",
-oneText:"-$1,250.00",
+oneTitle:"Transfer",
+oneText:"$1,250.00",
 twoIcon:"✓",
-twoTitle:"Transaction Status",
-twoText:"Successful",
+twoTitle:"Transaction",
+twoText:"Completed",
 threeIcon:"◆",
 threeTitle:"Recipient",
-threeText:"Completed"
+threeText:"Confirmed"
 },
 
 {
@@ -2786,11 +3392,9 @@ let phoneSceneIndex=0;
 
 function updatePhoneScene(){
 
-const scene=
-phoneScenes[phoneSceneIndex];
+const scene=phoneScenes[phoneSceneIndex];
 
-const screen=
-document.getElementById("phoneScreen");
+const screen=document.getElementById("phoneScreen");
 
 screen.classList.remove("phone-slide");
 
@@ -2798,41 +3402,21 @@ void screen.offsetWidth;
 
 screen.classList.add("phone-slide");
 
-document.getElementById("phoneBalance")
-.textContent=scene.balance;
+document.getElementById("phoneBalance").textContent=scene.balance;
+document.getElementById("phoneProfit").textContent=scene.profit;
+document.getElementById("phoneActivityTitle").textContent=scene.title;
 
-document.getElementById("phoneProfit")
-.textContent=scene.profit;
+document.getElementById("phoneIconOne").textContent=scene.oneIcon;
+document.getElementById("phoneActivityOneTitle").textContent=scene.oneTitle;
+document.getElementById("phoneActivityOneText").textContent=scene.oneText;
 
-document.getElementById("phoneActivityTitle")
-.textContent=scene.title;
+document.getElementById("phoneIconTwo").textContent=scene.twoIcon;
+document.getElementById("phoneActivityTwoTitle").textContent=scene.twoTitle;
+document.getElementById("phoneActivityTwoText").textContent=scene.twoText;
 
-document.getElementById("phoneIconOne")
-.textContent=scene.oneIcon;
-
-document.getElementById("phoneActivityOneTitle")
-.textContent=scene.oneTitle;
-
-document.getElementById("phoneActivityOneText")
-.textContent=scene.oneText;
-
-document.getElementById("phoneIconTwo")
-.textContent=scene.twoIcon;
-
-document.getElementById("phoneActivityTwoTitle")
-.textContent=scene.twoTitle;
-
-document.getElementById("phoneActivityTwoText")
-.textContent=scene.twoText;
-
-document.getElementById("phoneIconThree")
-.textContent=scene.threeIcon;
-
-document.getElementById("phoneActivityThreeTitle")
-.textContent=scene.threeTitle;
-
-document.getElementById("phoneActivityThreeText")
-.textContent=scene.threeText;
+document.getElementById("phoneIconThree").textContent=scene.threeIcon;
+document.getElementById("phoneActivityThreeTitle").textContent=scene.threeTitle;
+document.getElementById("phoneActivityThreeText").textContent=scene.threeText;
 
 phoneSceneIndex++;
 
@@ -2842,11 +3426,7 @@ phoneSceneIndex=0;
 }
 
 updatePhoneScene();
-
-setInterval(
-updatePhoneScene,
-2600
-);
+setInterval(updatePhoneScene,2600);
 
 
 /* =========================================================
@@ -2859,25 +3439,21 @@ const now=new Date();
 
 let hours=now.getHours();
 
-let minutes=
-String(now.getMinutes()).padStart(2,"0");
+const minutes=String(now.getMinutes()).padStart(2,"0");
 
-hours=
-hours%12||12;
+hours=hours%12||12;
 
-document.getElementById("phoneClock")
-.textContent=
+document.getElementById("phoneClock").textContent=
 hours+":"+minutes;
 
 }
 
 updatePhoneClock();
-
 setInterval(updatePhoneClock,30000);
 
 
 /* =========================================================
-   MARKET REFRESH — FAST
+   MARKET REFRESH
 ========================================================= */
 
 function refreshMarkets(){
@@ -2895,250 +3471,48 @@ updateSmallCoin("DOT",dot);
 }
 
 refreshMarkets();
-
-setInterval(
-refreshMarkets,
-1700
-);
+setInterval(refreshMarkets,1700);
 
 
 /* =========================================================
-   TESTIMONIALS — 28 PROFILES
-   3 SHOWN AT A TIME
+   TESTIMONIALS
 ========================================================= */
 
 const testimonials=[
 
-{
-name:"James Reynolds",
-role:"Digital Consultant",
-avatar:"JR",
-image:"assets/people/testimonial-01.jpg",
-text:"The dashboard gives me a much clearer view of my wallets and account activity. Everything feels organized."
-},
-
-{
-name:"Aisha Bello",
-role:"Business Consultant",
-avatar:"AB",
-image:"assets/people/testimonial-02.jpg",
-text:"I appreciate how clearly the wallet information is presented. It makes the platform easy to understand."
-},
-
-{
-name:"Liam Carter",
-role:"Technology Specialist",
-avatar:"LC",
-image:"assets/people/testimonial-03.jpg",
-text:"The interface feels modern and straightforward. I can find the information I need quickly."
-},
-
-{
-name:"Sofia Laurent",
-role:"Financial Analyst",
-avatar:"SL",
-image:"assets/people/testimonial-04.jpg",
-text:"The structure of the platform makes the different financial sections easy to follow."
-},
-
-{
-name:"Daniel Okafor",
-role:"Entrepreneur",
-avatar:"DO",
-image:"assets/people/testimonial-05.jpg",
-text:"The wallet layout gives me a very clear overview of my account."
-},
-
-{
-name:"Maria Santos",
-role:"Independent Consultant",
-avatar:"MS",
-image:"assets/people/testimonial-06.jpg",
-text:"I like the clean presentation and how the important information is kept accessible."
-},
-
-{
-name:"Michael Johnson",
-role:"Business Owner",
-avatar:"MJ",
-image:"assets/people/testimonial-07.jpg",
-text:"The overall platform feels polished and easy to navigate."
-},
-
-{
-name:"Priya Sharma",
-role:"Investment Researcher",
-avatar:"PS",
-image:"assets/people/testimonial-08.jpg",
-text:"The market information and account tools work together nicely."
-},
-
-{
-name:"David Wilson",
-role:"Entrepreneur",
-avatar:"DW",
-image:"assets/people/testimonial-09.jpg",
-text:"Everything is presented clearly, from the market overview to the account sections."
-},
-
-{
-name:"Fatima Abdullahi",
-role:"Digital Strategist",
-avatar:"FA",
-image:"assets/people/testimonial-10.jpg",
-text:"The platform gives the financial dashboard a very organized feel."
-},
-
-{
-name:"Ethan Williams",
-role:"Technology Consultant",
-avatar:"EW",
-image:"assets/people/testimonial-11.jpg",
-text:"The modern design makes the overall experience feel smooth."
-},
-
-{
-name:"Camila Rodriguez",
-role:"Marketing Professional",
-avatar:"CR",
-image:"assets/people/testimonial-12.jpg",
-text:"I really like the combination of market information and account tools."
-},
-
-{
-name:"Marcus Anderson",
-role:"Business Consultant",
-avatar:"MA",
-image:"assets/people/testimonial-13.jpg",
-text:"The information is presented in a way that is easy to follow."
-},
-
-{
-name:"Yuki Tanaka",
-role:"Technology Specialist",
-avatar:"YT",
-image:"assets/people/testimonial-14.jpg",
-text:"The clean organization makes the dashboard much easier to understand."
-},
-
-{
-name:"Grace Morgan",
-role:"Digital Strategist",
-avatar:"GM",
-image:"assets/people/testimonial-15.jpg",
-text:"I especially like how quickly I can see the important account information."
-},
-
-{
-name:"Christopher Lee",
-role:"Technology Consultant",
-avatar:"CL",
-image:"assets/people/testimonial-16.jpg",
-text:"The modern design and organized dashboard make the experience very smooth."
-},
-
-{
-name:"Kwame Mensah",
-role:"Business Owner",
-avatar:"KM",
-image:"assets/people/testimonial-17.jpg",
-text:"The platform keeps the important financial information easy to access."
-},
-
-{
-name:"Isabella Rossi",
-role:"Financial Consultant",
-avatar:"IR",
-image:"assets/people/testimonial-18.jpg",
-text:"The presentation is professional and the navigation is very straightforward."
-},
-
-{
-name:"Noah Thompson",
-role:"Entrepreneur",
-avatar:"NT",
-image:"assets/people/testimonial-19.jpg",
-text:"The dashboard gives me a clear picture of my account activity."
-},
-
-{
-name:"Zainab Yusuf",
-role:"Operations Manager",
-avatar:"ZY",
-image:"assets/people/testimonial-20.jpg",
-text:"The structure makes it easy to understand the different wallet sections."
-},
-
-{
-name:"Lucas Silva",
-role:"Digital Consultant",
-avatar:"LS",
-image:"assets/people/testimonial-21.jpg",
-text:"I like how the market overview and financial tools are presented together."
-},
-
-{
-name:"Hannah Brown",
-role:"Marketing Director",
-avatar:"HB",
-image:"assets/people/testimonial-22.jpg",
-text:"The platform has a clean and professional feel."
-},
-
-{
-name:"Raj Patel",
-role:"Technology Entrepreneur",
-avatar:"RP",
-image:"assets/people/testimonial-23.jpg",
-text:"The account interface is simple to navigate and easy to understand."
-},
-
-{
-name:"Chloe Martin",
-role:"Financial Analyst",
-avatar:"CM",
-image:"assets/people/testimonial-24.jpg",
-text:"The wallet information is presented in a very clear format."
-},
-
-{
-name:"Samuel Adeyemi",
-role:"Business Consultant",
-avatar:"SA",
-image:"assets/people/testimonial-25.jpg",
-text:"The overall experience feels organized and professional."
-},
-
-{
-name:"Elena Garcia",
-role:"Independent Consultant",
-avatar:"EG",
-image:"assets/people/testimonial-26.jpg",
-text:"The clean layout makes it easy to move through the platform."
-},
-
-{
-name:"Omar Hassan",
-role:"Digital Finance Specialist",
-avatar:"OH",
-image:"assets/people/testimonial-27.jpg",
-text:"The dashboard provides a clear view of the important account details."
-},
-
-{
-name:"Amelia Clark",
-role:"Investment Consultant",
-avatar:"AC",
-image:"assets/people/testimonial-28.jpg",
-text:"The platform brings the key financial tools together in a very organized environment."
-}
-
+["James Reynolds","Digital Consultant","JR","The dashboard gives me a clear overview of my wallet and account activity."],
+["Aisha Bello","Business Consultant","AB","I appreciate how clearly the different account sections are presented."],
+["Liam Carter","Technology Specialist","LC","The interface feels modern and straightforward to navigate."],
+["Sofia Laurent","Financial Analyst","SL","The structure makes the different financial sections easy to follow."],
+["Daniel Okafor","Entrepreneur","DO","The wallet layout provides a clear overview of account information."],
+["Maria Santos","Independent Consultant","MS","The clean presentation keeps the important information accessible."],
+["Michael Johnson","Business Owner","MJ","The overall interface feels polished and easy to navigate."],
+["Priya Sharma","Investment Researcher","PS","The market information and account tools are presented clearly."],
+["David Wilson","Entrepreneur","DW","The information is organized in a way that is easy to follow."],
+["Fatima Abdullahi","Digital Strategist","FA","The platform gives the financial dashboard an organized feel."],
+["Ethan Williams","Technology Consultant","EW","The modern design makes the overall experience smooth."],
+["Camila Rodriguez","Marketing Professional","CR","I like the combination of market information and account tools."],
+["Marcus Anderson","Business Consultant","MA","The information is presented in a clear and accessible way."],
+["Yuki Tanaka","Technology Specialist","YT","The clean organization makes the dashboard easier to understand."],
+["Grace Morgan","Digital Strategist","GM","The important account information is easy to locate."],
+["Christopher Lee","Technology Consultant","CL","The modern design and organized dashboard work well together."],
+["Kwame Mensah","Business Owner","KM","The platform keeps important financial information easy to access."],
+["Isabella Rossi","Financial Consultant","IR","The presentation is professional and the navigation is straightforward."],
+["Noah Thompson","Entrepreneur","NT","The dashboard provides a clear picture of account activity."],
+["Zainab Yusuf","Operations Manager","ZY","The wallet sections are organized in an easy-to-understand way."],
+["Lucas Silva","Digital Consultant","LS","The market overview and financial tools fit together nicely."],
+["Hannah Brown","Marketing Director","HB","The platform has a clean and professional interface."],
+["Raj Patel","Technology Entrepreneur","RP","The account interface is simple to navigate."],
+["Chloe Martin","Financial Analyst","CM","The wallet information is presented in a clear format."],
+["Samuel Adeyemi","Business Consultant","SA","The overall experience feels organized and polished."],
+["Elena Garcia","Independent Consultant","EG","The clean layout makes it easy to move through the platform."],
+["Omar Hassan","Digital Finance Specialist","OH","The dashboard gives a clear view of important account details."],
+["Amelia Clark","Investment Consultant","AC","The platform brings key financial tools together in an organized environment."]
 ];
 
 let testimonialIndex=0;
 
-const testimonialGrid=
-document.getElementById("testimonialGrid");
+const testimonialGrid=document.getElementById("testimonialGrid");
 
 function renderTestimonials(){
 
@@ -3149,18 +3523,6 @@ for(let i=0;i<3;i++){
 const index=(testimonialIndex+i)%testimonials.length;
 const item=testimonials[index];
 
-const skinTones=[
-"#8d5a35","#6f432c","#d09a70","#9b643b",
-"#b9784f","#e0aa7d","#70432d","#c68b62"
-];
-
-const hairColors=[
-"#17110f","#241711","#4a2b20","#11100f"
-];
-
-const tone=skinTones[index%skinTones.length];
-const hair=hairColors[index%hairColors.length];
-
 const card=document.createElement("div");
 
 card.className="testimonial";
@@ -3169,60 +3531,17 @@ card.innerHTML=`
 
 <div class="stars">★★★★★</div>
 
-<p>“${item.text}”</p>
+<p>“${item[3]}”</p>
 
 <div class="person">
 
 <div class="avatar">
-
-<svg viewBox="0 0 100 100"
-width="48"
-height="48"
-aria-label="${item.name}">
-
-<defs>
-<linearGradient id="goldFace${index}" x1="0" x2="1">
-<stop offset="0" stop-color="${tone}"/>
-<stop offset="1" stop-color="#f0bd91"/>
-</linearGradient>
-</defs>
-
-<rect width="100" height="100" fill="#13263b"/>
-
-<circle
-cx="50"
-cy="43"
-r="25"
-fill="url(#goldFace${index})"/>
-
-<path
-d="M25 43 Q28 14 50 14 Q72 14 75 43
-Q68 27 50 27 Q32 27 25 43"
-fill="${hair}"/>
-
-<circle cx="41" cy="43" r="2.5" fill="#07111f"/>
-<circle cx="59" cy="43" r="2.5" fill="#07111f"/>
-
-<path
-d="M42 55 Q50 60 58 55"
-fill="none"
-stroke="#542e20"
-stroke-width="2"/>
-
-<path
-d="M22 100 Q24 69 50 68 Q76 69 78 100"
-fill="#d99b20"/>
-
-</svg>
-
+${item[2]}
 </div>
 
 <div>
-
-<strong>${item.name}</strong>
-
-<span>${item.role}</span>
-
+<strong>${item[0]}</strong>
+<span>${item[1]}</span>
 </div>
 
 </div>
@@ -3235,27 +3554,21 @@ testimonialGrid.appendChild(card);
 
 const start=testimonialIndex+1;
 
-const end=Math.min(
-testimonialIndex+3,
-testimonials.length
-);
+let end=testimonialIndex+3;
+
+if(end>testimonials.length)
+end=testimonials.length;
 
 document.getElementById("testimonialCounter")
-.textContent=`${start}–${end} of 28`;
+.textContent=`${start}–${end} of ${testimonials.length}`;
 
 }
 
-/* FIRST DISPLAY */
-
 renderTestimonials();
-
-
-/* FAST TESTIMONIAL ROTATION */
 
 setInterval(()=>{
 
-const cards=
-document.querySelectorAll(".testimonial");
+const cards=document.querySelectorAll(".testimonial");
 
 cards.forEach(card=>{
 card.classList.add("fade");
@@ -3276,265 +3589,101 @@ renderTestimonials();
 
 
 /* =========================================================
-   ACTIVITY POPUPS
+   PLATFORM ACTIVITY
 ========================================================= */
 
 const activities=[
 
 {
-type:"withdrawal",
-icon:"↗",
-name:"Daniel M.",
-amount:"$4,850",
-image:"assets/people/testimonial-05.jpg",
-message:"successfully completed a withdrawal."
+title:"Investment plan selected",
+message:"The Silver plan is currently available for review.",
+time:"Recently"
 },
 
 {
-type:"investment",
-icon:"◆",
-name:"Sophia R.",
-amount:"$12,500",
-image:"assets/people/testimonial-04.jpg",
-message:"successfully invested in the Gold package."
+title:"Wallet management",
+message:"Main Wallet and Profit Wallet tools are available.",
+time:"Recently"
 },
 
 {
-type:"investment",
-icon:"◆",
-name:"Marcus T.",
-amount:"$5,000",
-image:"assets/people/testimonial-13.jpg",
-message:"successfully invested in the Silver package."
+title:"Market overview",
+message:"Digital asset market information has been refreshed.",
+time:"Just now"
 },
 
 {
-type:"withdrawal",
-icon:"↗",
-name:"Olivia K.",
-amount:"$2,750",
-image:"assets/people/testimonial-22.jpg",
-message:"successfully completed a withdrawal."
+title:"Account security",
+message:"Account protection and authentication controls are available.",
+time:"Recently"
 },
 
 {
-type:"investment",
-icon:"◆",
-name:"James W.",
-amount:"$1,500",
-image:"assets/people/testimonial-03.jpg",
-message:"successfully invested in the Growth package."
-},
-
-{
-type:"withdrawal",
-icon:"↗",
-name:"Emily P.",
-amount:"$7,200",
-image:"assets/people/testimonial-15.jpg",
-message:"successfully completed a withdrawal."
-},
-
-{
-type:"investment",
-icon:"◆",
-name:"Nathan C.",
-amount:"$25,000",
-image:"assets/people/testimonial-11.jpg",
-message:"successfully invested in the Gold package."
-},
-
-{
-type:"withdrawal",
-icon:"↗",
-name:"Michael B.",
-amount:"$3,400",
-image:"assets/people/testimonial-07.jpg",
-message:"successfully completed a withdrawal."
-},
-
-{
-type:"investment",
-icon:"◆",
-name:"Sarah L.",
-amount:"$8,000",
-image:"assets/people/testimonial-12.jpg",
-message:"successfully invested in the Silver package."
-},
-
-{
-type:"withdrawal",
-icon:"↗",
-name:"David A.",
-amount:"$6,150",
-image:"assets/people/testimonial-09.jpg",
-message:"successfully completed a withdrawal."
-},
-
-{
-type:"investment",
-icon:"◆",
-name:"Amara N.",
-amount:"$18,000",
-image:"assets/people/testimonial-02.jpg",
-message:"successfully invested in the Gold package."
-},
-
-{
-type:"withdrawal",
-icon:"↗",
-name:"Christopher L.",
-amount:"$5,900",
-image:"assets/people/testimonial-16.jpg",
-message:"successfully completed a withdrawal."
+title:"Investment plans updated",
+message:"The current five-plan structure is now displayed.",
+time:"Recently"
 }
 
 ];
 
 let activityIndex=0;
-let activityTimer;
+
+const activityPopup=document.getElementById("activityPopup");
 
 function showActivity(){
 
-const item=
-activities[activityIndex];
-
-const avatar=
-document.getElementById("activityAvatar");
-
-avatar.innerHTML=`
-
-<img
-src="${item.image}"
-alt="${item.name}"
-onerror="this.style.display='none';this.parentElement.textContent='${item.name.substring(0,2).toUpperCase()}'"
->
-
-`;
+const activity=activities[activityIndex];
 
 document.getElementById("activityTitle")
-.textContent=
-item.type==="withdrawal"
-?"Withdrawal completed"
-:"Investment completed";
+.textContent=activity.title;
 
 document.getElementById("activityMessage")
-.textContent=
-item.name+" "+item.message+
-" Amount: "+item.amount;
+.textContent=activity.message;
 
 document.getElementById("activityTime")
-.textContent="Just now";
+.textContent=activity.time;
 
-const popup=
-document.getElementById("activityPopup");
-
-popup.classList.add("show");
-
-clearTimeout(activityTimer);
-
-activityTimer=setTimeout(()=>{
-popup.classList.remove("show");
-},4300);
+activityPopup.classList.add("show");
 
 activityIndex++;
 
 if(activityIndex>=activities.length)
 activityIndex=0;
 
+setTimeout(hideActivity,5000);
+
 }
 
 function hideActivity(){
 
-document
-.getElementById("activityPopup")
-.classList.remove("show");
+activityPopup.classList.remove("show");
 
 }
 
+setTimeout(showActivity,5000);
 
-/* FAST POPUPS */
-
-setTimeout(
-showActivity,
-1800
-);
-
-setInterval(
-showActivity,
-6200
-);
+setInterval(showActivity,10500);
 
 
 /* =========================================================
-   LANGUAGE SELECTOR
+   SMOOTH NAVIGATION
 ========================================================= */
 
-const translations={
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
 
-en:{
-badge:"The future of digital finance",
-heroText:"Resilient. Secure. Built for the modern digital-asset journey. CoinForest brings wallets, investments, transfers and market information together in one structured financial platform.",
-getStarted:"Get Started",
-explore:"Explore CoinForest",
-downloads:"Downloads",
-activeUsers:"Active Users",
-platformAccess:"Platform Access",
-accountVisibility:"Account Visibility"
-},
+link.addEventListener("click",function(e){
 
-fr:{
-badge:"L'avenir de la finance numérique",
-heroText:"Résilient. Sécurisé. Conçu pour l'expérience moderne des actifs numériques. CoinForest réunit portefeuilles, investissements, transferts et informations de marché dans une plateforme financière structurée.",
-getStarted:"Commencer",
-explore:"Explorer CoinForest",
-downloads:"Téléchargements",
-activeUsers:"Utilisateurs actifs",
-platformAccess:"Accès à la plateforme",
-accountVisibility:"Visibilité du compte"
-},
+const target=document.querySelector(this.getAttribute("href"));
 
-es:{
-badge:"El futuro de las finanzas digitales",
-heroText:"Resistente. Seguro. Diseñado para la experiencia moderna de activos digitales. CoinForest reúne billeteras, inversiones, transferencias e información de mercado en una plataforma financiera estructurada.",
-getStarted:"Comenzar",
-explore:"Explorar CoinForest",
-downloads:"Descargas",
-activeUsers:"Usuarios activos",
-platformAccess:"Acceso a la plataforma",
-accountVisibility:"Visibilidad de la cuenta"
-},
+if(target){
 
-pt:{
-badge:"O futuro das finanças digitais",
-heroText:"Resiliente. Seguro. Criado para a experiência moderna de ativos digitais. A CoinForest reúne carteiras, investimentos, transferências e informações de mercado em uma plataforma financeira estruturada.",
-getStarted:"Começar",
-explore:"Explorar CoinForest",
-downloads:"Downloads",
-activeUsers:"Usuários ativos",
-platformAccess:"Acesso à plataforma",
-accountVisibility:"Visibilidade da conta"
-}
+e.preventDefault();
 
-};
+target.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
 
-document
-.getElementById("languageSelect")
-.addEventListener("change",function(){
-
-const language=
-translations[this.value];
-
-document
-.querySelectorAll("[data-i18n]")
-.forEach(element=>{
-
-const key=
-element.getAttribute("data-i18n");
-
-if(language[key]){
-element.textContent=
-language[key];
 }
 
 });
@@ -3543,54 +3692,20 @@ language[key];
 
 
 /* =========================================================
-   IMAGE FALLBACKS
+   SAFETY / IMAGE FALLBACK
 ========================================================= */
 
-document
-.querySelectorAll(".team-photo img")
-.forEach(image=>{
+document.querySelectorAll(".team-photo img").forEach(img=>{
 
-image.addEventListener("error",function(){
+img.addEventListener("error",function(){
 
 this.style.display="none";
 
-const fallback=
-this.nextElementSibling;
-
-if(fallback){
-fallback.style.display="flex";
-}
-
 });
 
 });
-
-
-/* =========================================================
-   INITIAL MARKET CAPS
-========================================================= */
-
-updateMarketCap("BTC");
-updateMarketCap("ETH");
-updateMarketCap("SOL");
-updateMarketCap("BNB");
-
-
-/* =========================================================
-   PRELOAD TESTIMONIAL IMAGES
-========================================================= */
-
-testimonials.forEach(item=>{
-
-const image=
-new Image();
-
-image.src=item.image;
-
-});
-
 
 </script>
 
 </body>
-</html>
+   </html>
