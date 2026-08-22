@@ -82,6 +82,7 @@ a{text-decoration:none;color:inherit}
   margin:4px 0;
   color:#aebccc;
   font-size:13px;
+  font-weight:600;
   transition:.2s;
 }
 
@@ -115,6 +116,7 @@ a{text-decoration:none;color:inherit}
   color:#b8c6d4;
   padding:11px;
   border-radius:10px;
+  font-weight:700;
 }
 
 /* ================= MAIN ================= */
@@ -542,12 +544,14 @@ a{text-decoration:none;color:inherit}
 .action strong{
   display:block;
   font-size:12px;
+  font-weight:700;
 }
 
 .action span{
   display:block;
   color:var(--muted);
   font-size:9px;
+  font-weight:400;
   margin-top:4px;
 }
 
@@ -1209,7 +1213,7 @@ a{text-decoration:none;color:inherit}
       <span data-i18n="wallets">Wallets</span>
     </a>
 
-    <a href="#investments">
+    <a href="investment.html">
       <span class="icon">▣</span>
       <span data-i18n="investments">Investments</span>
     </a>
@@ -1534,7 +1538,7 @@ a{text-decoration:none;color:inherit}
         <span data-i18n="addFunds">Add funds to wallet</span>
       </button>
 
-      <button class="action" onclick="openModal('investmentModal')">
+      <button class="action" onclick="window.location.href='investment.html'">
         <div class="action-icon">📈</div>
         <strong data-i18n="invest">Invest</strong>
         <span data-i18n="startInvestment">Start an investment</span>
@@ -1650,7 +1654,7 @@ a{text-decoration:none;color:inherit}
       </h2>
     </div>
 
-    <a href="#investments" data-i18n="viewPlans">
+    <a href="investment.html" data-i18n="viewPlans">
       View plans
     </a>
 
@@ -2355,12 +2359,6 @@ async function loadUser(){
     document.getElementById("avatar").textContent=
       initials;
 
-    /*
-      Tier display:
-      Only the customer's current tier is shown.
-      We don't create a row of tier cards.
-    */
-
     let tier="Tier 1";
 
     if(
@@ -2381,12 +2379,6 @@ async function loadUser(){
       "CoinForest authentication error:",
       error
     );
-
-    /*
-      Important:
-      Temporary network errors do NOT destroy
-      the user's local session.
-    */
 
   }
 
@@ -2450,11 +2442,6 @@ function submitInvestment(){
 
     return;
   }
-
-  /*
-    Only Main Wallet is available as the payment wallet.
-    Profit Wallet is intentionally excluded.
-  */
 
   const mainBalance=
     Number(
@@ -2560,13 +2547,6 @@ function sendSupportMessage(){
 
     return;
   }
-
-  /*
-    This is the dashboard entry point for the
-    customer/admin support system.
-    It intentionally does not fake a successful
-    database message when the API is not connected.
-  */
 
   alert(
     "Your support message is ready to be connected to the CoinForest customer/admin chat service."
