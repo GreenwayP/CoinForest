@@ -1078,13 +1078,6 @@ a{text-decoration:none;color:inherit}
     grid-template-columns:repeat(3,1fr);
   }
 
-  /*
-    The topbar remains above the sidebar.
-    The back button therefore stays visible
-    in its original position whenever the
-    mobile sidebar is opened.
-  */
-
   .topbar{
     z-index:2000;
   }
@@ -1211,7 +1204,6 @@ a{text-decoration:none;color:inherit}
 
   <nav class="menu">
 
-    <!-- FIXED: Dashboard now points to the actual dashboard page -->
     <a href="dashboard.html" class="active" onclick="closeSidebar()">
       <span class="icon">⌂</span>
       <span data-i18n="dashboard">Dashboard</span>
@@ -1278,7 +1270,6 @@ a{text-decoration:none;color:inherit}
 
     <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
-    <!-- Back button remains in its original position -->
     <button
       class="back-button"
       onclick="goBack()"
@@ -1538,7 +1529,6 @@ a{text-decoration:none;color:inherit}
         <span data-i18n="addFunds">Add funds to wallet</span>
       </button>
 
-      <!-- FIXED: Investment now opens the actual investment page -->
       <button class="action" onclick="window.location.href='investment.html'">
         <div class="action-icon">📈</div>
         <strong data-i18n="invest">Invest</strong>
@@ -2207,20 +2197,25 @@ async function loadUser(){
 
     const user=data.user;
 
-    const firstName=
-      user.first_name ||
+    /*
+      Use the actual name returned by the server.
+
+      The API may expose the customer's name using
+      different field names, so we check them in order.
+    */
+
+    const displayName =
+      user.name ||
       user.full_name ||
+      user.fullName ||
+      user.first_name ||
       user.username ||
+      (
+        user.email
+          ? user.email.split("@")[0]
+          : ""
+      ) ||
       "CoinForest Member";
-
-    const lastName=
-      user.last_name ||
-      "";
-
-    const displayName=
-      lastName
-      ? firstName+" "+lastName
-      : firstName;
 
     document.getElementById("welcomeName").textContent=
       "Hello, "+displayName;
@@ -2231,9 +2226,18 @@ async function loadUser(){
     document.getElementById("profileEmail").textContent=
       user.email || "Account";
 
+    /*
+      Generate initials from the actual displayed name.
+    */
+
+    const nameParts=
+      displayName
+        .trim()
+        .split(/\s+/);
+
     const initials=(
-      (user.first_name || "C")[0]+
-      (user.last_name || "F")[0]
+      (nameParts[0]?.[0] || "C")+
+      (nameParts[1]?.[0] || "")
     ).toUpperCase();
 
     document.getElementById("avatar").textContent=
@@ -2269,13 +2273,6 @@ async function loadUser(){
    ========================================================= */
 
 function goToInvestment(plan){
-
-  /*
-    The investment page is now the dedicated
-    destination for investment actions.
-    The selected plan is passed in the URL
-    so investment.html can use it later.
-  */
 
   window.location.href=
     "investment.html?plan="+
@@ -2847,4 +2844,4 @@ loadUser();
 </script>
 
 </body>
-      </html>
+  </html>
