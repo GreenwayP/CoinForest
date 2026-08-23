@@ -681,18 +681,9 @@ a{text-decoration:none;color:inherit}
   font-weight:900;
 }
 
-.btc-icon{
-  background:linear-gradient(135deg,#f7931a,#ffd166);
-}
-
-.eth-icon{
-  background:linear-gradient(135deg,#627eea,#aab9ff);
-}
-
-.usdt-icon{
-  background:linear-gradient(135deg,#26a17b,#70d7b0);
-}
-
+.btc-icon{background:linear-gradient(135deg,#f7931a,#ffd166)}
+.eth-icon{background:linear-gradient(135deg,#627eea,#aab9ff)}
+.usdt-icon{background:linear-gradient(135deg,#26a17b,#70d7b0)}
 .bnb-icon{
   background:linear-gradient(135deg,#f3ba2f,#ffe28a);
   color:#111;
@@ -715,9 +706,7 @@ a{text-decoration:none;color:inherit}
 
 /* ================= INVESTMENT ================= */
 
-.investment-board{
-  margin-bottom:18px;
-}
+.investment-board{margin-bottom:18px}
 
 .plans{
   display:grid;
@@ -759,9 +748,7 @@ a{text-decoration:none;color:inherit}
   font-weight:900;
 }
 
-.plan h3{
-  font-size:14px;
-}
+.plan h3{font-size:14px}
 
 .plan-rate{
   color:var(--green2);
@@ -854,20 +841,9 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-.status.completed{
-  background:#dcfce9;
-  color:#15803d;
-}
-
-.status.pending{
-  background:#fff7d6;
-  color:#a16207;
-}
-
-.status.failed{
-  background:#fee2e2;
-  color:#b91c1c;
-}
+.status.completed{background:#dcfce9;color:#15803d}
+.status.pending{background:#fff7d6;color:#a16207}
+.status.failed{background:#fee2e2;color:#b91c1c}
 
 /* ================= BONUS / TIER ================= */
 
@@ -880,9 +856,7 @@ a{text-decoration:none;color:inherit}
   padding:20px;
 }
 
-.info-board h2{
-  font-size:15px;
-}
+.info-board h2{font-size:15px}
 
 .info-board p{
   color:#a9bacb;
@@ -951,9 +925,7 @@ a{text-decoration:none;color:inherit}
   font-size:25px;
 }
 
-.field{
-  margin-bottom:13px;
-}
+.field{margin-bottom:13px}
 
 .field label{
   display:block;
@@ -973,9 +945,7 @@ a{text-decoration:none;color:inherit}
 }
 
 .field input:focus,
-.field select:focus{
-  border-color:var(--green);
-}
+.field select:focus{border-color:var(--green)}
 
 .modal-submit{
   width:100%;
@@ -1029,9 +999,7 @@ a{text-decoration:none;color:inherit}
   z-index:1500;
 }
 
-.chat-box{
-  max-width:420px;
-}
+.chat-box{max-width:420px}
 
 .chat-status{
   background:#eafaf3;
@@ -1056,17 +1024,9 @@ a{text-decoration:none;color:inherit}
     z-index:1000;
   }
 
-  .sidebar.open{
-    transform:translateX(0);
-  }
-
-  .main{
-    margin-left:0;
-  }
-
-  .mobile-menu{
-    display:block;
-  }
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mobile-menu{display:block}
 
   .hero-board,
   .board-grid,
@@ -1074,28 +1034,17 @@ a{text-decoration:none;color:inherit}
     grid-template-columns:1fr;
   }
 
-  .market-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
+  .market-grid{grid-template-columns:repeat(3,1fr)}
 
-  .topbar{
-    z-index:2000;
-  }
-
-  .back-button{
-    z-index:2100;
-  }
+  .topbar{z-index:2000}
+  .back-button{z-index:2100}
 }
 
 @media(max-width:700px){
 
-  .topbar{
-    padding:0 14px;
-  }
+  .topbar{padding:0 14px}
 
-  .content{
-    padding:19px 14px 45px;
-  }
+  .content{padding:19px 14px 45px}
 
   .page-title{
     align-items:flex-start;
@@ -1103,86 +1052,44 @@ a{text-decoration:none;color:inherit}
     gap:13px;
   }
 
-  .action-buttons{
-    width:100%;
-  }
+  .action-buttons{width:100%}
 
-  .action-buttons .btn{
-    flex:1;
-  }
+  .action-buttons .btn{flex:1}
 
-  .balance-grid{
-    grid-template-columns:1fr;
-  }
-
-  .market-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .plans{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .actions{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .wallet-list{
-    grid-template-columns:1fr;
-  }
-
-  .profile-info{
-    display:none;
-  }
+  .balance-grid{grid-template-columns:1fr}
+  .market-grid{grid-template-columns:1fr 1fr}
+  .plans{grid-template-columns:1fr 1fr}
+  .actions{grid-template-columns:1fr 1fr}
+  .wallet-list{grid-template-columns:1fr}
+  .profile-info{display:none}
 }
 
 @media(max-width:480px){
 
-  .topbar{
-    height:66px;
-  }
+  .topbar{height:66px}
 
-  .welcome strong{
-    font-size:13px;
-  }
+  .welcome strong{font-size:13px}
 
   .back-button{
     width:34px;
     height:34px;
   }
 
-  .hero-board{
-    gap:12px;
-  }
+  .hero-board{gap:12px}
 
-  .balance-card{
-    padding:20px;
-  }
+  .balance-card{padding:20px}
 
-  .total-balance{
-    font-size:31px;
-  }
+  .total-balance{font-size:31px}
 
   .stats-board{
     grid-template-columns:1fr 1fr;
     gap:10px;
   }
 
-  .stat-card{
-    padding:14px;
-  }
-
-  .stat-value{
-    font-size:17px;
-  }
-
-  .plans{
-    grid-template-columns:1fr;
-  }
-
-  .market-grid{
-    grid-template-columns:1fr 1fr;
-  }
+  .stat-card{padding:14px}
+  .stat-value{font-size:17px}
+  .plans{grid-template-columns:1fr}
+  .market-grid{grid-template-columns:1fr 1fr}
 
   .transactions th:nth-child(2),
   .transactions td:nth-child(2){
@@ -1193,8 +1100,6 @@ a{text-decoration:none;color:inherit}
 </head>
 
 <body>
-
-<!-- ================= SIDEBAR ================= -->
 
 <aside class="sidebar" id="sidebar">
 
@@ -1260,8 +1165,6 @@ a{text-decoration:none;color:inherit}
 
 </aside>
 
-<!-- ================= MAIN ================= -->
-
 <main class="main">
 
 <header class="topbar">
@@ -1280,7 +1183,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="welcome">
       <small data-i18n="welcomeBack">Welcome back</small>
-      <strong id="welcomeName">CoinForest Member</strong>
+      <strong id="welcomeName">Loading...</strong>
       <span class="current-tier" id="tierBadge">Tier 1</span>
     </div>
 
@@ -1291,7 +1194,7 @@ a{text-decoration:none;color:inherit}
     <div class="avatar" id="avatar">CF</div>
 
     <div class="profile-info">
-      <strong id="profileName">CoinForest Member</strong>
+      <strong id="profileName">Loading...</strong>
       <small id="profileEmail">Account</small>
     </div>
 
@@ -1338,9 +1241,7 @@ a{text-decoration:none;color:inherit}
       Total Portfolio Balance
     </div>
 
-    <div class="total-balance" id="totalBalance">
-      $0.00
-    </div>
+    <div class="total-balance" id="totalBalance">$0.00</div>
 
     <div class="balance-grid">
 
@@ -1382,73 +1283,39 @@ a{text-decoration:none;color:inherit}
 <section class="stats-board">
 
   <div class="stat-card">
-
     <div class="stat-top">
-      <span class="stat-label" data-i18n="totalDeposits">
-        Total Deposits
-      </span>
+      <span class="stat-label" data-i18n="totalDeposits">Total Deposits</span>
       <div class="stat-icon">↓</div>
     </div>
-
     <div class="stat-value" id="totalDeposits">$0.00</div>
-
-    <div class="stat-change" data-i18n="accountDeposits">
-      Account deposits
-    </div>
-
+    <div class="stat-change" data-i18n="accountDeposits">Account deposits</div>
   </div>
 
   <div class="stat-card">
-
     <div class="stat-top">
-      <span class="stat-label" data-i18n="invested">
-        Invested
-      </span>
+      <span class="stat-label" data-i18n="invested">Invested</span>
       <div class="stat-icon">▣</div>
     </div>
-
     <div class="stat-value" id="totalInvested">$0.00</div>
-
-    <div class="stat-change" data-i18n="activeInvestments">
-      Active investments
-    </div>
-
+    <div class="stat-change" data-i18n="activeInvestments">Active investments</div>
   </div>
 
   <div class="stat-card">
-
     <div class="stat-top">
-      <span class="stat-label" data-i18n="withdrawals">
-        Withdrawals
-      </span>
+      <span class="stat-label" data-i18n="withdrawals">Withdrawals</span>
       <div class="stat-icon">↑</div>
     </div>
-
     <div class="stat-value" id="withdrawals">$0.00</div>
-
-    <div class="stat-change" data-i18n="totalWithdrawn">
-      Total withdrawn
-    </div>
-
+    <div class="stat-change" data-i18n="totalWithdrawn">Total withdrawn</div>
   </div>
 
   <div class="stat-card">
-
     <div class="stat-top">
-      <span class="stat-label" data-i18n="accountStatus">
-        Account Status
-      </span>
+      <span class="stat-label" data-i18n="accountStatus">Account Status</span>
       <div class="stat-icon">✓</div>
     </div>
-
-    <div class="stat-value" style="font-size:18px" data-i18n="active">
-      Active
-    </div>
-
-    <div class="stat-change" data-i18n="goodStanding">
-      Account in good standing
-    </div>
-
+    <div class="stat-value" style="font-size:18px" data-i18n="active">Active</div>
+    <div class="stat-change" data-i18n="goodStanding">Account in good standing</div>
   </div>
 
 </section>
@@ -1456,15 +1323,8 @@ a{text-decoration:none;color:inherit}
 <section class="market-board">
 
   <div class="market-head">
-
-    <h2 data-i18n="liveMarket">
-      Live Crypto Market
-    </h2>
-
-    <span class="market-live" data-i18n="marketSimulation">
-      Market simulation
-    </span>
-
+    <h2 data-i18n="liveMarket">Live Crypto Market</h2>
+    <span class="market-live" data-i18n="marketSimulation">Market simulation</span>
   </div>
 
   <div class="market-grid">
@@ -1566,15 +1426,8 @@ a{text-decoration:none;color:inherit}
   <div class="card">
 
     <div class="card-head">
-
-      <h2 data-i18n="myWallets">
-        My Wallets
-      </h2>
-
-      <a href="wallet.html" data-i18n="viewAll">
-        View all
-      </a>
-
+      <h2 data-i18n="myWallets">My Wallets</h2>
+      <a href="wallet.html" data-i18n="viewAll">View all</a>
     </div>
 
     <div class="wallet-list">
@@ -1586,20 +1439,13 @@ a{text-decoration:none;color:inherit}
           <div class="wallet-icon">💼</div>
 
           <div>
-            <div class="wallet-name" data-i18n="mainWallet">
-              Main Wallet
-            </div>
-
-            <div class="wallet-sub" data-i18n="availableBalance">
-              Available balance
-            </div>
+            <div class="wallet-name" data-i18n="mainWallet">Main Wallet</div>
+            <div class="wallet-sub" data-i18n="availableBalance">Available balance</div>
           </div>
 
         </div>
 
-        <div class="wallet-value" id="walletMain">
-          $0.00
-        </div>
+        <div class="wallet-value" id="walletMain">$0.00</div>
 
       </div>
 
@@ -1610,20 +1456,13 @@ a{text-decoration:none;color:inherit}
           <div class="wallet-icon">📊</div>
 
           <div>
-            <div class="wallet-name" data-i18n="profitWallet">
-              Profit Wallet
-            </div>
-
-            <div class="wallet-sub" data-i18n="investmentEarnings">
-              Investment earnings
-            </div>
+            <div class="wallet-name" data-i18n="profitWallet">Profit Wallet</div>
+            <div class="wallet-sub" data-i18n="investmentEarnings">Investment earnings</div>
           </div>
 
         </div>
 
-        <div class="wallet-value" id="walletProfit">
-          $0.00
-        </div>
+        <div class="wallet-value" id="walletProfit">$0.00</div>
 
       </div>
 
@@ -1638,14 +1477,10 @@ a{text-decoration:none;color:inherit}
   <div class="card-head">
 
     <div>
-      <h2 data-i18n="investmentPlans">
-        Investment Plans
-      </h2>
+      <h2 data-i18n="investmentPlans">Investment Plans</h2>
     </div>
 
-    <a href="investment.html" data-i18n="viewPlans">
-      View plans
-    </a>
+    <a href="investment.html" data-i18n="viewPlans">View plans</a>
 
   </div>
 
@@ -1667,9 +1502,7 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="goToInvestment('Starter')">
-        Invest Now
-      </button>
+      <button onclick="goToInvestment('Starter')">Invest Now</button>
     </div>
 
     <div class="plan">
@@ -1688,9 +1521,7 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="goToInvestment('Growth')">
-        Invest Now
-      </button>
+      <button onclick="goToInvestment('Growth')">Invest Now</button>
     </div>
 
     <div class="plan featured">
@@ -1712,9 +1543,7 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="goToInvestment('Silver')">
-        Invest Now
-      </button>
+      <button onclick="goToInvestment('Silver')">Invest Now</button>
     </div>
 
     <div class="plan">
@@ -1733,9 +1562,7 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="goToInvestment('Gold')">
-        Invest Now
-      </button>
+      <button onclick="goToInvestment('Gold')">Invest Now</button>
     </div>
 
     <div class="plan">
@@ -1754,9 +1581,7 @@ a{text-decoration:none;color:inherit}
 
       <div class="plan-line"></div>
 
-      <button onclick="goToInvestment('Platinum')">
-        Invest Now
-      </button>
+      <button onclick="goToInvestment('Platinum')">Invest Now</button>
     </div>
 
   </div>
@@ -1845,17 +1670,13 @@ a{text-decoration:none;color:inherit}
   💬
 </button>
 
-<!-- ================= DEPOSIT MODAL ================= -->
-
 <div class="modal" id="depositModal">
 
   <div class="modal-box">
 
     <button class="close" onclick="closeModal('depositModal')">×</button>
 
-    <h2 data-i18n="depositFunds">
-      Deposit Funds
-    </h2>
+    <h2 data-i18n="depositFunds">Deposit Funds</h2>
 
     <p data-i18n="depositDescription">
       Select where the development deposit should be recorded.
@@ -1869,16 +1690,12 @@ a{text-decoration:none;color:inherit}
 
         <button class="method" type="button">
           <strong>💼 Wallet</strong>
-          <span data-i18n="walletMethod">
-            Wallet-based deposit
-          </span>
+          <span data-i18n="walletMethod">Wallet-based deposit</span>
         </button>
 
         <button class="method" type="button">
           <strong>🏦 Bank Transfer</strong>
-          <span data-i18n="bankMethod">
-            Bank transfer deposit
-          </span>
+          <span data-i18n="bankMethod">Bank transfer deposit</span>
         </button>
 
       </div>
@@ -1908,17 +1725,13 @@ a{text-decoration:none;color:inherit}
 
 </div>
 
-<!-- ================= WITHDRAW MODAL ================= -->
-
 <div class="modal" id="withdrawModal">
 
   <div class="modal-box">
 
     <button class="close" onclick="closeModal('withdrawModal')">×</button>
 
-    <h2 data-i18n="withdrawFundsTitle">
-      Withdraw Funds
-    </h2>
+    <h2 data-i18n="withdrawFundsTitle">Withdraw Funds</h2>
 
     <p data-i18n="withdrawDescription">
       Select the wallet source and bank destination for this development withdrawal request.
@@ -1926,9 +1739,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="withdrawFrom">
-        Withdraw From
-      </label>
+      <label data-i18n="withdrawFrom">Withdraw From</label>
 
       <select id="withdrawFrom">
         <option value="main">Main Wallet</option>
@@ -1939,9 +1750,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="withdrawTo">
-        Withdraw To
-      </label>
+      <label data-i18n="withdrawTo">Withdraw To</label>
 
       <select id="withdrawTo">
         <option value="bank">Bank Account</option>
@@ -1951,9 +1760,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="amount">
-        Amount
-      </label>
+      <label data-i18n="amount">Amount</label>
 
       <input
         type="number"
@@ -1974,17 +1781,13 @@ a{text-decoration:none;color:inherit}
 
 </div>
 
-<!-- ================= SEND MODAL ================= -->
-
 <div class="modal" id="sendModal">
 
   <div class="modal-box">
 
     <button class="close" onclick="closeModal('sendModal')">×</button>
 
-    <h2 data-i18n="sendMoneyTitle">
-      Send Money
-    </h2>
+    <h2 data-i18n="sendMoneyTitle">Send Money</h2>
 
     <p data-i18n="sendDescription">
       Transfer funds from your Main Wallet to another CoinForest account.
@@ -1992,9 +1795,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="recipient">
-        Recipient Username
-      </label>
+      <label data-i18n="recipient">Recipient Username</label>
 
       <input
         type="text"
@@ -2005,9 +1806,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="paymentSource">
-        Payment Source
-      </label>
+      <label data-i18n="paymentSource">Payment Source</label>
 
       <select id="sendSource">
         <option value="main">Main Wallet</option>
@@ -2017,9 +1816,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="amount">
-        Amount
-      </label>
+      <label data-i18n="amount">Amount</label>
 
       <input
         type="number"
@@ -2040,17 +1837,13 @@ a{text-decoration:none;color:inherit}
 
 </div>
 
-<!-- ================= CHAT MODAL ================= -->
-
 <div class="modal" id="chatModal">
 
   <div class="modal-box chat-box">
 
     <button class="close" onclick="closeModal('chatModal')">×</button>
 
-    <h2 data-i18n="customerSupport">
-      Customer Support
-    </h2>
+    <h2 data-i18n="customerSupport">Customer Support</h2>
 
     <p data-i18n="chatDescription">
       Contact CoinForest support. Your conversation will be associated with your customer account.
@@ -2062,9 +1855,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="message">
-        Message
-      </label>
+      <label data-i18n="message">Message</label>
 
       <input
         type="text"
@@ -2168,101 +1959,302 @@ document.querySelectorAll(".modal").forEach(modal=>{
 
 /* =========================================================
    USER
+   FIXED: LOAD NAME FROM LOGIN SESSION FIRST
    ========================================================= */
 
-async function loadUser(){
+function getSavedUser(){
 
   try{
 
-    const response=await fetch("/api/auth/me",{
-      method:"GET",
-      headers:{
-        "Authorization":"Bearer "+token,
-        "Accept":"application/json"
-      }
-    });
+    const saved=
+      localStorage.getItem("coinforest_user");
 
-    const data=await response.json();
-
-    if(!response.ok || !data.success || !data.user){
-
-      console.error(
-        "Authentication check failed:",
-        response.status,
-        data
-      );
-
-      return;
+    if(!saved){
+      return null;
     }
 
-    const user=data.user;
+    const parsed=
+      JSON.parse(saved);
 
-    /*
-      Use the actual name returned by the server.
-
-      The API may expose the customer's name using
-      different field names, so we check them in order.
-    */
-
-    const displayName =
-      user.name ||
-      user.full_name ||
-      user.fullName ||
-      user.first_name ||
-      user.username ||
-      (
-        user.email
-          ? user.email.split("@")[0]
-          : ""
-      ) ||
-      "CoinForest Member";
-
-    document.getElementById("welcomeName").textContent=
-      "Hello, "+displayName;
-
-    document.getElementById("profileName").textContent=
-      displayName;
-
-    document.getElementById("profileEmail").textContent=
-      user.email || "Account";
-
-    /*
-      Generate initials from the actual displayed name.
-    */
-
-    const nameParts=
-      displayName
-        .trim()
-        .split(/\s+/);
-
-    const initials=(
-      (nameParts[0]?.[0] || "C")+
-      (nameParts[1]?.[0] || "")
-    ).toUpperCase();
-
-    document.getElementById("avatar").textContent=
-      initials;
-
-    let tier="Tier 1";
-
-    if(
-      user.tier ||
-      user.account_tier
-    ){
-      tier=
-        user.tier ||
-        user.account_tier;
+    if(parsed && parsed.user){
+      return parsed.user;
     }
 
-    document.getElementById("tierBadge").textContent=
-      String(tier).replace(/^tier/i,"Tier ");
+    return parsed;
 
   }catch(error){
 
     console.error(
-      "CoinForest authentication error:",
+      "Unable to read saved CoinForest user:",
       error
     );
+
+    return null;
+
+  }
+
+}
+
+function getUserDisplayName(user){
+
+  if(!user){
+    return "";
+  }
+
+  const first=
+    String(
+      user.first_name ||
+      user.firstName ||
+      ""
+    ).trim();
+
+  const last=
+    String(
+      user.last_name ||
+      user.lastName ||
+      ""
+    ).trim();
+
+  const full=
+    String(
+      user.full_name ||
+      user.fullName ||
+      user.name ||
+      ""
+    ).trim();
+
+  const username=
+    String(
+      user.username ||
+      user.user_name ||
+      ""
+    ).trim();
+
+  if(first && last){
+    return first+" "+last;
+  }
+
+  if(first){
+    return first;
+  }
+
+  if(full){
+    return full;
+  }
+
+  if(username){
+    return username;
+  }
+
+  return "";
+}
+
+function displayUser(user){
+
+  if(!user){
+    return;
+  }
+
+  const displayName=
+    getUserDisplayName(user);
+
+  const email=
+    user.email ||
+    user.email_address ||
+    "";
+
+  /*
+    Do NOT overwrite a valid account name
+    with "CoinForest Member".
+  */
+
+  if(displayName){
+
+    document.getElementById(
+      "welcomeName"
+    ).textContent=
+      "Hello, "+displayName;
+
+    document.getElementById(
+      "profileName"
+    ).textContent=
+      displayName;
+
+    const nameParts=
+      displayName
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    let initials="CF";
+
+    if(nameParts.length>=2){
+
+      initials=
+        (
+          nameParts[0].charAt(0)+
+          nameParts[nameParts.length-1].charAt(0)
+        ).toUpperCase();
+
+    }else if(nameParts.length===1){
+
+      initials=
+        nameParts[0]
+          .substring(0,2)
+          .toUpperCase();
+
+    }
+
+    document.getElementById(
+      "avatar"
+    ).textContent=
+      initials;
+
+  }
+
+  if(email){
+
+    document.getElementById(
+      "profileEmail"
+    ).textContent=
+      email;
+
+  }
+
+  const tier=
+    user.tier ||
+    user.account_tier ||
+    user.accountTier;
+
+  if(tier){
+
+    document.getElementById(
+      "tierBadge"
+    ).textContent=
+      String(tier)
+        .replace(/^tier\s*/i,"Tier ");
+
+  }
+
+}
+
+async function loadUser(){
+
+  /*
+    STEP 1:
+    Immediately use the user object saved by login.html.
+    This is important because login already stores:
+    coinforest_user
+  */
+
+  const savedUser=
+    getSavedUser();
+
+  if(savedUser){
+
+    displayUser(savedUser);
+
+  }
+
+  /*
+    STEP 2:
+    Ask the server for the authoritative user.
+    If it succeeds, update the dashboard with that
+    information. If it fails, keep the saved login user.
+  */
+
+  try{
+
+    const response=
+      await fetch(
+        "/api/auth/me",
+        {
+          method:"GET",
+          headers:{
+            "Authorization":
+              "Bearer "+token,
+            "Accept":
+              "application/json"
+          }
+        }
+      );
+
+    const data=
+      await response.json();
+
+    if(
+      response.ok &&
+      data &&
+      data.success &&
+      data.user
+    ){
+
+      const serverUser=
+        data.user;
+
+      /*
+        Save the authoritative user back to
+        localStorage so the next page load can
+        immediately display the correct name.
+      */
+
+      localStorage.setItem(
+        "coinforest_user",
+        JSON.stringify(serverUser)
+      );
+
+      displayUser(serverUser);
+
+      return;
+
+    }
+
+    /*
+      Server did not return a usable user.
+      The saved login user remains on screen.
+    */
+
+    console.warn(
+      "CoinForest /api/auth/me did not return a user:",
+      response.status,
+      data
+    );
+
+  }catch(error){
+
+    console.warn(
+      "CoinForest authentication check failed; using saved login user:",
+      error
+    );
+
+  }
+
+  /*
+    Final fallback:
+    Only use CoinForest Member if absolutely no
+    usable account information exists anywhere.
+  */
+
+  const currentName=
+    document.getElementById(
+      "profileName"
+    ).textContent.trim();
+
+  if(
+    !currentName ||
+    currentName==="Loading..." ||
+    currentName==="CoinForest Member"
+  ){
+
+    document.getElementById(
+      "profileName"
+    ).textContent=
+      "CoinForest Member";
+
+    document.getElementById(
+      "welcomeName"
+    ).textContent=
+      "Hello, CoinForest Member";
 
   }
 
@@ -2300,12 +2292,15 @@ function submitDemoAction(
     alert("Please enter a valid amount.");
 
     return;
+
   }
 
   if(type==="Withdrawal"){
 
     const source=
-      document.getElementById("withdrawFrom").value;
+      document.getElementById(
+        "withdrawFrom"
+      ).value;
 
     if(source==="profit"){
 
@@ -2345,7 +2340,9 @@ function openChat(){
 function sendSupportMessage(){
 
   const input=
-    document.getElementById("chatMessage");
+    document.getElementById(
+      "chatMessage"
+    );
 
   const message=
     input.value.trim();
@@ -2355,6 +2352,7 @@ function sendSupportMessage(){
     alert("Please enter a message.");
 
     return;
+
   }
 
   alert(
@@ -2373,12 +2371,16 @@ async function logoutUser(){
 
   try{
 
-    await fetch("/api/auth/logout",{
-      method:"POST",
-      headers:{
-        "Authorization":"Bearer "+token
+    await fetch(
+      "/api/auth/logout",
+      {
+        method:"POST",
+        headers:{
+          "Authorization":
+            "Bearer "+token
+        }
       }
-    });
+    );
 
   }catch(error){
 
@@ -2386,7 +2388,13 @@ async function logoutUser(){
 
   }
 
-  localStorage.removeItem("coinforest_token");
+  localStorage.removeItem(
+    "coinforest_token"
+  );
+
+  localStorage.removeItem(
+    "coinforest_user"
+  );
 
   window.location.href="/";
 
@@ -2446,7 +2454,8 @@ function formatMoney(
 
 function updateMarketCoin(symbol){
 
-  const coin=markets[symbol];
+  const coin=
+    markets[symbol];
 
   let movement;
 
