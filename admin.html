@@ -1,1992 +1,1487 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>CoinForest Admin</title>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --green: #126b3a;
-      --green-dark: #0b4d2a;
-      --green-light: #eaf7ef;
-
-      --gold: #d9a441;
-      --gold-light: #fff7e3;
-
-      --bg: #f5f7f6;
-      --card: #ffffff;
-
-      --text: #17231d;
-      --text-strong: #102019;
-      --muted: #718078;
-
-      --border: #e4e9e6;
-
-      --danger: #c94343;
-      --success: #16834b;
-
-      --shadow:
-        0 8px 28px rgba(20, 45, 32, .07);
-
-      --shadow-hover:
-        0 12px 32px rgba(20, 45, 32, .11);
-
-      --radius: 16px;
-    }
-
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-
-    body {
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-      background: var(--bg);
-
-      color: var(--text);
-
-      min-height: 100vh;
-
-      font-weight: 500;
-
-      -webkit-font-smoothing: antialiased;
-
-      text-rendering: optimizeLegibility;
-    }
-
-
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-
-    button {
-      cursor: pointer;
-    }
-
-
-    /* =====================================================
-       APP LAYOUT
-    ===================================================== */
-
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
-
-
-    /* =====================================================
-       SIDEBAR
-    ===================================================== */
-
-    .sidebar {
-      width: 250px;
-
-      background: #fff;
-
-      border-right:
-        1px solid var(--border);
-
-      position: fixed;
-
-      inset: 0 auto 0 0;
-
-      z-index: 100;
-
-      display: flex;
-
-      flex-direction: column;
-
-      box-shadow:
-        4px 0 20px rgba(20, 45, 32, .025);
-    }
-
-
-    .brand {
-      height: 76px;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 11px;
-
-      padding: 0 22px;
-
-      border-bottom:
-        1px solid var(--border);
-
-      flex-shrink: 0;
-    }
-
-
-    .brand-logo {
-      width: 42px;
-      height: 42px;
-
-      border-radius: 13px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--green),
-          var(--green-dark)
-        );
-
-      display: grid;
-
-      place-items: center;
-
-      color: #fff;
-
-      font-size: 21px;
-
-      box-shadow:
-        0 6px 14px rgba(18, 107, 58, .18);
-    }
-
-
-    .brand-text strong {
-      display: block;
-
-      font-size: 17px;
-
-      font-weight: 800;
-
-      color: var(--green-dark);
-
-      letter-spacing: -.2px;
-    }
-
-
-    .brand-text span {
-      display: block;
-
-      color: var(--muted);
-
-      font-size: 11px;
-
-      font-weight: 600;
-
-      margin-top: 3px;
-    }
-
-
-    .nav {
-      padding: 20px 12px;
-
-      overflow-y: auto;
-
-      flex: 1;
-    }
-
-
-    .nav-label {
-      color: #9aa59f;
-
-      font-size: 10px;
-
-      text-transform: uppercase;
-
-      letter-spacing: 1.15px;
-
-      padding: 0 12px 9px;
-
-      font-weight: 800;
-    }
-
-
-    .nav-item {
-      width: 100%;
-
-      border: 0;
-
-      background: transparent;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 12px 13px;
-
-      margin-bottom: 4px;
-
-      border-radius: 11px;
-
-      color: #58655e;
-
-      text-align: left;
-
-      font-size: 13px;
-
-      font-weight: 650;
-
-      transition:
-        background .2s ease,
-        color .2s ease,
-        transform .2s ease;
-    }
-
-
-    .nav-item:hover {
-      background: var(--green-light);
-
-      color: var(--green-dark);
-
-      transform:
-        translateX(1px);
-    }
-
-
-    .nav-item.active {
-      background:
-        linear-gradient(
-          135deg,
-          var(--green),
-          var(--green-dark)
-        );
-
-      color: #fff;
-
-      font-weight: 800;
-
-      box-shadow:
-        0 6px 15px
-        rgba(18, 107, 58, .14);
-    }
-
-
-    .nav-icon {
-      width: 23px;
-
-      text-align: center;
-
-      font-size: 16px;
-
-      flex-shrink: 0;
-    }
-
-
-    .sidebar-footer {
-      padding: 14px;
-
-      border-top:
-        1px solid var(--border);
-
-      flex-shrink: 0;
-    }
-
-
-    .admin-mini {
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      padding: 10px;
-
-      border-radius: 12px;
-    }
-
-
-    .admin-avatar {
-      width: 36px;
-      height: 36px;
-
-      border-radius: 50%;
-
-      background:
-        var(--gold-light);
-
-      color: #9b711c;
-
-      display: grid;
-
-      place-items: center;
-
-      font-weight: 800;
-
-      border:
-        1px solid
-        rgba(217, 164, 65, .15);
-    }
-
-
-    .admin-mini strong {
-      display: block;
-
-      font-size: 12px;
-
-      font-weight: 800;
-    }
-
-
-    .admin-mini span {
-      display: block;
-
-      color: var(--muted);
-
-      font-size: 10px;
-
-      font-weight: 600;
-
-      margin-top: 3px;
-    }
-
-
-    /* =====================================================
-       MAIN
-    ===================================================== */
-
-    .main {
-      margin-left: 250px;
-
-      width:
-        calc(100% - 250px);
-
-      min-width: 0;
-    }
-
-
-    /* =====================================================
-       TOPBAR
-    ===================================================== */
-
-    .topbar {
-      height: 76px;
-
-      background:
-        rgba(255,255,255,.96);
-
-      border-bottom:
-        1px solid var(--border);
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding: 0 30px;
-
-      position: sticky;
-
-      top: 0;
-
-      z-index: 50;
-
-      backdrop-filter:
-        blur(12px);
-    }
-
-
-    .topbar-left {
-      min-width: 0;
-    }
-
-
-    .topbar-left h1 {
-      font-size: 20px;
-
-      color: var(--text-strong);
-
-      font-weight: 800;
-
-      letter-spacing: -.35px;
-    }
-
-
-    .topbar-left p {
-      font-size: 12px;
-
-      color: var(--muted);
-
-      margin-top: 4px;
-
-      font-weight: 600;
-    }
-
-
-    .topbar-right {
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-    }
-
-
-    .icon-btn {
-      width: 38px;
-      height: 38px;
-
-      border:
-        1px solid var(--border);
-
-      background: #fff;
-
-      border-radius: 10px;
-
-      color: #5e6a63;
-
-      transition: .2s;
-
-      font-weight: 700;
-    }
-
-
-    .icon-btn:hover {
-      border-color: #cbd8d0;
-
-      background:
-        var(--green-light);
-
-      color: var(--green-dark);
-    }
-
-
-    /* =====================================================
-       CONTENT
-    ===================================================== */
-
-    .content {
-      padding:
-        28px 30px 40px;
-
-      max-width: 1500px;
-    }
-
-
-    /* =====================================================
-       STAT CARDS
-    ===================================================== */
-
-    .stats {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 17px;
-
-      margin-bottom: 24px;
-    }
-
-
-    .stat-card {
-      background: var(--card);
-
-      border:
-        1px solid var(--border);
-
-      border-radius: var(--radius);
-
-      padding: 20px;
-
-      box-shadow: var(--shadow);
-
-      transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        border-color .2s ease;
-    }
-
-
-    .stat-card:hover {
-      transform:
-        translateY(-2px);
-
-      box-shadow:
-        var(--shadow-hover);
-
-      border-color: #d8e2dc;
-    }
-
-
-    .stat-top {
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-    }
-
-
-    .stat-label {
-      font-size: 12px;
-
-      color: var(--muted);
-
-      font-weight: 700;
-    }
-
-
-    .stat-icon {
-      width: 38px;
-      height: 38px;
-
-      border-radius: 11px;
-
-      display: grid;
-
-      place-items: center;
-
-      background:
-        var(--green-light);
-
-      color: var(--green);
-
-      font-size: 16px;
-
-      font-weight: 800;
-    }
-
-
-    .stat-value {
-      font-size: 26px;
-
-      font-weight: 800;
-
-      letter-spacing: -.5px;
-
-      margin-top: 15px;
-
-      color: var(--text-strong);
-    }
-
-
-    .stat-note {
-      font-size: 11px;
-
-      color: var(--muted);
-
-      margin-top: 6px;
-
-      font-weight: 600;
-    }
-
-
-    /* =====================================================
-       CONTENT CARDS
-    ===================================================== */
-
-    .grid-2 {
-      display: grid;
-
-      grid-template-columns:
-        1.35fr 1fr;
-
-      gap: 20px;
-    }
-
-
-    .panel {
-      background: #fff;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: var(--radius);
-
-      box-shadow: var(--shadow);
-
-      overflow: hidden;
-    }
-
-
-    .panel-header {
-      padding: 18px 20px;
-
-      border-bottom:
-        1px solid var(--border);
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      gap: 15px;
-    }
-
-
-    .panel-header h2 {
-      font-size: 15px;
-
-      font-weight: 800;
-
-      color: var(--text-strong);
-    }
-
-
-    .panel-header span {
-      color: var(--muted);
-
-      font-size: 11px;
-
-      font-weight: 600;
-    }
-
-
-    .panel-body {
-      padding: 18px 20px;
-
-      color: #536159;
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
-      font-weight: 550;
-    }
-
-
-    /* =====================================================
-       QUICK ACTIONS
-    ===================================================== */
-
-    .quick-actions {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 10px;
-    }
-
-
-    .action {
-      border:
-        1px solid var(--border);
-
-      background: #fff;
-
-      border-radius: 12px;
-
-      padding: 15px;
-
-      text-align: left;
-
-      transition:
-        border-color .2s ease,
-        background .2s ease,
-        transform .2s ease,
-        box-shadow .2s ease;
-    }
-
-
-    .action:hover {
-      border-color: #b9d8c5;
-
-      background:
-        var(--green-light);
-
-      transform:
-        translateY(-1px);
-
-      box-shadow:
-        0 6px 16px
-        rgba(18, 107, 58, .07);
-    }
-
-
-    .action-icon {
-      font-size: 19px;
-
-      margin-bottom: 8px;
-    }
-
-
-    .action strong {
-      display: block;
-
-      font-size: 12px;
-
-      color: var(--text-strong);
-
-      font-weight: 800;
-    }
-
-
-    .action span {
-      display: block;
-
-      font-size: 10px;
-
-      color: var(--muted);
-
-      margin-top: 4px;
-
-      line-height: 1.5;
-
-      font-weight: 600;
-    }
-
-
-    /* =====================================================
-       ACTIVITY
-    ===================================================== */
-
-    .activity {
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 13px 0;
-
-      border-bottom:
-        1px solid #edf0ee;
-    }
-
-
-    .activity:last-child {
-      border-bottom: 0;
-    }
-
-
-    .activity-icon {
-      width: 34px;
-      height: 34px;
-
-      border-radius: 10px;
-
-      display: grid;
-
-      place-items: center;
-
-      background:
-        var(--green-light);
-
-      color: var(--green);
-
-      flex-shrink: 0;
-
-      font-size: 14px;
-    }
-
-
-    .activity-info {
-      min-width: 0;
-
-      flex: 1;
-    }
-
-
-    .activity-info strong {
-      display: block;
-
-      font-size: 12px;
-
-      color: var(--text-strong);
-
-      font-weight: 800;
-    }
-
-
-    .activity-info span {
-      display: block;
-
-      color: var(--muted);
-
-      font-size: 10px;
-
-      margin-top: 3px;
-
-      font-weight: 600;
-    }
-
-
-    /* =====================================================
-       MOBILE MENU
-    ===================================================== */
-
-    .mobile-menu {
-      display: none;
-
-      width: 38px;
-      height: 38px;
-
-      border:
-        1px solid var(--border);
-
-      background: #fff;
-
-      border-radius: 10px;
-
-      color: var(--text);
-
-      font-weight: 800;
-    }
-
-
-    .mobile-menu:hover {
-      background:
-        var(--green-light);
-
-      color: var(--green-dark);
-    }
-
-
-    .overlay {
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      background:
-        rgba(0,0,0,.35);
-
-      z-index: 90;
-    }
-
-
-    /* =====================================================
-       ACCESS MESSAGE
-    ===================================================== */
-
-    #adminAccessMessage {
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 9999;
-
-      background:
-        var(--bg);
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      padding: 20px;
-    }
-
-
-    .admin-access-card {
-      width:
-        min(430px, 100%);
-
-      background: #fff;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 18px;
-
-      padding: 30px 24px;
-
-      text-align: center;
-
-      box-shadow:
-        0 12px 40px
-        rgba(20,45,32,.10);
-    }
-
-
-    .admin-access-icon {
-      width: 58px;
-      height: 58px;
-
-      margin:
-        0 auto 16px;
-
-      border-radius: 16px;
-
-      display: grid;
-
-      place-items: center;
-
-      background:
-        var(--green-light);
-
-      font-size: 27px;
-    }
-
-
-    .admin-access-card h2 {
-      color:
-        var(--text-strong);
-
-      font-size: 19px;
-
-      margin-bottom: 9px;
-    }
-
-
-    .admin-access-card p {
-      color: var(--muted);
-
-      font-size: 13px;
-
-      line-height: 1.6;
-    }
-
-
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
-
-    @media (max-width: 1050px) {
-
-      .stats {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-
-    }
-
-
-    @media (max-width: 760px) {
-
-      .sidebar {
-        transform:
-          translateX(-100%);
-
-        transition:
-          .25s ease;
-      }
-
-
-      .sidebar.open {
-        transform:
-          translateX(0);
-      }
-
-
-      .overlay.open {
-        display: block;
-      }
-
-
-      .main {
-        margin-left: 0;
-
-        width: 100%;
-      }
-
-
-      .mobile-menu {
-        display: block;
-      }
-
-
-      .topbar {
-        padding: 0 16px;
-      }
-
-
-      .topbar-left {
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-      }
-
-
-      .topbar-left h1 {
-        font-size: 17px;
-      }
-
-
-      .topbar-left p {
-        font-size: 10px;
-      }
-
-
-      .content {
-        padding:
-          20px 15px 30px;
-      }
-
-
-      .stats {
-        grid-template-columns:
-          1fr 1fr;
-
-        gap: 10px;
-      }
-
-
-      .stat-card {
-        padding: 15px;
-      }
-
-
-      .stat-label {
-        font-size: 11px;
-      }
-
-
-      .stat-value {
-        font-size: 21px;
-      }
-
-
-      .stat-icon {
-        width: 32px;
-        height: 32px;
-
-        font-size: 14px;
-      }
-
-
-      .panel-header {
-        padding: 16px;
-      }
-
-
-      .panel-body {
-        padding: 16px;
-      }
-
-    }
-
-
-    @media (max-width: 440px) {
-
-      .stats {
-        grid-template-columns:
-          1fr;
-      }
-
-
-      .quick-actions {
-        grid-template-columns:
-          1fr;
-      }
-
-
-      .topbar-right {
-        gap: 6px;
-      }
-
-
-      .icon-btn {
-        width: 35px;
-        height: 35px;
-      }
-
-
-      .content {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoinForest Admin</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --green:#126b3a;
+  --green-dark:#0b4d2a;
+  --green-light:#eaf7ef;
+  --gold:#d9a441;
+  --gold-light:#fff7e3;
+  --bg:#f5f7f6;
+  --card:#fff;
+  --text:#17231d;
+  --text-strong:#102019;
+  --muted:#718078;
+  --border:#e4e9e6;
+  --danger:#c94343;
+  --danger-light:#fff0f0;
+  --success:#16834b;
+  --success-light:#eaf8f0;
+  --warning:#b27a12;
+  --warning-light:#fff7e3;
+  --shadow:0 8px 28px rgba(20,45,32,.07);
+  --shadow-hover:0 12px 32px rgba(20,45,32,.11);
+  --radius:16px;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-weight:500;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:250px;
+  background:#fff;
+  border-right:1px solid var(--border);
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  box-shadow:4px 0 20px rgba(20,45,32,.025);
+}
+
+.brand{
+  height:76px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:0 22px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+
+.brand-logo{
+  width:42px;height:42px;border-radius:13px;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:grid;place-items:center;color:#fff;font-size:21px;
+  box-shadow:0 6px 14px rgba(18,107,58,.18);
+}
+
+.brand-text strong{
+  display:block;font-size:17px;font-weight:900;
+  color:var(--green-dark);letter-spacing:-.2px
+}
+
+.brand-text span{
+  display:block;color:var(--muted);font-size:11px;
+  font-weight:700;margin-top:3px
+}
+
+.nav{
+  padding:20px 12px;
+  overflow-y:auto;
+  flex:1
+}
+
+.nav-label{
+  color:#9aa59f;font-size:10px;text-transform:uppercase;
+  letter-spacing:1.15px;padding:0 12px 9px;font-weight:900
+}
+
+.nav-item{
+  width:100%;border:0;background:transparent;
+  display:flex;align-items:center;gap:12px;
+  padding:12px 13px;margin-bottom:4px;border-radius:11px;
+  color:#58655e;text-align:left;font-size:13px;font-weight:700;
+  transition:.2s
+}
+
+.nav-item:hover{
+  background:var(--green-light);
+  color:var(--green-dark);
+  transform:translateX(1px)
+}
+
+.nav-item.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;font-weight:900;
+  box-shadow:0 6px 15px rgba(18,107,58,.14)
+}
+
+.nav-icon{
+  width:23px;text-align:center;font-size:16px;flex-shrink:0
+}
+
+.sidebar-footer{
+  padding:14px;border-top:1px solid var(--border);flex-shrink:0
+}
+
+.admin-mini{
+  display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px
+}
+
+.admin-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--gold-light);color:#9b711c;
+  display:grid;place-items:center;font-weight:900;
+  border:1px solid rgba(217,164,65,.15)
+}
+
+.admin-mini strong{display:block;font-size:12px;font-weight:900}
+.admin-mini span{
+  display:block;color:var(--muted);font-size:10px;
+  font-weight:700;margin-top:3px
+}
+
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+  min-width:0
+}
+
+.topbar{
+  height:76px;background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 30px;position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(12px)
+}
+
+.topbar-left{min-width:0}
+
+.topbar-left h1{
+  font-size:20px;color:var(--text-strong);
+  font-weight:900;letter-spacing:-.35px
+}
+
+.topbar-left p{
+  font-size:12px;color:var(--muted);margin-top:4px;font-weight:700
+}
+
+.topbar-right{display:flex;align-items:center;gap:8px}
+
+.icon-btn,.mobile-menu{
+  width:38px;height:38px;border:1px solid var(--border);
+  background:#fff;border-radius:10px;color:#5e6a63;
+  transition:.2s;font-weight:900
+}
+
+.icon-btn:hover,.mobile-menu:hover{
+  border-color:#cbd8d0;
+  background:var(--green-light);
+  color:var(--green-dark)
+}
+
+.logout-btn{
+  padding:9px 13px;border-radius:10px;
+  border:1px solid #efd0d0;background:#fff;
+  color:var(--danger);font-size:12px;font-weight:900
+}
+
+.logout-btn:hover{background:var(--danger-light)}
+
+.content{
+  padding:28px 30px 40px;
+  max-width:1500px
+}
+
+.section{animation:fadeIn .18s ease}
+
+@keyframes fadeIn{
+  from{opacity:.2;transform:translateY(3px)}
+  to{opacity:1;transform:none}
+}
+
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:17px;margin-bottom:24px
+}
+
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow);transition:.2s
+}
+
+.stat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-hover);
+  border-color:#d8e2dc
+}
+
+.stat-top{
+  display:flex;align-items:center;justify-content:space-between
+}
+
+.stat-label{font-size:12px;color:var(--muted);font-weight:800}
+
+.stat-icon{
+  width:38px;height:38px;border-radius:11px;
+  display:grid;place-items:center;
+  background:var(--green-light);color:var(--green);
+  font-size:16px;font-weight:900
+}
+
+.stat-value{
+  font-size:26px;font-weight:900;letter-spacing:-.5px;
+  margin-top:15px;color:var(--text-strong)
+}
+
+.stat-note{
+  font-size:11px;color:var(--muted);margin-top:6px;font-weight:700
+}
+
+.grid-2{
+  display:grid;grid-template-columns:1.35fr 1fr;gap:20px
+}
+
+.panel{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  overflow:hidden;margin-bottom:20px
+}
+
+.panel-header{
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px
+}
+
+.panel-header h2{
+  font-size:15px;font-weight:900;color:var(--text-strong)
+}
+
+.panel-header span{
+  color:var(--muted);font-size:11px;font-weight:700
+}
+
+.panel-body{
+  padding:18px 20px;color:#536159;
+  font-size:13px;line-height:1.6;font-weight:600
+}
+
+.quick-actions{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
+}
+
+.action{
+  border:1px solid var(--border);background:#fff;
+  border-radius:12px;padding:15px;text-align:left;
+  transition:.2s
+}
+
+.action:hover{
+  border-color:#b9d8c5;background:var(--green-light);
+  transform:translateY(-1px);box-shadow:0 6px 16px rgba(18,107,58,.07)
+}
+
+.action-icon{font-size:19px;margin-bottom:8px}
+.action strong{display:block;font-size:12px;color:var(--text-strong);font-weight:900}
+.action span{
+  display:block;font-size:10px;color:var(--muted);
+  margin-top:4px;line-height:1.5;font-weight:700
+}
+
+.activity{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 0;border-bottom:1px solid #edf0ee
+}
+
+.activity:last-child{border-bottom:0}
+
+.activity-icon{
+  width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;background:var(--green-light);
+  color:var(--green);flex-shrink:0;font-size:14px
+}
+
+.activity-info{min-width:0;flex:1}
+.activity-info strong{
+  display:block;font-size:12px;color:var(--text-strong);font-weight:900
+}
+.activity-info span{
+  display:block;color:var(--muted);font-size:10px;
+  margin-top:3px;font-weight:700
+}
+
+.toolbar{
+  display:flex;align-items:center;gap:9px;
+  flex-wrap:wrap;margin-bottom:14px
+}
+
+.search{
+  flex:1;min-width:200px;
+  border:1px solid var(--border);
+  background:#fff;border-radius:10px;
+  padding:10px 12px;outline:none;font-size:12px;
+  font-weight:700;color:var(--text)
+}
+
+.search:focus{
+  border-color:#9bc4aa;
+  box-shadow:0 0 0 3px rgba(18,107,58,.07)
+}
+
+.select{
+  border:1px solid var(--border);background:#fff;
+  border-radius:10px;padding:10px 12px;
+  outline:none;font-size:12px;font-weight:800;color:var(--text)
+}
+
+.primary-btn,.secondary-btn,.danger-btn,.success-btn,.gold-btn{
+  border:0;border-radius:10px;padding:10px 14px;
+  font-size:12px;font-weight:900;transition:.2s
+}
+
+.primary-btn{background:var(--green);color:#fff}
+.primary-btn:hover{background:var(--green-dark)}
+
+.secondary-btn{
+  background:#fff;color:var(--green-dark);
+  border:1px solid #cfe0d5
+}
+
+.secondary-btn:hover{background:var(--green-light)}
+
+.danger-btn{background:var(--danger);color:#fff}
+.danger-btn:hover{filter:brightness(.92)}
+
+.success-btn{background:var(--success);color:#fff}
+.success-btn:hover{filter:brightness(.92)}
+
+.gold-btn{background:var(--gold);color:#fff}
+.gold-btn:hover{filter:brightness(.94)}
+
+.table-wrap{
+  overflow-x:auto;border:1px solid var(--border);
+  border-radius:12px;background:#fff
+}
+
+table{width:100%;border-collapse:collapse;min-width:760px}
+
+th{
+  background:#f8faf9;color:#68756e;
+  text-align:left;font-size:10px;
+  text-transform:uppercase;letter-spacing:.5px;
+  padding:12px;font-weight:900;
+  border-bottom:1px solid var(--border)
+}
+
+td{
+  padding:13px 12px;font-size:11px;
+  font-weight:700;color:#35433b;
+  border-bottom:1px solid #edf0ee;
+  vertical-align:middle
+}
+
+tr:last-child td{border-bottom:0}
+tr:hover td{background:#fbfdfc}
+
+.customer-name{
+  font-weight:900;color:var(--text-strong)
+}
+
+.muted{color:var(--muted)!important}
+.amount{font-weight:900;color:var(--text-strong)}
+
+.badge{
+  display:inline-flex;align-items:center;
+  padding:5px 8px;border-radius:999px;
+  font-size:9px;font-weight:900;white-space:nowrap
+}
+
+.badge-success{background:var(--success-light);color:var(--success)}
+.badge-warning{background:var(--warning-light);color:var(--warning)}
+.badge-danger{background:var(--danger-light);color:var(--danger)}
+.badge-neutral{background:#eef2f0;color:#647169}
+.badge-gold{background:var(--gold-light);color:#9b711c}
+
+.row-actions{display:flex;gap:5px;flex-wrap:wrap}
+
+.small-btn{
+  border:1px solid var(--border);background:#fff;
+  padding:6px 9px;border-radius:8px;
+  font-size:9px;font-weight:900;color:#526058
+}
+
+.small-btn:hover{background:var(--green-light);color:var(--green-dark)}
+
+.empty{
+  text-align:center;padding:35px 20px;
+  color:var(--muted);font-size:12px;font-weight:700
+}
+
+.loading{
+  text-align:center;padding:30px;
+  color:var(--muted);font-size:12px;font-weight:800
+}
+
+.error-box{
+  padding:12px 14px;border-radius:10px;
+  background:var(--danger-light);color:var(--danger);
+  font-size:11px;font-weight:800;margin-bottom:12px
+}
+
+.detail-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
+}
+
+.detail-item{
+  border:1px solid var(--border);
+  border-radius:11px;padding:12px;background:#fbfcfb
+}
+
+.detail-item label{
+  display:block;text-transform:uppercase;
+  font-size:9px;letter-spacing:.5px;
+  color:var(--muted);font-weight:900;margin-bottom:5px
+}
+
+.detail-item strong{
+  display:block;color:var(--text-strong);
+  font-size:12px;font-weight:900;
+  word-break:break-word
+}
+
+.wallet-cards{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
+}
+
+.wallet-card{
+  padding:15px;border-radius:12px;
+  background:var(--green-light);
+  border:1px solid #d6eadc
+}
+
+.wallet-card span{
+  display:block;font-size:10px;color:var(--muted);font-weight:800
+}
+
+.wallet-card strong{
+  display:block;margin-top:6px;
+  font-size:20px;color:var(--green-dark);font-weight:900
+}
+
+.modal{
+  position:fixed;inset:0;
+  background:rgba(8,25,16,.45);
+  z-index:1000;display:none;
+  align-items:center;justify-content:center;
+  padding:18px
+}
+
+.modal.open{display:flex}
+
+.modal-card{
+  width:min(650px,100%);
+  max-height:90vh;overflow:auto;
+  background:#fff;border-radius:18px;
+  box-shadow:0 25px 70px rgba(0,0,0,.2)
+}
+
+.modal-header{
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between
+}
+
+.modal-header h3{
+  font-size:15px;color:var(--text-strong);font-weight:900
+}
+
+.modal-close{
+  width:34px;height:34px;border:0;border-radius:9px;
+  background:#f1f4f2;color:#526058;font-weight:900
+}
+
+.modal-body{padding:20px}
+
+.form-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
+}
+
+.form-group{margin-bottom:12px}
+.form-group.full{grid-column:1/-1}
+
+.form-group label{
+  display:block;font-size:10px;color:var(--muted);
+  font-weight:900;margin-bottom:6px
+}
+
+.form-control{
+  width:100%;border:1px solid var(--border);
+  border-radius:10px;padding:10px 11px;
+  outline:none;font-size:12px;font-weight:700
+}
+
+.form-control:focus{
+  border-color:#9bc4aa;
+  box-shadow:0 0 0 3px rgba(18,107,58,.07)
+}
+
+textarea.form-control{min-height:100px;resize:vertical}
+
+.modal-footer{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:8px
+}
+
+.chat-layout{
+  display:grid;grid-template-columns:280px 1fr;
+  min-height:500px
+}
+
+.conversations{
+  border-right:1px solid var(--border);
+  overflow:auto
+}
+
+.conversation{
+  padding:13px;border-bottom:1px solid #edf0ee;
+  cursor:pointer;transition:.2s
+}
+
+.conversation:hover,.conversation.active{background:var(--green-light)}
+
+.conversation strong{
+  display:block;font-size:11px;font-weight:900;color:var(--text-strong)
+}
+
+.conversation span{
+  display:block;font-size:9px;color:var(--muted);
+  margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+
+.chat-panel{display:flex;flex-direction:column;min-width:0}
+
+.messages{
+  flex:1;padding:18px;overflow:auto;
+  min-height:400px;background:#fafcfb
+}
+
+.message{
+  max-width:75%;padding:10px 12px;
+  border-radius:12px;margin-bottom:9px;
+  font-size:11px;line-height:1.5;font-weight:700
+}
+
+.message.customer{
+  background:#fff;border:1px solid var(--border)
+}
+
+.message.admin{
+  margin-left:auto;
+  background:var(--green);color:#fff
+}
+
+.message small{
+  display:block;margin-top:4px;
+  opacity:.65;font-size:8px
+}
+
+.chat-compose{
+  padding:12px;border-top:1px solid var(--border);
+  display:flex;gap:8px
+}
+
+.chat-compose textarea{
+  flex:1;min-height:45px;max-height:100px;
+  resize:vertical;border:1px solid var(--border);
+  border-radius:10px;padding:10px;outline:none;
+  font-size:11px;font-weight:700
+}
+
+.mobile-menu{display:none}
+
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.35);z-index:90
+}
+
+#adminAccessMessage{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px
+}
+
+.admin-access-card{
+  width:min(430px,100%);background:#fff;
+  border:1px solid var(--border);border-radius:18px;
+  padding:30px 24px;text-align:center;
+  box-shadow:0 12px 40px rgba(20,45,32,.10)
+}
+
+.admin-access-icon{
+  width:58px;height:58px;margin:0 auto 16px;
+  border-radius:16px;display:grid;place-items:center;
+  background:var(--green-light);font-size:27px
+}
+
+.admin-access-card h2{
+  color:var(--text-strong);font-size:19px;margin-bottom:9px;font-weight:900
+}
+
+.admin-access-card p{
+  color:var(--muted);font-size:13px;line-height:1.6;font-weight:600
+}
+
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+}
+
+@media(max-width:760px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s ease
+  }
+
+  .sidebar.open{transform:translateX(0)}
+  .overlay.open{display:block}
+
+  .main{margin-left:0;width:100%}
+  .mobile-menu{display:block}
+
+  .topbar{padding:0 16px}
+  .topbar-left{
+    display:flex;align-items:center;gap:10px
+  }
+
+  .topbar-left h1{font-size:17px}
+  .topbar-left p{font-size:10px}
+
+  .content{padding:20px 15px 30px}
+  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-card{padding:15px}
+  .stat-label{font-size:11px}
+  .stat-value{font-size:21px}
+  .stat-icon{width:32px;height:32px;font-size:14px}
+
+  .panel-header{padding:16px}
+  .panel-body{padding:16px}
+
+  .chat-layout{grid-template-columns:1fr}
+  .conversations{
+    max-height:190px;border-right:0;
+    border-bottom:1px solid var(--border)
+  }
+
+  .detail-grid,.form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:auto}
+}
+
+@media(max-width:440px){
+  .stats{grid-template-columns:1fr}
+  .quick-actions{grid-template-columns:1fr}
+  .wallet-cards{grid-template-columns:1fr}
+  .topbar-right{gap:4px}
+  .icon-btn{width:35px;height:35px}
+  .content{padding-left:12px;padding-right:12px}
+  .logout-btn{padding:8px 9px;font-size:10px}
+}
+</style>
 </head>
 
 <body>
 
-  <div
-    class="overlay"
-    id="overlay"
-    onclick="toggleSidebar()"
-  ></div>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
+<div class="app">
 
-  <div class="app">
+<aside class="sidebar" id="sidebar">
 
-    <!-- ===================================================
-         SIDEBAR
-    ==================================================== -->
+  <div class="brand">
+    <div class="brand-logo">🌲</div>
+    <div class="brand-text">
+      <strong>CoinForest</strong>
+      <span>Administration</span>
+    </div>
+  </div>
 
-    <aside
-      class="sidebar"
-      id="sidebar"
-    >
+  <nav class="nav">
 
-      <div class="brand">
+    <div class="nav-label">Overview</div>
 
-        <div class="brand-logo">
-          🌲
-        </div>
+    <button class="nav-item active"
+      onclick="showSection('dashboard',this)">
+      <span class="nav-icon">⌂</span>Dashboard
+    </button>
 
-        <div class="brand-text">
+    <div class="nav-label" style="margin-top:18px">Customers</div>
 
-          <strong>
-            CoinForest
-          </strong>
+    <button class="nav-item"
+      onclick="showSection('customers',this)">
+      <span class="nav-icon">👥</span>Customers
+    </button>
 
-          <span>
-            Administration
-          </span>
+    <button class="nav-item"
+      onclick="showSection('kyc',this)">
+      <span class="nav-icon">✓</span>KYC Review
+    </button>
 
-        </div>
+    <button class="nav-item"
+      onclick="showSection('chat',this)">
+      <span class="nav-icon">💬</span>Customer Chat
+    </button>
 
+    <div class="nav-label" style="margin-top:18px">Financial</div>
+
+    <button class="nav-item"
+      onclick="showSection('wallets',this)">
+      <span class="nav-icon">💳</span>Wallets
+    </button>
+
+    <button class="nav-item"
+      onclick="showSection('investments',this)">
+      <span class="nav-icon">📈</span>Investments
+    </button>
+
+    <button class="nav-item"
+      onclick="showSection('transactions',this)">
+      <span class="nav-icon">↔</span>Transactions
+    </button>
+
+    <button class="nav-item"
+      onclick="showSection('requests',this)">
+      <span class="nav-icon">⏳</span>Pending Requests
+    </button>
+
+    <div class="nav-label" style="margin-top:18px">System</div>
+
+    <button class="nav-item"
+      onclick="showSection('settings',this)">
+      <span class="nav-icon">⚙</span>Settings
+    </button>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-mini">
+
+      <div class="admin-avatar" id="adminAvatar">A</div>
+
+      <div>
+        <strong id="adminName">Administrator</strong>
+        <span>Admin account</span>
       </div>
 
+    </div>
+  </div>
 
-      <nav class="nav">
+</aside>
 
-        <div class="nav-label">
-          Overview
-        </div>
+<main class="main">
 
+<header class="topbar">
 
-        <button
-          class="nav-item active"
-          onclick="showSection('dashboard', this)"
-        >
-          <span class="nav-icon">
-            ⌂
-          </span>
+  <div class="topbar-left">
 
-          Dashboard
-        </button>
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
-
-        <div
-          class="nav-label"
-          style="margin-top:18px;"
-        >
-          Customers
-        </div>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('customers', this)"
-        >
-          <span class="nav-icon">
-            👥
-          </span>
-
-          Customers
-        </button>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('kyc', this)"
-        >
-          <span class="nav-icon">
-            ✓
-          </span>
-
-          KYC Review
-        </button>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('chat', this)"
-        >
-          <span class="nav-icon">
-            💬
-          </span>
-
-          Customer Chat
-        </button>
-
-
-        <div
-          class="nav-label"
-          style="margin-top:18px;"
-        >
-          Financial
-        </div>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('wallets', this)"
-        >
-          <span class="nav-icon">
-            💳
-          </span>
-
-          Wallets
-        </button>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('investments', this)"
-        >
-          <span class="nav-icon">
-            📈
-          </span>
-
-          Investments
-        </button>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('transactions', this)"
-        >
-          <span class="nav-icon">
-            ↔
-          </span>
-
-          Transactions
-        </button>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('requests', this)"
-        >
-          <span class="nav-icon">
-            ⏳
-          </span>
-
-          Pending Requests
-        </button>
-
-
-        <div
-          class="nav-label"
-          style="margin-top:18px;"
-        >
-          System
-        </div>
-
-
-        <button
-          class="nav-item"
-          onclick="showSection('settings', this)"
-        >
-          <span class="nav-icon">
-            ⚙
-          </span>
-
-          Settings
-        </button>
-
-      </nav>
-
-
-      <div class="sidebar-footer">
-
-        <div class="admin-mini">
-
-          <div
-            class="admin-avatar"
-            id="adminAvatar"
-          >
-            A
-          </div>
-
-          <div>
-
-            <strong id="adminName">
-              Administrator
-            </strong>
-
-            <span>
-              Admin account
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </aside>
-
-
-    <!-- ===================================================
-         MAIN
-    ==================================================== -->
-
-    <main class="main">
-
-      <header class="topbar">
-
-        <div class="topbar-left">
-
-          <button
-            class="mobile-menu"
-            onclick="toggleSidebar()"
-          >
-            ☰
-          </button>
-
-
-          <div>
-
-            <h1 id="pageTitle">
-              Dashboard
-            </h1>
-
-            <p>
-              CoinForest administration panel
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="topbar-right">
-
-          <button
-            class="icon-btn"
-            title="Notifications"
-          >
-            🔔
-          </button>
-
-          <button
-            class="icon-btn"
-            id="topAdminAvatar"
-            title="Admin profile"
-          >
-            A
-          </button>
-
-        </div>
-
-      </header>
-
-
-      <section class="content">
-
-        <!-- =================================================
-             DASHBOARD
-        ================================================== -->
-
-        <div
-          id="dashboard"
-          class="section"
-        >
-
-          <div class="stats">
-
-            <div class="stat-card">
-
-              <div class="stat-top">
-
-                <span class="stat-label">
-                  Total Customers
-                </span>
-
-                <div class="stat-icon">
-                  👥
-                </div>
-
-              </div>
-
-              <div
-                class="stat-value"
-                id="totalCustomers"
-              >
-                0
-              </div>
-
-              <div class="stat-note">
-                Registered accounts
-              </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <div class="stat-top">
-
-                <span class="stat-label">
-                  Pending KYC
-                </span>
-
-                <div class="stat-icon">
-                  ✓
-                </div>
-
-              </div>
-
-              <div
-                class="stat-value"
-                id="pendingKyc"
-              >
-                0
-              </div>
-
-              <div class="stat-note">
-                Awaiting review
-              </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <div class="stat-top">
-
-                <span class="stat-label">
-                  Active Investments
-                </span>
-
-                <div class="stat-icon">
-                  📈
-                </div>
-
-              </div>
-
-              <div
-                class="stat-value"
-                id="activeInvestments"
-              >
-                0
-              </div>
-
-              <div class="stat-note">
-                Customer investments
-              </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-              <div class="stat-top">
-
-                <span class="stat-label">
-                  Pending Requests
-                </span>
-
-                <div class="stat-icon">
-                  ⏳
-                </div>
-
-              </div>
-
-              <div
-                class="stat-value"
-                id="pendingRequests"
-              >
-                0
-              </div>
-
-              <div class="stat-note">
-                Deposit, withdrawal & transfers
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="grid-2">
-
-            <div class="panel">
-
-              <div class="panel-header">
-
-                <div>
-
-                  <h2>
-                    Quick Actions
-                  </h2>
-
-                  <span>
-                    Administrative controls
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              <div class="panel-body">
-
-                <div class="quick-actions">
-
-                  <button
-                    class="action"
-                    onclick="showSection('kyc')"
-                  >
-
-                    <div class="action-icon">
-                      ✓
-                    </div>
-
-                    <strong>
-                      Review KYC
-                    </strong>
-
-                    <span>
-                      Review and approve customer verification.
-                    </span>
-
-                  </button>
-
-
-                  <button
-                    class="action"
-                    onclick="showSection('wallets')"
-                  >
-
-                    <div class="action-icon">
-                      💳
-                    </div>
-
-                    <strong>
-                      Manage Wallet
-                    </strong>
-
-                    <span>
-                      Edit Main Wallet and Profit Wallet balances.
-                    </span>
-
-                  </button>
-
-
-                  <button
-                    class="action"
-                    onclick="showSection('transactions')"
-                  >
-
-                    <div class="action-icon">
-                      ＋
-                    </div>
-
-                    <strong>
-                      Add Transaction
-                    </strong>
-
-                    <span>
-                      Create an administrative transaction record.
-                    </span>
-
-                  </button>
-
-
-                  <button
-                    class="action"
-                    onclick="showSection('chat')"
-                  >
-
-                    <div class="action-icon">
-                      💬
-                    </div>
-
-                    <strong>
-                      Customer Chat
-                    </strong>
-
-                    <span>
-                      View and respond to customer messages.
-                    </span>
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <div class="panel">
-
-              <div class="panel-header">
-
-                <div>
-
-                  <h2>
-                    Recent Activity
-                  </h2>
-
-                  <span>
-                    Latest administrative activity
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              <div class="panel-body">
-
-                <div class="activity">
-
-                  <div class="activity-icon">
-                    👤
-                  </div>
-
-                  <div class="activity-info">
-
-                    <strong>
-                      System ready
-                    </strong>
-
-                    <span>
-                      Admin dashboard initialized
-                    </span>
-
-                  </div>
-
-                </div>
-
-
-                <div class="activity">
-
-                  <div class="activity-icon">
-                    🌲
-                  </div>
-
-                  <div class="activity-info">
-
-                    <strong>
-                      CoinForest Admin
-                    </strong>
-
-                    <span>
-                      Administrative session active
-                    </span>
-
-                  </div>
-
-                </div>
-
-
-                <div class="activity">
-
-                  <div class="activity-icon">
-                    🔐
-                  </div>
-
-                  <div class="activity-info">
-
-                    <strong>
-                      Administrative access
-                    </strong>
-
-                    <span>
-                      Secure administrator session active
-                    </span>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             CUSTOMERS
-        ================================================== -->
-
-        <div
-          id="customers"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Customers
-              </h2>
-
-              <span>
-                Customer account management
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-              Customer management will be connected to Neon here.
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             KYC
-        ================================================== -->
-
-        <div
-          id="kyc"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                KYC Review
-              </h2>
-
-              <span>
-                Approve or reject customer verification
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-              KYC management will be connected to Neon here.
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             CHAT
-        ================================================== -->
-
-        <div
-          id="chat"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Customer Chat
-              </h2>
-
-              <span>
-                Customer ↔ Admin conversations
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-              Customer chat will be connected to Neon here.
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             WALLETS
-        ================================================== -->
-
-        <div
-          id="wallets"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Wallet Management
-              </h2>
-
-              <span>
-                Main Wallet and Profit Wallet controls
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-              Wallet management will be connected to Neon here.
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             INVESTMENTS
-        ================================================== -->
-
-        <div
-          id="investments"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Investments
-              </h2>
-
-              <span>
-                View customer investments
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-
-              Investments are customer-initiated after KYC
-              approval. No Admin approval workflow will be used here.
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             TRANSACTIONS
-        ================================================== -->
-
-        <div
-          id="transactions"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Transactions
-              </h2>
-
-              <span>
-                Add, view and manage transaction records
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-              Transaction management will be connected to Neon here.
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             PENDING REQUESTS
-        ================================================== -->
-
-        <div
-          id="requests"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Pending Requests
-              </h2>
-
-              <span>
-                Administrative approval queue
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-
-              Deposit, withdrawal, send and other
-              non-investment requests will appear here.
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             SETTINGS
-        ================================================== -->
-
-        <div
-          id="settings"
-          class="section"
-          style="display:none;"
-        >
-
-          <div class="panel">
-
-            <div class="panel-header">
-
-              <h2>
-                Settings
-              </h2>
-
-              <span>
-                Admin configuration
-              </span>
-
-            </div>
-
-            <div class="panel-body">
-              Administrative settings will be added here.
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </main>
+    <div>
+      <h1 id="pageTitle">Dashboard</h1>
+      <p>CoinForest administration panel</p>
+    </div>
 
   </div>
 
+  <div class="topbar-right">
 
-  <!-- =====================================================
-       JAVASCRIPT
-  ===================================================== -->
+    <button class="icon-btn" title="Refresh"
+      onclick="refreshCurrentSection()">↻</button>
+
+    <button class="icon-btn"
+      id="topAdminAvatar"
+      title="Admin profile">A</button>
+
+    <button class="logout-btn"
+      onclick="logoutAdmin()">Logout</button>
+
+  </div>
+
+</header>
+
+<section class="content">
+
+<!-- ================= DASHBOARD ================= -->
+
+<div id="dashboard" class="section">
+
+  <div class="stats">
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Total Customers</span>
+        <div class="stat-icon">👥</div>
+      </div>
+      <div class="stat-value" id="totalCustomers">0</div>
+      <div class="stat-note">Registered accounts</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Pending KYC</span>
+        <div class="stat-icon">✓</div>
+      </div>
+      <div class="stat-value" id="pendingKyc">0</div>
+      <div class="stat-note">Awaiting review</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Active Investments</span>
+        <div class="stat-icon">📈</div>
+      </div>
+      <div class="stat-value" id="activeInvestments">0</div>
+      <div class="stat-note">Customer investments</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Pending Requests</span>
+        <div class="stat-icon">⏳</div>
+      </div>
+      <div class="stat-value" id="pendingRequests">0</div>
+      <div class="stat-note">Deposit, withdrawal & transfers</div>
+    </div>
+
+  </div>
+
+  <div class="grid-2">
+
+    <div class="panel">
+
+      <div class="panel-header">
+        <div>
+          <h2>Quick Actions</h2>
+          <span>Administrative controls</span>
+        </div>
+      </div>
+
+      <div class="panel-body">
+
+        <div class="quick-actions">
+
+          <button class="action" onclick="showSection('customers')">
+            <div class="action-icon">👥</div>
+            <strong>Customers</strong>
+            <span>View registered customer accounts.</span>
+          </button>
+
+          <button class="action" onclick="showSection('kyc')">
+            <div class="action-icon">✓</div>
+            <strong>Review KYC</strong>
+            <span>Review and process customer verification.</span>
+          </button>
+
+          <button class="action" onclick="showSection('wallets')">
+            <div class="action-icon">💳</div>
+            <strong>Manage Wallets</strong>
+            <span>Manage Main Wallet and Profit Wallet balances.</span>
+          </button>
+
+          <button class="action" onclick="showSection('requests')">
+            <div class="action-icon">⏳</div>
+            <strong>Pending Requests</strong>
+            <span>Process pending financial requests.</span>
+          </button>
+
+          <button class="action" onclick="showSection('transactions')">
+            <div class="action-icon">↔</div>
+            <strong>Transactions</strong>
+            <span>View the transaction history.</span>
+          </button>
+
+          <button class="action" onclick="showSection('chat')">
+            <div class="action-icon">💬</div>
+            <strong>Customer Chat</strong>
+            <span>Respond to customer conversations.</span>
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <div class="panel-header">
+        <div>
+          <h2>Recent Activity</h2>
+          <span>Latest platform activity</span>
+        </div>
+      </div>
+
+      <div class="panel-body" id="recentActivity">
+        <div class="loading">Loading activity...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CUSTOMERS ================= -->
+
+<div id="customers" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+      <div>
+        <h2>Customers</h2>
+        <span>Customer account management</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadCustomers()">
+        Refresh
+      </button>
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <input
+          id="customerSearch"
+          class="search"
+          placeholder="Search name, email, username or phone..."
+          oninput="filterCustomers()">
+
+        <select id="customerStatusFilter"
+          class="select"
+          onchange="filterCustomers()">
+          <option value="">All status</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+      </div>
+
+      <div id="customersContainer">
+        <div class="loading">Loading customers...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= KYC ================= -->
+
+<div id="kyc" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>KYC Review</h2>
+        <span>Approve or reject customer verification</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadKyc()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <select id="kycFilter"
+          class="select"
+          onchange="loadKyc()">
+
+          <option value="pending">Pending</option>
+          <option value="">All</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+
+        </select>
+
+      </div>
+
+      <div id="kycContainer">
+        <div class="loading">Loading KYC records...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CHAT ================= -->
+
+<div id="chat" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Customer Chat</h2>
+        <span>Customer ↔ Admin conversations</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadConversations()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="chat-layout">
+
+      <div class="conversations" id="conversationList">
+        <div class="loading">Loading...</div>
+      </div>
+
+      <div class="chat-panel">
+
+        <div class="messages" id="messages">
+          <div class="empty">
+            Select a conversation.
+          </div>
+        </div>
+
+        <div class="chat-compose">
+
+          <textarea
+            id="chatInput"
+            placeholder="Write a reply..."
+            onkeydown="handleChatKey(event)"></textarea>
+
+          <button class="primary-btn"
+            onclick="sendChatMessage()">
+            Send
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= WALLETS ================= -->
+
+<div id="wallets" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Wallet Management</h2>
+        <span>Main Wallet and Profit Wallet controls</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadWallets()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <input
+          id="walletSearch"
+          class="search"
+          placeholder="Search customer..."
+          oninput="filterWallets()">
+
+      </div>
+
+      <div id="walletsContainer">
+        <div class="loading">Loading wallets...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= INVESTMENTS ================= -->
+
+<div id="investments" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Investments</h2>
+        <span>Customer investment records</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadInvestments()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <input
+          id="investmentSearch"
+          class="search"
+          placeholder="Search customer or plan..."
+          oninput="filterInvestments()">
+
+        <select
+          id="investmentStatusFilter"
+          class="select"
+          onchange="filterInvestments()">
+
+          <option value="">All status</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+
+        </select>
+
+      </div>
+
+      <div id="investmentsContainer">
+        <div class="loading">Loading investments...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= TRANSACTIONS ================= -->
+
+<div id="transactions" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Transactions</h2>
+        <span>Deposits, withdrawals, transfers and other records</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadTransactions()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <input
+          id="transactionSearch"
+          class="search"
+          placeholder="Search customer, reference or transaction type..."
+          oninput="filterTransactions()">
+
+        <select
+          id="transactionTypeFilter"
+          class="select"
+          onchange="filterTransactions()">
+
+          <option value="">All types</option>
+          <option value="deposit">Deposit</option>
+          <option value="withdrawal">Withdrawal</option>
+          <option value="transfer">Transfer</option>
+          <option value="send">Send</option>
+          <option value="profit">Profit</option>
+          <option value="adjustment">Adjustment</option>
+
+        </select>
+
+      </div>
+
+      <div id="transactionsContainer">
+        <div class="loading">Loading transactions...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= REQUESTS ================= -->
+
+<div id="requests" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Pending Requests</h2>
+        <span>Deposit, withdrawal, transfer and other requests</span>
+      </div>
+
+      <button class="secondary-btn" onclick="loadRequests()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <select
+          id="requestTypeFilter"
+          class="select"
+          onchange="filterRequests()">
+
+          <option value="">All types</option>
+          <option value="deposit">Deposit</option>
+          <option value="withdrawal">Withdrawal</option>
+          <option value="transfer">Transfer</option>
+          <option value="send">Send</option>
+
+        </select>
+
+      </div>
+
+      <div id="requestsContainer">
+        <div class="loading">Loading requests...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SETTINGS ================= -->
+
+<div id="settings" class="section" style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Settings</h2>
+        <span>Administrator account and system controls</span>
+      </div>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <label>Administrator</label>
+          <strong id="settingsAdminName">Administrator</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Email</label>
+          <strong id="settingsAdminEmail">—</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Role</label>
+          <strong>Administrator</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Authentication</label>
+          <strong>Authenticated session</strong>
+        </div>
+
+      </div>
+
+      <br>
+
+      <button class="danger-btn" onclick="logoutAdmin()">
+        Logout Administrator
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+</main>
+</div>
+
+
+<!-- ================= CUSTOMER MODAL ================= -->
+
+<div class="modal" id="customerModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <h3>Customer Details</h3>
+      <button class="modal-close" onclick="closeModal('customerModal')">✕</button>
+    </div>
+
+    <div class="modal-body" id="customerModalBody">
+      Loading...
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= WALLET MODAL ================= -->
+
+<div class="modal" id="walletModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <h3>Wallet Adjustment</h3>
+      <button class="modal-close" onclick="closeModal('walletModal')">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div id="walletAdjustmentCustomer"></div>
+
+      <br>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Wallet</label>
+
+          <select id="adjustWalletType" class="form-control">
+            <option value="main_wallet">Main Wallet</option>
+            <option value="profit_wallet">Profit Wallet</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Action</label>
+
+          <select id="adjustAction" class="form-control">
+            <option value="add">Add Balance</option>
+            <option value="subtract">Subtract Balance</option>
+            <option value="set">Set Balance</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Amount</label>
+
+          <input
+            id="adjustAmount"
+            class="form-control"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00">
+        </div>
+
+        <div class="form-group">
+          <label>Reference</label>
+
+          <input
+            id="adjustReference"
+            class="form-control"
+            placeholder="Optional reference">
+        </div>
+
+        <div class="form-group full">
+          <label>Reason</label>
+
+          <textarea
+            id="adjustReason"
+            class="form-control"
+            placeholder="Reason for this administrative adjustment"></textarea>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="secondary-btn"
+        onclick="closeModal('walletModal')">
+        Cancel
+      </button>
+
+      <button class="primary-btn"
+        onclick="submitWalletAdjustment()">
+        Save Adjustment
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= KYC MODAL ================= -->
+
+<div class="modal" id="kycModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>KYC Review</h3>
+
+      <button class="modal-close"
+        onclick="closeModal('kycModal')">
+        ✕
+      </button>
+
+    </div>
+
+    <div class="modal-body" id="kycModalBody">
+      Loading...
+    </div>
+
+  </div>
+
+</div>
+
 
 <script>
 
@@ -1994,72 +1489,47 @@ const API_BASE =
   "https://coinforest-api-test-2026.onrender.com";
 
 let adminAuthenticated = false;
+let currentSection = "dashboard";
+
+let customersData = [];
+let walletsData = [];
+let kycData = [];
+let investmentsData = [];
+let transactionsData = [];
+let requestsData = [];
+let conversationsData = [];
+let selectedConversationId = null;
 
 
 /* =====================================================
-   SESSION HELPERS
+   SESSION
 ===================================================== */
 
-function getStoredToken() {
-
-  return localStorage.getItem(
-    "coinforest_token"
-  );
-
+function getStoredToken(){
+  return localStorage.getItem("coinforest_token");
 }
 
+function getStoredUser(){
 
-function getStoredUser() {
-
-  try {
+  try{
 
     const raw =
-      localStorage.getItem(
-        "coinforest_user"
-      );
+      localStorage.getItem("coinforest_user");
 
+    return raw ? JSON.parse(raw) : null;
 
-    if (!raw) {
-      return null;
-    }
-
-
-    const user =
-      JSON.parse(raw);
-
-
-    return (
-      user &&
-      typeof user === "object"
-    )
-      ? user
-      : null;
-
-  } catch (error) {
-
-    console.warn(
-      "Unable to read coinforest_user:",
-      error
-    );
-
+  }catch{
     return null;
-
   }
 
 }
 
+function getStoredRole(){
 
-function getStoredRole() {
-
-  const user =
-    getStoredUser();
-
+  const user = getStoredUser();
 
   const localRole =
-    localStorage.getItem(
-      "coinforest_role"
-    );
-
+    localStorage.getItem("coinforest_role");
 
   return String(
     user?.role ||
@@ -2067,9 +1537,45 @@ function getStoredRole() {
     user?.account_role ||
     localRole ||
     ""
-  )
-    .trim()
-    .toLowerCase();
+  ).trim().toLowerCase();
+
+}
+
+
+/* =====================================================
+   TOKEN ROLE
+===================================================== */
+
+function getRoleFromToken(token){
+
+  try{
+
+    const parts =
+      String(token).split(".");
+
+    if(parts.length !== 3) return "";
+
+    let payload =
+      parts[1]
+        .replace(/-/g,"+")
+        .replace(/_/g,"/");
+
+    while(payload.length % 4)
+      payload += "=";
+
+    const decoded =
+      JSON.parse(atob(payload));
+
+    return String(
+      decoded?.role ||
+      decoded?.user_role ||
+      decoded?.account_role ||
+      ""
+    ).trim().toLowerCase();
+
+  }catch{
+    return "";
+  }
 
 }
 
@@ -2078,75 +1584,33 @@ function getStoredRole() {
    USER EXTRACTION
 ===================================================== */
 
-function extractUser(data) {
+function extractUser(data){
 
-  if (
-    data &&
-    data.user &&
-    typeof data.user === "object"
-  ) {
-
+  if(data?.user && typeof data.user === "object")
     return data.user;
 
-  }
-
-
-  if (
-    data &&
-    data.data &&
-    data.data.user &&
-    typeof data.data.user === "object"
-  ) {
-
+  if(data?.data?.user && typeof data.data.user === "object")
     return data.data.user;
 
-  }
-
-
-  if (
-    data &&
-    data.data &&
+  if(
+    data?.data &&
     typeof data.data === "object" &&
-    (
-      data.data.role ||
-      data.data.email ||
-      data.data.id
-    )
-  ) {
-
+    (data.data.role || data.data.email || data.data.id)
+  )
     return data.data;
 
-  }
-
-
-  if (
+  if(
     data &&
     typeof data === "object" &&
-    (
-      data.role ||
-      data.email ||
-      data.id
-    )
-  ) {
-
+    (data.role || data.email || data.id)
+  )
     return data;
-
-  }
-
 
   return null;
 
 }
 
-
-/* =====================================================
-   ROLE EXTRACTION
-===================================================== */
-
-function getRoleFromObject(
-  user,
-  data
-) {
+function getRoleFromObject(user,data){
 
   return String(
     user?.role ??
@@ -2157,613 +1621,214 @@ function getRoleFromObject(
     data?.account_role ??
     data?.data?.role ??
     ""
-  )
-    .trim()
-    .toLowerCase();
+  ).trim().toLowerCase();
 
 }
 
 
 /* =====================================================
-   JWT ROLE FALLBACK
+   ACCESS MESSAGE
 ===================================================== */
 
-function getRoleFromToken(
-  token
-) {
-
-  try {
-
-    const parts =
-      String(token).split(".");
-
-
-    if (
-      parts.length !== 3
-    ) {
-
-      return "";
-
-    }
-
-
-    let payload =
-      parts[1]
-        .replace(/-/g, "+")
-        .replace(/_/g, "/");
-
-
-    while (
-      payload.length % 4
-    ) {
-
-      payload += "=";
-
-    }
-
-
-    const decoded =
-      JSON.parse(
-        atob(payload)
-      );
-
-
-    return String(
-      decoded?.role ??
-      decoded?.user_role ??
-      decoded?.account_role ??
-      ""
-    )
-      .trim()
-      .toLowerCase();
-
-  } catch (error) {
-
-    console.warn(
-      "Unable to read token role:",
-      error
-    );
-
-    return "";
-
-  }
-
-}
-
-
-/* =====================================================
-   ADMIN ACCESS MESSAGE
-===================================================== */
-
-function showAdminAccessMessage(
-  title,
-  message
-) {
+function showAdminAccessMessage(title,message){
 
   let existing =
-    document.getElementById(
-      "adminAccessMessage"
-    );
+    document.getElementById("adminAccessMessage");
 
+  if(existing){
 
-  if (existing) {
+    existing.querySelector(".admin-access-title")
+      .textContent = title;
 
-    const titleElement =
-      existing.querySelector(
-        ".admin-access-title"
-      );
-
-    const messageElement =
-      existing.querySelector(
-        ".admin-access-text"
-      );
-
-
-    if (titleElement) {
-
-      titleElement.textContent =
-        title;
-
-    }
-
-
-    if (messageElement) {
-
-      messageElement.textContent =
-        message;
-
-    }
-
+    existing.querySelector(".admin-access-text")
+      .textContent = message;
 
     return;
-
   }
 
-
   const box =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
-
-  box.id =
-    "adminAccessMessage";
-
+  box.id = "adminAccessMessage";
 
   box.innerHTML = `
 
     <div class="admin-access-card">
 
-      <div class="admin-access-icon">
-        🔐
-      </div>
+      <div class="admin-access-icon">🔐</div>
 
       <h2 class="admin-access-title">
-        ${title}
+        ${escapeHtml(title)}
       </h2>
 
       <p class="admin-access-text">
-        ${message}
+        ${escapeHtml(message)}
       </p>
 
     </div>
 
   `;
 
-
-  document.body.appendChild(
-    box
-  );
+  document.body.appendChild(box);
 
 }
 
-
-function hideAdminAccessMessage() {
+function hideAdminAccessMessage(){
 
   const box =
-    document.getElementById(
-      "adminAccessMessage"
-    );
+    document.getElementById("adminAccessMessage");
 
-
-  if (box) {
-
-    box.remove();
-
-  }
+  if(box) box.remove();
 
 }
 
 
 /* =====================================================
-   FETCH CURRENT USER
+   AUTH / ME
 ===================================================== */
 
-async function fetchCurrentUser(
-  token
-) {
+async function fetchCurrentUser(token){
 
   const response =
     await fetch(
       `${API_BASE}/api/auth/me`,
       {
-        method: "GET",
-
-        headers: {
-          "Authorization":
-            `Bearer ${token}`,
-
-          "Content-Type":
-            "application/json",
-
-          "Accept":
-            "application/json"
+        method:"GET",
+        headers:{
+          Authorization:`Bearer ${token}`,
+          Accept:"application/json"
         },
-
-        cache: "no-store"
+        cache:"no-store"
       }
     );
 
-
-  const responseText =
+  const text =
     await response.text();
-
 
   let data = null;
 
+  try{
+    data = text ? JSON.parse(text) : null;
+  }catch{}
 
-  try {
+  if(response.status === 401 || response.status === 403)
+    return {invalid:true,user:null};
 
-    data =
-      responseText
-        ? JSON.parse(
-            responseText
-          )
-        : null;
-
-  } catch {
-
-    console.warn(
-      "Invalid JSON from /api/auth/me:",
-      responseText
-    );
-
-  }
-
-
-  if (
-    response.status === 401 ||
-    response.status === 403
-  ) {
-
-    return {
-      invalid: true,
-      user: null
-    };
-
-  }
-
-
-  if (!response.ok) {
-
-    return {
-      invalid: false,
-      user: null
-    };
-
-  }
-
+  if(!response.ok)
+    return {invalid:false,user:null};
 
   return {
-    invalid: false,
-    user:
-      extractUser(data)
+    invalid:false,
+    user:extractUser(data)
   };
 
 }
 
 
-/* =====================================================
-   UPDATE ADMIN IDENTITY
-===================================================== */
+async function requireAdmin(){
 
-function updateAdminIdentity(
-  user
-) {
+  const token = getStoredToken();
+  const storedUser = getStoredUser();
 
-  const adminName =
-    document.getElementById(
-      "adminName"
-    );
+  let role = getStoredRole();
 
+  if(!role && storedUser)
+    role = getRoleFromObject(storedUser,null);
 
-  const adminAvatar =
-    document.getElementById(
-      "adminAvatar"
-    );
+  if(!role && token)
+    role = getRoleFromToken(token);
 
 
-  const topAvatar =
-    document.getElementById(
-      "topAdminAvatar"
-    );
+  if(role === "admin"){
 
+    adminAuthenticated = true;
 
-  const firstName =
-    String(
-      user?.first_name ||
-      ""
-    ).trim();
-
-
-  const lastName =
-    String(
-      user?.last_name ||
-      ""
-    ).trim();
-
-
-  const email =
-    String(
-      user?.email ||
-      ""
-    ).trim();
-
-
-  const fullName =
-    `${firstName} ${lastName}`
-      .trim();
-
-
-  const displayName =
-    fullName ||
-    email ||
-    "Administrator";
-
-
-  if (adminName) {
-
-    adminName.textContent =
-      displayName;
-
-  }
-
-
-  let initials =
-    `${firstName.charAt(0)}${lastName.charAt(0)}`
-      .toUpperCase();
-
-
-  if (!initials) {
-
-    initials =
-      email
-        ? email.charAt(0).toUpperCase()
-        : "A";
-
-  }
-
-
-  if (adminAvatar) {
-
-    adminAvatar.textContent =
-      initials;
-
-  }
-
-
-  if (topAvatar) {
-
-    topAvatar.textContent =
-      initials;
-
-  }
-
-}
-
-
-/* =====================================================
-   ADMIN AUTHENTICATION
-===================================================== */
-
-async function requireAdmin() {
-
-  const token =
-    getStoredToken();
-
-
-  const storedUser =
-    getStoredUser();
-
-
-  /*
-   * ===================================================
-   * FIRST: USE THE NORMALIZED SESSION CREATED BY LOGIN
-   * ===================================================
-   */
-
-  let role =
-    getStoredRole();
-
-
-  /*
-   * If the role was not stored separately but exists
-   * inside the saved user object, recover it.
-   */
-
-  if (
-    !role &&
-    storedUser
-  ) {
-
-    role =
-      getRoleFromObject(
-        storedUser,
-        null
-      );
-
-  }
-
-
-  /*
-   * If the browser has a JWT, inspect it as another
-   * fallback.
-   */
-
-  if (
-    !role &&
-    token
-  ) {
-
-    role =
-      getRoleFromToken(
-        token
-      );
-
-  }
-
-
-  /*
-   * ===================================================
-   * ADMIN SESSION FOUND
-   * ===================================================
-   */
-
-  if (
-    role === "admin"
-  ) {
-
-    adminAuthenticated =
-      true;
-
-
-    const normalizedUser =
-      {
-        ...(storedUser || {}),
-        role: "admin"
-      };
-
+    const normalizedUser = {
+      ...(storedUser || {}),
+      role:"admin"
+    };
 
     localStorage.setItem(
       "coinforest_user",
-      JSON.stringify(
-        normalizedUser
-      )
+      JSON.stringify(normalizedUser)
     );
-
 
     localStorage.setItem(
       "coinforest_role",
       "admin"
     );
 
-
-    updateAdminIdentity(
-      normalizedUser
-    );
-
-
+    updateAdminIdentity(normalizedUser);
     hideAdminAccessMessage();
 
+    if(token)
+      verifyAdminInBackground(token,normalizedUser);
 
-    /*
-     * Verify with the server in the background.
-     *
-     * This does NOT block the admin panel from opening.
-     */
-
-    if (token) {
-
-      verifyAdminInBackground(
-        token,
-        normalizedUser
-      );
-
-    }
-
+    await loadDashboard();
 
     return true;
-
   }
 
 
-  /*
-   * ===================================================
-   * TOKEN EXISTS BUT ROLE IS NOT AVAILABLE
-   * ===================================================
-   */
+  if(token){
 
-  if (token) {
-
-    try {
+    try{
 
       const result =
-        await fetchCurrentUser(
-          token
-        );
+        await fetchCurrentUser(token);
 
+      if(result.user){
 
-      if (
-        result.user
-      ) {
-
-        const serverUser =
-          result.user;
-
+        const serverUser = result.user;
 
         let serverRole =
-          getRoleFromObject(
-            serverUser,
-            null
-          );
+          getRoleFromObject(serverUser,null);
 
+        if(!serverRole)
+          serverRole = getRoleFromToken(token);
 
-        if (!serverRole) {
+        if(serverRole === "admin"){
 
-          serverRole =
-            getRoleFromToken(
-              token
-            );
-
-        }
-
-
-        /*
-         * SERVER CONFIRMS ADMIN
-         */
-
-        if (
-          serverRole === "admin"
-        ) {
-
-          const normalizedUser =
-            {
-              ...serverUser,
-              role: "admin"
-            };
-
+          const normalizedUser = {
+            ...serverUser,
+            role:"admin"
+          };
 
           localStorage.setItem(
             "coinforest_user",
-            JSON.stringify(
-              normalizedUser
-            )
+            JSON.stringify(normalizedUser)
           );
-
 
           localStorage.setItem(
             "coinforest_role",
             "admin"
           );
 
+          adminAuthenticated = true;
 
-          adminAuthenticated =
-            true;
-
-
-          updateAdminIdentity(
-            normalizedUser
-          );
-
-
+          updateAdminIdentity(normalizedUser);
           hideAdminAccessMessage();
 
+          await loadDashboard();
 
           return true;
-
         }
 
-
-        /*
-         * SERVER EXPLICITLY IDENTIFIES THIS AS
-         * A NON-ADMIN ACCOUNT.
-         */
-
-        if (
-          serverRole &&
-          serverRole !== "admin"
-        ) {
-
-          adminAuthenticated =
-            false;
-
+        if(serverRole && serverRole !== "admin"){
 
           showAdminAccessMessage(
             "Administrator access required",
             "The current CoinForest account is not authorized to use the administration panel."
           );
 
-
           return false;
-
         }
-
       }
 
-    } catch (error) {
+    }catch(error){
 
       console.warn(
-        "Unable to verify administrator session:",
+        "Admin verification failed:",
         error
       );
 
@@ -2771,214 +1836,74 @@ async function requireAdmin() {
 
   }
 
-
-  /*
-   * ===================================================
-   * NO ADMIN SESSION
-   * ===================================================
-   *
-   * We intentionally do NOT redirect automatically
-   * to login.html here.
-   */
-
-  adminAuthenticated =
-    false;
-
-
   showAdminAccessMessage(
     "Administrator session required",
     "Please sign in with an administrator account before accessing the CoinForest administration panel."
   );
-
 
   return false;
 
 }
 
 
-/* =====================================================
-   BACKGROUND ADMIN VERIFICATION
-===================================================== */
+async function verifyAdminInBackground(token,storedUser){
 
-async function verifyAdminInBackground(
-  token,
-  storedUser
-) {
-
-  try {
+  try{
 
     const result =
-      await fetchCurrentUser(
-        token
-      );
+      await fetchCurrentUser(token);
 
+    if(result.user){
 
-    /*
-     * A successful /me response.
-     */
-
-    if (
-      result.user
-    ) {
-
-      const serverUser =
-        result.user;
-
+      const serverUser = result.user;
 
       let serverRole =
-        getRoleFromObject(
-          serverUser,
-          null
-        );
+        getRoleFromObject(serverUser,null);
 
+      if(!serverRole)
+        serverRole = getRoleFromToken(token);
 
-      /*
-       * JWT remains a fallback if /me does not expose
-       * the role in the expected property.
-       */
+      if(serverRole === "admin"){
 
-      if (!serverRole) {
-
-        serverRole =
-          getRoleFromToken(
-            token
-          );
-
-      }
-
-
-      /*
-       * =================================================
-       * CONFIRMED ADMIN
-       * =================================================
-       */
-
-      if (
-        serverRole === "admin"
-      ) {
-
-        const normalizedUser =
-          {
-            ...serverUser,
-            role: "admin"
-          };
-
+        const normalizedUser = {
+          ...serverUser,
+          role:"admin"
+        };
 
         localStorage.setItem(
           "coinforest_user",
-          JSON.stringify(
-            normalizedUser
-          )
+          JSON.stringify(normalizedUser)
         );
-
 
         localStorage.setItem(
           "coinforest_role",
           "admin"
         );
 
-
-        adminAuthenticated =
-          true;
-
-
-        updateAdminIdentity(
-          normalizedUser
-        );
-
-
-        hideAdminAccessMessage();
-
+        updateAdminIdentity(normalizedUser);
 
         return;
-
       }
 
+      if(serverRole && serverRole !== "admin"){
 
-      /*
-       * =================================================
-       * EXPLICIT NON-ADMIN
-       * =================================================
-       */
-
-      if (
-        serverRole &&
-        serverRole !== "admin"
-      ) {
-
-        adminAuthenticated =
-          false;
-
+        adminAuthenticated = false;
 
         showAdminAccessMessage(
           "Administrator access required",
           "The authenticated account is not authorized to use the CoinForest administration panel."
         );
 
-
-        return;
-
       }
 
     }
 
-
-    /*
-     * =================================================
-     * TEMPORARY API FAILURE / UNKNOWN RESPONSE
-     * =================================================
-     *
-     * Preserve the already-established local admin
-     * session instead of unnecessarily hiding the panel.
-     */
-
-    if (
-      getStoredRole() === "admin"
-    ) {
-
-      adminAuthenticated =
-        true;
-
-
-      updateAdminIdentity(
-        storedUser
-      );
-
-
-      hideAdminAccessMessage();
-
-    }
-
-  } catch (error) {
+  }catch(error){
 
     console.warn(
-      "Background administrator verification failed:",
+      "Background admin verification failed:",
       error
     );
-
-
-    /*
-     * Render/API can temporarily be unavailable.
-     * Do not destroy an already established admin UI
-     * simply because of a temporary network failure.
-     */
-
-    if (
-      getStoredRole() === "admin"
-    ) {
-
-      adminAuthenticated =
-        true;
-
-
-      updateAdminIdentity(
-        storedUser
-      );
-
-
-      hideAdminAccessMessage();
-
-    }
 
   }
 
@@ -2986,155 +1911,2326 @@ async function verifyAdminInBackground(
 
 
 /* =====================================================
-   PAGE TITLES
+   IDENTITY
+===================================================== */
+
+function updateAdminIdentity(user){
+
+  const firstName =
+    String(user?.first_name || "").trim();
+
+  const lastName =
+    String(user?.last_name || "").trim();
+
+  const email =
+    String(user?.email || "").trim();
+
+  const fullName =
+    `${firstName} ${lastName}`.trim();
+
+  const displayName =
+    fullName || email || "Administrator";
+
+  const initials =
+    (
+      `${firstName.charAt(0)}${lastName.charAt(0)}`
+      || email.charAt(0)
+      || "A"
+    ).toUpperCase();
+
+  const name =
+    document.getElementById("adminName");
+
+  const avatar =
+    document.getElementById("adminAvatar");
+
+  const top =
+    document.getElementById("topAdminAvatar");
+
+  if(name) name.textContent = displayName;
+  if(avatar) avatar.textContent = initials;
+  if(top) top.textContent = initials;
+
+  const settingsName =
+    document.getElementById("settingsAdminName");
+
+  const settingsEmail =
+    document.getElementById("settingsAdminEmail");
+
+  if(settingsName)
+    settingsName.textContent = displayName;
+
+  if(settingsEmail)
+    settingsEmail.textContent = email || "—";
+
+}
+
+
+/* =====================================================
+   API HELPER
+===================================================== */
+
+async function apiRequest(
+  path,
+  options = {}
+){
+
+  const token =
+    getStoredToken();
+
+  const headers = {
+    Accept:"application/json",
+    ...(options.body ? {"Content-Type":"application/json"} : {}),
+    ...(options.headers || {})
+  };
+
+  if(token)
+    headers.Authorization = `Bearer ${token}`;
+
+  const response =
+    await fetch(
+      `${API_BASE}${path}`,
+      {
+        ...options,
+        headers,
+        cache:"no-store"
+      }
+    );
+
+  const text =
+    await response.text();
+
+  let data = null;
+
+  try{
+    data = text ? JSON.parse(text) : null;
+  }catch{
+    data = {raw:text};
+  }
+
+  if(response.status === 401){
+
+    adminAuthenticated = false;
+
+    showAdminAccessMessage(
+      "Session expired",
+      "Your administrator session is no longer valid. Please sign in again."
+    );
+
+    throw new Error("Unauthorized");
+  }
+
+  if(!response.ok){
+
+    const message =
+      data?.message ||
+      data?.error ||
+      data?.detail ||
+      `Request failed (${response.status})`;
+
+    throw new Error(message);
+  }
+
+  return data;
+
+}
+
+
+/* =====================================================
+   DATA NORMALIZER
+===================================================== */
+
+function extractArray(data,keys=[]){
+
+  if(Array.isArray(data))
+    return data;
+
+  for(const key of keys){
+
+    if(Array.isArray(data?.[key]))
+      return data[key];
+
+    if(Array.isArray(data?.data?.[key]))
+      return data.data[key];
+
+  }
+
+  if(Array.isArray(data?.data))
+    return data.data;
+
+  if(Array.isArray(data?.results))
+    return data.results;
+
+  return [];
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   FORMATTERS
+===================================================== */
+
+function money(value){
+
+  const n = Number(value || 0);
+
+  return "$" + n.toLocaleString(
+    "en-US",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
+
+}
+
+function date(value){
+
+  if(!value) return "—";
+
+  const d = new Date(value);
+
+  if(Number.isNaN(d.getTime()))
+    return String(value);
+
+  return d.toLocaleString(
+    "en-US",
+    {
+      dateStyle:"medium",
+      timeStyle:"short"
+    }
+  );
+
+}
+
+function statusBadge(status){
+
+  const s =
+    String(status || "unknown").toLowerCase();
+
+  let cls = "badge-neutral";
+
+  if(
+    ["approved","active","completed","success","successful","delivered"]
+      .includes(s)
+  )
+    cls = "badge-success";
+
+  else if(
+    ["pending","processing","review","submitted"]
+      .includes(s)
+  )
+    cls = "badge-warning";
+
+  else if(
+    ["rejected","declined","failed","cancelled","suspended"]
+      .includes(s)
+  )
+    cls = "badge-danger";
+
+  else if(
+    ["profit","verified"]
+      .includes(s)
+  )
+    cls = "badge-gold";
+
+  return `
+    <span class="badge ${cls}">
+      ${escapeHtml(status || "Unknown")}
+    </span>
+  `;
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+async function loadDashboard(){
+
+  try{
+
+    const data =
+      await apiRequest("/api/admin/dashboard");
+
+    const stats =
+      data?.stats ||
+      data?.data?.stats ||
+      data ||
+      {};
+
+    setText(
+      "totalCustomers",
+      stats.totalCustomers ??
+      stats.total_customers ??
+      0
+    );
+
+    setText(
+      "pendingKyc",
+      stats.pendingKyc ??
+      stats.pending_kyc ??
+      0
+    );
+
+    setText(
+      "activeInvestments",
+      stats.activeInvestments ??
+      stats.active_investments ??
+      0
+    );
+
+    setText(
+      "pendingRequests",
+      stats.pendingRequests ??
+      stats.pending_requests ??
+      0
+    );
+
+    renderActivity(
+      extractArray(
+        data,
+        ["recentActivity","recent_activity","activities"]
+      )
+    );
+
+  }catch(error){
+
+    console.warn(
+      "Dashboard API unavailable:",
+      error
+    );
+
+    /*
+     * Keep the dashboard usable if the summary route
+     * isn't available yet.
+     */
+    await loadDashboardFallback();
+
+  }
+
+}
+
+
+async function loadDashboardFallback(){
+
+  const jobs = await Promise.allSettled([
+    apiRequest("/api/admin/customers"),
+    apiRequest("/api/admin/kyc?status=pending"),
+    apiRequest("/api/admin/investments?status=active"),
+    apiRequest("/api/admin/requests?status=pending")
+  ]);
+
+  const customers =
+    jobs[0].status === "fulfilled"
+      ? extractArray(jobs[0].value,["customers"])
+      : [];
+
+  const kyc =
+    jobs[1].status === "fulfilled"
+      ? extractArray(jobs[1].value,["kyc","submissions"])
+      : [];
+
+  const investments =
+    jobs[2].status === "fulfilled"
+      ? extractArray(jobs[2].value,["investments"])
+      : [];
+
+  const requests =
+    jobs[3].status === "fulfilled"
+      ? extractArray(jobs[3].value,["requests"])
+      : [];
+
+  setText("totalCustomers",customers.length);
+  setText("pendingKyc",kyc.length);
+  setText("activeInvestments",investments.length);
+  setText("pendingRequests",requests.length);
+
+  renderActivity([]);
+
+}
+
+
+function renderActivity(items){
+
+  const box =
+    document.getElementById("recentActivity");
+
+  if(!box) return;
+
+  if(!items.length){
+
+    box.innerHTML = `
+      <div class="empty">
+        No recent activity available.
+      </div>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    items.slice(0,8).map(item => `
+
+      <div class="activity">
+
+        <div class="activity-icon">
+          ${escapeHtml(item.icon || "•")}
+        </div>
+
+        <div class="activity-info">
+
+          <strong>
+            ${escapeHtml(
+              item.title ||
+              item.action ||
+              item.type ||
+              "Activity"
+            )}
+          </strong>
+
+          <span>
+            ${escapeHtml(
+              item.description ||
+              item.message ||
+              item.details ||
+              ""
+            )}
+            ${item.created_at ? " • " + escapeHtml(date(item.created_at)) : ""}
+          </span>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+/* =====================================================
+   CUSTOMERS
+===================================================== */
+
+async function loadCustomers(){
+
+  const box =
+    document.getElementById("customersContainer");
+
+  box.innerHTML =
+    `<div class="loading">Loading customers...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest("/api/admin/customers");
+
+    customersData =
+      extractArray(data,["customers","users"]);
+
+    renderCustomers(customersData);
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderCustomers(list){
+
+  const box =
+    document.getElementById("customersContainer");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No customers found.</div>`;
+
+    return;
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Status</th>
+            <th>KYC</th>
+            <th>Created</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${list.map(user => {
+
+            const name =
+              `${user.first_name || ""} ${user.last_name || ""}`.trim()
+              || user.name
+              || user.email
+              || "Customer";
+
+            return `
+
+              <tr>
+
+                <td>
+                  <div class="customer-name">
+                    ${escapeHtml(name)}
+                  </div>
+
+                  <div class="muted">
+                    ${escapeHtml(user.id || "")}
+                  </div>
+                </td>
+
+                <td>${escapeHtml(user.email || "—")}</td>
+
+                <td>${escapeHtml(user.username || "—")}</td>
+
+                <td>${statusBadge(user.status || "active")}</td>
+
+                <td>${statusBadge(user.kyc_status || user.kycStatus || "pending")}</td>
+
+                <td>${escapeHtml(date(user.created_at))}</td>
+
+                <td>
+
+                  <div class="row-actions">
+
+                    <button
+                      class="small-btn"
+                      onclick="viewCustomer('${escapeAttr(user.id)}')">
+                      View
+                    </button>
+
+                    <button
+                      class="small-btn"
+                      onclick="openWalletForCustomer('${escapeAttr(user.id)}')">
+                      Wallet
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            `;
+
+          }).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+function filterCustomers(){
+
+  const q =
+    String(
+      document.getElementById("customerSearch").value || ""
+    ).toLowerCase();
+
+  const status =
+    String(
+      document.getElementById("customerStatusFilter").value || ""
+    ).toLowerCase();
+
+  const filtered =
+    customersData.filter(user => {
+
+      const text =
+        [
+          user.id,
+          user.email,
+          user.username,
+          user.name,
+          user.first_name,
+          user.last_name,
+          user.phone
+        ]
+        .join(" ")
+        .toLowerCase();
+
+      const userStatus =
+        String(user.status || "").toLowerCase();
+
+      return (
+        (!q || text.includes(q)) &&
+        (!status || userStatus === status)
+      );
+
+    });
+
+  renderCustomers(filtered);
+
+}
+
+
+async function viewCustomer(id){
+
+  openModal("customerModal");
+
+  const body =
+    document.getElementById("customerModalBody");
+
+  body.innerHTML =
+    `<div class="loading">Loading customer...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        `/api/admin/customers/${encodeURIComponent(id)}`
+      );
+
+    const user =
+      data?.customer ||
+      data?.user ||
+      data?.data ||
+      data;
+
+    const name =
+      `${user.first_name || ""} ${user.last_name || ""}`.trim()
+      || user.name
+      || "Customer";
+
+    body.innerHTML = `
+
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <label>Name</label>
+          <strong>${escapeHtml(name)}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Email</label>
+          <strong>${escapeHtml(user.email || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Username</label>
+          <strong>${escapeHtml(user.username || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Phone</label>
+          <strong>${escapeHtml(user.phone || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Account Status</label>
+          <strong>${escapeHtml(user.status || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>KYC Status</label>
+          <strong>${escapeHtml(user.kyc_status || user.kycStatus || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>User ID</label>
+          <strong>${escapeHtml(user.id || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Created</label>
+          <strong>${escapeHtml(date(user.created_at))}</strong>
+        </div>
+
+      </div>
+
+    `;
+
+  }catch(error){
+
+    body.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+/* =====================================================
+   KYC
+===================================================== */
+
+async function loadKyc(){
+
+  const box =
+    document.getElementById("kycContainer");
+
+  box.innerHTML =
+    `<div class="loading">Loading KYC records...</div>`;
+
+  const status =
+    document.getElementById("kycFilter").value;
+
+  try{
+
+    const query =
+      status
+        ? `?status=${encodeURIComponent(status)}`
+        : "";
+
+    const data =
+      await apiRequest(
+        `/api/admin/kyc${query}`
+      );
+
+    kycData =
+      extractArray(
+        data,
+        ["kyc","submissions","customers"]
+      );
+
+    renderKyc(kycData);
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderKyc(list){
+
+  const box =
+    document.getElementById("kycContainer");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No KYC records found.</div>`;
+
+    return;
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${list.map(item => {
+
+            const name =
+              `${item.first_name || ""} ${item.last_name || ""}`.trim()
+              || item.name
+              || item.email
+              || "Customer";
+
+            return `
+
+              <tr>
+
+                <td class="customer-name">
+                  ${escapeHtml(name)}
+                </td>
+
+                <td>${escapeHtml(item.email || "—")}</td>
+
+                <td>
+                  ${statusBadge(
+                    item.kyc_status ||
+                    item.status ||
+                    "pending"
+                  )}
+                </td>
+
+                <td>${escapeHtml(date(
+                  item.submitted_at ||
+                  item.created_at
+                ))}</td>
+
+                <td>
+
+                  <div class="row-actions">
+
+                    <button
+                      class="small-btn"
+                      onclick="reviewKyc('${escapeAttr(item.id)}')">
+                      Review
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            `;
+
+          }).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+async function reviewKyc(id){
+
+  openModal("kycModal");
+
+  const body =
+    document.getElementById("kycModalBody");
+
+  body.innerHTML =
+    `<div class="loading">Loading KYC information...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        `/api/admin/kyc/${encodeURIComponent(id)}`
+      );
+
+    const item =
+      data?.kyc ||
+      data?.submission ||
+      data?.data ||
+      data;
+
+    body.innerHTML = `
+
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <label>Customer</label>
+          <strong>
+            ${escapeHtml(
+              item.name ||
+              `${item.first_name || ""} ${item.last_name || ""}`.trim() ||
+              item.email ||
+              "Customer"
+            )}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Email</label>
+          <strong>${escapeHtml(item.email || "—")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Status</label>
+          <strong>${escapeHtml(item.kyc_status || item.status || "pending")}</strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Submitted</label>
+          <strong>${escapeHtml(date(item.submitted_at || item.created_at))}</strong>
+        </div>
+
+      </div>
+
+      <br>
+
+      <div class="detail-grid">
+
+        ${renderKycFields(item)}
+
+      </div>
+
+      <br>
+
+      <div class="row-actions">
+
+        <button
+          class="success-btn"
+          onclick="processKyc('${escapeAttr(id)}','approved')">
+          Approve
+        </button>
+
+        <button
+          class="danger-btn"
+          onclick="processKyc('${escapeAttr(id)}','rejected')">
+          Reject
+        </button>
+
+      </div>
+
+    `;
+
+  }catch(error){
+
+    body.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderKycFields(item){
+
+  const keys = [
+    ["Document Type","document_type"],
+    ["Document Number","document_number"],
+    ["Date of Birth","date_of_birth"],
+    ["Address","address"],
+    ["Country","country"],
+    ["Phone","phone"]
+  ];
+
+  return keys.map(([label,key]) => `
+
+    <div class="detail-item">
+
+      <label>${escapeHtml(label)}</label>
+
+      <strong>
+        ${escapeHtml(item[key] || "—")}
+      </strong>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+async function processKyc(id,status){
+
+  if(
+    !confirm(
+      `Are you sure you want to mark this KYC as ${status}?`
+    )
+  )
+    return;
+
+  try{
+
+    await apiRequest(
+      `/api/admin/kyc/${encodeURIComponent(id)}`,
+      {
+        method:"PATCH",
+        body:JSON.stringify({
+          status
+        })
+      }
+    );
+
+    closeModal("kycModal");
+
+    await loadKyc();
+    await loadDashboard();
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* =====================================================
+   WALLETS
+===================================================== */
+
+async function loadWallets(){
+
+  const box =
+    document.getElementById("walletsContainer");
+
+  box.innerHTML =
+    `<div class="loading">Loading wallets...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest("/api/admin/wallets");
+
+    walletsData =
+      extractArray(data,["wallets","customers","users"]);
+
+    renderWallets(walletsData);
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderWallets(list){
+
+  const box =
+    document.getElementById("walletsContainer");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No wallet records found.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Main Wallet</th>
+            <th>Profit Wallet</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${list.map(item => {
+
+            const name =
+              `${item.first_name || ""} ${item.last_name || ""}`.trim()
+              || item.name
+              || item.email
+              || "Customer";
+
+            const main =
+              Number(
+                item.main_wallet ??
+                item.mainWallet ??
+                item.balance ??
+                0
+              );
+
+            const profit =
+              Number(
+                item.profit_wallet ??
+                item.profitWallet ??
+                item.profit ??
+                0
+              );
+
+            return `
+
+              <tr>
+
+                <td>
+
+                  <div class="customer-name">
+                    ${escapeHtml(name)}
+                  </div>
+
+                  <div class="muted">
+                    ${escapeHtml(item.email || item.id || "")}
+                  </div>
+
+                </td>
+
+                <td class="amount">
+                  ${money(main)}
+                </td>
+
+                <td class="amount">
+                  ${money(profit)}
+                </td>
+
+                <td class="amount">
+                  ${money(main + profit)}
+                </td>
+
+                <td>
+
+                  <button
+                    class="small-btn"
+                    onclick="openWalletAdjustment('${escapeAttr(item.id)}')">
+                    Adjust
+                  </button>
+
+                </td>
+
+              </tr>
+
+            `;
+
+          }).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+function filterWallets(){
+
+  const q =
+    String(
+      document.getElementById("walletSearch").value || ""
+    ).toLowerCase();
+
+  renderWallets(
+    walletsData.filter(item => {
+
+      const text =
+        [
+          item.id,
+          item.email,
+          item.username,
+          item.name,
+          item.first_name,
+          item.last_name
+        ]
+        .join(" ")
+        .toLowerCase();
+
+      return text.includes(q);
+
+    })
+  );
+
+}
+
+
+function openWalletForCustomer(id){
+
+  showSection("wallets");
+
+  setTimeout(() => {
+
+    const user =
+      walletsData.find(
+        x => String(x.id) === String(id)
+      );
+
+    if(user)
+      openWalletAdjustment(id);
+    else
+      loadWallets().then(() =>
+        openWalletAdjustment(id)
+      );
+
+  },100);
+
+}
+
+
+function openWalletAdjustment(id){
+
+  const user =
+    walletsData.find(
+      x => String(x.id) === String(id)
+    );
+
+  if(!user){
+
+    alert("Customer wallet could not be found.");
+    return;
+
+  }
+
+  const name =
+    `${user.first_name || ""} ${user.last_name || ""}`.trim()
+    || user.name
+    || user.email
+    || "Customer";
+
+  document.getElementById(
+    "walletAdjustmentCustomer"
+  ).innerHTML = `
+
+    <div class="wallet-cards">
+
+      <div class="wallet-card">
+
+        <span>Main Wallet</span>
+
+        <strong>
+          ${money(
+            user.main_wallet ??
+            user.mainWallet ??
+            user.balance
+          )}
+        </strong>
+
+      </div>
+
+      <div class="wallet-card">
+
+        <span>Profit Wallet</span>
+
+        <strong>
+          ${money(
+            user.profit_wallet ??
+            user.profitWallet ??
+            user.profit
+          )}
+        </strong>
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <div class="customer-name">
+      ${escapeHtml(name)}
+    </div>
+
+    <div class="muted">
+      ${escapeHtml(user.email || user.id || "")}
+    </div>
+
+  `;
+
+  document.getElementById("walletModal")
+    .dataset.customerId = id;
+
+  document.getElementById("adjustAmount").value = "";
+  document.getElementById("adjustReference").value = "";
+  document.getElementById("adjustReason").value = "";
+
+  openModal("walletModal");
+
+}
+
+
+async function submitWalletAdjustment(){
+
+  const modal =
+    document.getElementById("walletModal");
+
+  const customerId =
+    modal.dataset.customerId;
+
+  const wallet =
+    document.getElementById("adjustWalletType").value;
+
+  const action =
+    document.getElementById("adjustAction").value;
+
+  const amount =
+    Number(
+      document.getElementById("adjustAmount").value
+    );
+
+  const reference =
+    document.getElementById("adjustReference").value.trim();
+
+  const reason =
+    document.getElementById("adjustReason").value.trim();
+
+  if(!customerId){
+
+    alert("Customer is missing.");
+    return;
+
+  }
+
+  if(!Number.isFinite(amount) || amount < 0){
+
+    alert("Enter a valid amount.");
+    return;
+
+  }
+
+  if(
+    !reason &&
+    action !== "set"
+  ){
+
+    alert("Please provide a reason.");
+    return;
+
+  }
+
+  try{
+
+    await apiRequest(
+      `/api/admin/wallets/${encodeURIComponent(customerId)}/adjust`,
+      {
+        method:"POST",
+        body:JSON.stringify({
+          wallet,
+          action,
+          amount,
+          reference,
+          reason
+        })
+      }
+    );
+
+    closeModal("walletModal");
+
+    await loadWallets();
+    await loadDashboard();
+
+    alert("Wallet adjustment saved successfully.");
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* =====================================================
+   INVESTMENTS
+===================================================== */
+
+async function loadInvestments(){
+
+  const box =
+    document.getElementById("investmentsContainer");
+
+  box.innerHTML =
+    `<div class="loading">Loading investments...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest("/api/admin/investments");
+
+    investmentsData =
+      extractArray(data,["investments"]);
+
+    renderInvestments(investmentsData);
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderInvestments(list){
+
+  const box =
+    document.getElementById("investmentsContainer");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No investments found.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Plan</th>
+            <th>Amount</th>
+            <th>Profit</th>
+            <th>Status</th>
+            <th>Start</th>
+            <th>End</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${list.map(item => `
+
+            <tr>
+
+              <td class="customer-name">
+                ${escapeHtml(
+                  item.customer_name ||
+                  item.name ||
+                  item.email ||
+                  item.user_id ||
+                  "Customer"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.plan_name ||
+                  item.plan ||
+                  item.investment_plan ||
+                  "—"
+                )}
+              </td>
+
+              <td class="amount">
+                ${money(
+                  item.amount ||
+                  item.invested_amount
+                )}
+              </td>
+
+              <td class="amount">
+                ${money(
+                  item.profit ||
+                  item.expected_profit ||
+                  0
+                )}
+              </td>
+
+              <td>
+                ${statusBadge(item.status)}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  date(item.start_date || item.started_at)
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  date(item.end_date || item.ends_at)
+                )}
+              </td>
+
+            </tr>
+
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+function filterInvestments(){
+
+  const q =
+    document.getElementById(
+      "investmentSearch"
+    ).value.toLowerCase();
+
+  const status =
+    document.getElementById(
+      "investmentStatusFilter"
+    ).value.toLowerCase();
+
+  renderInvestments(
+    investmentsData.filter(item => {
+
+      const text =
+        [
+          item.customer_name,
+          item.name,
+          item.email,
+          item.plan_name,
+          item.plan,
+          item.user_id
+        ]
+        .join(" ")
+        .toLowerCase();
+
+      const itemStatus =
+        String(item.status || "").toLowerCase();
+
+      return (
+        (!q || text.includes(q)) &&
+        (!status || itemStatus === status)
+      );
+
+    })
+  );
+
+}
+
+
+/* =====================================================
+   TRANSACTIONS
+===================================================== */
+
+async function loadTransactions(){
+
+  const box =
+    document.getElementById("transactionsContainer");
+
+  box.innerHTML =
+    `<div class="loading">Loading transactions...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest("/api/admin/transactions");
+
+    transactionsData =
+      extractArray(data,["transactions"]);
+
+    renderTransactions(transactionsData);
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderTransactions(list){
+
+  const box =
+    document.getElementById("transactionsContainer");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No transactions found.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Reference</th>
+            <th>Customer</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${list.map(item => `
+
+            <tr>
+
+              <td>
+                ${escapeHtml(
+                  item.reference ||
+                  item.transaction_id ||
+                  item.id ||
+                  "—"
+                )}
+              </td>
+
+              <td class="customer-name">
+                ${escapeHtml(
+                  item.customer_name ||
+                  item.name ||
+                  item.email ||
+                  item.user_id ||
+                  "Customer"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.type ||
+                  item.transaction_type ||
+                  "—"
+                )}
+              </td>
+
+              <td class="amount">
+                ${money(
+                  item.amount
+                )}
+              </td>
+
+              <td>
+                ${statusBadge(item.status)}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  date(
+                    item.created_at ||
+                    item.transaction_date
+                  )
+                )}
+              </td>
+
+            </tr>
+
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+function filterTransactions(){
+
+  const q =
+    document.getElementById(
+      "transactionSearch"
+    ).value.toLowerCase();
+
+  const type =
+    document.getElementById(
+      "transactionTypeFilter"
+    ).value.toLowerCase();
+
+  renderTransactions(
+    transactionsData.filter(item => {
+
+      const text =
+        [
+          item.reference,
+          item.transaction_id,
+          item.id,
+          item.customer_name,
+          item.name,
+          item.email,
+          item.user_id,
+          item.type,
+          item.transaction_type
+        ]
+        .join(" ")
+        .toLowerCase();
+
+      const itemType =
+        String(
+          item.type ||
+          item.transaction_type ||
+          ""
+        ).toLowerCase();
+
+      return (
+        (!q || text.includes(q)) &&
+        (!type || itemType === type)
+      );
+
+    })
+  );
+
+}
+
+
+/* =====================================================
+   REQUESTS
+===================================================== */
+
+async function loadRequests(){
+
+  const box =
+    document.getElementById("requestsContainer");
+
+  box.innerHTML =
+    `<div class="loading">Loading requests...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/api/admin/requests?status=pending"
+      );
+
+    requestsData =
+      extractArray(data,["requests"]);
+
+    renderRequests(requestsData);
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderRequests(list){
+
+  const box =
+    document.getElementById("requestsContainer");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No pending requests.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Reference</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${list.map(item => `
+
+            <tr>
+
+              <td class="customer-name">
+                ${escapeHtml(
+                  item.customer_name ||
+                  item.name ||
+                  item.email ||
+                  item.user_id ||
+                  "Customer"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.type ||
+                  item.request_type ||
+                  "—"
+                )}
+              </td>
+
+              <td class="amount">
+                ${money(item.amount)}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.reference ||
+                  item.id ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  date(item.created_at)
+                )}
+              </td>
+
+              <td>
+
+                <div class="row-actions">
+
+                  <button
+                    class="small-btn"
+                    onclick="processRequest('${escapeAttr(item.id)}','approved')">
+                    Approve
+                  </button>
+
+                  <button
+                    class="small-btn"
+                    onclick="processRequest('${escapeAttr(item.id)}','rejected')">
+                    Reject
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+function filterRequests(){
+
+  const type =
+    document.getElementById(
+      "requestTypeFilter"
+    ).value.toLowerCase();
+
+  renderRequests(
+    requestsData.filter(item => {
+
+      const itemType =
+        String(
+          item.type ||
+          item.request_type ||
+          ""
+        ).toLowerCase();
+
+      return !type || itemType === type;
+
+    })
+  );
+
+}
+
+
+async function processRequest(id,status){
+
+  const action =
+    status === "approved"
+      ? "approve"
+      : "reject";
+
+  if(
+    !confirm(
+      `Are you sure you want to ${action} this request?`
+    )
+  )
+    return;
+
+  try{
+
+    await apiRequest(
+      `/api/admin/requests/${encodeURIComponent(id)}`,
+      {
+        method:"PATCH",
+        body:JSON.stringify({
+          status
+        })
+      }
+    );
+
+    await loadRequests();
+    await loadDashboard();
+
+    alert(
+      `Request ${status} successfully.`
+    );
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+async function loadConversations(){
+
+  const box =
+    document.getElementById(
+      "conversationList"
+    );
+
+  box.innerHTML =
+    `<div class="loading">Loading conversations...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/api/admin/chat/conversations"
+      );
+
+    conversationsData =
+      extractArray(
+        data,
+        ["conversations","chats"]
+      );
+
+    renderConversations(
+      conversationsData
+    );
+
+  }catch(error){
+
+    box.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderConversations(list){
+
+  const box =
+    document.getElementById(
+      "conversationList"
+    );
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">
+        No conversations.
+      </div>`;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    list.map(item => `
+
+      <div
+        class="conversation ${
+          String(item.id) === String(selectedConversationId)
+            ? "active"
+            : ""
+        }"
+        onclick="openConversation('${escapeAttr(item.id)}')">
+
+        <strong>
+          ${escapeHtml(
+            item.customer_name ||
+            item.name ||
+            item.email ||
+            item.user_id ||
+            "Customer"
+          )}
+        </strong>
+
+        <span>
+          ${escapeHtml(
+            item.last_message ||
+            item.preview ||
+            "Open conversation"
+          )}
+        </span>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+async function openConversation(id){
+
+  selectedConversationId = id;
+
+  renderConversations(conversationsData);
+
+  const messages =
+    document.getElementById("messages");
+
+  messages.innerHTML =
+    `<div class="loading">Loading messages...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        `/api/admin/chat/conversations/${encodeURIComponent(id)}/messages`
+      );
+
+    const list =
+      extractArray(
+        data,
+        ["messages"]
+      );
+
+    renderMessages(list);
+
+  }catch(error){
+
+    messages.innerHTML =
+      `<div class="error-box">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function renderMessages(list){
+
+  const box =
+    document.getElementById("messages");
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">
+        No messages yet.
+      </div>`;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    list.map(item => {
+
+      const sender =
+        String(
+          item.sender_role ||
+          item.role ||
+          item.sender_type ||
+          ""
+        ).toLowerCase();
+
+      const admin =
+        sender === "admin" ||
+        sender === "administrator";
+
+      return `
+
+        <div class="message ${
+          admin ? "admin" : "customer"
+        }">
+
+          ${escapeHtml(
+            item.message ||
+            item.content ||
+            item.text ||
+            ""
+          )}
+
+          <small>
+            ${escapeHtml(
+              date(
+                item.created_at ||
+                item.sent_at
+              )
+            )}
+          </small>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  box.scrollTop = box.scrollHeight;
+
+}
+
+
+function handleChatKey(event){
+
+  if(
+    event.key === "Enter" &&
+    !event.shiftKey
+  ){
+
+    event.preventDefault();
+
+    sendChatMessage();
+
+  }
+
+}
+
+
+async function sendChatMessage(){
+
+  if(!selectedConversationId){
+
+    alert("Select a conversation first.");
+    return;
+
+  }
+
+  const input =
+    document.getElementById("chatInput");
+
+  const message =
+    input.value.trim();
+
+  if(!message)
+    return;
+
+  try{
+
+    await apiRequest(
+      `/api/admin/chat/conversations/${encodeURIComponent(selectedConversationId)}/messages`,
+      {
+        method:"POST",
+        body:JSON.stringify({
+          message
+        })
+      }
+    );
+
+    input.value = "";
+
+    await openConversation(
+      selectedConversationId
+    );
+
+    await loadConversations();
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* =====================================================
+   NAVIGATION
 ===================================================== */
 
 const titles = {
 
-  dashboard:
-    "Dashboard",
-
-  customers:
-    "Customers",
-
-  kyc:
-    "KYC Review",
-
-  chat:
-    "Customer Chat",
-
-  wallets:
-    "Wallet Management",
-
-  investments:
-    "Investments",
-
-  transactions:
-    "Transactions",
-
-  requests:
-    "Pending Requests",
-
-  settings:
-    "Settings"
+  dashboard:"Dashboard",
+  customers:"Customers",
+  kyc:"KYC Review",
+  chat:"Customer Chat",
+  wallets:"Wallet Management",
+  investments:"Investments",
+  transactions:"Transactions",
+  requests:"Pending Requests",
+  settings:"Settings"
 
 };
 
 
-/* =====================================================
-   SECTION NAVIGATION
-===================================================== */
-
 function showSection(
   id,
-  clickedButton = null
-) {
+  clickedButton=null
+){
 
-  if (
-    !adminAuthenticated
-  ) {
+  if(!adminAuthenticated){
 
     showAdminAccessMessage(
       "Administrator session required",
       "Please sign in with an administrator account before using the administration panel."
     );
 
-
     return;
 
   }
 
+  currentSection = id;
 
   document
-    .querySelectorAll(
-      ".section"
-    )
-    .forEach(
-      section => {
-
-        section.style.display =
-          "none";
-
-      }
-    );
-
+    .querySelectorAll(".section")
+    .forEach(section => {
+      section.style.display = "none";
+    });
 
   const target =
-    document.getElementById(
-      id
-    );
+    document.getElementById(id);
 
-
-  if (target) {
-
-    target.style.display =
-      "block";
-
-  }
-
+  if(target)
+    target.style.display = "block";
 
   document
-    .querySelectorAll(
-      ".nav-item"
-    )
-    .forEach(
-      item => {
+    .querySelectorAll(".nav-item")
+    .forEach(item => {
+      item.classList.remove("active");
+    });
 
-        item.classList.remove(
-          "active"
+  if(clickedButton){
+
+    clickedButton.classList.add("active");
+
+  }else{
+
+    const matching =
+      [...document.querySelectorAll(".nav-item")]
+        .find(item =>
+          item.getAttribute("onclick")?.includes(
+            `'${id}'`
+          )
         );
 
-      }
-    );
-
-
-  if (clickedButton) {
-
-    clickedButton.classList.add(
-      "active"
-    );
-
-  } else {
-
-    const matchingButton =
-      document.querySelector(
-        `.nav-item[onclick*="'${id}'"]`
-      );
-
-
-    if (matchingButton) {
-
-      matchingButton.classList.add(
-        "active"
-      );
-
-    }
+    if(matching)
+      matching.classList.add("active");
 
   }
 
+  const title =
+    document.getElementById("pageTitle");
 
-  const pageTitle =
-    document.getElementById(
-      "pageTitle"
-    );
+  if(title)
+    title.textContent =
+      titles[id] || "CoinForest Admin";
+
+  closeSidebar();
+
+  loadSectionData(id);
+
+}
 
 
-  if (pageTitle) {
+async function loadSectionData(id){
 
-    pageTitle.textContent =
-      titles[id] ||
-      "CoinForest Admin";
+  switch(id){
+
+    case "dashboard":
+      await loadDashboard();
+      break;
+
+    case "customers":
+      await loadCustomers();
+      break;
+
+    case "kyc":
+      await loadKyc();
+      break;
+
+    case "wallets":
+      await loadWallets();
+      break;
+
+    case "investments":
+      await loadInvestments();
+      break;
+
+    case "transactions":
+      await loadTransactions();
+      break;
+
+    case "requests":
+      await loadRequests();
+      break;
+
+    case "chat":
+      await loadConversations();
+      break;
 
   }
 
+}
 
-  if (
-    window.innerWidth <= 760
-  ) {
 
-    closeSidebar();
+async function refreshCurrentSection(){
 
-  }
+  if(!adminAuthenticated)
+    return;
+
+  await loadSectionData(
+    currentSection
+  );
 
 }
 
@@ -3143,75 +4239,172 @@ function showSection(
    SIDEBAR
 ===================================================== */
 
-function toggleSidebar() {
+function toggleSidebar(){
 
-  document
-    .getElementById(
-      "sidebar"
-    )
-    .classList.toggle(
-      "open"
-    );
+  const sidebar =
+    document.getElementById("sidebar");
 
+  const overlay =
+    document.getElementById("overlay");
 
-  document
-    .getElementById(
-      "overlay"
-    )
-    .classList.toggle(
-      "open"
-    );
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("open");
 
 }
 
 
-function closeSidebar() {
+function closeSidebar(){
 
   document
-    .getElementById(
-      "sidebar"
-    )
-    .classList.remove(
-      "open"
-    );
-
+    .getElementById("sidebar")
+    .classList.remove("open");
 
   document
-    .getElementById(
-      "overlay"
-    )
-    .classList.remove(
-      "open"
-    );
+    .getElementById("overlay")
+    .classList.remove("open");
 
 }
-
 
 window.addEventListener(
   "resize",
-  function () {
+  () => {
 
-    if (
-      window.innerWidth > 760
-    ) {
-
+    if(window.innerWidth > 760)
       closeSidebar();
-
-    }
 
   }
 );
 
 
 /* =====================================================
-   START ADMIN APP
+   MODALS
+===================================================== */
+
+function openModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal)
+    modal.classList.add("open");
+
+}
+
+function closeModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal)
+    modal.classList.remove("open");
+
+}
+
+document
+  .querySelectorAll(".modal")
+  .forEach(modal => {
+
+    modal.addEventListener(
+      "click",
+      event => {
+
+        if(event.target === modal)
+          modal.classList.remove("open");
+
+      }
+    );
+
+  });
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logoutAdmin(){
+
+  if(
+    !confirm(
+      "Are you sure you want to log out?"
+    )
+  )
+    return;
+
+  adminAuthenticated = false;
+
+  localStorage.removeItem("coinforest_token");
+  localStorage.removeItem("coinforest_user");
+  localStorage.removeItem("coinforest_role");
+
+  /*
+   * Explicit logout only.
+   * Browser Back does not trigger this function.
+   */
+
+  window.location.href = "login.html";
+
+}
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function setText(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el)
+    el.textContent = value;
+
+}
+
+function escapeAttr(value){
+
+  return String(value ?? "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'");
+
+}
+
+
+/* =====================================================
+   BROWSER BACK HANDLING
+===================================================== */
+
+window.addEventListener(
+  "popstate",
+  () => {
+
+    if(!adminAuthenticated)
+      return;
+
+    showSection(
+      "dashboard"
+    );
+
+  }
+);
+
+
+/* =====================================================
+   START
 ===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
-  function () {
+  async () => {
 
-    requireAdmin();
+    const ok =
+      await requireAdmin();
+
+    if(!ok)
+      return;
+
+    updateAdminIdentity(
+      getStoredUser() || {}
+    );
 
   }
 );
@@ -3219,4 +4412,4 @@ document.addEventListener(
 </script>
 
 </body>
-  </html>
+</html>
