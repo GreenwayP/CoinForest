@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -91,7 +92,6 @@
 
     .app {
       display: flex;
-
       min-height: 100vh;
     }
 
@@ -2248,16 +2248,31 @@ function showAdminAccessMessage(
 
   if (existing) {
 
-    existing.querySelector(
-      ".admin-access-title"
-    ).textContent =
-      title;
+    const titleElement =
+      existing.querySelector(
+        ".admin-access-title"
+      );
+
+    const messageElement =
+      existing.querySelector(
+        ".admin-access-text"
+      );
 
 
-    existing.querySelector(
-      ".admin-access-text"
-    ).textContent =
-      message;
+    if (titleElement) {
+
+      titleElement.textContent =
+        title;
+
+    }
+
+
+    if (messageElement) {
+
+      messageElement.textContent =
+        message;
+
+    }
 
 
     return;
@@ -2521,26 +2536,90 @@ async function requireAdmin() {
     getStoredUser();
 
 
-  const storedRole =
+  /*
+   * ===================================================
+   * FIRST: USE THE NORMALIZED SESSION CREATED BY LOGIN
+   * ===================================================
+   */
+
+  let role =
     getStoredRole();
 
 
   /*
-   * First use the normalized session created
-   * by login.html.
+   * If the role was not stored separately but exists
+   * inside the saved user object, recover it.
    */
 
   if (
-    storedUser &&
-    storedRole === "admin"
+    !role &&
+    storedUser
+  ) {
+
+    role =
+      getRoleFromObject(
+        storedUser,
+        null
+      );
+
+  }
+
+
+  /*
+   * If the browser has a JWT, inspect it as another
+   * fallback.
+   */
+
+  if (
+    !role &&
+    token
+  ) {
+
+    role =
+      getRoleFromToken(
+        token
+      );
+
+  }
+
+
+  /*
+   * ===================================================
+   * ADMIN SESSION FOUND
+   * ===================================================
+   */
+
+  if (
+    role === "admin"
   ) {
 
     adminAuthenticated =
       true;
 
 
+    const normalizedUser =
+      {
+        ...(storedUser || {}),
+        role: "admin"
+      };
+
+
+    localStorage.setItem(
+      "coinforest_user",
+      JSON.stringify(
+        normalizedUser
+      )
+    );
+
+
+    localStorage.setItem(
+      "coinforest_role",
+      "admin"
+    );
+
+
     updateAdminIdentity(
-      storedUser
+      normalizedUser
     );
 
 
@@ -2548,16 +2627,16 @@ async function requireAdmin() {
 
 
     /*
-     * Verify the session in the background.
-     * A temporary API/network failure does not
-     * immediately destroy the working admin UI.
+     * Verify with the server in the background.
+     *
+     * This does NOT block the admin panel from opening.
      */
 
     if (token) {
 
       verifyAdminInBackground(
         token,
-        storedUser
+        normalizedUser
       );
 
     }
@@ -2569,8 +2648,9 @@ async function requireAdmin() {
 
 
   /*
-   * If there is a token but no usable stored role,
-   * recover the account from the API.
+   * ===================================================
+   * TOKEN EXISTS BUT ROLE IS NOT AVAILABLE
+   * ===================================================
    */
 
   if (token) {
@@ -2587,20 +2667,20 @@ async function requireAdmin() {
         result.user
       ) {
 
-        const user =
+        const serverUser =
           result.user;
 
 
-        let role =
+        let serverRole =
           getRoleFromObject(
-            user,
+            serverUser,
             null
           );
 
 
-        if (!role) {
+        if (!serverRole) {
 
-          role =
+          serverRole =
             getRoleFromToken(
               token
             );
@@ -2608,13 +2688,17 @@ async function requireAdmin() {
         }
 
 
+        /*
+         * SERVER CONFIRMS ADMIN
+         */
+
         if (
-          role === "admin"
+          serverRole === "admin"
         ) {
 
           const normalizedUser =
             {
-              ...user,
+              ...serverUser,
               role: "admin"
             };
 
@@ -2651,110 +2735,37 @@ async function requireAdmin() {
 
 
         /*
-         * A valid non-admin account must not
-         * enter the admin panel.
+         * SERVER EXPLICITLY IDENTIFIES THIS AS
+         * A NON-ADMIN ACCOUNT.
          */
 
-        adminAuthenticated =
-          false;
+        if (
+          serverRole &&
+          serverRole !== "admin"
+        ) {
+
+          adminAuthenticated =
+            false;
 
 
-        showAdminAccessMessage(
-          "Administrator access required",
-          "The current CoinForest account is not authorized to use the administration panel."
-        );
+          showAdminAccessMessage(
+            "Administrator access required",
+            "The current CoinForest account is not authorized to use the administration panel."
+          );
 
 
-        return false;
+          return false;
 
-      }
-
-
-      /*
-       * If the API could not respond properly,
-       * but the token itself contains admin role,
-       * restore the admin session.
-       */
-
-      const tokenRole =
-        getRoleFromToken(
-          token
-        );
-
-
-      if (
-        tokenRole === "admin"
-      ) {
-
-        const fallbackUser =
-          {
-            ...(storedUser || {}),
-            role: "admin"
-          };
-
-
-        localStorage.setItem(
-          "coinforest_user",
-          JSON.stringify(
-            fallbackUser
-          )
-        );
-
-
-        localStorage.setItem(
-          "coinforest_role",
-          "admin"
-        );
-
-
-        adminAuthenticated =
-          true;
-
-
-        updateAdminIdentity(
-          fallbackUser
-        );
-
-
-        hideAdminAccessMessage();
-
-
-        return true;
+        }
 
       }
 
     } catch (error) {
 
       console.warn(
-        "Admin authentication request failed:",
+        "Unable to verify administrator session:",
         error
       );
-
-
-      /*
-       * Network problems should not send the user
-       * to the customer login page.
-       */
-
-      if (
-        storedRole === "admin"
-      ) {
-
-        adminAuthenticated =
-          true;
-
-
-        updateAdminIdentity(
-          storedUser
-        );
-
-
-        hideAdminAccessMessage();
-
-
-        return true;
-
-      }
 
     }
 
@@ -2762,14 +2773,12 @@ async function requireAdmin() {
 
 
   /*
-   * No administrator session exists.
+   * ===================================================
+   * NO ADMIN SESSION
+   * ===================================================
    *
-   * IMPORTANT:
-   * There is intentionally NO:
-   *
-   * window.location.href = "login.html"
-   *
-   * here.
+   * We intentionally do NOT redirect automatically
+   * to login.html here.
    */
 
   adminAuthenticated =
@@ -2805,7 +2814,7 @@ async function verifyAdminInBackground(
 
 
     /*
-     * Valid server response.
+     * A successful /me response.
      */
 
     if (
@@ -2823,6 +2832,11 @@ async function verifyAdminInBackground(
         );
 
 
+      /*
+       * JWT remains a fallback if /me does not expose
+       * the role in the expected property.
+       */
+
       if (!serverRole) {
 
         serverRole =
@@ -2834,14 +2848,16 @@ async function verifyAdminInBackground(
 
 
       /*
-       * Server confirms administrator.
+       * =================================================
+       * CONFIRMED ADMIN
+       * =================================================
        */
 
       if (
         serverRole === "admin"
       ) {
 
-        const normalized =
+        const normalizedUser =
           {
             ...serverUser,
             role: "admin"
@@ -2851,7 +2867,7 @@ async function verifyAdminInBackground(
         localStorage.setItem(
           "coinforest_user",
           JSON.stringify(
-            normalized
+            normalizedUser
           )
         );
 
@@ -2867,8 +2883,11 @@ async function verifyAdminInBackground(
 
 
         updateAdminIdentity(
-          normalized
+          normalizedUser
         );
+
+
+        hideAdminAccessMessage();
 
 
         return;
@@ -2877,8 +2896,9 @@ async function verifyAdminInBackground(
 
 
       /*
-       * Server explicitly identifies the account
-       * as a non-admin.
+       * =================================================
+       * EXPLICIT NON-ADMIN
+       * =================================================
        */
 
       if (
@@ -2904,8 +2924,12 @@ async function verifyAdminInBackground(
 
 
     /*
-     * If /me is unavailable or returns an unexpected
-     * response, preserve the known admin session.
+     * =================================================
+     * TEMPORARY API FAILURE / UNKNOWN RESPONSE
+     * =================================================
+     *
+     * Preserve the already-established local admin
+     * session instead of unnecessarily hiding the panel.
      */
 
     if (
@@ -2919,20 +2943,24 @@ async function verifyAdminInBackground(
       updateAdminIdentity(
         storedUser
       );
+
+
+      hideAdminAccessMessage();
 
     }
 
   } catch (error) {
 
     console.warn(
-      "Background admin verification failed:",
+      "Background administrator verification failed:",
       error
     );
 
 
     /*
-     * Preserve the existing admin session on
-     * temporary network/server failures.
+     * Render/API can temporarily be unavailable.
+     * Do not destroy an already established admin UI
+     * simply because of a temporary network failure.
      */
 
     if (
@@ -2946,6 +2974,9 @@ async function verifyAdminInBackground(
       updateAdminIdentity(
         storedUser
       );
+
+
+      hideAdminAccessMessage();
 
     }
 
