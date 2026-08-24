@@ -1796,7 +1796,7 @@
 
     /* =====================================================
        COINFOREST ADMIN AUTHENTICATION
-       ===================================================== */
+    ===================================================== */
 
     const API_BASE =
       "https://coinforest-api-test-2026.onrender.com";
@@ -1829,6 +1829,74 @@
       }
 
 
+      /*
+       * Read the locally saved user first.
+       */
+
+      let storedUser = null;
+
+
+      try {
+
+        const stored =
+          localStorage.getItem(
+            "coinforest_user"
+          );
+
+
+        if (stored) {
+
+          storedUser =
+            JSON.parse(stored);
+
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "Unable to read stored CoinForest user:",
+          error
+        );
+
+      }
+
+
+      /*
+       * If we already know that the stored account
+       * is not an administrator, do not allow access.
+       */
+
+      const storedRole =
+        String(
+          storedUser?.role || ""
+        )
+          .trim()
+          .toLowerCase();
+
+
+      if (
+        storedUser &&
+        storedRole &&
+        storedRole !== "admin"
+      ) {
+
+        localStorage.removeItem(
+          "coinforest_token"
+        );
+
+        localStorage.removeItem(
+          "coinforest_user"
+        );
+
+        window.location.replace(
+          "login.html"
+        );
+
+        return false;
+
+      }
+
+
       try {
 
         const response =
@@ -1842,6 +1910,9 @@
                   `Bearer ${token}`,
 
                 "Content-Type":
+                  "application/json",
+
+                "Accept":
                   "application/json"
               },
 
@@ -1850,31 +1921,40 @@
           );
 
 
+        const responseText =
+          await response.text();
+
+
         let data = null;
 
 
         try {
 
           data =
-            await response.json();
+            responseText
+              ? JSON.parse(responseText)
+              : null;
 
-        } catch {
+        } catch (error) {
 
-          data = null;
+          console.warn(
+            "Invalid JSON from /api/auth/me:",
+            responseText
+          );
 
         }
 
 
         /*
-         * Session is invalid,
-         * expired or revoked.
+         * IMPORTANT:
+         *
+         * Only a genuine 401/403 response should
+         * automatically destroy the session.
          */
 
         if (
-          !response.ok ||
-          !data ||
-          !data.success ||
-          !data.user
+          response.status === 401 ||
+          response.status === 403
         ) {
 
           localStorage.removeItem(
@@ -1895,107 +1975,173 @@
 
 
         /*
-         * The account must actually be
-         * an administrator.
+         * Accept the common response structures
+         * from the CoinForest API.
          */
 
-        const role =
-          String(
-            data.user.role || ""
+        let verifiedUser = null;
+
+
+        if (
+          data &&
+          data.user &&
+          typeof data.user === "object"
+        ) {
+
+          verifiedUser =
+            data.user;
+
+        } else if (
+          data &&
+          data.data &&
+          data.data.user &&
+          typeof data.data.user === "object"
+        ) {
+
+          verifiedUser =
+            data.data.user;
+
+        } else if (
+          data &&
+          data.data &&
+          typeof data.data === "object" &&
+          (
+            data.data.role ||
+            data.data.email ||
+            data.data.id
           )
-            .trim()
-            .toLowerCase();
+        ) {
 
+          verifiedUser =
+            data.data;
 
-        if (role !== "admin") {
+        } else if (
+          data &&
+          typeof data === "object" &&
+          (
+            data.role ||
+            data.email ||
+            data.id
+          )
+        ) {
 
-          localStorage.removeItem(
-            "coinforest_token"
-          );
-
-          localStorage.removeItem(
-            "coinforest_user"
-          );
-
-          window.location.replace(
-            "login.html"
-          );
-
-          return false;
+          verifiedUser =
+            data;
 
         }
 
 
         /*
-         * Save the latest verified user
-         * information.
+         * Server successfully returned the user.
          */
 
-        localStorage.setItem(
-          "coinforest_user",
-          JSON.stringify(
-            data.user
-          )
+        if (
+          response.ok &&
+          verifiedUser
+        ) {
+
+          const role =
+            String(
+              verifiedUser.role || ""
+            )
+              .trim()
+              .toLowerCase();
+
+
+          /*
+           * This account must be an administrator.
+           */
+
+          if (role !== "admin") {
+
+            localStorage.removeItem(
+              "coinforest_token"
+            );
+
+            localStorage.removeItem(
+              "coinforest_user"
+            );
+
+            window.location.replace(
+              "login.html"
+            );
+
+            return false;
+
+          }
+
+
+          /*
+           * Save the verified user.
+           */
+
+          localStorage.setItem(
+            "coinforest_user",
+            JSON.stringify(
+              verifiedUser
+            )
+          );
+
+
+          adminAuthenticated = true;
+
+
+          updateAdminIdentity(
+            verifiedUser
+          );
+
+
+          return true;
+
+        }
+
+
+        /*
+         * If the API gives an unexpected response but
+         * there is already a locally stored admin account,
+         * do not create the login/dashboard/login loop.
+         */
+
+        if (
+          storedUser &&
+          storedRole === "admin"
+        ) {
+
+          console.warn(
+            "Unable to fully interpret /api/auth/me response. Existing admin session retained."
+          );
+
+
+          adminAuthenticated = true;
+
+
+          updateAdminIdentity(
+            storedUser
+          );
+
+
+          return true;
+
+        }
+
+
+        /*
+         * No valid admin session could be established.
+         */
+
+        localStorage.removeItem(
+          "coinforest_token"
         );
 
+        localStorage.removeItem(
+          "coinforest_user"
+        );
 
-        adminAuthenticated = true;
+        window.location.replace(
+          "login.html"
+        );
 
-
-        /*
-         * Update the administrator name
-         * without changing the existing UI.
-         */
-
-        const adminName =
-          document.querySelector(
-            ".admin-mini strong"
-          );
-
-
-        const adminLabel =
-          document.querySelector(
-            ".admin-mini span"
-          );
-
-
-        const firstName =
-          String(
-            data.user.first_name || ""
-          ).trim();
-
-
-        const lastName =
-          String(
-            data.user.last_name || ""
-          ).trim();
-
-
-        const fullName =
-          `${firstName} ${lastName}`
-            .trim();
-
-
-        if (
-          adminName &&
-          fullName
-        ) {
-
-          adminName.textContent =
-            fullName;
-
-        }
-
-
-        if (adminLabel) {
-
-          adminLabel.textContent =
-            "Admin account";
-
-        }
-
-
-        return true;
+        return false;
 
 
       } catch (error) {
@@ -2007,10 +2153,32 @@
 
 
         /*
-         * Do not leave the dashboard
-         * accessible if authentication
-         * cannot be verified.
+         * A network/API failure is NOT automatically
+         * treated as a logout.
          */
+
+        if (
+          storedUser &&
+          storedRole === "admin"
+        ) {
+
+          console.warn(
+            "CoinForest API temporarily unavailable. Existing admin session retained."
+          );
+
+
+          adminAuthenticated = true;
+
+
+          updateAdminIdentity(
+            storedUser
+          );
+
+
+          return true;
+
+        }
+
 
         localStorage.removeItem(
           "coinforest_token"
@@ -2020,13 +2188,111 @@
           "coinforest_user"
         );
 
-
         window.location.replace(
           "login.html"
         );
 
-
         return false;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       ADMIN IDENTITY
+    ===================================================== */
+
+    function updateAdminIdentity(
+      user
+    ) {
+
+      const adminName =
+        document.querySelector(
+          ".admin-mini strong"
+        );
+
+
+      const adminLabel =
+        document.querySelector(
+          ".admin-mini span"
+        );
+
+
+      const topProfile =
+        document.querySelector(
+          ".topbar-right .icon-btn:last-child"
+        );
+
+
+      const firstName =
+        String(
+          user?.first_name || ""
+        ).trim();
+
+
+      const lastName =
+        String(
+          user?.last_name || ""
+        ).trim();
+
+
+      const fullName =
+        `${firstName} ${lastName}`
+          .trim();
+
+
+      const email =
+        String(
+          user?.email || ""
+        ).trim();
+
+
+      if (
+        adminName &&
+        fullName
+      ) {
+
+        adminName.textContent =
+          fullName;
+
+      } else if (
+        adminName &&
+        email
+      ) {
+
+        adminName.textContent =
+          email;
+
+      }
+
+
+      if (adminLabel) {
+
+        adminLabel.textContent =
+          "Admin account";
+
+      }
+
+
+      if (topProfile) {
+
+        if (fullName) {
+
+          const initials =
+            `${firstName.charAt(0)}${lastName.charAt(0)}`
+              .toUpperCase();
+
+
+          topProfile.textContent =
+            initials || "A";
+
+        } else {
+
+          topProfile.textContent =
+            "A";
+
+        }
 
       }
 
@@ -2136,6 +2402,7 @@
             `.nav-item[onclick*="'${id}'"]`
           );
 
+
         if (matchingButton) {
 
           matchingButton.classList.add(
@@ -2171,6 +2438,7 @@
         .getElementById("sidebar")
         .classList.toggle("open");
 
+
       document
         .getElementById("overlay")
         .classList.toggle("open");
@@ -2183,6 +2451,7 @@
       document
         .getElementById("sidebar")
         .classList.remove("open");
+
 
       document
         .getElementById("overlay")
