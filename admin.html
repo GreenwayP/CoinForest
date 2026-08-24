@@ -1796,20 +1796,6 @@
 
     /* =====================================================
        COINFOREST ADMIN AUTHENTICATION
-       
-       IMPORTANT FIX:
-       This page NEVER redirects to customer login.html.
-
-       CoinForest customer login stores:
-         coinforest_token
-         coinforest_user
-
-       The saved user role is checked first.
-
-       If the saved account is already an admin,
-       the dashboard remains available even if the
-       /api/auth/me endpoint is temporarily unavailable
-       or returns an unexpected response.
     ===================================================== */
 
     const API_BASE =
@@ -1819,9 +1805,9 @@
     let adminAuthenticated = false;
 
 
-    /*
-     * Safely read the saved CoinForest user.
-     */
+    /* =====================================================
+       STORAGE HELPERS
+    ===================================================== */
 
     function getStoredCoinForestUser() {
 
@@ -1832,23 +1818,18 @@
             "coinforest_user"
           );
 
-
         if (!raw) {
           return null;
         }
 
-
         const user =
           JSON.parse(raw);
-
 
         if (
           user &&
           typeof user === "object"
         ) {
-
           return user;
-
         }
 
       } catch (error) {
@@ -1860,31 +1841,115 @@
 
       }
 
-
       return null;
-
     }
 
 
-    /*
-     * Normalize a role.
-     */
+    function getStoredToken() {
+
+      const token =
+        localStorage.getItem(
+          "coinforest_token"
+        );
+
+      return token
+        ? String(token).trim()
+        : "";
+    }
+
+
+    /* =====================================================
+       ROLE DETECTION
+
+       Supports the possible structures:
+
+       user.role
+       user.user.role
+       user.profile.role
+       user.data.role
+       user.is_admin
+       user.isAdmin
+       ===================================================== */
 
     function getUserRole(user) {
 
-      return String(
-        user?.role || ""
-      )
-        .trim()
-        .toLowerCase();
+      if (!user || typeof user !== "object") {
+        return "";
+      }
 
+
+      const candidates = [
+
+        user.role,
+
+        user.user?.role,
+
+        user.profile?.role,
+
+        user.data?.role,
+
+        user.account?.role
+
+      ];
+
+
+      for (const value of candidates) {
+
+        const role =
+          String(value || "")
+            .trim()
+            .toLowerCase();
+
+        if (role) {
+          return role;
+        }
+
+      }
+
+
+      if (
+        user.is_admin === true ||
+        user.isAdmin === true ||
+        user.admin === true
+      ) {
+
+        return "admin";
+
+      }
+
+
+      return "";
     }
 
 
-    /*
-     * Show an administrator access message
-     * without sending the browser to the customer login.
-     */
+    function isAdministrator(user) {
+
+      if (
+        !user ||
+        typeof user !== "object"
+      ) {
+
+        return false;
+
+      }
+
+
+      const role =
+        getUserRole(user);
+
+
+      return (
+        role === "admin" ||
+        role === "administrator" ||
+        role === "superadmin" ||
+        role === "super_admin"
+      );
+    }
+
+
+    /* =====================================================
+       ACCESS MESSAGE
+    ===================================================== */
 
     function showAdminAccessMessage(
       title,
@@ -1899,16 +1964,27 @@
 
       if (existing) {
 
-        existing.querySelector(
-          ".admin-access-title"
-        ).textContent =
-          title;
+        const titleElement =
+          existing.querySelector(
+            ".admin-access-title"
+          );
+
+        const textElement =
+          existing.querySelector(
+            ".admin-access-text"
+          );
 
 
-        existing.querySelector(
-          ".admin-access-text"
-        ).textContent =
-          message;
+        if (titleElement) {
+          titleElement.textContent =
+            title;
+        }
+
+
+        if (textElement) {
+          textElement.textContent =
+            message;
+        }
 
 
         return;
@@ -2000,10 +2076,6 @@
     }
 
 
-    /*
-     * Remove the admin access message.
-     */
-
     function hideAdminAccessMessage() {
 
       const box =
@@ -2013,213 +2085,24 @@
 
 
       if (box) {
-
         box.remove();
-
       }
 
     }
 
 
-    /*
-     * Main administrator authentication.
-     *
-     * The important change is that this function
-     * does NOT send the browser to login.html.
-     */
-
-    async function requireAdmin() {
-
-      const token =
-        localStorage.getItem(
-          "coinforest_token"
-        );
-
-
-      const storedUser =
-        getStoredCoinForestUser();
-
-
-      const storedRole =
-        getUserRole(
-          storedUser
-        );
-
-
-      /*
-       * ---------------------------------------------------
-       * CASE 1:
-       * A saved administrator account already exists.
-       *
-       * This is the most important part of the fix.
-       *
-       * We allow the admin dashboard to initialize
-       * immediately instead of waiting for /api/auth/me
-       * and risking a customer-login redirect.
-       * ---------------------------------------------------
-       */
-
-      if (
-        storedUser &&
-        storedRole === "admin"
-      ) {
-
-        adminAuthenticated =
-          true;
-
-
-        updateAdminIdentity(
-          storedUser
-        );
-
-
-        hideAdminAccessMessage();
-
-
-        /*
-         * Verify with the API in the background.
-         *
-         * A temporary API problem will NOT log the admin out.
-         */
-
-        if (token) {
-
-          verifyAdminInBackground(
-            token,
-            storedUser
-          );
-
-        }
-
-
-        return true;
-
-      }
-
-
-      /*
-       * ---------------------------------------------------
-       * CASE 2:
-       * We have a token but no saved user.
-       *
-       * Try to recover the account from /api/auth/me.
-       * ---------------------------------------------------
-       */
-
-      if (token) {
-
-        try {
-
-          const recoveredUser =
-            await fetchCurrentUser(
-              token
-            );
-
-
-          if (
-            recoveredUser &&
-            getUserRole(
-              recoveredUser
-            ) === "admin"
-          ) {
-
-            localStorage.setItem(
-              "coinforest_user",
-              JSON.stringify(
-                recoveredUser
-              )
-            );
-
-
-            adminAuthenticated =
-              true;
-
-
-            updateAdminIdentity(
-              recoveredUser
-            );
-
-
-            hideAdminAccessMessage();
-
-
-            return true;
-
-          }
-
-
-          /*
-           * If the token belongs to a normal customer,
-           * do NOT send them to customer login.
-           */
-
-          if (
-            recoveredUser &&
-            getUserRole(
-              recoveredUser
-            ) !== "admin"
-          ) {
-
-            adminAuthenticated =
-              false;
-
-
-            showAdminAccessMessage(
-              "Administrator access required",
-              "The current CoinForest account is not an administrator account."
-            );
-
-
-            return false;
-
-          }
-
-        } catch (error) {
-
-          console.warn(
-            "Unable to recover admin user from API:",
-            error
-          );
-
-        }
-
-      }
-
-
-      /*
-       * ---------------------------------------------------
-       * CASE 3:
-       * No usable admin session exists.
-       *
-       * IMPORTANT:
-       * We deliberately DO NOT redirect to login.html.
-       *
-       * login.html is the customer login page.
-       * ---------------------------------------------------
-       */
-
-      adminAuthenticated =
-        false;
-
-
-      showAdminAccessMessage(
-        "Administrator session required",
-        "Please sign in with an administrator account before accessing the CoinForest administration panel."
-      );
-
-
-      return false;
-
-    }
-
-
-    /*
-     * Fetch the current authenticated user.
-     */
+    /* =====================================================
+       API USER FETCH
+    ===================================================== */
 
     async function fetchCurrentUser(
       token
     ) {
+
+      if (!token) {
+        return null;
+      }
+
 
       const response =
         await fetch(
@@ -2268,7 +2151,7 @@
 
 
       /*
-       * Only treat 401/403 as an invalid token.
+       * A genuine authentication failure.
        */
 
       if (
@@ -2276,14 +2159,16 @@
         response.status === 403
       ) {
 
-        return null;
+        return {
+          __authFailure: true
+        };
 
       }
 
 
       /*
-       * Unexpected server errors are not treated
-       * as a customer logout.
+       * Do not destroy a working local admin session
+       * just because Render/API is temporarily unavailable.
        */
 
       if (!response.ok) {
@@ -2293,14 +2178,13 @@
           response.status
         );
 
-
         return null;
 
       }
 
 
       /*
-       * Support the different common API response shapes.
+       * Handle common API response structures.
        */
 
       if (
@@ -2348,7 +2232,9 @@
         (
           data.role ||
           data.email ||
-          data.id
+          data.id ||
+          data.is_admin === true ||
+          data.isAdmin === true
         )
       ) {
 
@@ -2362,12 +2248,222 @@
     }
 
 
-    /*
-     * Verify an existing admin session in the background.
-     *
-     * CRITICAL:
-     * This function NEVER redirects to login.html.
-     */
+    /* =====================================================
+       MAIN ADMIN AUTHENTICATION
+
+       IMPORTANT:
+
+       - Never redirects to customer login.html.
+       - Existing valid admin session is displayed
+         immediately.
+       - API verification happens afterward.
+       - Temporary API/network failure does not cover
+         a valid existing admin dashboard.
+    ===================================================== */
+
+    async function requireAdmin() {
+
+      const token =
+        getStoredToken();
+
+
+      const storedUser =
+        getStoredCoinForestUser();
+
+
+      /*
+       * ---------------------------------------------------
+       * FIRST PRIORITY:
+       * Existing saved administrator session.
+       * ---------------------------------------------------
+       */
+
+      if (
+        token &&
+        isAdministrator(
+          storedUser
+        )
+      ) {
+
+        adminAuthenticated =
+          true;
+
+
+        updateAdminIdentity(
+          storedUser
+        );
+
+
+        hideAdminAccessMessage();
+
+
+        /*
+         * Verify in the background.
+         * This does NOT block the dashboard.
+         */
+
+        verifyAdminInBackground(
+          token,
+          storedUser
+        );
+
+
+        return true;
+
+      }
+
+
+      /*
+       * ---------------------------------------------------
+       * SECOND:
+       * Try recovering the account from the API.
+       * ---------------------------------------------------
+       */
+
+      if (token) {
+
+        try {
+
+          const recoveredUser =
+            await fetchCurrentUser(
+              token
+            );
+
+
+          /*
+           * API returned an administrator.
+           */
+
+          if (
+            recoveredUser &&
+            !recoveredUser.__authFailure &&
+            isAdministrator(
+              recoveredUser
+            )
+          ) {
+
+            localStorage.setItem(
+              "coinforest_user",
+              JSON.stringify(
+                recoveredUser
+              )
+            );
+
+
+            adminAuthenticated =
+              true;
+
+
+            updateAdminIdentity(
+              recoveredUser
+            );
+
+
+            hideAdminAccessMessage();
+
+
+            return true;
+
+          }
+
+
+          /*
+           * API explicitly authenticated the token
+           * but account isn't an admin.
+           */
+
+          if (
+            recoveredUser &&
+            !recoveredUser.__authFailure
+          ) {
+
+            adminAuthenticated =
+              false;
+
+
+            showAdminAccessMessage(
+              "Administrator access required",
+              "The current CoinForest account is not authorized to use the administration panel."
+            );
+
+
+            return false;
+
+          }
+
+
+          /*
+           * Genuine 401/403 with no valid saved admin.
+           */
+
+          if (
+            recoveredUser &&
+            recoveredUser.__authFailure
+          ) {
+
+            adminAuthenticated =
+              false;
+
+
+            showAdminAccessMessage(
+              "Administrator session required",
+              "Your administrator session is no longer valid. Please sign in with an administrator account."
+            );
+
+
+            return false;
+
+          }
+
+        } catch (error) {
+
+          /*
+           * Network/server failure.
+           *
+           * Do NOT redirect.
+           * Do NOT replace the page with customer login.
+           */
+
+          console.warn(
+            "Unable to verify administrator through API:",
+            error
+          );
+
+        }
+
+      }
+
+
+      /*
+       * ---------------------------------------------------
+       * No valid administrator session.
+       *
+       * There is intentionally NO:
+       *
+       * window.location.href = "login.html"
+       *
+       * here.
+       * ---------------------------------------------------
+       */
+
+      adminAuthenticated =
+        false;
+
+
+      showAdminAccessMessage(
+        "Administrator session required",
+        "Please sign in with an administrator account before accessing the CoinForest administration panel."
+      );
+
+
+      return false;
+
+    }
+
+
+    /* =====================================================
+       BACKGROUND ADMIN VERIFICATION
+    ===================================================== */
 
     async function verifyAdminInBackground(
       token,
@@ -2383,15 +2479,15 @@
 
 
         /*
-         * If the API returned a real admin user,
-         * update the stored account.
+         * API confirmed administrator.
          */
 
         if (
           verifiedUser &&
-          getUserRole(
+          !verifiedUser.__authFailure &&
+          isAdministrator(
             verifiedUser
-          ) === "admin"
+          )
         ) {
 
           localStorage.setItem(
@@ -2411,23 +2507,24 @@
           );
 
 
+          hideAdminAccessMessage();
+
+
           return;
 
         }
 
 
         /*
-         * If the server explicitly tells us the token
-         * belongs to a non-admin account, block admin access.
+         * API returned a normal authenticated user.
          *
-         * We still don't redirect to customer login.
+         * That means the session is real but not
+         * authorized for the admin panel.
          */
 
         if (
           verifiedUser &&
-          getUserRole(
-            verifiedUser
-          ) !== "admin"
+          !verifiedUser.__authFailure
         ) {
 
           adminAuthenticated =
@@ -2436,7 +2533,7 @@
 
           showAdminAccessMessage(
             "Administrator access required",
-            "The authenticated account is not authorized to use the CoinForest administration panel."
+            "The authenticated CoinForest account is not authorized to use the administration panel."
           );
 
 
@@ -2446,14 +2543,73 @@
 
 
         /*
-         * If /me cannot be interpreted, retain the
-         * already-saved administrator session.
+         * API returned 401/403.
+         *
+         * Only remove access if we don't have a saved
+         * administrator identity to preserve.
          */
 
         if (
-          getUserRole(
+          verifiedUser &&
+          verifiedUser.__authFailure
+        ) {
+
+          if (
+            isAdministrator(
+              storedUser
+            )
+          ) {
+
+            /*
+             * Keep the existing admin dashboard visible
+             * instead of immediately replacing it.
+             *
+             * The API session can be renewed/rechecked
+             * without destroying the current UI.
+             */
+
+            adminAuthenticated =
+              true;
+
+
+            updateAdminIdentity(
+              storedUser
+            );
+
+
+            hideAdminAccessMessage();
+
+
+            return;
+
+          }
+
+
+          adminAuthenticated =
+            false;
+
+
+          showAdminAccessMessage(
+            "Administrator session required",
+            "Your administrator session is no longer valid. Please sign in with an administrator account."
+          );
+
+
+          return;
+
+        }
+
+
+        /*
+         * API could not be interpreted / server unavailable.
+         *
+         * Preserve an already authenticated admin.
+         */
+
+        if (
+          isAdministrator(
             storedUser
-          ) === "admin"
+          )
         ) {
 
           adminAuthenticated =
@@ -2463,6 +2619,9 @@
           updateAdminIdentity(
             storedUser
           );
+
+
+          hideAdminAccessMessage();
 
 
           return;
@@ -2471,21 +2630,21 @@
 
       } catch (error) {
 
-        /*
-         * Network failure must not destroy the
-         * existing admin session.
-         */
-
         console.warn(
-          "Background admin verification failed:",
+          "Background administrator verification failed:",
           error
         );
 
 
+        /*
+         * Network errors do not destroy an existing
+         * administrator session.
+         */
+
         if (
-          getUserRole(
+          isAdministrator(
             storedUser
-          ) === "admin"
+          )
         ) {
 
           adminAuthenticated =
@@ -2495,6 +2654,9 @@
           updateAdminIdentity(
             storedUser
           );
+
+
+          hideAdminAccessMessage();
 
         }
 
@@ -2510,6 +2672,11 @@
     function updateAdminIdentity(
       user
     ) {
+
+      if (!user) {
+        return;
+      }
+
 
       const adminName =
         document.querySelector(
@@ -2537,13 +2704,17 @@
 
       const firstName =
         String(
-          user?.first_name || ""
+          user?.first_name ||
+          user?.firstName ||
+          ""
         ).trim();
 
 
       const lastName =
         String(
-          user?.last_name || ""
+          user?.last_name ||
+          user?.lastName ||
+          ""
         ).trim();
 
 
@@ -2615,18 +2786,36 @@
     }
 
 
-    /*
-     * Start authentication after DOM is available.
-     */
+    /* =====================================================
+       AUTH INITIALIZATION
+    ===================================================== */
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      function () {
+    function initializeAdminAuthentication() {
 
-        requireAdmin();
+      /*
+       * Run after the entire page has loaded so that
+       * identity elements already exist in the DOM.
+       */
 
-      }
-    );
+      requireAdmin();
+
+    }
+
+
+    if (
+      document.readyState === "loading"
+    ) {
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        initializeAdminAuthentication
+      );
+
+    } else {
+
+      initializeAdminAuthentication();
+
+    }
 
 
     /* =====================================================
@@ -2671,8 +2860,7 @@
     ) {
 
       /*
-       * Do not allow section navigation if an
-       * administrator has not been authenticated.
+       * Protect all dashboard navigation.
        */
 
       if (!adminAuthenticated) {
@@ -2771,6 +2959,10 @@
 
     }
 
+
+    /* =====================================================
+       SIDEBAR
+    ===================================================== */
 
     function toggleSidebar() {
 
