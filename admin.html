@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>CoinForest Admin</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -42,9 +46,11 @@
       --radius: 16px;
     }
 
+
     html {
       scroll-behavior: smooth;
     }
+
 
     body {
       font-family:
@@ -61,8 +67,10 @@
       font-weight: 500;
 
       -webkit-font-smoothing: antialiased;
+
       text-rendering: optimizeLegibility;
     }
+
 
     button,
     input,
@@ -71,9 +79,11 @@
       font: inherit;
     }
 
+
     button {
       cursor: pointer;
     }
+
 
     /* =====================================================
        APP LAYOUT
@@ -81,8 +91,10 @@
 
     .app {
       display: flex;
+
       min-height: 100vh;
     }
+
 
     /* =====================================================
        SIDEBAR
@@ -93,7 +105,8 @@
 
       background: #fff;
 
-      border-right: 1px solid var(--border);
+      border-right:
+        1px solid var(--border);
 
       position: fixed;
 
@@ -102,26 +115,31 @@
       z-index: 100;
 
       display: flex;
+
       flex-direction: column;
 
       box-shadow:
         4px 0 20px rgba(20, 45, 32, .025);
     }
 
+
     .brand {
       height: 76px;
 
       display: flex;
+
       align-items: center;
 
       gap: 11px;
 
       padding: 0 22px;
 
-      border-bottom: 1px solid var(--border);
+      border-bottom:
+        1px solid var(--border);
 
       flex-shrink: 0;
     }
+
 
     .brand-logo {
       width: 42px;
@@ -137,6 +155,7 @@
         );
 
       display: grid;
+
       place-items: center;
 
       color: #fff;
@@ -146,6 +165,7 @@
       box-shadow:
         0 6px 14px rgba(18, 107, 58, .18);
     }
+
 
     .brand-text strong {
       display: block;
@@ -159,6 +179,7 @@
       letter-spacing: -.2px;
     }
 
+
     .brand-text span {
       display: block;
 
@@ -171,6 +192,7 @@
       margin-top: 3px;
     }
 
+
     .nav {
       padding: 20px 12px;
 
@@ -178,6 +200,7 @@
 
       flex: 1;
     }
+
 
     .nav-label {
       color: #9aa59f;
@@ -193,6 +216,7 @@
       font-weight: 800;
     }
 
+
     .nav-item {
       width: 100%;
 
@@ -201,6 +225,7 @@
       background: transparent;
 
       display: flex;
+
       align-items: center;
 
       gap: 12px;
@@ -225,13 +250,16 @@
         transform .2s ease;
     }
 
+
     .nav-item:hover {
       background: var(--green-light);
 
       color: var(--green-dark);
 
-      transform: translateX(1px);
+      transform:
+        translateX(1px);
     }
+
 
     .nav-item.active {
       background:
@@ -246,8 +274,10 @@
       font-weight: 800;
 
       box-shadow:
-        0 6px 15px rgba(18, 107, 58, .14);
+        0 6px 15px
+        rgba(18, 107, 58, .14);
     }
+
 
     .nav-icon {
       width: 23px;
@@ -259,16 +289,20 @@
       flex-shrink: 0;
     }
 
+
     .sidebar-footer {
       padding: 14px;
 
-      border-top: 1px solid var(--border);
+      border-top:
+        1px solid var(--border);
 
       flex-shrink: 0;
     }
 
+
     .admin-mini {
       display: flex;
+
       align-items: center;
 
       gap: 10px;
@@ -278,23 +312,29 @@
       border-radius: 12px;
     }
 
+
     .admin-avatar {
       width: 36px;
       height: 36px;
 
       border-radius: 50%;
 
-      background: var(--gold-light);
+      background:
+        var(--gold-light);
 
       color: #9b711c;
 
       display: grid;
+
       place-items: center;
 
       font-weight: 800;
 
-      border: 1px solid rgba(217, 164, 65, .15);
+      border:
+        1px solid
+        rgba(217, 164, 65, .15);
     }
+
 
     .admin-mini strong {
       display: block;
@@ -303,6 +343,7 @@
 
       font-weight: 800;
     }
+
 
     .admin-mini span {
       display: block;
@@ -316,6 +357,7 @@
       margin-top: 3px;
     }
 
+
     /* =====================================================
        MAIN
     ===================================================== */
@@ -323,10 +365,12 @@
     .main {
       margin-left: 250px;
 
-      width: calc(100% - 250px);
+      width:
+        calc(100% - 250px);
 
       min-width: 0;
     }
+
 
     /* =====================================================
        TOPBAR
@@ -335,9 +379,11 @@
     .topbar {
       height: 76px;
 
-      background: rgba(255,255,255,.96);
+      background:
+        rgba(255,255,255,.96);
 
-      border-bottom: 1px solid var(--border);
+      border-bottom:
+        1px solid var(--border);
 
       display: flex;
 
@@ -353,12 +399,15 @@
 
       z-index: 50;
 
-      backdrop-filter: blur(12px);
+      backdrop-filter:
+        blur(12px);
     }
+
 
     .topbar-left {
       min-width: 0;
     }
+
 
     .topbar-left h1 {
       font-size: 20px;
@@ -370,6 +419,7 @@
       letter-spacing: -.35px;
     }
 
+
     .topbar-left p {
       font-size: 12px;
 
@@ -380,6 +430,7 @@
       font-weight: 600;
     }
 
+
     .topbar-right {
       display: flex;
 
@@ -388,11 +439,13 @@
       gap: 12px;
     }
 
+
     .icon-btn {
       width: 38px;
       height: 38px;
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       background: #fff;
 
@@ -405,23 +458,28 @@
       font-weight: 700;
     }
 
+
     .icon-btn:hover {
       border-color: #cbd8d0;
 
-      background: var(--green-light);
+      background:
+        var(--green-light);
 
       color: var(--green-dark);
     }
+
 
     /* =====================================================
        CONTENT
     ===================================================== */
 
     .content {
-      padding: 28px 30px 40px;
+      padding:
+        28px 30px 40px;
 
       max-width: 1500px;
     }
+
 
     /* =====================================================
        STAT CARDS
@@ -438,10 +496,12 @@
       margin-bottom: 24px;
     }
 
+
     .stat-card {
       background: var(--card);
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       border-radius: var(--radius);
 
@@ -455,13 +515,17 @@
         border-color .2s ease;
     }
 
-    .stat-card:hover {
-      transform: translateY(-2px);
 
-      box-shadow: var(--shadow-hover);
+    .stat-card:hover {
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        var(--shadow-hover);
 
       border-color: #d8e2dc;
     }
+
 
     .stat-top {
       display: flex;
@@ -471,6 +535,7 @@
       justify-content: space-between;
     }
 
+
     .stat-label {
       font-size: 12px;
 
@@ -479,6 +544,7 @@
       font-weight: 700;
     }
 
+
     .stat-icon {
       width: 38px;
       height: 38px;
@@ -486,9 +552,11 @@
       border-radius: 11px;
 
       display: grid;
+
       place-items: center;
 
-      background: var(--green-light);
+      background:
+        var(--green-light);
 
       color: var(--green);
 
@@ -496,6 +564,7 @@
 
       font-weight: 800;
     }
+
 
     .stat-value {
       font-size: 26px;
@@ -509,6 +578,7 @@
       color: var(--text-strong);
     }
 
+
     .stat-note {
       font-size: 11px;
 
@@ -518,6 +588,7 @@
 
       font-weight: 600;
     }
+
 
     /* =====================================================
        CONTENT CARDS
@@ -532,10 +603,12 @@
       gap: 20px;
     }
 
+
     .panel {
       background: #fff;
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       border-radius: var(--radius);
 
@@ -544,10 +617,12 @@
       overflow: hidden;
     }
 
+
     .panel-header {
       padding: 18px 20px;
 
-      border-bottom: 1px solid var(--border);
+      border-bottom:
+        1px solid var(--border);
 
       display: flex;
 
@@ -558,6 +633,7 @@
       gap: 15px;
     }
 
+
     .panel-header h2 {
       font-size: 15px;
 
@@ -566,6 +642,7 @@
       color: var(--text-strong);
     }
 
+
     .panel-header span {
       color: var(--muted);
 
@@ -573,6 +650,7 @@
 
       font-weight: 600;
     }
+
 
     .panel-body {
       padding: 18px 20px;
@@ -585,6 +663,7 @@
 
       font-weight: 550;
     }
+
 
     /* =====================================================
        QUICK ACTIONS
@@ -599,8 +678,10 @@
       gap: 10px;
     }
 
+
     .action {
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       background: #fff;
 
@@ -617,22 +698,28 @@
         box-shadow .2s ease;
     }
 
+
     .action:hover {
       border-color: #b9d8c5;
 
-      background: var(--green-light);
+      background:
+        var(--green-light);
 
-      transform: translateY(-1px);
+      transform:
+        translateY(-1px);
 
       box-shadow:
-        0 6px 16px rgba(18, 107, 58, .07);
+        0 6px 16px
+        rgba(18, 107, 58, .07);
     }
+
 
     .action-icon {
       font-size: 19px;
 
       margin-bottom: 8px;
     }
+
 
     .action strong {
       display: block;
@@ -643,6 +730,7 @@
 
       font-weight: 800;
     }
+
 
     .action span {
       display: block;
@@ -658,6 +746,7 @@
       font-weight: 600;
     }
 
+
     /* =====================================================
        ACTIVITY
     ===================================================== */
@@ -671,12 +760,15 @@
 
       padding: 13px 0;
 
-      border-bottom: 1px solid #edf0ee;
+      border-bottom:
+        1px solid #edf0ee;
     }
+
 
     .activity:last-child {
       border-bottom: 0;
     }
+
 
     .activity-icon {
       width: 34px;
@@ -685,9 +777,11 @@
       border-radius: 10px;
 
       display: grid;
+
       place-items: center;
 
-      background: var(--green-light);
+      background:
+        var(--green-light);
 
       color: var(--green);
 
@@ -696,11 +790,13 @@
       font-size: 14px;
     }
 
+
     .activity-info {
       min-width: 0;
 
       flex: 1;
     }
+
 
     .activity-info strong {
       display: block;
@@ -711,6 +807,7 @@
 
       font-weight: 800;
     }
+
 
     .activity-info span {
       display: block;
@@ -724,19 +821,6 @@
       font-weight: 600;
     }
 
-    .activity-amount {
-      font-size: 11px;
-
-      font-weight: 800;
-    }
-
-    /* =====================================================
-       PLACEHOLDER SECTION TEXT
-    ===================================================== */
-
-    .section .panel-body {
-      min-height: 80px;
-    }
 
     /* =====================================================
        MOBILE MENU
@@ -748,7 +832,8 @@
       width: 38px;
       height: 38px;
 
-      border: 1px solid var(--border);
+      border:
+        1px solid var(--border);
 
       background: #fff;
 
@@ -759,11 +844,14 @@
       font-weight: 800;
     }
 
+
     .mobile-menu:hover {
-      background: var(--green-light);
+      background:
+        var(--green-light);
 
       color: var(--green-dark);
     }
+
 
     .overlay {
       display: none;
@@ -772,10 +860,96 @@
 
       inset: 0;
 
-      background: rgba(0,0,0,.35);
+      background:
+        rgba(0,0,0,.35);
 
       z-index: 90;
     }
+
+
+    /* =====================================================
+       ACCESS MESSAGE
+    ===================================================== */
+
+    #adminAccessMessage {
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 9999;
+
+      background:
+        var(--bg);
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 20px;
+    }
+
+
+    .admin-access-card {
+      width:
+        min(430px, 100%);
+
+      background: #fff;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 18px;
+
+      padding: 30px 24px;
+
+      text-align: center;
+
+      box-shadow:
+        0 12px 40px
+        rgba(20,45,32,.10);
+    }
+
+
+    .admin-access-icon {
+      width: 58px;
+      height: 58px;
+
+      margin:
+        0 auto 16px;
+
+      border-radius: 16px;
+
+      display: grid;
+
+      place-items: center;
+
+      background:
+        var(--green-light);
+
+      font-size: 27px;
+    }
+
+
+    .admin-access-card h2 {
+      color:
+        var(--text-strong);
+
+      font-size: 19px;
+
+      margin-bottom: 9px;
+    }
+
+
+    .admin-access-card p {
+      color: var(--muted);
+
+      font-size: 13px;
+
+      line-height: 1.6;
+    }
+
 
     /* =====================================================
        RESPONSIVE
@@ -791,23 +965,31 @@
       .grid-2 {
         grid-template-columns: 1fr;
       }
+
     }
+
 
     @media (max-width: 760px) {
 
       .sidebar {
-        transform: translateX(-100%);
+        transform:
+          translateX(-100%);
 
-        transition: .25s ease;
+        transition:
+          .25s ease;
       }
+
 
       .sidebar.open {
-        transform: translateX(0);
+        transform:
+          translateX(0);
       }
+
 
       .overlay.open {
         display: block;
       }
+
 
       .main {
         margin-left: 0;
@@ -815,13 +997,16 @@
         width: 100%;
       }
 
+
       .mobile-menu {
         display: block;
       }
 
+
       .topbar {
         padding: 0 16px;
       }
+
 
       .topbar-left {
         display: flex;
@@ -831,17 +1016,22 @@
         gap: 10px;
       }
 
+
       .topbar-left h1 {
         font-size: 17px;
       }
+
 
       .topbar-left p {
         font-size: 10px;
       }
 
+
       .content {
-        padding: 20px 15px 30px;
+        padding:
+          20px 15px 30px;
       }
+
 
       .stats {
         grid-template-columns:
@@ -850,17 +1040,21 @@
         gap: 10px;
       }
 
+
       .stat-card {
         padding: 15px;
       }
+
 
       .stat-label {
         font-size: 11px;
       }
 
+
       .stat-value {
         font-size: 21px;
       }
+
 
       .stat-icon {
         width: 32px;
@@ -869,39 +1063,51 @@
         font-size: 14px;
       }
 
+
       .panel-header {
         padding: 16px;
       }
 
+
       .panel-body {
         padding: 16px;
       }
+
     }
+
 
     @media (max-width: 440px) {
 
       .stats {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
 
+
       .quick-actions {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
+
 
       .topbar-right {
         gap: 6px;
       }
+
 
       .icon-btn {
         width: 35px;
         height: 35px;
       }
 
+
       .content {
         padding-left: 12px;
         padding-right: 12px;
       }
+
     }
+
   </style>
 </head>
 
@@ -910,8 +1116,9 @@
   <div
     class="overlay"
     id="overlay"
-    onclick="toggleSidebar()">
-  </div>
+    onclick="toggleSidebar()"
+  ></div>
+
 
   <div class="app">
 
@@ -921,7 +1128,8 @@
 
     <aside
       class="sidebar"
-      id="sidebar">
+      id="sidebar"
+    >
 
       <div class="brand">
 
@@ -1089,13 +1297,16 @@
 
         <div class="admin-mini">
 
-          <div class="admin-avatar">
+          <div
+            class="admin-avatar"
+            id="adminAvatar"
+          >
             A
           </div>
 
           <div>
 
-            <strong>
+            <strong id="adminName">
               Administrator
             </strong>
 
@@ -1156,6 +1367,7 @@
 
           <button
             class="icon-btn"
+            id="topAdminAvatar"
             title="Admin profile"
           >
             A
@@ -1295,8 +1507,6 @@
 
           <div class="grid-2">
 
-            <!-- QUICK ACTIONS -->
-
             <div class="panel">
 
               <div class="panel-header">
@@ -1405,8 +1615,6 @@
 
             </div>
 
-
-            <!-- RECENT ACTIVITY -->
 
             <div class="panel">
 
@@ -1525,9 +1733,7 @@
             </div>
 
             <div class="panel-body">
-
               Customer management will be connected to Neon here.
-
             </div>
 
           </div>
@@ -1560,9 +1766,7 @@
             </div>
 
             <div class="panel-body">
-
               KYC management will be connected to Neon here.
-
             </div>
 
           </div>
@@ -1595,9 +1799,7 @@
             </div>
 
             <div class="panel-body">
-
               Customer chat will be connected to Neon here.
-
             </div>
 
           </div>
@@ -1630,9 +1832,7 @@
             </div>
 
             <div class="panel-body">
-
               Wallet management will be connected to Neon here.
-
             </div>
 
           </div>
@@ -1701,9 +1901,7 @@
             </div>
 
             <div class="panel-body">
-
               Transaction management will be connected to Neon here.
-
             </div>
 
           </div>
@@ -1772,9 +1970,7 @@
             </div>
 
             <div class="panel-body">
-
               Administrative settings will be added here.
-
             </div>
 
           </div>
@@ -1792,497 +1988,756 @@
        JAVASCRIPT
   ===================================================== -->
 
-  <script>
+<script>
 
-    /* =====================================================
-       COINFOREST ADMIN AUTHENTICATION
-    ===================================================== */
+const API_BASE =
+  "https://coinforest-api-test-2026.onrender.com";
 
-    const API_BASE =
-      "https://coinforest-api-test-2026.onrender.com";
+let adminAuthenticated = false;
 
 
-    let adminAuthenticated = false;
+/* =====================================================
+   SESSION HELPERS
+===================================================== */
+
+function getStoredToken() {
+
+  return localStorage.getItem(
+    "coinforest_token"
+  );
+
+}
 
 
-    /* =====================================================
-       STORAGE HELPERS
-    ===================================================== */
+function getStoredUser() {
 
-    function getStoredCoinForestUser() {
+  try {
 
-      try {
+    const raw =
+      localStorage.getItem(
+        "coinforest_user"
+      );
 
-        const raw =
-          localStorage.getItem(
-            "coinforest_user"
-          );
 
-        if (!raw) {
-          return null;
-        }
-
-        const user =
-          JSON.parse(raw);
-
-        if (
-          user &&
-          typeof user === "object"
-        ) {
-          return user;
-        }
-
-      } catch (error) {
-
-        console.warn(
-          "Unable to read coinforest_user:",
-          error
-        );
-
-      }
-
+    if (!raw) {
       return null;
     }
 
 
-    function getStoredToken() {
-
-      const token =
-        localStorage.getItem(
-          "coinforest_token"
-        );
-
-      return token
-        ? String(token).trim()
-        : "";
-    }
+    const user =
+      JSON.parse(raw);
 
 
-    /* =====================================================
-       ROLE DETECTION
+    return (
+      user &&
+      typeof user === "object"
+    )
+      ? user
+      : null;
 
-       Supports the possible structures:
+  } catch (error) {
 
-       user.role
-       user.user.role
-       user.profile.role
-       user.data.role
-       user.is_admin
-       user.isAdmin
-       ===================================================== */
+    console.warn(
+      "Unable to read coinforest_user:",
+      error
+    );
 
-    function getUserRole(user) {
+    return null;
 
-      if (!user || typeof user !== "object") {
-        return "";
-      }
+  }
 
-
-      const candidates = [
-
-        user.role,
-
-        user.user?.role,
-
-        user.profile?.role,
-
-        user.data?.role,
-
-        user.account?.role
-
-      ];
+}
 
 
-      for (const value of candidates) {
+function getStoredRole() {
 
-        const role =
-          String(value || "")
-            .trim()
-            .toLowerCase();
-
-        if (role) {
-          return role;
-        }
-
-      }
+  const user =
+    getStoredUser();
 
 
-      if (
-        user.is_admin === true ||
-        user.isAdmin === true ||
-        user.admin === true
-      ) {
+  const localRole =
+    localStorage.getItem(
+      "coinforest_role"
+    );
 
-        return "admin";
 
-      }
+  return String(
+    user?.role ||
+    user?.user_role ||
+    user?.account_role ||
+    localRole ||
+    ""
+  )
+    .trim()
+    .toLowerCase();
 
+}
+
+
+/* =====================================================
+   USER EXTRACTION
+===================================================== */
+
+function extractUser(data) {
+
+  if (
+    data &&
+    data.user &&
+    typeof data.user === "object"
+  ) {
+
+    return data.user;
+
+  }
+
+
+  if (
+    data &&
+    data.data &&
+    data.data.user &&
+    typeof data.data.user === "object"
+  ) {
+
+    return data.data.user;
+
+  }
+
+
+  if (
+    data &&
+    data.data &&
+    typeof data.data === "object" &&
+    (
+      data.data.role ||
+      data.data.email ||
+      data.data.id
+    )
+  ) {
+
+    return data.data;
+
+  }
+
+
+  if (
+    data &&
+    typeof data === "object" &&
+    (
+      data.role ||
+      data.email ||
+      data.id
+    )
+  ) {
+
+    return data;
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =====================================================
+   ROLE EXTRACTION
+===================================================== */
+
+function getRoleFromObject(
+  user,
+  data
+) {
+
+  return String(
+    user?.role ??
+    user?.user_role ??
+    user?.account_role ??
+    data?.role ??
+    data?.user_role ??
+    data?.account_role ??
+    data?.data?.role ??
+    ""
+  )
+    .trim()
+    .toLowerCase();
+
+}
+
+
+/* =====================================================
+   JWT ROLE FALLBACK
+===================================================== */
+
+function getRoleFromToken(
+  token
+) {
+
+  try {
+
+    const parts =
+      String(token).split(".");
+
+
+    if (
+      parts.length !== 3
+    ) {
 
       return "";
+
     }
 
 
-    function isAdministrator(user) {
+    let payload =
+      parts[1]
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+
+    while (
+      payload.length % 4
+    ) {
+
+      payload += "=";
+
+    }
+
+
+    const decoded =
+      JSON.parse(
+        atob(payload)
+      );
+
+
+    return String(
+      decoded?.role ??
+      decoded?.user_role ??
+      decoded?.account_role ??
+      ""
+    )
+      .trim()
+      .toLowerCase();
+
+  } catch (error) {
+
+    console.warn(
+      "Unable to read token role:",
+      error
+    );
+
+    return "";
+
+  }
+
+}
+
+
+/* =====================================================
+   ADMIN ACCESS MESSAGE
+===================================================== */
+
+function showAdminAccessMessage(
+  title,
+  message
+) {
+
+  let existing =
+    document.getElementById(
+      "adminAccessMessage"
+    );
+
+
+  if (existing) {
+
+    existing.querySelector(
+      ".admin-access-title"
+    ).textContent =
+      title;
+
+
+    existing.querySelector(
+      ".admin-access-text"
+    ).textContent =
+      message;
+
+
+    return;
+
+  }
+
+
+  const box =
+    document.createElement(
+      "div"
+    );
+
+
+  box.id =
+    "adminAccessMessage";
+
+
+  box.innerHTML = `
+
+    <div class="admin-access-card">
+
+      <div class="admin-access-icon">
+        🔐
+      </div>
+
+      <h2 class="admin-access-title">
+        ${title}
+      </h2>
+
+      <p class="admin-access-text">
+        ${message}
+      </p>
+
+    </div>
+
+  `;
+
+
+  document.body.appendChild(
+    box
+  );
+
+}
+
+
+function hideAdminAccessMessage() {
+
+  const box =
+    document.getElementById(
+      "adminAccessMessage"
+    );
+
+
+  if (box) {
+
+    box.remove();
+
+  }
+
+}
+
+
+/* =====================================================
+   FETCH CURRENT USER
+===================================================== */
+
+async function fetchCurrentUser(
+  token
+) {
+
+  const response =
+    await fetch(
+      `${API_BASE}/api/auth/me`,
+      {
+        method: "GET",
+
+        headers: {
+          "Authorization":
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json",
+
+          "Accept":
+            "application/json"
+        },
+
+        cache: "no-store"
+      }
+    );
+
+
+  const responseText =
+    await response.text();
+
+
+  let data = null;
+
+
+  try {
+
+    data =
+      responseText
+        ? JSON.parse(
+            responseText
+          )
+        : null;
+
+  } catch {
+
+    console.warn(
+      "Invalid JSON from /api/auth/me:",
+      responseText
+    );
+
+  }
+
+
+  if (
+    response.status === 401 ||
+    response.status === 403
+  ) {
+
+    return {
+      invalid: true,
+      user: null
+    };
+
+  }
+
+
+  if (!response.ok) {
+
+    return {
+      invalid: false,
+      user: null
+    };
+
+  }
+
+
+  return {
+    invalid: false,
+    user:
+      extractUser(data)
+  };
+
+}
+
+
+/* =====================================================
+   UPDATE ADMIN IDENTITY
+===================================================== */
+
+function updateAdminIdentity(
+  user
+) {
+
+  const adminName =
+    document.getElementById(
+      "adminName"
+    );
+
+
+  const adminAvatar =
+    document.getElementById(
+      "adminAvatar"
+    );
+
+
+  const topAvatar =
+    document.getElementById(
+      "topAdminAvatar"
+    );
+
+
+  const firstName =
+    String(
+      user?.first_name ||
+      ""
+    ).trim();
+
+
+  const lastName =
+    String(
+      user?.last_name ||
+      ""
+    ).trim();
+
+
+  const email =
+    String(
+      user?.email ||
+      ""
+    ).trim();
+
+
+  const fullName =
+    `${firstName} ${lastName}`
+      .trim();
+
+
+  const displayName =
+    fullName ||
+    email ||
+    "Administrator";
+
+
+  if (adminName) {
+
+    adminName.textContent =
+      displayName;
+
+  }
+
+
+  let initials =
+    `${firstName.charAt(0)}${lastName.charAt(0)}`
+      .toUpperCase();
+
+
+  if (!initials) {
+
+    initials =
+      email
+        ? email.charAt(0).toUpperCase()
+        : "A";
+
+  }
+
+
+  if (adminAvatar) {
+
+    adminAvatar.textContent =
+      initials;
+
+  }
+
+
+  if (topAvatar) {
+
+    topAvatar.textContent =
+      initials;
+
+  }
+
+}
+
+
+/* =====================================================
+   ADMIN AUTHENTICATION
+===================================================== */
+
+async function requireAdmin() {
+
+  const token =
+    getStoredToken();
+
+
+  const storedUser =
+    getStoredUser();
+
+
+  const storedRole =
+    getStoredRole();
+
+
+  /*
+   * First use the normalized session created
+   * by login.html.
+   */
+
+  if (
+    storedUser &&
+    storedRole === "admin"
+  ) {
+
+    adminAuthenticated =
+      true;
+
+
+    updateAdminIdentity(
+      storedUser
+    );
+
+
+    hideAdminAccessMessage();
+
+
+    /*
+     * Verify the session in the background.
+     * A temporary API/network failure does not
+     * immediately destroy the working admin UI.
+     */
+
+    if (token) {
+
+      verifyAdminInBackground(
+        token,
+        storedUser
+      );
+
+    }
+
+
+    return true;
+
+  }
+
+
+  /*
+   * If there is a token but no usable stored role,
+   * recover the account from the API.
+   */
+
+  if (token) {
+
+    try {
+
+      const result =
+        await fetchCurrentUser(
+          token
+        );
+
 
       if (
-        !user ||
-        typeof user !== "object"
+        result.user
       ) {
+
+        const user =
+          result.user;
+
+
+        let role =
+          getRoleFromObject(
+            user,
+            null
+          );
+
+
+        if (!role) {
+
+          role =
+            getRoleFromToken(
+              token
+            );
+
+        }
+
+
+        if (
+          role === "admin"
+        ) {
+
+          const normalizedUser =
+            {
+              ...user,
+              role: "admin"
+            };
+
+
+          localStorage.setItem(
+            "coinforest_user",
+            JSON.stringify(
+              normalizedUser
+            )
+          );
+
+
+          localStorage.setItem(
+            "coinforest_role",
+            "admin"
+          );
+
+
+          adminAuthenticated =
+            true;
+
+
+          updateAdminIdentity(
+            normalizedUser
+          );
+
+
+          hideAdminAccessMessage();
+
+
+          return true;
+
+        }
+
+
+        /*
+         * A valid non-admin account must not
+         * enter the admin panel.
+         */
+
+        adminAuthenticated =
+          false;
+
+
+        showAdminAccessMessage(
+          "Administrator access required",
+          "The current CoinForest account is not authorized to use the administration panel."
+        );
+
 
         return false;
 
       }
 
 
-      const role =
-        getUserRole(user);
+      /*
+       * If the API could not respond properly,
+       * but the token itself contains admin role,
+       * restore the admin session.
+       */
 
-
-      return (
-        role === "admin" ||
-        role === "administrator" ||
-        role === "superadmin" ||
-        role === "super_admin"
-      );
-    }
-
-
-    /* =====================================================
-       ACCESS MESSAGE
-    ===================================================== */
-
-    function showAdminAccessMessage(
-      title,
-      message
-    ) {
-
-      const existing =
-        document.getElementById(
-          "adminAccessMessage"
+      const tokenRole =
+        getRoleFromToken(
+          token
         );
 
 
-      if (existing) {
+      if (
+        tokenRole === "admin"
+      ) {
 
-        const titleElement =
-          existing.querySelector(
-            ".admin-access-title"
-          );
-
-        const textElement =
-          existing.querySelector(
-            ".admin-access-text"
-          );
-
-
-        if (titleElement) {
-          titleElement.textContent =
-            title;
-        }
-
-
-        if (textElement) {
-          textElement.textContent =
-            message;
-        }
-
-
-        return;
-
-      }
-
-
-      const box =
-        document.createElement("div");
-
-
-      box.id =
-        "adminAccessMessage";
-
-
-      box.innerHTML = `
-
-        <div
-          style="
-            position:fixed;
-            inset:0;
-            z-index:9999;
-            background:#f5f7f6;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:20px;
-          "
-        >
-
-          <div
-            style="
-              width:min(430px,100%);
-              background:#fff;
-              border:1px solid #e4e9e6;
-              border-radius:18px;
-              padding:30px 24px;
-              text-align:center;
-              box-shadow:0 12px 40px rgba(20,45,32,.10);
-            "
-          >
-
-            <div
-              style="
-                width:58px;
-                height:58px;
-                margin:0 auto 16px;
-                border-radius:16px;
-                display:grid;
-                place-items:center;
-                background:#eaf7ef;
-                font-size:27px;
-              "
-            >
-              🔐
-            </div>
-
-            <h2
-              class="admin-access-title"
-              style="
-                color:#102019;
-                font-size:19px;
-                margin-bottom:9px;
-              "
-            >
-              ${title}
-            </h2>
-
-            <p
-              class="admin-access-text"
-              style="
-                color:#718078;
-                font-size:13px;
-                line-height:1.6;
-              "
-            >
-              ${message}
-            </p>
-
-          </div>
-
-        </div>
-
-      `;
-
-
-      document.body.appendChild(box);
-
-    }
-
-
-    function hideAdminAccessMessage() {
-
-      const box =
-        document.getElementById(
-          "adminAccessMessage"
-        );
-
-
-      if (box) {
-        box.remove();
-      }
-
-    }
-
-
-    /* =====================================================
-       API USER FETCH
-    ===================================================== */
-
-    async function fetchCurrentUser(
-      token
-    ) {
-
-      if (!token) {
-        return null;
-      }
-
-
-      const response =
-        await fetch(
-          `${API_BASE}/api/auth/me`,
+        const fallbackUser =
           {
-            method: "GET",
+            ...(storedUser || {}),
+            role: "admin"
+          };
 
-            headers: {
-              "Authorization":
-                `Bearer ${token}`,
 
-              "Content-Type":
-                "application/json",
-
-              "Accept":
-                "application/json"
-            },
-
-            cache: "no-store"
-          }
+        localStorage.setItem(
+          "coinforest_user",
+          JSON.stringify(
+            fallbackUser
+          )
         );
 
 
-      const responseText =
-        await response.text();
-
-
-      let data = null;
-
-
-      try {
-
-        data =
-          responseText
-            ? JSON.parse(responseText)
-            : null;
-
-      } catch (error) {
-
-        console.warn(
-          "Invalid JSON returned by /api/auth/me:",
-          responseText
+        localStorage.setItem(
+          "coinforest_role",
+          "admin"
         );
 
-      }
+
+        adminAuthenticated =
+          true;
 
 
-      /*
-       * A genuine authentication failure.
-       */
-
-      if (
-        response.status === 401 ||
-        response.status === 403
-      ) {
-
-        return {
-          __authFailure: true
-        };
-
-      }
-
-
-      /*
-       * Do not destroy a working local admin session
-       * just because Render/API is temporarily unavailable.
-       */
-
-      if (!response.ok) {
-
-        console.warn(
-          "Admin /me returned HTTP",
-          response.status
+        updateAdminIdentity(
+          fallbackUser
         );
 
-        return null;
+
+        hideAdminAccessMessage();
+
+
+        return true;
 
       }
+
+    } catch (error) {
+
+      console.warn(
+        "Admin authentication request failed:",
+        error
+      );
 
 
       /*
-       * Handle common API response structures.
+       * Network problems should not send the user
+       * to the customer login page.
        */
 
       if (
-        data &&
-        data.user &&
-        typeof data.user === "object"
-      ) {
-
-        return data.user;
-
-      }
-
-
-      if (
-        data &&
-        data.data &&
-        data.data.user &&
-        typeof data.data.user === "object"
-      ) {
-
-        return data.data.user;
-
-      }
-
-
-      if (
-        data &&
-        data.data &&
-        typeof data.data === "object" &&
-        (
-          data.data.role ||
-          data.data.email ||
-          data.data.id
-        )
-      ) {
-
-        return data.data;
-
-      }
-
-
-      if (
-        data &&
-        typeof data === "object" &&
-        (
-          data.role ||
-          data.email ||
-          data.id ||
-          data.is_admin === true ||
-          data.isAdmin === true
-        )
-      ) {
-
-        return data;
-
-      }
-
-
-      return null;
-
-    }
-
-
-    /* =====================================================
-       MAIN ADMIN AUTHENTICATION
-
-       IMPORTANT:
-
-       - Never redirects to customer login.html.
-       - Existing valid admin session is displayed
-         immediately.
-       - API verification happens afterward.
-       - Temporary API/network failure does not cover
-         a valid existing admin dashboard.
-    ===================================================== */
-
-    async function requireAdmin() {
-
-      const token =
-        getStoredToken();
-
-
-      const storedUser =
-        getStoredCoinForestUser();
-
-
-      /*
-       * ---------------------------------------------------
-       * FIRST PRIORITY:
-       * Existing saved administrator session.
-       * ---------------------------------------------------
-       */
-
-      if (
-        token &&
-        isAdministrator(
-          storedUser
-        )
+        storedRole === "admin"
       ) {
 
         adminAuthenticated =
@@ -2297,717 +2752,440 @@
         hideAdminAccessMessage();
 
 
-        /*
-         * Verify in the background.
-         * This does NOT block the dashboard.
-         */
-
-        verifyAdminInBackground(
-          token,
-          storedUser
-        );
-
-
         return true;
 
       }
 
+    }
 
-      /*
-       * ---------------------------------------------------
-       * SECOND:
-       * Try recovering the account from the API.
-       * ---------------------------------------------------
-       */
-
-      if (token) {
-
-        try {
-
-          const recoveredUser =
-            await fetchCurrentUser(
-              token
-            );
+  }
 
 
-          /*
-           * API returned an administrator.
-           */
+  /*
+   * No administrator session exists.
+   *
+   * IMPORTANT:
+   * There is intentionally NO:
+   *
+   * window.location.href = "login.html"
+   *
+   * here.
+   */
 
-          if (
-            recoveredUser &&
-            !recoveredUser.__authFailure &&
-            isAdministrator(
-              recoveredUser
-            )
-          ) {
-
-            localStorage.setItem(
-              "coinforest_user",
-              JSON.stringify(
-                recoveredUser
-              )
-            );
+  adminAuthenticated =
+    false;
 
 
-            adminAuthenticated =
-              true;
+  showAdminAccessMessage(
+    "Administrator session required",
+    "Please sign in with an administrator account before accessing the CoinForest administration panel."
+  );
 
 
-            updateAdminIdentity(
-              recoveredUser
-            );
+  return false;
+
+}
 
 
-            hideAdminAccessMessage();
+/* =====================================================
+   BACKGROUND ADMIN VERIFICATION
+===================================================== */
 
+async function verifyAdminInBackground(
+  token,
+  storedUser
+) {
 
-            return true;
+  try {
 
-          }
-
-
-          /*
-           * API explicitly authenticated the token
-           * but account isn't an admin.
-           */
-
-          if (
-            recoveredUser &&
-            !recoveredUser.__authFailure
-          ) {
-
-            adminAuthenticated =
-              false;
-
-
-            showAdminAccessMessage(
-              "Administrator access required",
-              "The current CoinForest account is not authorized to use the administration panel."
-            );
-
-
-            return false;
-
-          }
-
-
-          /*
-           * Genuine 401/403 with no valid saved admin.
-           */
-
-          if (
-            recoveredUser &&
-            recoveredUser.__authFailure
-          ) {
-
-            adminAuthenticated =
-              false;
-
-
-            showAdminAccessMessage(
-              "Administrator session required",
-              "Your administrator session is no longer valid. Please sign in with an administrator account."
-            );
-
-
-            return false;
-
-          }
-
-        } catch (error) {
-
-          /*
-           * Network/server failure.
-           *
-           * Do NOT redirect.
-           * Do NOT replace the page with customer login.
-           */
-
-          console.warn(
-            "Unable to verify administrator through API:",
-            error
-          );
-
-        }
-
-      }
-
-
-      /*
-       * ---------------------------------------------------
-       * No valid administrator session.
-       *
-       * There is intentionally NO:
-       *
-       * window.location.href = "login.html"
-       *
-       * here.
-       * ---------------------------------------------------
-       */
-
-      adminAuthenticated =
-        false;
-
-
-      showAdminAccessMessage(
-        "Administrator session required",
-        "Please sign in with an administrator account before accessing the CoinForest administration panel."
+    const result =
+      await fetchCurrentUser(
+        token
       );
 
 
-      return false;
+    /*
+     * Valid server response.
+     */
 
-    }
-
-
-    /* =====================================================
-       BACKGROUND ADMIN VERIFICATION
-    ===================================================== */
-
-    async function verifyAdminInBackground(
-      token,
-      storedUser
+    if (
+      result.user
     ) {
 
-      try {
+      const serverUser =
+        result.user;
 
-        const verifiedUser =
-          await fetchCurrentUser(
+
+      let serverRole =
+        getRoleFromObject(
+          serverUser,
+          null
+        );
+
+
+      if (!serverRole) {
+
+        serverRole =
+          getRoleFromToken(
             token
           );
 
-
-        /*
-         * API confirmed administrator.
-         */
-
-        if (
-          verifiedUser &&
-          !verifiedUser.__authFailure &&
-          isAdministrator(
-            verifiedUser
-          )
-        ) {
-
-          localStorage.setItem(
-            "coinforest_user",
-            JSON.stringify(
-              verifiedUser
-            )
-          );
-
-
-          adminAuthenticated =
-            true;
-
-
-          updateAdminIdentity(
-            verifiedUser
-          );
-
-
-          hideAdminAccessMessage();
-
-
-          return;
-
-        }
-
-
-        /*
-         * API returned a normal authenticated user.
-         *
-         * That means the session is real but not
-         * authorized for the admin panel.
-         */
-
-        if (
-          verifiedUser &&
-          !verifiedUser.__authFailure
-        ) {
-
-          adminAuthenticated =
-            false;
-
-
-          showAdminAccessMessage(
-            "Administrator access required",
-            "The authenticated CoinForest account is not authorized to use the administration panel."
-          );
-
-
-          return;
-
-        }
-
-
-        /*
-         * API returned 401/403.
-         *
-         * Only remove access if we don't have a saved
-         * administrator identity to preserve.
-         */
-
-        if (
-          verifiedUser &&
-          verifiedUser.__authFailure
-        ) {
-
-          if (
-            isAdministrator(
-              storedUser
-            )
-          ) {
-
-            /*
-             * Keep the existing admin dashboard visible
-             * instead of immediately replacing it.
-             *
-             * The API session can be renewed/rechecked
-             * without destroying the current UI.
-             */
-
-            adminAuthenticated =
-              true;
-
-
-            updateAdminIdentity(
-              storedUser
-            );
-
-
-            hideAdminAccessMessage();
-
-
-            return;
-
-          }
-
-
-          adminAuthenticated =
-            false;
-
-
-          showAdminAccessMessage(
-            "Administrator session required",
-            "Your administrator session is no longer valid. Please sign in with an administrator account."
-          );
-
-
-          return;
-
-        }
-
-
-        /*
-         * API could not be interpreted / server unavailable.
-         *
-         * Preserve an already authenticated admin.
-         */
-
-        if (
-          isAdministrator(
-            storedUser
-          )
-        ) {
-
-          adminAuthenticated =
-            true;
-
-
-          updateAdminIdentity(
-            storedUser
-          );
-
-
-          hideAdminAccessMessage();
-
-
-          return;
-
-        }
-
-      } catch (error) {
-
-        console.warn(
-          "Background administrator verification failed:",
-          error
-        );
-
-
-        /*
-         * Network errors do not destroy an existing
-         * administrator session.
-         */
-
-        if (
-          isAdministrator(
-            storedUser
-          )
-        ) {
-
-          adminAuthenticated =
-            true;
-
-
-          updateAdminIdentity(
-            storedUser
-          );
-
-
-          hideAdminAccessMessage();
-
-        }
-
       }
 
-    }
-
-
-    /* =====================================================
-       ADMIN IDENTITY
-    ===================================================== */
-
-    function updateAdminIdentity(
-      user
-    ) {
-
-      if (!user) {
-        return;
-      }
-
-
-      const adminName =
-        document.querySelector(
-          ".admin-mini strong"
-        );
-
-
-      const adminLabel =
-        document.querySelector(
-          ".admin-mini span"
-        );
-
-
-      const topProfile =
-        document.querySelector(
-          ".topbar-right .icon-btn:last-child"
-        );
-
-
-      const adminAvatar =
-        document.querySelector(
-          ".admin-avatar"
-        );
-
-
-      const firstName =
-        String(
-          user?.first_name ||
-          user?.firstName ||
-          ""
-        ).trim();
-
-
-      const lastName =
-        String(
-          user?.last_name ||
-          user?.lastName ||
-          ""
-        ).trim();
-
-
-      const fullName =
-        `${firstName} ${lastName}`
-          .trim();
-
-
-      const email =
-        String(
-          user?.email || ""
-        ).trim();
-
-
-      let displayName =
-        fullName ||
-        email ||
-        "Administrator";
-
-
-      if (adminName) {
-
-        adminName.textContent =
-          displayName;
-
-      }
-
-
-      if (adminLabel) {
-
-        adminLabel.textContent =
-          "Admin account";
-
-      }
-
-
-      let initials =
-        `${firstName.charAt(0)}${lastName.charAt(0)}`
-          .toUpperCase();
-
-
-      if (!initials) {
-
-        initials =
-          email
-            ? email
-                .charAt(0)
-                .toUpperCase()
-            : "A";
-
-      }
-
-
-      if (topProfile) {
-
-        topProfile.textContent =
-          initials;
-
-      }
-
-
-      if (adminAvatar) {
-
-        adminAvatar.textContent =
-          initials;
-
-      }
-
-    }
-
-
-    /* =====================================================
-       AUTH INITIALIZATION
-    ===================================================== */
-
-    function initializeAdminAuthentication() {
 
       /*
-       * Run after the entire page has loaded so that
-       * identity elements already exist in the DOM.
+       * Server confirms administrator.
        */
-
-      requireAdmin();
-
-    }
-
-
-    if (
-      document.readyState === "loading"
-    ) {
-
-      document.addEventListener(
-        "DOMContentLoaded",
-        initializeAdminAuthentication
-      );
-
-    } else {
-
-      initializeAdminAuthentication();
-
-    }
-
-
-    /* =====================================================
-       EXISTING DASHBOARD FUNCTIONS
-    ===================================================== */
-
-    const titles = {
-
-      dashboard:
-        "Dashboard",
-
-      customers:
-        "Customers",
-
-      kyc:
-        "KYC Review",
-
-      chat:
-        "Customer Chat",
-
-      wallets:
-        "Wallet Management",
-
-      investments:
-        "Investments",
-
-      transactions:
-        "Transactions",
-
-      requests:
-        "Pending Requests",
-
-      settings:
-        "Settings"
-
-    };
-
-
-    function showSection(
-      id,
-      clickedButton = null
-    ) {
-
-      /*
-       * Protect all dashboard navigation.
-       */
-
-      if (!adminAuthenticated) {
-
-        showAdminAccessMessage(
-          "Administrator session required",
-          "Please sign in with an administrator account before using the administration panel."
-        );
-
-
-        return;
-
-      }
-
-
-      document
-        .querySelectorAll(".section")
-        .forEach(section => {
-
-          section.style.display =
-            "none";
-
-        });
-
-
-      const target =
-        document.getElementById(id);
-
-
-      if (target) {
-
-        target.style.display =
-          "block";
-
-      }
-
-
-      document
-        .querySelectorAll(".nav-item")
-        .forEach(item => {
-
-          item.classList.remove(
-            "active"
-          );
-
-        });
-
-
-      if (clickedButton) {
-
-        clickedButton.classList.add(
-          "active"
-        );
-
-      } else {
-
-        const matchingButton =
-          document.querySelector(
-            `.nav-item[onclick*="'${id}'"]`
-          );
-
-
-        if (matchingButton) {
-
-          matchingButton.classList.add(
-            "active"
-          );
-
-        }
-
-      }
-
-
-      const pageTitle =
-        document.getElementById(
-          "pageTitle"
-        );
-
-
-      if (pageTitle) {
-
-        pageTitle.textContent =
-          titles[id] ||
-          "CoinForest Admin";
-
-      }
-
 
       if (
-        window.innerWidth <= 760
+        serverRole === "admin"
       ) {
 
-        closeSidebar();
+        const normalized =
+          {
+            ...serverUser,
+            role: "admin"
+          };
+
+
+        localStorage.setItem(
+          "coinforest_user",
+          JSON.stringify(
+            normalized
+          )
+        );
+
+
+        localStorage.setItem(
+          "coinforest_role",
+          "admin"
+        );
+
+
+        adminAuthenticated =
+          true;
+
+
+        updateAdminIdentity(
+          normalized
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+       * Server explicitly identifies the account
+       * as a non-admin.
+       */
+
+      if (
+        serverRole &&
+        serverRole !== "admin"
+      ) {
+
+        adminAuthenticated =
+          false;
+
+
+        showAdminAccessMessage(
+          "Administrator access required",
+          "The authenticated account is not authorized to use the CoinForest administration panel."
+        );
+
+
+        return;
 
       }
 
     }
 
 
-    /* =====================================================
-       SIDEBAR
-    ===================================================== */
+    /*
+     * If /me is unavailable or returns an unexpected
+     * response, preserve the known admin session.
+     */
 
-    function toggleSidebar() {
+    if (
+      getStoredRole() === "admin"
+    ) {
 
-      document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
-
-      document
-        .getElementById("overlay")
-        .classList.toggle("open");
-
-    }
+      adminAuthenticated =
+        true;
 
 
-    function closeSidebar() {
-
-      document
-        .getElementById("sidebar")
-        .classList.remove("open");
-
-
-      document
-        .getElementById("overlay")
-        .classList.remove("open");
+      updateAdminIdentity(
+        storedUser
+      );
 
     }
 
+  } catch (error) {
 
-    window.addEventListener(
-      "resize",
-      function () {
+    console.warn(
+      "Background admin verification failed:",
+      error
+    );
 
-        if (
-          window.innerWidth > 760
-        ) {
 
-          closeSidebar();
+    /*
+     * Preserve the existing admin session on
+     * temporary network/server failures.
+     */
 
-        }
+    if (
+      getStoredRole() === "admin"
+    ) {
+
+      adminAuthenticated =
+        true;
+
+
+      updateAdminIdentity(
+        storedUser
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =====================================================
+   PAGE TITLES
+===================================================== */
+
+const titles = {
+
+  dashboard:
+    "Dashboard",
+
+  customers:
+    "Customers",
+
+  kyc:
+    "KYC Review",
+
+  chat:
+    "Customer Chat",
+
+  wallets:
+    "Wallet Management",
+
+  investments:
+    "Investments",
+
+  transactions:
+    "Transactions",
+
+  requests:
+    "Pending Requests",
+
+  settings:
+    "Settings"
+
+};
+
+
+/* =====================================================
+   SECTION NAVIGATION
+===================================================== */
+
+function showSection(
+  id,
+  clickedButton = null
+) {
+
+  if (
+    !adminAuthenticated
+  ) {
+
+    showAdminAccessMessage(
+      "Administrator session required",
+      "Please sign in with an administrator account before using the administration panel."
+    );
+
+
+    return;
+
+  }
+
+
+  document
+    .querySelectorAll(
+      ".section"
+    )
+    .forEach(
+      section => {
+
+        section.style.display =
+          "none";
 
       }
     );
 
-  </script>
+
+  const target =
+    document.getElementById(
+      id
+    );
+
+
+  if (target) {
+
+    target.style.display =
+      "block";
+
+  }
+
+
+  document
+    .querySelectorAll(
+      ".nav-item"
+    )
+    .forEach(
+      item => {
+
+        item.classList.remove(
+          "active"
+        );
+
+      }
+    );
+
+
+  if (clickedButton) {
+
+    clickedButton.classList.add(
+      "active"
+    );
+
+  } else {
+
+    const matchingButton =
+      document.querySelector(
+        `.nav-item[onclick*="'${id}'"]`
+      );
+
+
+    if (matchingButton) {
+
+      matchingButton.classList.add(
+        "active"
+      );
+
+    }
+
+  }
+
+
+  const pageTitle =
+    document.getElementById(
+      "pageTitle"
+    );
+
+
+  if (pageTitle) {
+
+    pageTitle.textContent =
+      titles[id] ||
+      "CoinForest Admin";
+
+  }
+
+
+  if (
+    window.innerWidth <= 760
+  ) {
+
+    closeSidebar();
+
+  }
+
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+function toggleSidebar() {
+
+  document
+    .getElementById(
+      "sidebar"
+    )
+    .classList.toggle(
+      "open"
+    );
+
+
+  document
+    .getElementById(
+      "overlay"
+    )
+    .classList.toggle(
+      "open"
+    );
+
+}
+
+
+function closeSidebar() {
+
+  document
+    .getElementById(
+      "sidebar"
+    )
+    .classList.remove(
+      "open"
+    );
+
+
+  document
+    .getElementById(
+      "overlay"
+    )
+    .classList.remove(
+      "open"
+    );
+
+}
+
+
+window.addEventListener(
+  "resize",
+  function () {
+
+    if (
+      window.innerWidth > 760
+    ) {
+
+      closeSidebar();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   START ADMIN APP
+===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    requireAdmin();
+
+  }
+);
+
+</script>
 
 </body>
   </html>
