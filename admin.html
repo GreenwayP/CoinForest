@@ -1794,6 +1794,265 @@
 
   <script>
 
+    /* =====================================================
+       COINFOREST ADMIN AUTHENTICATION
+       ===================================================== */
+
+    const API_BASE =
+      "https://coinforest-api-test-2026.onrender.com";
+
+
+    let adminAuthenticated = false;
+
+
+    async function requireAdmin() {
+
+      const token =
+        localStorage.getItem(
+          "coinforest_token"
+        );
+
+
+      /*
+       * No session token means the visitor
+       * has not logged in.
+       */
+
+      if (!token) {
+
+        window.location.replace(
+          "login.html"
+        );
+
+        return false;
+
+      }
+
+
+      try {
+
+        const response =
+          await fetch(
+            `${API_BASE}/api/auth/me`,
+            {
+              method: "GET",
+
+              headers: {
+                "Authorization":
+                  `Bearer ${token}`,
+
+                "Content-Type":
+                  "application/json"
+              },
+
+              cache: "no-store"
+            }
+          );
+
+
+        let data = null;
+
+
+        try {
+
+          data =
+            await response.json();
+
+        } catch {
+
+          data = null;
+
+        }
+
+
+        /*
+         * Session is invalid,
+         * expired or revoked.
+         */
+
+        if (
+          !response.ok ||
+          !data ||
+          !data.success ||
+          !data.user
+        ) {
+
+          localStorage.removeItem(
+            "coinforest_token"
+          );
+
+          localStorage.removeItem(
+            "coinforest_user"
+          );
+
+          window.location.replace(
+            "login.html"
+          );
+
+          return false;
+
+        }
+
+
+        /*
+         * The account must actually be
+         * an administrator.
+         */
+
+        const role =
+          String(
+            data.user.role || ""
+          )
+            .trim()
+            .toLowerCase();
+
+
+        if (role !== "admin") {
+
+          localStorage.removeItem(
+            "coinforest_token"
+          );
+
+          localStorage.removeItem(
+            "coinforest_user"
+          );
+
+          window.location.replace(
+            "login.html"
+          );
+
+          return false;
+
+        }
+
+
+        /*
+         * Save the latest verified user
+         * information.
+         */
+
+        localStorage.setItem(
+          "coinforest_user",
+          JSON.stringify(
+            data.user
+          )
+        );
+
+
+        adminAuthenticated = true;
+
+
+        /*
+         * Update the administrator name
+         * without changing the existing UI.
+         */
+
+        const adminName =
+          document.querySelector(
+            ".admin-mini strong"
+          );
+
+
+        const adminLabel =
+          document.querySelector(
+            ".admin-mini span"
+          );
+
+
+        const firstName =
+          String(
+            data.user.first_name || ""
+          ).trim();
+
+
+        const lastName =
+          String(
+            data.user.last_name || ""
+          ).trim();
+
+
+        const fullName =
+          `${firstName} ${lastName}`
+            .trim();
+
+
+        if (
+          adminName &&
+          fullName
+        ) {
+
+          adminName.textContent =
+            fullName;
+
+        }
+
+
+        if (adminLabel) {
+
+          adminLabel.textContent =
+            "Admin account";
+
+        }
+
+
+        return true;
+
+
+      } catch (error) {
+
+        console.error(
+          "Admin authentication check failed:",
+          error
+        );
+
+
+        /*
+         * Do not leave the dashboard
+         * accessible if authentication
+         * cannot be verified.
+         */
+
+        localStorage.removeItem(
+          "coinforest_token"
+        );
+
+        localStorage.removeItem(
+          "coinforest_user"
+        );
+
+
+        window.location.replace(
+          "login.html"
+        );
+
+
+        return false;
+
+      }
+
+    }
+
+
+    /*
+     * Run authentication as soon as
+     * the page has loaded.
+     */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        requireAdmin();
+
+      }
+    );
+
+
+    /* =====================================================
+       EXISTING DASHBOARD FUNCTIONS
+       PRESERVED
+    ===================================================== */
+
     const titles = {
 
       dashboard:
@@ -1950,4 +2209,4 @@
   </script>
 
 </body>
-</html>
+  </html>
