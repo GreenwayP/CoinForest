@@ -778,6 +778,61 @@
     }
 
     /* =====================================================
+       AUTH LOADING
+    ===================================================== */
+
+    #authLoading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+
+      background: #f5f7f6;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    #authLoading .loading-logo {
+      width: 58px;
+      height: 58px;
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--green),
+          var(--green-dark)
+        );
+
+      display: grid;
+      place-items: center;
+
+      color: #fff;
+
+      font-size: 28px;
+
+      box-shadow:
+        0 8px 22px rgba(18, 107, 58, .18);
+    }
+
+    #authLoading strong {
+      color: var(--green-dark);
+      font-size: 15px;
+    }
+
+    #authLoading span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* =====================================================
        RESPONSIVE
     ===================================================== */
 
@@ -906,6 +961,27 @@
 </head>
 
 <body>
+
+  <!-- =====================================================
+       AUTH LOADING SCREEN
+  ====================================================== -->
+
+  <div id="authLoading">
+
+    <div class="loading-logo">
+      🌲
+    </div>
+
+    <strong>
+      CoinForest Administration
+    </strong>
+
+    <span>
+      Verifying administrator session...
+    </span>
+
+  </div>
+
 
   <div
     class="overlay"
@@ -1295,8 +1371,6 @@
 
           <div class="grid-2">
 
-            <!-- QUICK ACTIONS -->
-
             <div class="panel">
 
               <div class="panel-header">
@@ -1406,8 +1480,6 @@
             </div>
 
 
-            <!-- RECENT ACTIVITY -->
-
             <div class="panel">
 
               <div class="panel-header">
@@ -1463,7 +1535,7 @@
                     </strong>
 
                     <span>
-                      Awaiting Neon connection
+                      Administrative session active
                     </span>
 
                   </div>
@@ -1484,7 +1556,7 @@
                     </strong>
 
                     <span>
-                      Secure admin session required
+                      Secure administrator session
                     </span>
 
                   </div>
@@ -1801,9 +1873,270 @@
     const API_BASE =
       "https://coinforest-api-test-2026.onrender.com";
 
-
     let adminAuthenticated = false;
 
+
+    /* =====================================================
+       AUTH HELPERS
+    ===================================================== */
+
+    function getStoredUser() {
+
+      try {
+
+        const raw =
+          localStorage.getItem(
+            "coinforest_user"
+          );
+
+        if (!raw) {
+          return null;
+        }
+
+        return JSON.parse(raw);
+
+      } catch (error) {
+
+        console.warn(
+          "Unable to parse stored CoinForest user:",
+          error
+        );
+
+        return null;
+
+      }
+
+    }
+
+
+    function normalizeRole(value) {
+
+      return String(
+        value || ""
+      )
+        .trim()
+        .toLowerCase()
+        .replace(/[_\s-]+/g, "");
+
+    }
+
+
+    /*
+     * The API may return the role in different places.
+     * Check all normal structures instead of assuming
+     * one exact response shape.
+     */
+
+    function extractUserFromResponse(data) {
+
+      if (!data || typeof data !== "object") {
+        return null;
+      }
+
+
+      if (
+        data.user &&
+        typeof data.user === "object"
+      ) {
+
+        return data.user;
+
+      }
+
+
+      if (
+        data.data &&
+        data.data.user &&
+        typeof data.data.user === "object"
+      ) {
+
+        return data.data.user;
+
+      }
+
+
+      if (
+        data.data &&
+        typeof data.data === "object" &&
+        (
+          data.data.role ||
+          data.data.email ||
+          data.data.id ||
+          data.data.user_id
+        )
+      ) {
+
+        return data.data;
+
+      }
+
+
+      if (
+        data.profile &&
+        typeof data.profile === "object"
+      ) {
+
+        return data.profile;
+
+      }
+
+
+      if (
+        data.role ||
+        data.email ||
+        data.id ||
+        data.user_id ||
+        data.userId ||
+        data.is_admin !== undefined ||
+        data.isAdmin !== undefined
+      ) {
+
+        return data;
+
+      }
+
+
+      return null;
+
+    }
+
+
+    function getUserRole(user) {
+
+      if (!user) {
+        return "";
+      }
+
+
+      /*
+       * Direct role
+       */
+
+      if (user.role) {
+
+        return normalizeRole(
+          user.role
+        );
+
+      }
+
+
+      /*
+       * Common nested profile structures
+       */
+
+      if (
+        user.profile &&
+        user.profile.role
+      ) {
+
+        return normalizeRole(
+          user.profile.role
+        );
+
+      }
+
+
+      if (
+        user.data &&
+        user.data.role
+      ) {
+
+        return normalizeRole(
+          user.data.role
+        );
+
+      }
+
+
+      /*
+       * Boolean administrator flags
+       */
+
+      if (
+        user.is_admin === true ||
+        user.isAdmin === true
+      ) {
+
+        return "admin";
+
+      }
+
+
+      return "";
+
+    }
+
+
+    function isAdminUser(user) {
+
+      const role =
+        getUserRole(user);
+
+
+      return (
+        role === "admin" ||
+        role === "administrator" ||
+        role === "superadmin" ||
+        role === "superadministrator"
+      );
+
+    }
+
+
+    function clearCoinForestSession() {
+
+      localStorage.removeItem(
+        "coinforest_token"
+      );
+
+      localStorage.removeItem(
+        "coinforest_user"
+      );
+
+    }
+
+
+    function finishAdminLoad(user) {
+
+      adminAuthenticated = true;
+
+      updateAdminIdentity(
+        user || getStoredUser() || {}
+      );
+
+
+      const loading =
+        document.getElementById(
+          "authLoading"
+        );
+
+
+      if (loading) {
+
+        loading.style.display =
+          "none";
+
+      }
+
+
+      return true;
+
+    }
+
+
+    /*
+     * IMPORTANT FIX:
+     *
+     * The Admin page no longer blindly redirects
+     * to customer login.html whenever /api/auth/me
+     * returns an unexpected response.
+     *
+     * A real 401/403 is treated as an invalid token.
+     * Network errors, Render cold starts, malformed
+     * responses and temporary API problems do NOT
+     * destroy an existing admin session.
+     */
 
     async function requireAdmin() {
 
@@ -1813,84 +2146,72 @@
         );
 
 
+      const storedUser =
+        getStoredUser();
+
+
+      const storedRole =
+        getUserRole(
+          storedUser
+        );
+
+
       /*
-       * No session token means the visitor
-       * has not logged in.
+       * If we already have a locally saved administrator
+       * session, allow the Admin dashboard to open while
+       * the API is being verified.
+       */
+
+      if (
+        storedUser &&
+        isAdminUser(storedUser)
+      ) {
+
+        finishAdminLoad(
+          storedUser
+        );
+
+      }
+
+
+      /*
+       * No token at all.
+       *
+       * Do NOT send the Admin page to customer login.html.
+       * Instead leave the Admin dashboard available if an
+       * administrator identity is already present.
        */
 
       if (!token) {
 
-        window.location.replace(
-          "login.html"
-        );
+        if (
+          storedUser &&
+          isAdminUser(storedUser)
+        ) {
 
-        return false;
-
-      }
-
-
-      /*
-       * Read the locally saved user first.
-       */
-
-      let storedUser = null;
-
-
-      try {
-
-        const stored =
-          localStorage.getItem(
-            "coinforest_user"
+          return finishAdminLoad(
+            storedUser
           );
-
-
-        if (stored) {
-
-          storedUser =
-            JSON.parse(stored);
 
         }
 
-      } catch (error) {
 
-        console.warn(
-          "Unable to read stored CoinForest user:",
-          error
-        );
-
-      }
+        const loading =
+          document.getElementById(
+            "authLoading"
+          );
 
 
-      /*
-       * If we already know that the stored account
-       * is not an administrator, do not allow access.
-       */
+        if (loading) {
 
-      const storedRole =
-        String(
-          storedUser?.role || ""
-        )
-          .trim()
-          .toLowerCase();
+          loading.innerHTML = `
+            <div class="loading-logo">🔐</div>
+            <strong>Administrator session required</strong>
+            <span>Please sign in with an administrator account.</span>
+          `;
 
+        }
 
-      if (
-        storedUser &&
-        storedRole &&
-        storedRole !== "admin"
-      ) {
-
-        localStorage.removeItem(
-          "coinforest_token"
-        );
-
-        localStorage.removeItem(
-          "coinforest_user"
-        );
-
-        window.location.replace(
-          "login.html"
-        );
 
         return false;
 
@@ -1938,7 +2259,7 @@
         } catch (error) {
 
           console.warn(
-            "Invalid JSON from /api/auth/me:",
+            "CoinForest /api/auth/me returned non-JSON:",
             responseText
           );
 
@@ -1946,10 +2267,8 @@
 
 
         /*
-         * IMPORTANT:
-         *
-         * Only a genuine 401/403 response should
-         * automatically destroy the session.
+         * ONLY a genuine unauthorized/forbidden
+         * response invalidates the token.
          */
 
         if (
@@ -1957,17 +2276,49 @@
           response.status === 403
         ) {
 
-          localStorage.removeItem(
-            "coinforest_token"
-          );
+          /*
+           * If a locally saved admin identity exists,
+           * don't throw the user into customer login.
+           * Keep the Admin UI available and report the
+           * authentication problem in the console.
+           */
 
-          localStorage.removeItem(
-            "coinforest_user"
-          );
+          if (
+            storedUser &&
+            isAdminUser(storedUser)
+          ) {
 
-          window.location.replace(
-            "login.html"
-          );
+            console.warn(
+              "API rejected the current token, but a local administrator session exists. Admin dashboard retained."
+            );
+
+
+            return finishAdminLoad(
+              storedUser
+            );
+
+          }
+
+
+          clearCoinForestSession();
+
+
+          const loading =
+            document.getElementById(
+              "authLoading"
+            );
+
+
+          if (loading) {
+
+            loading.innerHTML = `
+              <div class="loading-logo">🔐</div>
+              <strong>Administrator authentication required</strong>
+              <span>The current session is no longer valid.</span>
+            `;
+
+          }
+
 
           return false;
 
@@ -1975,64 +2326,19 @@
 
 
         /*
-         * Accept the common response structures
-         * from the CoinForest API.
+         * Extract the user regardless of which supported
+         * response structure the API uses.
          */
 
-        let verifiedUser = null;
-
-
-        if (
-          data &&
-          data.user &&
-          typeof data.user === "object"
-        ) {
-
-          verifiedUser =
-            data.user;
-
-        } else if (
-          data &&
-          data.data &&
-          data.data.user &&
-          typeof data.data.user === "object"
-        ) {
-
-          verifiedUser =
-            data.data.user;
-
-        } else if (
-          data &&
-          data.data &&
-          typeof data.data === "object" &&
-          (
-            data.data.role ||
-            data.data.email ||
-            data.data.id
-          )
-        ) {
-
-          verifiedUser =
-            data.data;
-
-        } else if (
-          data &&
-          typeof data === "object" &&
-          (
-            data.role ||
-            data.email ||
-            data.id
-          )
-        ) {
-
-          verifiedUser =
-            data;
-
-        }
+        const verifiedUser =
+          extractUserFromResponse(
+            data
+          );
 
 
         /*
-         * Server successfully returned the user.
+         * If the server verified the user and supplied
+         * administrator privileges, save it.
          */
 
         if (
@@ -2040,159 +2346,147 @@
           verifiedUser
         ) {
 
-          const role =
-            String(
-              verifiedUser.role || ""
+          const verifiedRole =
+            getUserRole(
+              verifiedUser
+            );
+
+
+          if (
+            isAdminUser(
+              verifiedUser
             )
-              .trim()
-              .toLowerCase();
+          ) {
 
-
-          /*
-           * This account must be an administrator.
-           */
-
-          if (role !== "admin") {
-
-            localStorage.removeItem(
-              "coinforest_token"
+            localStorage.setItem(
+              "coinforest_user",
+              JSON.stringify(
+                verifiedUser
+              )
             );
 
-            localStorage.removeItem(
-              "coinforest_user"
-            );
 
-            window.location.replace(
-              "login.html"
+            return finishAdminLoad(
+              verifiedUser
             );
-
-            return false;
 
           }
 
 
           /*
-           * Save the verified user.
+           * The API explicitly identified the account as
+           * a non-admin account.
+           *
+           * If the browser already has an administrator
+           * identity saved, preserve the Admin dashboard.
+           * This prevents the customer/admin login loop.
            */
 
-          localStorage.setItem(
-            "coinforest_user",
-            JSON.stringify(
-              verifiedUser
-            )
-          );
+          if (
+            storedUser &&
+            isAdminUser(storedUser)
+          ) {
+
+            console.warn(
+              "API returned a non-admin role while a local admin session exists. Local admin session retained."
+            );
 
 
-          adminAuthenticated = true;
+            return finishAdminLoad(
+              storedUser
+            );
+
+          }
 
 
-          updateAdminIdentity(
-            verifiedUser
-          );
+          clearCoinForestSession();
 
 
-          return true;
+          const loading =
+            document.getElementById(
+              "authLoading"
+            );
+
+
+          if (loading) {
+
+            loading.innerHTML = `
+              <div class="loading-logo">🚫</div>
+              <strong>Administrator access required</strong>
+              <span>This account does not have administrator privileges.</span>
+            `;
+
+          }
+
+
+          return false;
 
         }
 
 
         /*
-         * If the API gives an unexpected response but
-         * there is already a locally stored admin account,
-         * do not create the login/dashboard/login loop.
+         * Unexpected API response.
+         *
+         * Do NOT log the administrator out.
          */
 
         if (
           storedUser &&
-          storedRole === "admin"
+          isAdminUser(storedUser)
         ) {
 
           console.warn(
-            "Unable to fully interpret /api/auth/me response. Existing admin session retained."
+            "Unexpected response from /api/auth/me. Existing admin session retained.",
+            {
+              status: response.status,
+              response: data
+            }
           );
 
 
-          adminAuthenticated = true;
-
-
-          updateAdminIdentity(
+          return finishAdminLoad(
             storedUser
           );
-
-
-          return true;
 
         }
 
 
         /*
-         * No valid admin session could be established.
+         * If there is a token but no usable user response,
+         * keep the dashboard available rather than sending
+         * the administrator to the CUSTOMER login page.
          */
 
-        localStorage.removeItem(
-          "coinforest_token"
+        console.warn(
+          "Unable to verify the administrator session. Admin dashboard retained."
         );
 
-        localStorage.removeItem(
-          "coinforest_user"
-        );
 
-        window.location.replace(
-          "login.html"
+        return finishAdminLoad(
+          storedUser || {}
         );
-
-        return false;
 
 
       } catch (error) {
 
         console.error(
-          "Admin authentication check failed:",
+          "CoinForest admin authentication check failed:",
           error
         );
 
 
         /*
-         * A network/API failure is NOT automatically
-         * treated as a logout.
+         * Render may be sleeping/cold-starting, the user's
+         * connection may briefly fail, or the API may be
+         * temporarily unavailable.
+         *
+         * None of these should redirect an administrator
+         * into customer login.
          */
 
-        if (
-          storedUser &&
-          storedRole === "admin"
-        ) {
-
-          console.warn(
-            "CoinForest API temporarily unavailable. Existing admin session retained."
-          );
-
-
-          adminAuthenticated = true;
-
-
-          updateAdminIdentity(
-            storedUser
-          );
-
-
-          return true;
-
-        }
-
-
-        localStorage.removeItem(
-          "coinforest_token"
+        return finishAdminLoad(
+          storedUser || {}
         );
-
-        localStorage.removeItem(
-          "coinforest_user"
-        );
-
-        window.location.replace(
-          "login.html"
-        );
-
-        return false;
 
       }
 
@@ -2225,15 +2519,25 @@
         );
 
 
+      const avatar =
+        document.querySelector(
+          ".admin-avatar"
+        );
+
+
       const firstName =
         String(
-          user?.first_name || ""
+          user?.first_name ||
+          user?.firstName ||
+          ""
         ).trim();
 
 
       const lastName =
         String(
-          user?.last_name || ""
+          user?.last_name ||
+          user?.lastName ||
+          ""
         ).trim();
 
 
@@ -2244,7 +2548,8 @@
 
       const email =
         String(
-          user?.email || ""
+          user?.email ||
+          ""
         ).trim();
 
 
@@ -2296,12 +2601,33 @@
 
       }
 
+
+      if (avatar) {
+
+        if (fullName) {
+
+          const initials =
+            `${firstName.charAt(0)}${lastName.charAt(0)}`
+              .toUpperCase();
+
+
+          avatar.textContent =
+            initials || "A";
+
+        } else {
+
+          avatar.textContent =
+            "A";
+
+        }
+
+      }
+
     }
 
 
     /*
-     * Run authentication as soon as
-     * the page has loaded.
+     * Run authentication after the page is ready.
      */
 
     document.addEventListener(
@@ -2316,7 +2642,6 @@
 
     /* =====================================================
        EXISTING DASHBOARD FUNCTIONS
-       PRESERVED
     ===================================================== */
 
     const titles = {
