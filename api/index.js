@@ -153,9 +153,48 @@ function cleanLimit(value, fallback = 100) {
 }
 
 function pathParts(path) {
-  return String(path || "")
+  return path
     .split("/")
     .filter(Boolean);
+}
+
+/* =====================================================
+   SAFE DATABASE HELPERS
+===================================================== */
+
+async function tableExists(tableName) {
+  try {
+    const rows = await sql`
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = ${tableName}
+      ) AS exists
+    `;
+
+    return !!rows[0]?.exists;
+  } catch {
+    return false;
+  }
+}
+
+async function columnExists(tableName, columnName) {
+  try {
+    const rows = await sql`
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = ${tableName}
+          AND column_name = ${columnName}
+      ) AS exists
+    `;
+
+    return !!rows[0]?.exists;
+  } catch {
+    return false;
+  }
 }
 
 /* =====================================================
@@ -255,9 +294,7 @@ async function sendVerificationEmail(request, user) {
     encodeURIComponent(token);
 
   const firstName =
-    String(
-      user.first_name || "Customer"
-    ).trim();
+    String(user.first_name || "Customer").trim();
 
   return sendEmail({
     to: user.email,
@@ -347,10 +384,7 @@ async function register(request, body) {
   const username = String(body.username || "").trim();
 
   if (!email || !password) {
-    return bad(
-      400,
-      "Email and password are required."
-    );
+    return bad(400, "Email and password are required.");
   }
 
   if (!firstName) {
@@ -466,10 +500,7 @@ async function register(request, body) {
   try {
     await sendVerificationEmail(request, user);
   } catch (error) {
-    console.error(
-      "Verification email error:",
-      error
-    );
+    console.error("Verification email error:", error);
 
     return response(201, {
       success: true,
@@ -498,10 +529,7 @@ async function login(body) {
   const password = String(body.password || "");
 
   if (!email || !password) {
-    return bad(
-      400,
-      "Email and password are required."
-    );
+    return bad(400, "Email and password are required.");
   }
 
   const result = await sql`
@@ -528,10 +556,7 @@ async function login(body) {
   `;
 
   if (!result.length) {
-    return bad(
-      401,
-      "Invalid email or password."
-    );
+    return bad(401, "Invalid email or password.");
   }
 
   const user = result[0];
@@ -547,12 +572,7 @@ async function login(body) {
     });
   }
 
-  if (
-    !verifyPassword(
-      password,
-      user.password_hash
-    )
-  ) {
+  if (!verifyPassword(password, user.password_hash)) {
     const attempts =
       Number(user.failed_login_attempts || 0) + 1;
 
@@ -561,8 +581,7 @@ async function login(body) {
         UPDATE auth_credentials
         SET
           failed_login_attempts = 0,
-          locked_until =
-            NOW() + INTERVAL '15 minutes',
+          locked_until = NOW() + INTERVAL '15 minutes',
           updated_at = NOW()
         WHERE user_id = ${user.id}
       `;
@@ -582,10 +601,7 @@ async function login(body) {
       WHERE user_id = ${user.id}
     `;
 
-    return bad(
-      401,
-      "Invalid email or password."
-    );
+    return bad(401, "Invalid email or password.");
   }
 
   await sql`
@@ -632,6 +648,7 @@ async function login(body) {
       last_name: user.last_name,
       username: user.username,
       role: user.role_name,
+      status: user.status,
       email_verified: !!user.email_verified_at
     }
   });
@@ -711,8 +728,7 @@ async function requireAdmin(request) {
   }
 
   const role =
-    String(auth.user.role_name || "")
-      .toLowerCase();
+    String(auth.user.role_name || "").toLowerCase();
 
   if (
     role !== "admin" &&
@@ -721,8 +737,7 @@ async function requireAdmin(request) {
     return {
       ok: false,
       status: 403,
-      error:
-        "Administrator access required."
+      error: "Administrator access required."
     };
   }
 
@@ -730,7 +745,7 @@ async function requireAdmin(request) {
 }
 
 /* =====================================================
-   CURRENT USER
+   ME
 ===================================================== */
 
 async function me(request) {
@@ -752,8 +767,7 @@ async function me(request) {
       role: user.role_name,
       status: user.status,
       kyc_status: user.kyc_status,
-      email_verified_at:
-        user.email_verified_at
+      email_verified_at: user.email_verified_at
     }
   });
 }
@@ -796,10 +810,7 @@ async function health() {
       database: true
     });
   } catch (error) {
-    console.error(
-      "Health database error:",
-      error
-    );
+    console.error("Health database error:", error);
 
     return response(503, {
       success: false,
@@ -848,12 +859,14 @@ async function adminDashboard() {
       FROM transactions
     `,
 
-    sql`
-      SELECT COUNT(*)::int AS count
-      FROM pending_requests
-      WHERE LOWER(COALESCE(status, 'pending'))
-        = 'pending'
-    `
+    tableExists("pending_requests")
+      ? sql`
+          SELECT COUNT(*)::int AS count
+          FROM pending_requests
+          WHERE LOWER(COALESCE(status, 'pending'))
+            = 'pending'
+        `
+      : Promise.resolve([{ count: 0 }])
   ]);
 
   return ok({
@@ -869,14 +882,12 @@ async function adminDashboard() {
 }
 
 /* =====================================================
-   ADMIN CUSTOMERS
+   ADMIN CUSTOMERS — LIST
 ===================================================== */
 
 async function adminCustomers(url) {
   const search =
-    String(
-      url.searchParams.get("search") || ""
-    ).trim();
+    String(url.searchParams.get("search") || "").trim();
 
   const limit =
     cleanLimit(
@@ -886,9 +897,7 @@ async function adminCustomers(url) {
 
   const offset =
     Math.max(
-      Number(
-        url.searchParams.get("offset") || 0
-      ),
+      Number(url.searchParams.get("offset") || 0),
       0
     );
 
@@ -928,22 +937,46 @@ async function adminCustomers(url) {
     OFFSET ${offset}
   `;
 
+  const countRows = await sql`
+    SELECT COUNT(*)::int AS count
+    FROM profiles p
+    LEFT JOIN roles r
+      ON r.id = p.role_id
+    WHERE
+      LOWER(COALESCE(r.name, 'user'))
+        NOT IN ('admin', 'administrator')
+      AND (
+        ${search} = ''
+        OR LOWER(COALESCE(p.first_name, ''))
+          LIKE LOWER(${"%" + search + "%"})
+        OR LOWER(COALESCE(p.last_name, ''))
+          LIKE LOWER(${"%" + search + "%"})
+        OR LOWER(COALESCE(p.username, ''))
+          LIKE LOWER(${"%" + search + "%"})
+        OR LOWER(COALESCE(p.email, ''))
+          LIKE LOWER(${"%" + search + "%"})
+      )
+  `;
+
   return ok({
-    customers: rows
+    customers: rows,
+    total: countRows[0]?.count || 0,
+    limit,
+    offset
   });
 }
 
 /* =====================================================
-   CUSTOMER VIEW
-   RETURNS CUSTOMER + WALLETS + LEDGER
+   ADMIN CUSTOMER — VIEW
+   Supports all of:
+   /api/admin/customers?id=...
+   /api/admin/customers/:id
+   /api/admin/customer/:id
 ===================================================== */
 
 async function adminCustomer(id) {
   if (!id) {
-    return bad(
-      400,
-      "Customer ID is required."
-    );
+    return bad(400, "Customer ID is required.");
   }
 
   const result = await sql`
@@ -958,21 +991,13 @@ async function adminCustomer(id) {
   `;
 
   if (!result.length) {
-    return bad(
-      404,
-      "Customer not found."
-    );
+    return bad(404, "Customer not found.");
   }
 
   const customer = result[0];
 
   let wallets = [];
-  let ledger = [];
 
-  /*
-   * New/canonical structure:
-   * one wallet row per wallet_type.
-   */
   try {
     wallets = await sql`
       SELECT *
@@ -982,40 +1007,41 @@ async function adminCustomer(id) {
     `;
   } catch (error) {
     console.warn(
-      "Customer wallet lookup failed:",
+      "Customer wallet lookup warning:",
       error?.message
     );
   }
 
-  try {
-    ledger = await sql`
-      SELECT *
-      FROM wallet_ledger
-      WHERE user_id = ${id}
-      ORDER BY created_at DESC
-      LIMIT 200
-    `;
-  } catch (error) {
-    console.warn(
-      "Customer wallet ledger unavailable:",
-      error?.message
-    );
-  }
+  let kyc = [];
 
-  /*
-   * If wallet_ledger does not exist, still return
-   * an empty ledger rather than breaking Customer View.
-   */
+  if (await tableExists("kyc_submissions")) {
+    try {
+      kyc = await sql`
+        SELECT *
+        FROM kyc_submissions
+        WHERE user_id = ${id}
+        ORDER BY created_at DESC
+      `;
+    } catch (error) {
+      console.warn(
+        "Customer KYC lookup warning:",
+        error?.message
+      );
+    }
+  }
 
   return ok({
     customer,
     wallets,
-    ledger
+    kyc,
+    account: customer,
+    wallet: wallets[0] || null
   });
 }
 
 /* =====================================================
-   ADMIN CUSTOMER STATUS / APPROVAL
+   ADMIN CUSTOMER ACCOUNT ACTIONS
+   APPROVE / DECLINE / SUSPEND / ACTIVATE
 ===================================================== */
 
 async function updateCustomerStatus(
@@ -1027,101 +1053,82 @@ async function updateCustomerStatus(
   const admin = await requireAdmin(request);
 
   if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+    return bad(admin.status, admin.error);
   }
 
   if (!id) {
-    return bad(
-      400,
-      "Customer ID is required."
-    );
+    return bad(400, "Customer ID is required.");
   }
 
-  let status =
+  let action =
     forcedStatus ||
     body.status ||
     body.action ||
     body.decision ||
     "";
 
-  status =
-    String(status)
+  action =
+    String(action)
       .trim()
       .toLowerCase();
 
-  const aliases = {
+  const statusMap = {
     approve: "active",
     approved: "active",
     activate: "active",
     active: "active",
 
+    decline: "disabled",
+    declined: "disabled",
+    reject: "disabled",
+    rejected: "disabled",
+
     suspend: "suspended",
     suspended: "suspended",
 
-    decline: "declined",
-    declined: "declined",
-
-    reject: "declined",
-    rejected: "declined",
-
     disable: "disabled",
-    disabled: "disabled",
-
-    freeze: "frozen",
-    frozen: "frozen"
+    disabled: "disabled"
   };
 
-  status =
-    aliases[status] || status;
+  const nextStatus =
+    statusMap[action];
 
-  const allowed = [
-    "active",
-    "suspended",
-    "declined",
-    "disabled",
-    "frozen",
-    "pending"
-  ];
-
-  if (!allowed.includes(status)) {
+  if (!nextStatus) {
     return bad(
       400,
-      "Invalid customer status."
+      "Invalid account action. Use approve, decline, suspend, activate, or disable."
     );
   }
 
   const existing = await sql`
     SELECT
-      p.id,
-      p.status,
-      p.email,
-      p.first_name,
-      p.last_name,
-      p.username
+      p.*,
+      r.name AS role
     FROM profiles p
     LEFT JOIN roles r
       ON r.id = p.role_id
-    WHERE
-      p.id = ${id}
-      AND LOWER(COALESCE(r.name, 'user'))
-        NOT IN ('admin', 'administrator')
+    WHERE p.id = ${id}
     LIMIT 1
   `;
 
   if (!existing.length) {
+    return bad(404, "Customer not found.");
+  }
+
+  if (
+    String(existing[0].role || "").toLowerCase() ===
+    "admin"
+  ) {
     return bad(
-      404,
-      "Customer not found."
+      403,
+      "Administrator account cannot be changed here."
     );
   }
 
   const updated = await sql`
     UPDATE profiles
     SET
-      status = ${status},
+      status = ${nextStatus},
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *
@@ -1129,16 +1136,14 @@ async function updateCustomerStatus(
 
   return ok({
     message:
-      `Customer status changed to ${status}.`,
-    customer: updated[0]
+      `Customer account ${action} successfully.`,
+    customer: updated[0],
+    status: nextStatus
   });
 }
 
 /* =====================================================
-   ADMIN WALLETS
-   SUPPORTS BOTH:
-   1. wallet_type + balance rows
-   2. main_balance + profit_balance row
+   ADMIN WALLETS — LIST
 ===================================================== */
 
 async function adminWallets(url) {
@@ -1159,7 +1164,9 @@ async function adminWallets(url) {
       p.first_name,
       p.last_name,
       p.username,
-      p.email
+      p.email,
+      p.status AS customer_status,
+      p.kyc_status
     FROM wallets w
     INNER JOIN profiles p
       ON p.id = w.user_id
@@ -1168,6 +1175,10 @@ async function adminWallets(url) {
       OR LOWER(COALESCE(p.username, ''))
         LIKE LOWER(${"%" + search + "%"})
       OR LOWER(COALESCE(p.email, ''))
+        LIKE LOWER(${"%" + search + "%"})
+      OR LOWER(COALESCE(p.first_name, ''))
+        LIKE LOWER(${"%" + search + "%"})
+      OR LOWER(COALESCE(p.last_name, ''))
         LIKE LOWER(${"%" + search + "%"})
     ORDER BY w.created_at DESC
     LIMIT ${limit}
@@ -1178,184 +1189,102 @@ async function adminWallets(url) {
   });
 }
 
+/* =====================================================
+   ADMIN CUSTOMER WALLET
+===================================================== */
+
 async function adminWallet(userId) {
   if (!userId) {
-    return bad(
-      400,
-      "User ID is required."
-    );
+    return bad(400, "User ID is required.");
   }
 
   const customer = await sql`
-    SELECT
-      p.id,
-      p.first_name,
-      p.last_name,
-      p.username,
-      p.email,
-      p.status,
-      p.kyc_status
-    FROM profiles p
-    WHERE p.id = ${userId}
+    SELECT id, first_name, last_name,
+           username, email, status, kyc_status
+    FROM profiles
+    WHERE id = ${userId}
     LIMIT 1
   `;
 
   if (!customer.length) {
-    return bad(
-      404,
-      "Customer not found."
-    );
+    return bad(404, "Customer not found.");
   }
 
   let wallets = [];
 
   try {
     wallets = await sql`
-      SELECT
-        w.*,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email
-      FROM wallets w
-      INNER JOIN profiles p
-        ON p.id = w.user_id
-      WHERE w.user_id = ${userId}
-      ORDER BY w.created_at ASC
+      SELECT *
+      FROM wallets
+      WHERE user_id = ${userId}
+      ORDER BY created_at ASC
     `;
   } catch (error) {
     console.error(
-      "Admin wallet query error:",
+      "Wallet lookup error:",
       error
     );
 
     return bad(
       500,
-      "Unable to load customer wallet.",
+      "Unable to load customer wallets.",
       {
-        detail:
-          error?.message || "Wallet query failed."
+        details: error?.message || ""
       }
     );
   }
 
   let ledger = [];
 
-  try {
-    ledger = await sql`
-      SELECT *
-      FROM wallet_ledger
-      WHERE user_id = ${userId}
-      ORDER BY created_at DESC
-      LIMIT 200
-    `;
-  } catch (error) {
-    console.warn(
-      "wallet_ledger unavailable:",
-      error?.message
-    );
+  if (await tableExists("wallet_ledger")) {
+    try {
+      ledger = await sql`
+        SELECT *
+        FROM wallet_ledger
+        WHERE user_id = ${userId}
+        ORDER BY created_at DESC
+        LIMIT 200
+      `;
+    } catch (error) {
+      console.warn(
+        "wallet_ledger unavailable:",
+        error?.message
+      );
+    }
   }
 
   return ok({
     customer: customer[0],
     wallets,
+    wallet: wallets[0] || null,
     ledger
   });
-}
-
-/* =====================================================
-   FIND WALLET
-===================================================== */
-
-async function findWallet(
-  userId,
-  walletType
-) {
-  /*
-   * First try canonical structure:
-   *
-   * user_id
-   * wallet_type
-   * balance
-   */
-
-  try {
-    const rows = await sql`
-      SELECT *
-      FROM wallets
-      WHERE
-        user_id = ${userId}
-        AND LOWER(COALESCE(wallet_type, ''))
-          = ${walletType}
-      LIMIT 1
-    `;
-
-    if (rows.length) {
-      return {
-        mode: "wallet_type",
-        row: rows[0]
-      };
-    }
-  } catch (error) {
-    /*
-     * If wallet_type does not exist,
-     * try the legacy structure below.
-     */
-  }
-
-  /*
-   * Legacy structure:
-   *
-   * one row containing
-   * main_balance / profit_balance
-   */
-
-  try {
-    const rows = await sql`
-      SELECT *
-      FROM wallets
-      WHERE user_id = ${userId}
-      LIMIT 1
-    `;
-
-    if (rows.length) {
-      return {
-        mode: "legacy",
-        row: rows[0]
-      };
-    }
-  } catch (error) {
-    return null;
-  }
-
-  return null;
 }
 
 /* =====================================================
    ADMIN WALLET ADJUSTMENT
 ===================================================== */
 
-async function adjustWallet(
-  request,
-  body
-) {
+async function adjustWallet(request, body) {
   const admin = await requireAdmin(request);
 
   if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+    return bad(admin.status, admin.error);
   }
 
   const userId =
-    String(body.user_id || "").trim();
+    String(
+      body.user_id ||
+      body.customer_id ||
+      body.id ||
+      ""
+    ).trim();
 
   const walletType =
     String(
       body.wallet_type ||
-        body.wallet ||
-        "main"
+      body.wallet ||
+      "main"
     )
       .trim()
       .toLowerCase();
@@ -1366,20 +1295,15 @@ async function adjustWallet(
   const reason =
     String(
       body.reason ||
-        "Administrator balance adjustment"
+      body.description ||
+      "Administrator balance adjustment"
     ).trim();
 
   if (!userId) {
-    return bad(
-      400,
-      "User ID is required."
-    );
+    return bad(400, "User ID is required.");
   }
 
-  if (
-    !Number.isFinite(amount) ||
-    amount === 0
-  ) {
+  if (!Number.isFinite(amount) || amount === 0) {
     return bad(
       400,
       "A non-zero adjustment amount is required."
@@ -1396,104 +1320,86 @@ async function adjustWallet(
     );
   }
 
-  const customer = await sql`
-    SELECT id
-    FROM profiles
-    WHERE id = ${userId}
-    LIMIT 1
+  const walletRows = await sql`
+    SELECT *
+    FROM wallets
+    WHERE user_id = ${userId}
+    ORDER BY created_at ASC
   `;
 
-  if (!customer.length) {
-    return bad(
-      404,
-      "Customer not found."
-    );
-  }
-
-  const found =
-    await findWallet(
-      userId,
-      walletType
-    );
-
-  if (!found) {
+  if (!walletRows.length) {
     return bad(
       404,
       "Customer wallet not found."
     );
   }
 
-  let current = 0;
-  let next = 0;
-  let updated = [];
+  let wallet =
+    walletRows.find(
+      w =>
+        String(w.wallet_type || "").toLowerCase() ===
+        walletType
+    ) || walletRows[0];
+
+  const balanceColumn =
+    walletType === "profit"
+      ? "profit_balance"
+      : "main_balance";
 
   /*
-   * CANONICAL:
-   * wallet_type + balance
+   * CoinForest's current wallet foundation uses
+   * main_balance / profit_balance.
+   *
+   * This also handles a wallet schema where a row
+   * represents a wallet type and has a normal
+   * balance column.
    */
+
+  let current;
+
   if (
-    found.mode === "wallet_type"
+    wallet[balanceColumn] !== undefined &&
+    wallet[balanceColumn] !== null
   ) {
     current =
       numberValue(
-        found.row.balance,
+        wallet[balanceColumn],
         0
       );
-
-    next =
-      current + amount;
-
-    if (next < 0) {
-      return bad(
-        400,
-        "Insufficient wallet balance."
-      );
-    }
-
-    updated = await sql`
-      UPDATE wallets
-      SET
-        balance = ${next},
-        updated_at = NOW()
-      WHERE
-        id = ${found.row.id}
-      RETURNING *
-    `;
-  }
-
-  /*
-   * LEGACY:
-   * main_balance + profit_balance
-   */
-  else {
-    const column =
-      walletType === "profit"
-        ? "profit_balance"
-        : "main_balance";
-
+  } else if (
+    wallet.balance !== undefined &&
+    wallet.balance !== null
+  ) {
     current =
       numberValue(
-        found.row[column],
+        wallet.balance,
         0
       );
+  } else {
+    current = 0;
+  }
 
-    next =
-      current + amount;
+  const next = current + amount;
 
-    if (next < 0) {
-      return bad(
-        400,
-        "Insufficient wallet balance."
-      );
-    }
+  if (next < 0) {
+    return bad(
+      400,
+      "Insufficient wallet balance."
+    );
+  }
 
+  let updated;
+
+  if (
+    wallet[balanceColumn] !== undefined
+  ) {
     if (walletType === "profit") {
       updated = await sql`
         UPDATE wallets
         SET
           profit_balance = ${next},
           updated_at = NOW()
-        WHERE user_id = ${userId}
+        WHERE id = ${wallet.id}
         RETURNING *
       `;
     } else {
@@ -1502,65 +1408,73 @@ async function adjustWallet(
         SET
           main_balance = ${next},
           updated_at = NOW()
-        WHERE user_id = ${userId}
+        WHERE id = ${wallet.id}
         RETURNING *
       `;
     }
+  } else {
+    updated = await sql`
+      UPDATE wallets
+      SET
+        balance = ${next},
+        updated_at = NOW()
+      WHERE id = ${wallet.id}
+      RETURNING *
+    `;
   }
 
-  try {
-    await sql`
-      INSERT INTO wallet_ledger (
-        id,
-        user_id,
-        wallet_type,
-        amount,
-        balance_before,
-        balance_after,
-        entry_type,
-        description,
-        created_by,
-        created_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        ${walletType},
-        ${amount},
-        ${current},
-        ${next},
-        'admin_adjustment',
-        ${reason},
-        ${admin.user.id},
-        NOW()
-      )
-    `;
-  } catch (error) {
-    console.warn(
-      "wallet_ledger insert failed:",
-      error?.message
-    );
+  if (await tableExists("wallet_ledger")) {
+    try {
+      await sql`
+        INSERT INTO wallet_ledger (
+          id,
+          user_id,
+          wallet_type,
+          amount,
+          balance_before,
+          balance_after,
+          entry_type,
+          description,
+          created_by,
+          created_at
+        )
+        VALUES (
+          ${crypto.randomUUID()},
+          ${userId},
+          ${walletType},
+          ${amount},
+          ${current},
+          ${next},
+          'admin_adjustment',
+          ${reason},
+          ${admin.user.id},
+          NOW()
+        )
+      `;
+    } catch (error) {
+      console.warn(
+        "wallet_ledger insert failed:",
+        error?.message
+      );
+    }
   }
 
   return ok({
     message:
       "Wallet balance updated successfully.",
-    wallet: updated[0],
-    wallet_type: walletType,
+    wallet:
+      updated[0],
     balance_before: current,
     balance_after: next
   });
 }
 
 /* =====================================================
-   ADMIN KYC
-   IMPORTANT:
-   ALSO SHOWS PROFILES WITH PENDING KYC
-   EVEN WHEN kyc_submissions IS EMPTY.
+   KYC LIST
 ===================================================== */
 
 async function adminKyc(url) {
-  const requestedStatus =
+  const status =
     String(
       url.searchParams.get("status") || ""
     )
@@ -1573,191 +1487,223 @@ async function adminKyc(url) {
       100
     );
 
-  let submissions = [];
-
   /*
-   * Existing KYC submission records.
+   * IMPORTANT:
+   * Do not return zero simply because the
+   * kyc_submissions table has no rows.
+   *
+   * The Admin needs to see accounts whose
+   * profile.kyc_status is pending.
    */
-  try {
-    if (requestedStatus) {
-      submissions = await sql`
-        SELECT
-          k.*,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          p.status AS account_status,
-          p.kyc_status
-        FROM kyc_submissions k
-        INNER JOIN profiles p
-          ON p.id = k.user_id
-        WHERE
-          LOWER(COALESCE(k.status, 'pending'))
-            = ${requestedStatus}
-        ORDER BY k.created_at DESC
-        LIMIT ${limit}
-      `;
-    } else {
-      submissions = await sql`
-        SELECT
-          k.*,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          p.status AS account_status,
-          p.kyc_status
-        FROM kyc_submissions k
-        INNER JOIN profiles p
-          ON p.id = k.user_id
-        ORDER BY k.created_at DESC
-        LIMIT ${limit}
-      `;
-    }
-  } catch (error) {
-    console.warn(
-      "kyc_submissions unavailable:",
-      error?.message
-    );
+
+  if (!(await tableExists("kyc_submissions"))) {
+    const profiles = await sql`
+      SELECT
+        p.id AS user_id,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email,
+        p.status AS account_status,
+        p.kyc_status,
+        p.created_at,
+        NULL::text AS submission_status,
+        NULL::timestamp AS submitted_at
+      FROM profiles p
+      LEFT JOIN roles r
+        ON r.id = p.role_id
+      WHERE
+        LOWER(COALESCE(r.name, 'user'))
+          NOT IN ('admin', 'administrator')
+        AND (
+          ${status} = ''
+          OR LOWER(COALESCE(p.kyc_status, 'pending'))
+             = ${status}
+        )
+      ORDER BY p.created_at DESC
+      LIMIT ${limit}
+    `;
+
+    return ok({
+      submissions: profiles,
+      kyc: profiles,
+      source: "profiles"
+    });
+  }
+
+  let rows;
+
+  if (status) {
+    rows = await sql`
+      SELECT
+        k.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email,
+        p.status AS account_status,
+        p.kyc_status
+      FROM kyc_submissions k
+      INNER JOIN profiles p
+        ON p.id = k.user_id
+      WHERE LOWER(COALESCE(k.status, 'pending'))
+        = ${status}
+      ORDER BY k.created_at DESC
+      LIMIT ${limit}
+    `;
+  } else {
+    rows = await sql`
+      SELECT
+        k.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email,
+        p.status AS account_status,
+        p.kyc_status
+      FROM kyc_submissions k
+      INNER JOIN profiles p
+        ON p.id = k.user_id
+      ORDER BY k.created_at DESC
+      LIMIT ${limit}
+    `;
   }
 
   /*
-   * Also get profile-level KYC accounts.
-   * This fixes the situation where Dashboard says
-   * pending KYC exists but the KYC page says zero.
+   * Add profile-level pending KYC accounts that
+   * do not yet have a submission row.
    */
-  let profiles = [];
 
-  try {
-    if (requestedStatus) {
-      profiles = await sql`
-        SELECT
-          p.id AS user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          p.status AS account_status,
-          p.kyc_status,
-          p.created_at,
-          p.updated_at
-        FROM profiles p
-        LEFT JOIN roles r
-          ON r.id = p.role_id
-        WHERE
-          LOWER(COALESCE(r.name, 'user'))
-            NOT IN ('admin', 'administrator')
-          AND LOWER(
-            COALESCE(p.kyc_status, 'pending')
-          ) = ${requestedStatus}
-        ORDER BY p.created_at DESC
-        LIMIT ${limit}
-      `;
-    } else {
-      profiles = await sql`
-        SELECT
-          p.id AS user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          p.status AS account_status,
-          p.kyc_status,
-          p.created_at,
-          p.updated_at
-        FROM profiles p
-        LEFT JOIN roles r
-          ON r.id = p.role_id
-        WHERE
-          LOWER(COALESCE(r.name, 'user'))
-            NOT IN ('admin', 'administrator')
-          AND LOWER(
-            COALESCE(p.kyc_status, 'pending')
-          ) IN (
-            'pending',
-            'submitted',
-            'under_review',
-            'approved',
-            'rejected'
+  if (!status || status === "pending") {
+    try {
+      const existingIds =
+        rows
+          .map(x => String(x.user_id))
+          .filter(Boolean);
+
+      const pendingProfiles =
+        await sql`
+          SELECT
+            p.id AS user_id,
+            p.first_name,
+            p.last_name,
+            p.username,
+            p.email,
+            p.status AS account_status,
+            p.kyc_status,
+            p.created_at
+          FROM profiles p
+          LEFT JOIN roles r
+            ON r.id = p.role_id
+          WHERE
+            LOWER(COALESCE(r.name, 'user'))
+              NOT IN ('admin', 'administrator')
+            AND LOWER(COALESCE(p.kyc_status, 'pending'))
+              = 'pending'
+          ORDER BY p.created_at DESC
+          LIMIT ${limit}
+        `;
+
+      for (const item of pendingProfiles) {
+        if (
+          !existingIds.includes(
+            String(item.user_id)
           )
-        ORDER BY p.created_at DESC
-        LIMIT ${limit}
-      `;
-    }
-  } catch (error) {
-    console.warn(
-      "Profile KYC query failed:",
-      error?.message
-    );
-  }
-
-  /*
-   * Merge both sources without duplicating
-   * the same customer.
-   */
-  const merged = new Map();
-
-  for (const row of submissions) {
-    const userId =
-      row.user_id || row.id;
-
-    if (!userId) continue;
-
-    merged.set(
-      String(userId),
-      {
-        ...row,
-        source: "kyc_submission"
-      }
-    );
-  }
-
-  for (const row of profiles) {
-    const userId = row.user_id;
-
-    if (!userId) continue;
-
-    const key = String(userId);
-
-    if (!merged.has(key)) {
-      merged.set(
-        key,
-        {
-          ...row,
-          id: row.user_id,
-          status:
-            row.kyc_status || "pending",
-          source: "profile"
+        ) {
+          rows.push({
+            ...item,
+            status: "pending",
+            submission_status: "pending",
+            source: "profile"
+          });
         }
+      }
+    } catch (error) {
+      console.warn(
+        "Profile KYC fallback warning:",
+        error?.message
       );
     }
   }
 
-  let result = Array.from(
-    merged.values()
-  );
+  return ok({
+    submissions: rows,
+    kyc: rows
+  });
+}
 
-  if (requestedStatus) {
-    result = result.filter(
-      item =>
-        String(
-          item.status ||
-            item.kyc_status ||
-            "pending"
-        )
-          .toLowerCase() ===
-        requestedStatus
+/* =====================================================
+   KYC VIEW
+===================================================== */
+
+async function viewKyc(id) {
+  if (!id) {
+    return bad(400, "KYC ID or customer ID is required.");
+  }
+
+  if (await tableExists("kyc_submissions")) {
+    const submission = await sql`
+      SELECT
+        k.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email,
+        p.status AS account_status,
+        p.kyc_status
+      FROM kyc_submissions k
+      INNER JOIN profiles p
+        ON p.id = k.user_id
+      WHERE k.id = ${id}
+      LIMIT 1
+    `;
+
+    if (submission.length) {
+      return ok({
+        submission: submission[0],
+        kyc: submission[0]
+      });
+    }
+  }
+
+  const profile = await sql`
+    SELECT
+      p.*,
+      r.name AS role
+    FROM profiles p
+    LEFT JOIN roles r
+      ON r.id = p.role_id
+    WHERE p.id = ${id}
+    LIMIT 1
+  `;
+
+  if (!profile.length) {
+    return bad(
+      404,
+      "KYC record or customer not found."
     );
   }
 
-  result =
-    result.slice(0, limit);
+  let submissions = [];
+
+  if (await tableExists("kyc_submissions")) {
+    try {
+      submissions = await sql`
+        SELECT *
+        FROM kyc_submissions
+        WHERE user_id = ${id}
+        ORDER BY created_at DESC
+      `;
+    } catch {}
+  }
 
   return ok({
-    submissions: result,
-    kyc: result,
-    count: result.length
+    customer: profile[0],
+    kyc: submissions[0] || {
+      user_id: id,
+      status: profile[0].kyc_status || "pending"
+    },
+    submissions
   });
 }
 
@@ -1765,32 +1711,26 @@ async function adminKyc(url) {
    REVIEW KYC
 ===================================================== */
 
-async function reviewKyc(
-  request,
-  id,
-  body
-) {
+async function reviewKyc(request, id, body) {
   const admin = await requireAdmin(request);
 
   if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+    return bad(admin.status, admin.error);
   }
 
   const decision =
     String(
       body.status ||
-        body.decision ||
-        ""
+      body.decision ||
+      ""
     )
       .trim()
       .toLowerCase();
 
   if (
     decision !== "approved" &&
-    decision !== "rejected"
+    decision !== "rejected" &&
+    decision !== "declined"
   ) {
     return bad(
       400,
@@ -1798,84 +1738,88 @@ async function reviewKyc(
     );
   }
 
-  /*
-   * First try a real KYC submission.
-   */
-  let submission = [];
+  const normalizedDecision =
+    decision === "declined"
+      ? "rejected"
+      : decision;
 
-  try {
-    submission = await sql`
+  if (await tableExists("kyc_submissions")) {
+    const submission = await sql`
       SELECT *
       FROM kyc_submissions
       WHERE id = ${id}
       LIMIT 1
     `;
-  } catch {}
 
-  let userId = null;
-  let updatedSubmission = null;
+    if (submission.length) {
+      const userId =
+        submission[0].user_id;
 
-  if (submission.length) {
-    userId = submission[0].user_id;
+      const updated = await sql`
+        UPDATE kyc_submissions
+        SET
+          status = ${normalizedDecision},
+          reviewed_by = ${admin.user.id},
+          reviewed_at = NOW(),
+          updated_at = NOW()
+        WHERE id = ${id}
+        RETURNING *
+      `;
 
-    try {
-      const updated =
-        await sql`
-          UPDATE kyc_submissions
-          SET
-            status = ${decision},
-            reviewed_by = ${admin.user.id},
-            reviewed_at = NOW(),
-            updated_at = NOW()
-          WHERE id = ${id}
-          RETURNING *
-        `;
+      await sql`
+        UPDATE profiles
+        SET
+          kyc_status = ${normalizedDecision},
+          updated_at = NOW()
+        WHERE id = ${userId}
+      `;
 
-      updatedSubmission =
-        updated[0] || null;
-    } catch {}
-  } else {
-    /*
-     * If the KYC page is displaying a profile-level
-     * pending account, the supplied ID is the user ID.
-     */
-    const profile = await sql`
-      SELECT id
-      FROM profiles
-      WHERE id = ${id}
-      LIMIT 1
-    `;
-
-    if (!profile.length) {
-      return bad(
-        404,
-        "KYC submission or customer not found."
-      );
+      return ok({
+        message:
+          `KYC ${normalizedDecision} successfully.`,
+        submission: updated[0]
+      });
     }
-
-    userId = profile[0].id;
   }
 
-  await sql`
+  /*
+   * Fallback:
+   * If the Admin is viewing a profile directly,
+   * allow the KYC action against profiles.kyc_status.
+   */
+
+  const profile = await sql`
+    SELECT id
+    FROM profiles
+    WHERE id = ${id}
+    LIMIT 1
+  `;
+
+  if (!profile.length) {
+    return bad(
+      404,
+      "KYC submission or customer not found."
+    );
+  }
+
+  const updatedProfile = await sql`
     UPDATE profiles
     SET
-      kyc_status = ${decision},
+      kyc_status = ${normalizedDecision},
       updated_at = NOW()
-    WHERE id = ${userId}
+    WHERE id = ${id}
+    RETURNING *
   `;
 
   return ok({
     message:
-      `KYC ${decision} successfully.`,
-    submission:
-      updatedSubmission,
-    user_id: userId,
-    kyc_status: decision
+      `KYC ${normalizedDecision} successfully.`,
+    customer: updatedProfile[0]
   });
 }
 
 /* =====================================================
-   ADMIN INVESTMENTS
+   INVESTMENTS
 ===================================================== */
 
 async function adminInvestments(url) {
@@ -1905,7 +1849,7 @@ async function adminInvestments(url) {
 }
 
 /* =====================================================
-   ADMIN TRANSACTIONS
+   TRANSACTIONS
 ===================================================== */
 
 async function adminTransactions(url) {
@@ -1960,14 +1904,20 @@ async function adminTransactions(url) {
 }
 
 /* =====================================================
-   ADMIN PENDING REQUESTS
+   PENDING REQUESTS
 ===================================================== */
 
 async function adminRequests(url) {
+  if (!(await tableExists("pending_requests"))) {
+    return ok({
+      requests: []
+    });
+  }
+
   const status =
     String(
       url.searchParams.get("status") ||
-        "pending"
+      "pending"
     )
       .trim()
       .toLowerCase();
@@ -2011,30 +1961,40 @@ async function processRequest(
   const admin = await requireAdmin(request);
 
   if (!admin.ok) {
+    return bad(admin.status, admin.error);
+  }
+
+  if (!(await tableExists("pending_requests"))) {
     return bad(
-      admin.status,
-      admin.error
+      404,
+      "Pending requests table is not available."
     );
   }
 
   const decision =
     String(
       body.status ||
-        body.decision ||
-        ""
+      body.decision ||
+      ""
     )
       .trim()
       .toLowerCase();
 
   if (
     decision !== "approved" &&
-    decision !== "rejected"
+    decision !== "rejected" &&
+    decision !== "declined"
   ) {
     return bad(
       400,
       "Decision must be approved or rejected."
     );
   }
+
+  const normalizedDecision =
+    decision === "declined"
+      ? "rejected"
+      : decision;
 
   const rows = await sql`
     SELECT *
@@ -2044,10 +2004,7 @@ async function processRequest(
   `;
 
   if (!rows.length) {
-    return bad(
-      404,
-      "Request not found."
-    );
+    return bad(404, "Request not found.");
   }
 
   const item = rows[0];
@@ -2055,7 +2012,7 @@ async function processRequest(
   const updated = await sql`
     UPDATE pending_requests
     SET
-      status = ${decision},
+      status = ${normalizedDecision},
       reviewed_by = ${admin.user.id},
       reviewed_at = NOW(),
       updated_at = NOW()
@@ -2064,7 +2021,7 @@ async function processRequest(
   `;
 
   if (
-    decision === "approved" &&
+    normalizedDecision === "approved" &&
     item.type &&
     item.user_id
   ) {
@@ -2082,50 +2039,49 @@ async function processRequest(
       )
     ) {
       try {
-        const found =
-          await findWallet(
-            item.user_id,
-            "main"
-          );
+        const wallets = await sql`
+          SELECT *
+          FROM wallets
+          WHERE user_id = ${item.user_id}
+          ORDER BY created_at ASC
+        `;
 
-        if (found) {
+        if (wallets.length) {
+          const wallet = wallets[0];
+
           if (
-            found.mode === "wallet_type"
+            wallet.main_balance !== undefined
           ) {
             const oldBalance =
               numberValue(
-                found.row.balance,
+                wallet.main_balance,
                 0
               );
-
-            const newBalance =
-              oldBalance + amount;
 
             await sql`
               UPDATE wallets
               SET
-                balance = ${newBalance},
+                main_balance =
+                  ${oldBalance + amount},
                 updated_at = NOW()
-              WHERE id =
-                ${found.row.id}
+              WHERE id = ${wallet.id}
             `;
-          } else {
+          } else if (
+            wallet.balance !== undefined
+          ) {
             const oldBalance =
               numberValue(
-                found.row.main_balance,
+                wallet.balance,
                 0
               );
-
-            const newBalance =
-              oldBalance + amount;
 
             await sql`
               UPDATE wallets
               SET
-                main_balance = ${newBalance},
+                balance =
+                  ${oldBalance + amount},
                 updated_at = NOW()
-              WHERE user_id =
-                ${item.user_id}
+              WHERE id = ${wallet.id}
             `;
           }
         }
@@ -2140,16 +2096,30 @@ async function processRequest(
 
   return ok({
     message:
-      `Request ${decision} successfully.`,
+      `Request ${normalizedDecision} successfully.`,
     request: updated[0]
   });
 }
 
 /* =====================================================
-   ADMIN CHAT CONVERSATIONS
+   CHAT
 ===================================================== */
 
 async function adminConversations() {
+  /*
+   * The old code crashed here when chat_messages
+   * was missing. Conversation listing must remain
+   * usable independently.
+   */
+
+  if (!(await tableExists("chat_conversations"))) {
+    return ok({
+      conversations: [],
+      messages_available:
+        await tableExists("chat_messages")
+    });
+  }
+
   const rows = await sql`
     SELECT
       c.*,
@@ -2168,7 +2138,9 @@ async function adminConversations() {
   `;
 
   return ok({
-    conversations: rows
+    conversations: rows,
+    messages_available:
+      await tableExists("chat_messages")
   });
 }
 
@@ -2180,34 +2152,26 @@ async function adminMessages(conversationId) {
     );
   }
 
-  try {
-    const rows = await sql`
-      SELECT *
-      FROM chat_messages
-      WHERE conversation_id =
-        ${conversationId}
-      ORDER BY created_at ASC
-    `;
-
+  if (!(await tableExists("chat_messages"))) {
     return ok({
-      messages: rows
+      messages: [],
+      available: false,
+      message:
+        "Chat message storage is not available yet."
     });
-  } catch (error) {
-    console.error(
-      "Admin chat message query failed:",
-      error
-    );
-
-    return bad(
-      500,
-      "Unable to load customer chat messages.",
-      {
-        detail:
-          error?.message ||
-          "chat_messages query failed."
-      }
-    );
   }
+
+  const rows = await sql`
+    SELECT *
+    FROM chat_messages
+    WHERE conversation_id = ${conversationId}
+    ORDER BY created_at ASC
+  `;
+
+  return ok({
+    messages: rows,
+    available: true
+  });
 }
 
 async function adminSendMessage(
@@ -2218,17 +2182,14 @@ async function adminSendMessage(
   const admin = await requireAdmin(request);
 
   if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+    return bad(admin.status, admin.error);
   }
 
   const message =
     String(
       body.message ||
-        body.content ||
-        ""
+      body.content ||
+      ""
     ).trim();
 
   if (!conversationId) {
@@ -2245,13 +2206,26 @@ async function adminSendMessage(
     );
   }
 
-  const conversation =
-    await sql`
-      SELECT id
-      FROM chat_conversations
-      WHERE id = ${conversationId}
-      LIMIT 1
-    `;
+  if (!(await tableExists("chat_conversations"))) {
+    return bad(
+      503,
+      "Chat conversations are not available."
+    );
+  }
+
+  if (!(await tableExists("chat_messages"))) {
+    return bad(
+      503,
+      "Chat messages table is not available."
+    );
+  }
+
+  const conversation = await sql`
+    SELECT id
+    FROM chat_conversations
+    WHERE id = ${conversationId}
+    LIMIT 1
+  `;
 
   if (!conversation.length) {
     return bad(
@@ -2260,12 +2234,28 @@ async function adminSendMessage(
     );
   }
 
-  const id =
-    crypto.randomUUID();
+  const id = crypto.randomUUID();
+
+  /*
+   * Support the existing message column.
+   * If the database uses content instead, use it.
+   */
+
+  const hasMessage =
+    await columnExists(
+      "chat_messages",
+      "message"
+    );
+
+  const hasContent =
+    await columnExists(
+      "chat_messages",
+      "content"
+    );
 
   let rows;
 
-  try {
+  if (hasMessage) {
     rows = await sql`
       INSERT INTO chat_messages (
         id,
@@ -2285,31 +2275,45 @@ async function adminSendMessage(
       )
       RETURNING *
     `;
-  } catch (error) {
-    console.error(
-      "Admin chat insert failed:",
-      error
-    );
-
+  } else if (hasContent) {
+    rows = await sql`
+      INSERT INTO chat_messages (
+        id,
+        conversation_id,
+        sender_id,
+        sender_type,
+        content,
+        created_at
+      )
+      VALUES (
+        ${id},
+        ${conversationId},
+        ${admin.user.id},
+        'admin',
+        ${message},
+        NOW()
+      )
+      RETURNING *
+    `;
+  } else {
     return bad(
       500,
-      "Unable to send customer chat message.",
-      {
-        detail:
-          error?.message ||
-          "chat_messages insert failed."
-      }
+      "Chat messages table does not contain a message/content column."
     );
   }
 
-  try {
+  if (
+    await columnExists(
+      "chat_conversations",
+      "updated_at"
+    )
+  ) {
     await sql`
       UPDATE chat_conversations
-      SET
-        updated_at = NOW()
+      SET updated_at = NOW()
       WHERE id = ${conversationId}
     `;
-  } catch {}
+  }
 
   return ok({
     message: "Message sent.",
@@ -2365,8 +2369,7 @@ async function adminActivity() {
   );
 
   return ok({
-    activity:
-      activities.slice(0, 30)
+    activity: activities.slice(0, 30)
   });
 }
 
@@ -2382,10 +2385,7 @@ async function updateCustomer(
   const admin = await requireAdmin(request);
 
   if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+    return bad(admin.status, admin.error);
   }
 
   if (!id) {
@@ -2438,30 +2438,15 @@ async function updateCustomer(
     UPDATE profiles
     SET
       first_name =
-        COALESCE(
-          ${firstName},
-          first_name
-        ),
+        COALESCE(${firstName}, first_name),
       last_name =
-        COALESCE(
-          ${lastName},
-          last_name
-        ),
+        COALESCE(${lastName}, last_name),
       username =
-        COALESCE(
-          ${username},
-          username
-        ),
+        COALESCE(${username}, username),
       status =
-        COALESCE(
-          ${status},
-          status
-        ),
+        COALESCE(${status}, status),
       kyc_status =
-        COALESCE(
-          ${kycStatus},
-          kyc_status
-        ),
+        COALESCE(${kycStatus}, kyc_status),
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *
@@ -2483,9 +2468,7 @@ async function resetAdminPassword(
   body
 ) {
   const resetKey =
-    request.headers.get(
-      "x-admin-reset-key"
-    );
+    request.headers.get("x-admin-reset-key");
 
   const configuredKey =
     process.env.ADMIN_RESET_KEY;
@@ -2494,10 +2477,7 @@ async function resetAdminPassword(
     !configuredKey ||
     resetKey !== configuredKey
   ) {
-    return bad(
-      403,
-      "Unauthorized."
-    );
+    return bad(403, "Unauthorized.");
   }
 
   const email =
@@ -2582,8 +2562,7 @@ async function verifyEmail(token) {
     FROM auth_email_tokens t
     WHERE
       t.token_hash = ${tokenHash}
-      AND t.token_type =
-        'email_verification'
+      AND t.token_type = 'email_verification'
       AND t.used_at IS NULL
       AND t.expires_at > NOW()
     LIMIT 1
@@ -2626,7 +2605,7 @@ function createWebRequest(req) {
   const protocol =
     String(
       req.headers["x-forwarded-proto"] ||
-        "https"
+      "https"
     )
       .split(",")[0]
       .trim();
@@ -2634,8 +2613,8 @@ function createWebRequest(req) {
   const host =
     String(
       req.headers["x-forwarded-host"] ||
-        req.headers.host ||
-        "coinforest.vercel.app"
+      req.headers.host ||
+      "coinforest.vercel.app"
     )
       .split(",")[0]
       .trim();
@@ -2682,17 +2661,12 @@ function createWebRequest(req) {
       req.body !== undefined &&
       req.body !== null
     ) {
-      if (
-        typeof req.body === "string"
-      ) {
+      if (typeof req.body === "string") {
         body = req.body;
-      } else if (
-        Buffer.isBuffer(req.body)
-      ) {
+      } else if (Buffer.isBuffer(req.body)) {
         body = req.body;
       } else {
-        body =
-          JSON.stringify(req.body);
+        body = JSON.stringify(req.body);
 
         if (
           !requestHeaders.has(
@@ -2711,10 +2685,8 @@ function createWebRequest(req) {
   return new Request(
     absoluteUrl,
     {
-      method:
-        req.method || "GET",
-      headers:
-        requestHeaders,
+      method: req.method || "GET",
+      headers: requestHeaders,
       body
     }
   );
@@ -2781,7 +2753,6 @@ export default async function handler(
       );
 
       res.end();
-
       return;
     }
 
@@ -2812,7 +2783,7 @@ export default async function handler(
     }
 
     /* =================================================
-       REGISTER
+       AUTH REGISTER
     ================================================= */
 
     if (
@@ -2829,7 +2800,7 @@ export default async function handler(
     }
 
     /* =================================================
-       LOGIN
+       AUTH LOGIN
     ================================================= */
 
     if (
@@ -2923,10 +2894,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -2950,10 +2918,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -2964,12 +2929,16 @@ export default async function handler(
     }
 
     /* =================================================
-       ADMIN CUSTOMERS LIST / VIEW
+       ADMIN CUSTOMERS — LIST
+       Added compatibility aliases.
     ================================================= */
 
     if (
       method === "GET" &&
-      path === "/api/admin/customers"
+      (
+        path === "/api/admin/customers" ||
+        path === "/api/admin/users"
+      )
     ) {
       const auth =
         await requireAdmin(request);
@@ -2977,16 +2946,14 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
       const id =
         url.searchParams.get("id") ||
-        url.searchParams.get("user_id");
+        url.searchParams.get("user_id") ||
+        url.searchParams.get("customer_id");
 
       if (id) {
         return writeWebResponse(
@@ -3002,21 +2969,124 @@ export default async function handler(
     }
 
     /* =================================================
-       ADMIN CUSTOMER VIEW ALIASES
-       Supports frontends using:
-       /customers/:id
-       /customer/:id
-       /customer?id=
+       ADMIN CUSTOMER — VIEW
+       NEW ROUTES
     ================================================= */
 
     if (
       method === "GET" &&
+      (
+        path.startsWith("/api/admin/customers/") ||
+        path.startsWith("/api/admin/customer/") ||
+        path.startsWith("/api/admin/users/")
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(auth.status, auth.error)
+        );
+      }
+
+      const id =
+        parts[parts.length - 1];
+
+      if (
+        id &&
+        id !== "customers" &&
+        id !== "customer" &&
+        id !== "users"
+      ) {
+        return writeWebResponse(
+          res,
+          await adminCustomer(id)
+        );
+      }
+    }
+
+    /* =================================================
+       ADMIN CUSTOMER ACCOUNT ACTION
+       APPROVE / DECLINE / SUSPEND
+    ================================================= */
+
+    if (
+      (
+        method === "POST" ||
+        method === "PUT" ||
+        method === "PATCH"
+      ) &&
+      (
+        path.includes("/approve") ||
+        path.includes("/decline") ||
+        path.includes("/reject") ||
+        path.includes("/suspend") ||
+        path.includes("/activate") ||
+        path.includes("/disable")
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(auth.status, auth.error)
+        );
+      }
+
+      const action =
+        parts[parts.length - 1];
+
+      const actionIndex =
+        parts.findIndex(
+          x =>
+            [
+              "approve",
+              "decline",
+              "reject",
+              "suspend",
+              "activate",
+              "disable"
+            ].includes(x)
+        );
+
+      const id =
+        actionIndex > 0
+          ? parts[actionIndex - 1]
+          : null;
+
+      return writeWebResponse(
+        res,
+        await updateCustomerStatus(
+          request,
+          id,
+          await jsonBody(request),
+          action
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN CUSTOMER UPDATE
+    ================================================= */
+
+    if (
+      (
+        method === "PUT" ||
+        method === "PATCH"
+      ) &&
       (
         path.startsWith(
           "/api/admin/customers/"
         ) ||
         path.startsWith(
           "/api/admin/customer/"
+        ) ||
+        path.startsWith(
+          "/api/admin/users/"
         )
       )
     ) {
@@ -3025,110 +3095,16 @@ export default async function handler(
 
       return writeWebResponse(
         res,
-        await adminCustomer(id)
-      );
-    }
-
-    if (
-      method === "GET" &&
-      path === "/api/admin/customer"
-    ) {
-      const id =
-        url.searchParams.get("id") ||
-        url.searchParams.get("user_id");
-
-      return writeWebResponse(
-        res,
-        await adminCustomer(id)
-      );
-    }
-
-    /* =================================================
-       ADMIN CUSTOMER STATUS / APPROVAL
-    ================================================= */
-
-    if (
-      (
-        method === "PUT" ||
-        method === "PATCH" ||
-        method === "POST"
-      ) &&
-      (
-        path.startsWith(
-          "/api/admin/customers/"
-        ) ||
-        path.startsWith(
-          "/api/admin/customer/"
-        )
-      )
-    ) {
-      const index =
-        parts.findIndex(
-          item =>
-            item === "customers" ||
-            item === "customer"
-        );
-
-      const id =
-        index >= 0
-          ? parts[index + 1]
-          : null;
-
-      const action =
-        index >= 0
-          ? parts[index + 2]
-          : null;
-
-      const body =
-        await jsonBody(request);
-
-      /*
-       * /customers/:id/status
-       * /customers/:id/approve
-       * /customers/:id/suspend
-       * /customers/:id/decline
-       */
-      if (
-        action === "status" ||
-        action === "approve" ||
-        action === "approved" ||
-        action === "activate" ||
-        action === "suspend" ||
-        action === "suspended" ||
-        action === "decline" ||
-        action === "declined" ||
-        action === "reject" ||
-        action === "rejected" ||
-        action === "disable" ||
-        action === "disabled" ||
-        action === "freeze" ||
-        action === "frozen"
-      ) {
-        return writeWebResponse(
-          res,
-          await updateCustomerStatus(
-            request,
-            id,
-            body,
-            action === "status"
-              ? null
-              : action
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
         await updateCustomer(
           request,
           id,
-          body
+          await jsonBody(request)
         )
       );
     }
 
     /* =================================================
-       ADMIN WALLET LIST / CUSTOMER WALLET
+       ADMIN WALLETS — LIST
     ================================================= */
 
     if (
@@ -3144,10 +3120,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -3170,46 +3143,68 @@ export default async function handler(
     }
 
     /* =================================================
-       CUSTOMER WALLET VIEW ALIASES
+       ADMIN CUSTOMER WALLET VIEW
+       NEW COMPATIBILITY ROUTES
     ================================================= */
 
     if (
       method === "GET" &&
       (
         path.startsWith(
-          "/api/admin/wallets/"
+          "/api/admin/customer-wallet/"
         ) ||
         path.startsWith(
-          "/api/admin/wallet/"
-        )
+          "/api/admin/customers/"
+        ) &&
+        path.endsWith("/wallet")
       )
     ) {
-      const id =
-        parts[parts.length - 1];
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(auth.status, auth.error)
+        );
+      }
+
+      let userId = null;
+
+      if (
+        path.startsWith(
+          "/api/admin/customer-wallet/"
+        )
+      ) {
+        userId =
+          parts[parts.length - 1];
+      } else {
+        const walletIndex =
+          parts.lastIndexOf("wallet");
+
+        userId =
+          walletIndex > 0
+            ? parts[walletIndex - 1]
+            : null;
+      }
 
       return writeWebResponse(
         res,
-        await adminWallet(id)
+        await adminWallet(userId)
       );
     }
 
     /* =================================================
-       ADMIN WALLET ADJUST
+       ADMIN WALLET ADJUSTMENT
+       Multiple aliases retained.
     ================================================= */
 
     if (
+      method === "POST" &&
       (
-        method === "POST" ||
-        method === "PUT" ||
-        method === "PATCH"
-      ) &&
-      (
-        path ===
-          "/api/admin/wallets/adjust" ||
-        path ===
-          "/api/admin/wallet/adjust" ||
-        path ===
-          "/api/admin/wallet-adjust"
+        path === "/api/admin/wallets/adjust" ||
+        path === "/api/admin/wallet/adjust" ||
+        path === "/api/admin/customer-wallet/adjust"
       )
     ) {
       return writeWebResponse(
@@ -3217,6 +3212,46 @@ export default async function handler(
         await adjustWallet(
           request,
           await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN CUSTOMER WALLET ADJUSTMENT
+       /customers/:id/wallet/adjust
+    ================================================= */
+
+    if (
+      method === "POST" &&
+      path.startsWith(
+        "/api/admin/customers/"
+      ) &&
+      path.endsWith("/wallet/adjust")
+    ) {
+      const body =
+        await jsonBody(request);
+
+      const walletParts =
+        pathParts(path);
+
+      const adjustIndex =
+        walletParts.lastIndexOf("adjust");
+
+      const userId =
+        adjustIndex >= 2
+          ? walletParts[adjustIndex - 2]
+          : null;
+
+      return writeWebResponse(
+        res,
+        await adjustWallet(
+          request,
+          {
+            ...body,
+            user_id:
+              body.user_id ||
+              userId
+          }
         )
       );
     }
@@ -3238,16 +3273,47 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
       return writeWebResponse(
         res,
         await adminKyc(url)
+      );
+    }
+
+    /* =================================================
+       ADMIN KYC VIEW
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      (
+        path.startsWith(
+          "/api/admin/kyc/"
+        ) ||
+        path.startsWith(
+          "/api/admin/kyc-submissions/"
+        )
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(auth.status, auth.error)
+        );
+      }
+
+      const id =
+        parts[parts.length - 1];
+
+      return writeWebResponse(
+        res,
+        await viewKyc(id)
       );
     }
 
@@ -3297,10 +3363,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -3324,10 +3387,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -3338,16 +3398,14 @@ export default async function handler(
     }
 
     /* =================================================
-       ADMIN REQUESTS
+       ADMIN PENDING REQUESTS
     ================================================= */
 
     if (
       method === "GET" &&
       (
-        path ===
-          "/api/admin/requests" ||
-        path ===
-          "/api/admin/pending-requests"
+        path === "/api/admin/requests" ||
+        path === "/api/admin/pending-requests"
       )
     ) {
       const auth =
@@ -3356,10 +3414,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -3370,7 +3425,7 @@ export default async function handler(
     }
 
     /* =================================================
-       PROCESS REQUEST
+       ADMIN PROCESS REQUEST
     ================================================= */
 
     if (
@@ -3402,7 +3457,7 @@ export default async function handler(
     }
 
     /* =================================================
-       ADMIN CHAT LIST
+       ADMIN CHAT CONVERSATIONS
     ================================================= */
 
     if (
@@ -3418,10 +3473,7 @@ export default async function handler(
       if (!auth.ok) {
         return writeWebResponse(
           res,
-          bad(
-            auth.status,
-            auth.error
-          )
+          bad(auth.status, auth.error)
         );
       }
 
@@ -3449,7 +3501,7 @@ export default async function handler(
     }
 
     /* =================================================
-       ADMIN CHAT MESSAGES
+       ADMIN CHAT MESSAGE VIEW
     ================================================= */
 
     if (
@@ -3539,4 +3591,4 @@ export default async function handler(
       })
     );
   }
-      }
+          }
