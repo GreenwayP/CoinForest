@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL);
 const headers = {
   "Content-Type": "application/json; charset=utf-8",
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Admin-Reset-Key",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
 };
 
@@ -33,7 +33,7 @@ function hashToken(value) {
 }
 
 function hashPassword(password) {
- const salt = crypto.randomBytes(16).toString("hex"); 
+  const salt = crypto.randomBytes(16).toString("hex");
 
   const derivedKey = crypto.scryptSync(
     String(password),
@@ -121,8 +121,7 @@ async function sendEmail({ to, subject, html }) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        from:
-  "CoinForest <onboarding@resend.dev>", 
+        from: "CoinForest <onboarding@resend.dev>",
         to: [to],
         subject,
         html
@@ -192,8 +191,7 @@ async function sendVerificationEmail(request, user) {
     `${getSiteUrl(request)}/verify-email.html?token=${encodeURIComponent(token)}`;
 
   const firstName =
-    String(user.first_name || "Customer")
-      .trim();
+    String(user.first_name || "Customer").trim();
 
   return sendEmail({
     to: user.email,
@@ -572,19 +570,109 @@ async function login(body) {
     }
   });
 }
- 
+
+
+/* =====================================================
+   TEMPORARY ADMIN PASSWORD RESET
+   ===================================================== */
+
+async function resetAdminPassword(request, body) {
+
+  const resetKey =
+    request.headers.get("x-admin-reset-key");
+
+  const configuredKey =
+    process.env.ADMIN_RESET_KEY;
+
+  if (
+    !configuredKey ||
+    resetKey !== configuredKey
+  ) {
+    return response(403, {
+      success: false,
+      error: "Unauthorized."
+    });
+  }
+
+  const email =
+    normalizeEmail(body.email);
+
+  const password =
+    String(body.password || "");
+
+  if (!email || !password) {
+    return response(400, {
+      success: false,
+      error:
+        "Email and password are required."
+    });
+  }
+
+  if (password.length < 6) {
+    return response(400, {
+      success: false,
+      error:
+        "Password must contain at least 6 characters."
+    });
+  }
+
+  const passwordHash =
+    hashPassword(password);
+
+  const result = await sql`
+    UPDATE auth_credentials
+    SET
+      password_hash = ${passwordHash},
+      password_updated_at = NOW(),
+      failed_login_attempts = 0,
+      locked_until = NULL,
+      updated_at = NOW()
+    WHERE user_id = (
+      SELECT p.id
+      FROM profiles p
+      INNER JOIN roles r
+        ON r.id = p.role_id
+      WHERE LOWER(p.email) = ${email}
+        AND LOWER(r.name) = 'admin'
+      LIMIT 1
+    )
+    RETURNING user_id
+  `;
+
+  if (!result.length) {
+    return response(404, {
+      success: false,
+      error:
+        "Admin account not found."
+    });
+  }
+
+  return response(200, {
+    success: true,
+    message:
+      "Admin password reset successfully."
+  });
+}
+
+
+/* =====================================================
+   EMAIL VERIFICATION
+   ===================================================== */
 
 async function verifyEmail(token) {
-  const cleanToken = String(token || "").trim();
+  const cleanToken =
+    String(token || "").trim();
 
   if (!cleanToken) {
     return response(400, {
       success: false,
-      error: "Verification token is required."
+      error:
+        "Verification token is required."
     });
   }
 
-  const tokenHash = hashToken(cleanToken);
+  const tokenHash =
+    hashToken(cleanToken);
 
   const result = await sql`
     SELECT
@@ -629,17 +717,24 @@ async function verifyEmail(token) {
   });
 }
 
+
+/* =====================================================
+   CURRENT USER
+   ===================================================== */
+
 async function me(request) {
   const token = bearer(request);
 
   if (!token) {
     return response(401, {
       success: false,
-      error: "Authentication required."
+      error:
+        "Authentication required."
     });
   }
 
-  const tokenHash = hashToken(token);
+  const tokenHash =
+    hashToken(token);
 
   const result = await sql`
     SELECT
@@ -667,7 +762,8 @@ async function me(request) {
   if (!result.length) {
     return response(401, {
       success: false,
-      error: "Invalid or expired session."
+      error:
+        "Invalid or expired session."
     });
   }
 
@@ -693,10 +789,16 @@ async function me(request) {
       role: user.role_name,
       status: user.status,
       kyc_status: user.kyc_status,
-      email_verified_at: user.email_verified_at
+      email_verified_at:
+        user.email_verified_at
     }
   });
 }
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
 
 async function logout(request) {
   const token = bearer(request);
@@ -715,21 +817,34 @@ async function logout(request) {
 
   return response(200, {
     success: true,
-    message: "Logged out successfully."
+    message:
+      "Logged out successfully."
   });
 }
+
+
+/* =====================================================
+   HEALTH
+   ===================================================== */
 
 async function health() {
   return response(200, {
     success: true,
-    message: "CoinForest API is running."
+    message:
+      "CoinForest API is running."
   });
 }
+
+
+/* =====================================================
+   NODE REQUEST → WEB REQUEST
+   ===================================================== */
 
 function createWebRequest(req) {
   const protocol =
     String(
-      req.headers["x-forwarded-proto"] || "https"
+      req.headers["x-forwarded-proto"] ||
+      "https"
     )
       .split(",")[0]
       .trim();
@@ -743,7 +858,8 @@ function createWebRequest(req) {
       .split(",")[0]
       .trim();
 
-  const rawUrl = String(req.url || "/");
+  const rawUrl =
+    String(req.url || "/");
 
   const absoluteUrl =
     rawUrl.startsWith("http://") ||
@@ -751,7 +867,8 @@ function createWebRequest(req) {
       ? rawUrl
       : `${protocol}://${host}${rawUrl}`;
 
-  const requestHeaders = new Headers();
+  const requestHeaders =
+    new Headers();
 
   for (
     const [key, value]
@@ -762,7 +879,9 @@ function createWebRequest(req) {
         key,
         value.join(", ")
       );
-    } else if (value !== undefined) {
+    } else if (
+      value !== undefined
+    ) {
       requestHeaders.set(
         key,
         String(value)
@@ -780,15 +899,22 @@ function createWebRequest(req) {
       req.body !== undefined &&
       req.body !== null
     ) {
-      if (typeof req.body === "string") {
+      if (
+        typeof req.body === "string"
+      ) {
         body = req.body;
-      } else if (Buffer.isBuffer(req.body)) {
+      } else if (
+        Buffer.isBuffer(req.body)
+      ) {
         body = req.body;
       } else {
-        body = JSON.stringify(req.body);
+        body =
+          JSON.stringify(req.body);
 
         if (
-          !requestHeaders.has("content-type")
+          !requestHeaders.has(
+            "content-type"
+          )
         ) {
           requestHeaders.set(
             "content-type",
@@ -802,12 +928,19 @@ function createWebRequest(req) {
   return new Request(
     absoluteUrl,
     {
-      method: req.method || "GET",
-      headers: requestHeaders,
+      method:
+        req.method || "GET",
+      headers:
+        requestHeaders,
       body
     }
   );
 }
+
+
+/* =====================================================
+   WEB RESPONSE → NODE RESPONSE
+   ===================================================== */
 
 async function writeWebResponse(
   res,
@@ -815,24 +948,42 @@ async function writeWebResponse(
 ) {
   if (res.headersSent) return;
 
-  res.statusCode = webResponse.status;
+  res.statusCode =
+    webResponse.status;
 
   webResponse.headers.forEach(
     (value, key) => {
-      res.setHeader(key, value);
+      res.setHeader(
+        key,
+        value
+      );
     }
   );
 
-  const body = await webResponse.text();
+  const body =
+    await webResponse.text();
 
   res.end(body);
 }
 
-export default async function handler(req, res) {
-  try {
-    const request = createWebRequest(req);
 
-    if (request.method === "OPTIONS") {
+/* =====================================================
+   MAIN HANDLER
+   ===================================================== */
+
+export default async function handler(
+  req,
+  res
+) {
+  try {
+
+    const request =
+      createWebRequest(req);
+
+    if (
+      request.method ===
+      "OPTIONS"
+    ) {
       res.statusCode = 204;
 
       res.setHeader(
@@ -842,7 +993,7 @@ export default async function handler(req, res) {
 
       res.setHeader(
         "Access-Control-Allow-Headers",
-        "Content-Type, Authorization"
+        "Content-Type, Authorization, X-Admin-Reset-Key"
       );
 
       res.setHeader(
@@ -851,11 +1002,20 @@ export default async function handler(req, res) {
       );
 
       res.end();
+
       return;
     }
 
-    const url = new URL(request.url);
-    const path = url.pathname;
+    const url =
+      new URL(request.url);
+
+    const path =
+      url.pathname;
+
+
+    /* ================================
+       HEALTH
+    ================================= */
 
     if (
       request.method === "GET" &&
@@ -867,23 +1027,38 @@ export default async function handler(req, res) {
       );
     }
 
+
+    /* ================================
+       REGISTER
+    ================================= */
+
     if (
       request.method === "POST" &&
       path === "/api/auth/register"
     ) {
-      const body = await request.json();
+      const body =
+        await request.json();
 
       return writeWebResponse(
         res,
-        await register(request, body)
+        await register(
+          request,
+          body
+        )
       );
     }
+
+
+    /* ================================
+       LOGIN
+    ================================= */
 
     if (
       request.method === "POST" &&
       path === "/api/auth/login"
     ) {
-      const body = await request.json();
+      const body =
+        await request.json();
 
       return writeWebResponse(
         res,
@@ -891,17 +1066,51 @@ export default async function handler(req, res) {
       );
     }
 
+
+    /* ================================
+       TEMPORARY ADMIN PASSWORD RESET
+    ================================= */
+
+    if (
+      request.method === "POST" &&
+      path === "/api/admin/reset-password"
+    ) {
+      const body =
+        await request.json();
+
+      return writeWebResponse(
+        res,
+        await resetAdminPassword(
+          request,
+          body
+        )
+      );
+    }
+
+
+    /* ================================
+       VERIFY EMAIL
+    ================================= */
+
     if (
       request.method === "POST" &&
       path === "/api/auth/verify-email"
     ) {
-      const body = await request.json();
+      const body =
+        await request.json();
 
       return writeWebResponse(
         res,
-        await verifyEmail(body.token)
+        await verifyEmail(
+          body.token
+        )
       );
     }
+
+
+    /* ================================
+       LOGOUT
+    ================================= */
 
     if (
       request.method === "POST" &&
@@ -913,6 +1122,11 @@ export default async function handler(req, res) {
       );
     }
 
+
+    /* ================================
+       CURRENT USER
+    ================================= */
+
     if (
       request.method === "GET" &&
       path === "/api/auth/me"
@@ -923,16 +1137,23 @@ export default async function handler(req, res) {
       );
     }
 
+
+    /* ================================
+       UNKNOWN ROUTE
+    ================================= */
+
     return writeWebResponse(
       res,
       response(404, {
         success: false,
-        error: "API route not found.",
+        error:
+          "API route not found.",
         path
       })
     );
 
   } catch (error) {
+
     console.error(
       "CoinForest API error:",
       error
@@ -947,8 +1168,9 @@ export default async function handler(req, res) {
       res,
       response(500, {
         success: false,
-        error: "Internal server error."
+        error:
+          "Internal server error."
       })
     );
   }
-}    
+        }
