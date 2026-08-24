@@ -797,8 +797,14 @@ form.addEventListener("submit", async function (event) {
     resetLoginButton();
 
     setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 500);
+  const role = String(data.user?.role || "").toLowerCase();
+
+  if (role === "admin") {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "dashboard.html";
+  }
+}, 500);
 
   } catch (error) {
     console.error("CoinForest login error:", error);
