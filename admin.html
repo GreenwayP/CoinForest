@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#126b3a">
   <title>CoinForest Admin</title>
 
   <style>
@@ -25,8 +25,19 @@
       --muted: #718078;
       --border: #e4e9e6;
       --danger: #c94343;
+      --danger-light: #fff0f0;
+      --warning: #a87916;
+      --warning-light: #fff8e7;
+      --success: #217a49;
+      --success-light: #eaf7ef;
+      --blue: #356aa8;
+      --blue-light: #edf4fc;
       --shadow: 0 8px 28px rgba(20, 45, 32, .07);
       --radius: 16px;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -36,9 +47,14 @@
       min-height: 100vh;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
     button,
     input,
-    select {
+    select,
+    textarea {
       font: inherit;
     }
 
@@ -46,8 +62,33 @@
       cursor: pointer;
     }
 
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+      transition: .2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(18, 107, 58, .08);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
     /* =========================
-       APP LAYOUT
+       APP
     ========================= */
 
     .app {
@@ -64,6 +105,7 @@
       z-index: 100;
       display: flex;
       flex-direction: column;
+      transition: transform .25s ease;
     }
 
     .brand {
@@ -73,6 +115,7 @@
       gap: 11px;
       padding: 0 22px;
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
     .brand-logo {
@@ -145,11 +188,27 @@
       width: 23px;
       text-align: center;
       font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: var(--danger);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
     }
 
     .sidebar-footer {
       padding: 14px;
       border-top: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
     .admin-mini {
@@ -205,6 +264,10 @@
       z-index: 50;
     }
 
+    .topbar-left {
+      min-width: 0;
+    }
+
     .topbar-left h1 {
       font-size: 20px;
       color: var(--text);
@@ -219,10 +282,11 @@
     .topbar-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .icon-btn {
+    .icon-btn,
+    .mobile-menu {
       width: 38px;
       height: 38px;
       border: 1px solid var(--border);
@@ -231,13 +295,146 @@
       color: #5e6a63;
     }
 
+    .icon-btn:hover,
+    .mobile-menu:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .admin-top-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 7px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .top-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
     .content {
       padding: 28px 30px 40px;
-      max-width: 1500px;
+      max-width: 1550px;
     }
 
     /* =========================
-       STAT CARDS
+       SECTIONS
+    ========================= */
+
+    .section {
+      animation: sectionIn .18s ease;
+    }
+
+    @keyframes sectionIn {
+      from {
+        opacity: 0;
+        transform: translateY(3px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-head h2 {
+      font-size: 18px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .section-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--green-dark);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--green);
+      color: var(--green-dark);
+    }
+
+    .btn-success {
+      background: var(--success-light);
+      color: var(--success);
+      border-color: #cfe9da;
+    }
+
+    .btn-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border-color: #f0cccc;
+    }
+
+    .btn-warning {
+      background: var(--warning-light);
+      color: var(--warning);
+      border-color: #f1dfae;
+    }
+
+    .btn-sm {
+      padding: 7px 10px;
+      font-size: 10px;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    /* =========================
+       STATS
     ========================= */
 
     .stats {
@@ -289,13 +486,19 @@
     }
 
     /* =========================
-       CONTENT CARDS
+       PANELS
     ========================= */
 
     .grid-2 {
       display: grid;
       grid-template-columns: 1.35fr 1fr;
       gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
     }
 
     .panel {
@@ -306,12 +509,17 @@
       overflow: hidden;
     }
 
+    .panel + .panel {
+      margin-top: 20px;
+    }
+
     .panel-header {
       padding: 18px 20px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
 
     .panel-header h2 {
@@ -419,16 +627,638 @@
     }
 
     /* =========================
+       SEARCH
+    ========================= */
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 210px;
+    }
+
+    .search-box span {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-box input {
+      padding-left: 36px;
+    }
+
+    .filter-select {
+      width: 170px;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th,
+    td {
+      padding: 12px 13px;
+      text-align: left;
+      border-bottom: 1px solid #edf0ee;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #fafcfb;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #fbfdfc;
+    }
+
+    .empty-row {
+      text-align: center;
+      color: var(--muted);
+      padding: 35px !important;
+    }
+
+    /* =========================
+       BADGES
+    ========================= */
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30px;
+      padding: 5px 9px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+
+    .badge-green {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .badge-red {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .badge-yellow {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .badge-blue {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .badge-gray {
+      background: #f0f2f1;
+      color: #66716b;
+    }
+
+    /* =========================
+       CUSTOMER CARDS
+    ========================= */
+
+    .customer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .customer-card {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 16px;
+      background: #fff;
+      transition: .2s;
+    }
+
+    .customer-card:hover {
+      border-color: #cbdad1;
+      box-shadow: 0 5px 18px rgba(20,45,32,.05);
+    }
+
+    .customer-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .customer-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--green-light);
+      color: var(--green-dark);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .customer-name {
+      min-width: 0;
+    }
+
+    .customer-name strong {
+      display: block;
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .customer-name span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .customer-details {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .detail-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 10px;
+    }
+
+    .detail-line span:first-child {
+      color: var(--muted);
+    }
+
+    .detail-line span:last-child {
+      text-align: right;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================
+       KYC
+    ========================= */
+
+    .kyc-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 18px;
+    }
+
+    .kyc-list {
+      max-height: 620px;
+      overflow-y: auto;
+    }
+
+    .kyc-item {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 9px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .kyc-item:hover,
+    .kyc-item.selected {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .kyc-item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .kyc-item strong {
+      font-size: 12px;
+    }
+
+    .kyc-item small {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      margin-top: 4px;
+    }
+
+    .kyc-detail {
+      min-height: 400px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .info-box {
+      background: #fafcfb;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 12px;
+    }
+
+    .info-box label {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .info-box strong {
+      display: block;
+      font-size: 11px;
+      word-break: break-word;
+    }
+
+    .kyc-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* =========================
+       WALLET SUMMARY
+    ========================= */
+
+    .wallet-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .wallet-box {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .wallet-box label {
+      color: var(--muted);
+      display: block;
+      font-size: 10px;
+    }
+
+    .wallet-box strong {
+      display: block;
+      font-size: 19px;
+      margin-top: 8px;
+    }
+
+    /* =========================
+       CHAT
+    ========================= */
+
+    .chat-layout {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      min-height: 580px;
+    }
+
+    .chat-list {
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
+
+    .chat-item {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .chat-item:hover,
+    .chat-item.active {
+      background: var(--green-light);
+    }
+
+    .chat-item strong {
+      display: block;
+      font-size: 11px;
+    }
+
+    .chat-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      margin-top: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chat-window {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .chat-header {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chat-header strong {
+      font-size: 12px;
+    }
+
+    .chat-header span {
+      display: block;
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 18px;
+      background: #fafcfb;
+      overflow-y: auto;
+      min-height: 400px;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .message.customer {
+      background: #fff;
+      border: 1px solid var(--border);
+      margin-right: auto;
+    }
+
+    .message.admin {
+      background: var(--green);
+      color: #fff;
+      margin-left: auto;
+    }
+
+    .message-time {
+      display: block;
+      font-size: 8px;
+      opacity: .65;
+      margin-top: 5px;
+    }
+
+    .chat-compose {
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-compose textarea {
+      min-height: 42px;
+      max-height: 110px;
+      resize: none;
+    }
+
+    /* =========================
+       REQUEST CARDS
+    ========================= */
+
+    .request-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .request-card {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 16px;
+    }
+
+    .request-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .request-top strong {
+      font-size: 12px;
+    }
+
+    .request-amount {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+
+    .request-meta {
+      display: grid;
+      gap: 6px;
+    }
+
+    .request-meta div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 10px;
+    }
+
+    .request-meta span:first-child {
+      color: var(--muted);
+    }
+
+    .request-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    /* =========================
+       NOTICE
+    ========================= */
+
+    .notice {
+      padding: 12px 14px;
+      border-radius: 11px;
+      border: 1px solid #dce7e0;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 10px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .notice.warning {
+      background: var(--warning-light);
+      border-color: #efdfb0;
+      color: #806014;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 24, 17, .48);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.18);
+    }
+
+    .modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-header h3 {
+      font-size: 15px;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #536058;
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 900;
+      display: grid;
+      gap: 8px;
+      width: min(350px, calc(100% - 36px));
+    }
+
+    .toast {
+      background: #17231d;
+      color: #fff;
+      padding: 13px 15px;
+      border-radius: 11px;
+      font-size: 11px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+      animation: toastIn .2s ease;
+    }
+
+    .toast.success {
+      background: var(--green-dark);
+    }
+
+    .toast.error {
+      background: #8f2f2f;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================
        MOBILE
     ========================= */
 
     .mobile-menu {
       display: none;
-      width: 38px;
-      height: 38px;
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 10px;
     }
 
     .overlay {
@@ -439,20 +1269,36 @@
       z-index: 90;
     }
 
-    @media (max-width: 1050px) {
+    @media (max-width: 1150px) {
       .stats {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .grid-2 {
+      .grid-2,
+      .kyc-layout {
         grid-template-columns: 1fr;
+      }
+
+      .customer-grid,
+      .request-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .grid-3,
+      .wallet-summary {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .chat-layout {
+        grid-template-columns: 250px 1fr;
       }
     }
 
     @media (max-width: 760px) {
       .sidebar {
         transform: translateX(-100%);
-        transition: .25s;
       }
 
       .sidebar.open {
@@ -486,6 +1332,10 @@
         font-size: 17px;
       }
 
+      .admin-top-name {
+        display: none;
+      }
+
       .content {
         padding: 20px 15px 30px;
       }
@@ -507,6 +1357,47 @@
         width: 32px;
         height: 32px;
       }
+
+      .customer-grid,
+      .request-grid,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .wallet-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-list {
+        max-height: 220px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .search-row {
+        flex-direction: column;
+      }
+
+      .filter-select {
+        width: 100%;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 440px) {
@@ -514,8 +1405,12 @@
         grid-template-columns: 1fr;
       }
 
-      .quick-actions {
-        grid-template-columns: 1fr;
+      .topbar {
+        height: 68px;
+      }
+
+      .topbar-right .icon-btn:first-child {
+        display: none;
       }
     }
   </style>
@@ -527,11 +1422,14 @@
 
   <div class="app">
 
-    <!-- SIDEBAR -->
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
     <aside class="sidebar" id="sidebar">
 
       <div class="brand">
         <div class="brand-logo">🌲</div>
+
         <div class="brand-text">
           <strong>CoinForest</strong>
           <span>Administration</span>
@@ -542,53 +1440,77 @@
 
         <div class="nav-label">Overview</div>
 
-        <button class="nav-item active" onclick="showSection('dashboard', this)">
+        <button class="nav-item active"
+                onclick="showSection('dashboard', this)">
           <span class="nav-icon">⌂</span>
           Dashboard
         </button>
 
-        <div class="nav-label" style="margin-top:18px;">Customers</div>
+        <div class="nav-label" style="margin-top:18px;">
+          Customers
+        </div>
 
-        <button class="nav-item" onclick="showSection('customers', this)">
+        <button class="nav-item"
+                onclick="showSection('customers', this)">
           <span class="nav-icon">👥</span>
           Customers
         </button>
 
-        <button class="nav-item" onclick="showSection('kyc', this)">
+        <button class="nav-item"
+                onclick="showSection('kyc', this)">
           <span class="nav-icon">✓</span>
           KYC Review
+          <span class="nav-badge" id="kycBadge">0</span>
         </button>
 
-        <button class="nav-item" onclick="showSection('chat', this)">
+        <button class="nav-item"
+                onclick="showSection('chat', this)">
           <span class="nav-icon">💬</span>
           Customer Chat
+          <span class="nav-badge" id="chatBadge">0</span>
         </button>
 
-        <div class="nav-label" style="margin-top:18px;">Financial</div>
+        <div class="nav-label" style="margin-top:18px;">
+          Financial
+        </div>
 
-        <button class="nav-item" onclick="showSection('wallets', this)">
+        <button class="nav-item"
+                onclick="showSection('wallets', this)">
           <span class="nav-icon">💳</span>
           Wallets
         </button>
 
-        <button class="nav-item" onclick="showSection('investments', this)">
+        <button class="nav-item"
+                onclick="showSection('investments', this)">
           <span class="nav-icon">📈</span>
           Investments
         </button>
 
-        <button class="nav-item" onclick="showSection('transactions', this)">
+        <button class="nav-item"
+                onclick="showSection('transactions', this)">
           <span class="nav-icon">↔</span>
           Transactions
         </button>
 
-        <button class="nav-item" onclick="showSection('requests', this)">
+        <button class="nav-item"
+                onclick="showSection('requests', this)">
           <span class="nav-icon">⏳</span>
           Pending Requests
+          <span class="nav-badge" id="requestBadge">0</span>
         </button>
 
-        <div class="nav-label" style="margin-top:18px;">System</div>
+        <div class="nav-label" style="margin-top:18px;">
+          System
+        </div>
 
-        <button class="nav-item" onclick="showSection('settings', this)">
+        <button class="nav-item"
+                onclick="showSection('audit', this)">
+          <span class="nav-icon">📋</span>
+          Audit Log
+        </button>
+
+        <button class="nav-item"
+                onclick="showSection('settings', this)">
           <span class="nav-icon">⚙</span>
           Settings
         </button>
@@ -596,41 +1518,75 @@
       </nav>
 
       <div class="sidebar-footer">
+
         <div class="admin-mini">
-          <div class="admin-avatar">A</div>
+          <div class="admin-avatar" id="adminAvatar">A</div>
+
           <div>
-            <strong>Administrator</strong>
-            <span>Admin account</span>
+            <strong id="adminName">Administrator</strong>
+            <span id="adminRole">Admin account</span>
           </div>
         </div>
+
       </div>
 
     </aside>
 
-    <!-- MAIN -->
+
+    <!-- =========================
+         MAIN
+    ========================== -->
     <main class="main">
 
       <header class="topbar">
 
         <div class="topbar-left">
-          <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+          <button class="mobile-menu"
+                  onclick="toggleSidebar()">
+            ☰
+          </button>
 
           <div>
             <h1 id="pageTitle">Dashboard</h1>
-            <p>CoinForest administration panel</p>
+            <p id="pageSubtitle">
+              CoinForest administration panel
+            </p>
           </div>
+
         </div>
 
         <div class="topbar-right">
-          <button class="icon-btn" title="Notifications">🔔</button>
-          <button class="icon-btn" title="Admin profile">A</button>
+
+          <button class="icon-btn"
+                  title="Refresh"
+                  onclick="refreshCurrentSection()">
+            ↻
+          </button>
+
+          <button class="icon-btn"
+                  title="Notifications"
+                  onclick="showToast('Notifications will be connected to the admin notification service.')">
+            🔔
+          </button>
+
+          <div class="admin-top-name">
+            <div class="top-avatar">A</div>
+            <span>Administrator</span>
+          </div>
+
         </div>
 
       </header>
 
+
       <section class="content">
 
-        <!-- DASHBOARD -->
+
+        <!-- ==================================================
+             DASHBOARD
+        =================================================== -->
+
         <div id="dashboard" class="section">
 
           <div class="stats">
@@ -640,115 +1596,244 @@
                 <span class="stat-label">Total Customers</span>
                 <div class="stat-icon">👥</div>
               </div>
+
               <div class="stat-value" id="totalCustomers">0</div>
-              <div class="stat-note">Registered accounts</div>
+
+              <div class="stat-note">
+                Registered customer accounts
+              </div>
             </div>
+
 
             <div class="stat-card">
               <div class="stat-top">
                 <span class="stat-label">Pending KYC</span>
                 <div class="stat-icon">✓</div>
               </div>
+
               <div class="stat-value" id="pendingKyc">0</div>
-              <div class="stat-note">Awaiting review</div>
+
+              <div class="stat-note">
+                Awaiting administrative review
+              </div>
             </div>
+
 
             <div class="stat-card">
               <div class="stat-top">
                 <span class="stat-label">Active Investments</span>
                 <div class="stat-icon">📈</div>
               </div>
+
               <div class="stat-value" id="activeInvestments">0</div>
-              <div class="stat-note">Customer investments</div>
+
+              <div class="stat-note">
+                Customer investments
+              </div>
             </div>
+
 
             <div class="stat-card">
               <div class="stat-top">
                 <span class="stat-label">Pending Requests</span>
                 <div class="stat-icon">⏳</div>
               </div>
+
               <div class="stat-value" id="pendingRequests">0</div>
-              <div class="stat-note">Deposit, withdrawal & transfers</div>
+
+              <div class="stat-note">
+                Deposits, withdrawals & transfers
+              </div>
             </div>
 
           </div>
 
+
           <div class="grid-2">
 
             <div class="panel">
+
               <div class="panel-header">
+
                 <div>
                   <h2>Quick Actions</h2>
                   <span>Administrative controls</span>
                 </div>
+
               </div>
 
               <div class="panel-body">
 
                 <div class="quick-actions">
 
-                  <button class="action" onclick="showSection('kyc')">
+                  <button class="action"
+                          onclick="showSection('kyc')">
                     <div class="action-icon">✓</div>
                     <strong>Review KYC</strong>
-                    <span>Review and approve customer verification.</span>
+                    <span>
+                      Review customer verification submissions.
+                    </span>
                   </button>
 
-                  <button class="action" onclick="showSection('wallets')">
+
+                  <button class="action"
+                          onclick="showSection('customers')">
+                    <div class="action-icon">👥</div>
+                    <strong>Customers</strong>
+                    <span>
+                      Search and inspect customer accounts.
+                    </span>
+                  </button>
+
+
+                  <button class="action"
+                          onclick="showSection('wallets')">
                     <div class="action-icon">💳</div>
-                    <strong>Manage Wallet</strong>
-                    <span>Edit Main Wallet and Profit Wallet balances.</span>
+                    <strong>Wallet Management</strong>
+                    <span>
+                      Review customer wallet information.
+                    </span>
                   </button>
 
-                  <button class="action" onclick="showSection('transactions')">
-                    <div class="action-icon">＋</div>
-                    <strong>Add Transaction</strong>
-                    <span>Create an administrative transaction record.</span>
-                  </button>
 
-                  <button class="action" onclick="showSection('chat')">
+                  <button class="action"
+                          onclick="showSection('chat')">
                     <div class="action-icon">💬</div>
                     <strong>Customer Chat</strong>
-                    <span>View and respond to customer messages.</span>
+                    <span>
+                      View and respond to customer support tickets.
+                    </span>
+                  </button>
+
+
+                  <button class="action"
+                          onclick="showSection('requests')">
+                    <div class="action-icon">⏳</div>
+                    <strong>Pending Requests</strong>
+                    <span>
+                      Review deposit, withdrawal and transfer queues.
+                    </span>
+                  </button>
+
+
+                  <button class="action"
+                          onclick="showSection('transactions')">
+                    <div class="action-icon">↔</div>
+                    <strong>Transactions</strong>
+                    <span>
+                      Inspect the transaction ledger.
+                    </span>
                   </button>
 
                 </div>
 
               </div>
+
             </div>
+
 
             <div class="panel">
 
               <div class="panel-header">
+
                 <div>
-                  <h2>Recent Activity</h2>
-                  <span>Latest administrative activity</span>
+                  <h2>System Status</h2>
+                  <span>Current administration environment</span>
                 </div>
+
               </div>
 
               <div class="panel-body">
 
                 <div class="activity">
-                  <div class="activity-icon">👤</div>
-                  <div class="activity-info">
-                    <strong>System ready</strong>
-                    <span>Admin dashboard initialized</span>
-                  </div>
-                </div>
 
-                <div class="activity">
                   <div class="activity-icon">🌲</div>
+
                   <div class="activity-info">
                     <strong>CoinForest Admin</strong>
-                    <span>Awaiting Neon connection</span>
+                    <span>Administration interface ready</span>
                   </div>
+
+                  <span class="badge badge-green">
+                    Ready
+                  </span>
+
                 </div>
 
+
                 <div class="activity">
-                  <div class="activity-icon">🔐</div>
+
+                  <div class="activity-icon">🗄️</div>
+
                   <div class="activity-info">
-                    <strong>Administrative access</strong>
-                    <span>Secure admin session required</span>
+                    <strong>Neon database</strong>
+                    <span>
+                      Backend connection is required for live data.
+                    </span>
                   </div>
+
+                  <span class="badge badge-yellow">
+                    Backend
+                  </span>
+
+                </div>
+
+
+                <div class="activity">
+
+                  <div class="activity-icon">🔐</div>
+
+                  <div class="activity-info">
+                    <strong>Admin authorization</strong>
+                    <span>
+                      Privileged operations must be server-authorized.
+                    </span>
+                  </div>
+
+                  <span class="badge badge-blue">
+                    Secure
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="panel" style="margin-top:20px;">
+
+            <div class="panel-header">
+
+              <div>
+                <h2>Recent Administrative Activity</h2>
+                <span>Latest recorded actions</span>
+              </div>
+
+              <button class="btn btn-secondary btn-sm"
+                      onclick="showSection('audit')">
+                View Audit Log
+              </button>
+
+            </div>
+
+            <div class="panel-body">
+
+              <div id="dashboardActivity">
+
+                <div class="activity">
+
+                  <div class="activity-icon">✓</div>
+
+                  <div class="activity-info">
+                    <strong>Administration interface initialized</strong>
+                    <span>
+                      Awaiting authenticated backend data.
+                    </span>
+                  </div>
+
                 </div>
 
               </div>
@@ -759,102 +1844,986 @@
 
         </div>
 
-        <!-- PLACEHOLDER SECTIONS -->
 
-        <div id="customers" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+        <!-- ==================================================
+             CUSTOMERS
+        =================================================== -->
+
+        <div id="customers"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>Customers</h2>
-              <span>Customer account management</span>
+              <p>
+                Search and inspect registered CoinForest customer accounts.
+              </p>
             </div>
-            <div class="panel-body">
-              Customer management will be connected to Neon here.
+
+            <div class="section-actions">
+
+              <button class="btn btn-secondary"
+                      onclick="loadCustomers()">
+                ↻ Refresh
+              </button>
+
             </div>
+
           </div>
+
+
+          <div class="panel">
+
+            <div class="panel-body">
+
+              <div class="search-row">
+
+                <div class="search-box">
+
+                  <span>⌕</span>
+
+                  <input
+                    id="customerSearch"
+                    type="search"
+                    placeholder="Search by name, email or username..."
+                    oninput="filterCustomers()"
+                  >
+
+                </div>
+
+                <select id="customerStatusFilter"
+                        class="filter-select"
+                        onchange="filterCustomers()">
+
+                  <option value="all">All statuses</option>
+                  <option value="active">Active</option>
+                  <option value="suspended">Suspended</option>
+                  <option value="disabled">Disabled</option>
+
+                </select>
+
+                <select id="customerKycFilter"
+                        class="filter-select"
+                        onchange="filterCustomers()">
+
+                  <option value="all">All KYC</option>
+                  <option value="verified">Verified</option>
+                  <option value="pending">Pending</option>
+                  <option value="not_verified">Not verified</option>
+                  <option value="rejected">Rejected</option>
+
+                </select>
+
+              </div>
+
+
+              <div id="customerGrid"
+                   class="customer-grid">
+
+                <div class="customer-card">
+
+                  <div class="customer-top">
+
+                    <div class="customer-avatar">
+                      —
+                    </div>
+
+                    <div class="customer-name">
+                      <strong>Waiting for backend data</strong>
+                      <span>Connect the Admin API to load customers.</span>
+                    </div>
+
+                  </div>
+
+                  <div class="customer-details">
+
+                    <div class="detail-line">
+                      <span>Status</span>
+                      <span>—</span>
+                    </div>
+
+                    <div class="detail-line">
+                      <span>KYC</span>
+                      <span>—</span>
+                    </div>
+
+                  </div>
+
+                  <button class="btn btn-secondary btn-sm"
+                          disabled>
+                    View Customer
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="kyc" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+
+        <!-- ==================================================
+             KYC
+        =================================================== -->
+
+        <div id="kyc"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>KYC Review</h2>
-              <span>Approve or reject customer verification</span>
+              <p>
+                Review customer verification submissions.
+              </p>
             </div>
-            <div class="panel-body">
-              KYC management will be connected to Neon here.
-            </div>
+
+            <button class="btn btn-secondary"
+                    onclick="loadKyc()">
+              ↻ Refresh
+            </button>
+
           </div>
+
+
+          <div class="notice">
+            KYC approval determines whether a customer is eligible to use
+            investment functionality. Investment itself does not require
+            a separate administrative approval.
+          </div>
+
+
+          <div class="panel">
+
+            <div class="kyc-layout">
+
+              <div class="kyc-list"
+                   id="kycList">
+
+                <div class="panel-body">
+
+                  <div class="empty-row">
+                    KYC submissions will appear here when connected.
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="kyc-detail">
+
+                <div class="panel-header">
+
+                  <div>
+                    <h2>Submission Details</h2>
+                    <span id="kycDetailReference">
+                      Select a submission
+                    </span>
+                  </div>
+
+                </div>
+
+
+                <div class="panel-body"
+                     id="kycDetails">
+
+                  <div class="empty-row">
+                    Select a KYC submission to inspect its details.
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="chat" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+
+        <!-- ==================================================
+             CHAT
+        =================================================== -->
+
+        <div id="chat"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>Customer Chat</h2>
-              <span>Customer ↔ Admin conversations</span>
+              <p>
+                Customer ↔ Admin support conversations.
+              </p>
             </div>
-            <div class="panel-body">
-              Customer chat will be connected to Neon here.
-            </div>
+
+            <button class="btn btn-secondary"
+                    onclick="loadChats()">
+              ↻ Refresh
+            </button>
+
           </div>
+
+
+          <div class="panel">
+
+            <div class="chat-layout">
+
+              <div class="chat-list"
+                   id="chatList">
+
+                <div class="empty-row">
+                  Customer conversations will appear here.
+                </div>
+
+              </div>
+
+
+              <div class="chat-window">
+
+                <div class="chat-header">
+
+                  <strong id="chatCustomerName">
+                    Select a conversation
+                  </strong>
+
+                  <span id="chatTicketReference">
+                    No conversation selected
+                  </span>
+
+                </div>
+
+
+                <div class="messages"
+                     id="messages">
+
+                  <div class="empty-row">
+                    Select a customer conversation.
+                  </div>
+
+                </div>
+
+
+                <div class="chat-compose">
+
+                  <textarea
+                    id="chatMessage"
+                    placeholder="Type your response..."
+                    disabled></textarea>
+
+                  <button
+                    class="btn btn-primary"
+                    id="sendChatButton"
+                    disabled
+                    onclick="sendChatMessage()">
+                    Send
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="wallets" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+
+        <!-- ==================================================
+             WALLETS
+        =================================================== -->
+
+        <div id="wallets"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>Wallet Management</h2>
-              <span>Main Wallet and Profit Wallet controls</span>
+              <p>
+                Inspect customer wallet and balance information.
+              </p>
             </div>
-            <div class="panel-body">
-              Wallet management will be connected to Neon here.
-            </div>
+
+            <button class="btn btn-secondary"
+                    onclick="loadWallets()">
+              ↻ Refresh
+            </button>
+
           </div>
+
+
+          <div class="notice warning">
+            Wallet balance changes are privileged financial operations.
+            The browser interface does not directly modify Neon balances.
+            Authorized changes must be processed by the secured backend
+            and recorded in the wallet balance ledger.
+          </div>
+
+
+          <div class="panel">
+
+            <div class="panel-body">
+
+              <div class="search-row">
+
+                <div class="search-box">
+
+                  <span>⌕</span>
+
+                  <input
+                    id="walletSearch"
+                    type="search"
+                    placeholder="Search customer or wallet..."
+                    oninput="filterWallets()"
+                  >
+
+                </div>
+
+              </div>
+
+
+              <div class="table-wrap">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+                      <th>Customer</th>
+                      <th>Wallet Type</th>
+                      <th>Currency</th>
+                      <th>Balance</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody id="walletTableBody">
+
+                    <tr>
+                      <td colspan="6"
+                          class="empty-row">
+                        Wallet data will appear after the Admin API is connected.
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="investments" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+
+        <!-- ==================================================
+             INVESTMENTS
+        =================================================== -->
+
+        <div id="investments"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>Investments</h2>
-              <span>View customer investments</span>
+              <p>
+                View customer investment activity and investment plans.
+              </p>
             </div>
-            <div class="panel-body">
-              Investments are customer-initiated after KYC approval. No Admin approval workflow will be used here.
-            </div>
+
+            <button class="btn btn-secondary"
+                    onclick="loadInvestments()">
+              ↻ Refresh
+            </button>
+
           </div>
+
+
+          <div class="notice">
+            Investments are customer-initiated after the required KYC
+            eligibility condition is satisfied. There is no Admin
+            investment-approval queue.
+          </div>
+
+
+          <div class="panel">
+
+            <div class="panel-body">
+
+              <div class="search-row">
+
+                <div class="search-box">
+
+                  <span>⌕</span>
+
+                  <input
+                    id="investmentSearch"
+                    type="search"
+                    placeholder="Search investment reference or customer..."
+                    oninput="filterInvestments()"
+                  >
+
+                </div>
+
+                <select id="investmentStatus"
+                        class="filter-select"
+                        onchange="filterInvestments()">
+
+                  <option value="all">All statuses</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+
+                </select>
+
+              </div>
+
+
+              <div class="table-wrap">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+                      <th>Reference</th>
+                      <th>Customer</th>
+                      <th>Principal</th>
+                      <th>ROI</th>
+                      <th>Expected Profit</th>
+                      <th>Status</th>
+                      <th>Started</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody id="investmentTableBody">
+
+                    <tr>
+                      <td colspan="7"
+                          class="empty-row">
+                        Investment data will appear after the Admin API is connected.
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="transactions" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+
+        <!-- ==================================================
+             TRANSACTIONS
+        =================================================== -->
+
+        <div id="transactions"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>Transactions</h2>
-              <span>Add, view and manage transaction records</span>
+              <p>
+                Inspect the CoinForest transaction records.
+              </p>
             </div>
-            <div class="panel-body">
-              Transaction management will be connected to Neon here.
+
+            <div class="section-actions">
+
+              <button class="btn btn-secondary"
+                      onclick="loadTransactions()">
+                ↻ Refresh
+              </button>
+
+              <button class="btn btn-primary"
+                      onclick="openModal('transactionModal')">
+                ＋ New Record
+              </button>
+
             </div>
+
           </div>
+
+
+          <div class="notice warning">
+            Transaction creation, modification and deletion must be
+            authenticated and authorized by the server. The frontend
+            never writes directly to the financial ledger.
+          </div>
+
+
+          <div class="panel">
+
+            <div class="panel-body">
+
+              <div class="search-row">
+
+                <div class="search-box">
+
+                  <span>⌕</span>
+
+                  <input
+                    id="transactionSearch"
+                    type="search"
+                    placeholder="Search transaction reference..."
+                    oninput="filterTransactions()"
+                  >
+
+                </div>
+
+                <select id="transactionStatus"
+                        class="filter-select"
+                        onchange="filterTransactions()">
+
+                  <option value="all">All statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  <option value="failed">Failed</option>
+                  <option value="cancelled">Cancelled</option>
+
+                </select>
+
+              </div>
+
+
+              <div class="table-wrap">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+                      <th>Reference</th>
+                      <th>Customer</th>
+                      <th>Type</th>
+                      <th>Direction</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Action</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody id="transactionTableBody">
+
+                    <tr>
+                      <td colspan="8"
+                          class="empty-row">
+                        Transaction data will appear after the Admin API is connected.
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="requests" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
+
+        <!-- ==================================================
+             REQUESTS
+        =================================================== -->
+
+        <div id="requests"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
               <h2>Pending Requests</h2>
-              <span>Administrative approval queue</span>
+              <p>
+                Administrative review queue for non-investment requests.
+              </p>
             </div>
-            <div class="panel-body">
-              Deposit, withdrawal, send and other non-investment requests will appear here.
-            </div>
+
+            <button class="btn btn-secondary"
+                    onclick="loadRequests()">
+              ↻ Refresh
+            </button>
+
           </div>
+
+
+          <div class="notice">
+            Investment purchases are intentionally excluded from this
+            approval queue. Deposit, withdrawal and transfer requests
+            can be reviewed through the secured Admin backend.
+          </div>
+
+
+          <div class="request-grid"
+               id="requestGrid">
+
+            <div class="request-card">
+
+              <div class="request-top">
+                <strong>Deposit Requests</strong>
+                <span class="badge badge-yellow">Pending</span>
+              </div>
+
+              <div class="request-amount"
+                   id="pendingDeposits">
+                0
+              </div>
+
+              <div class="request-meta">
+                <div>
+                  <span>Source</span>
+                  <span>deposit_requests</span>
+                </div>
+              </div>
+
+              <div class="request-actions">
+
+                <button class="btn btn-secondary btn-sm"
+                        onclick="openRequestList('deposit')">
+                  Review
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <div class="request-card">
+
+              <div class="request-top">
+                <strong>Withdrawal Requests</strong>
+                <span class="badge badge-yellow">Pending</span>
+              </div>
+
+              <div class="request-amount"
+                   id="pendingWithdrawals">
+                0
+              </div>
+
+              <div class="request-meta">
+                <div>
+                  <span>Source</span>
+                  <span>withdrawal_requests</span>
+                </div>
+              </div>
+
+              <div class="request-actions">
+
+                <button class="btn btn-secondary btn-sm"
+                        onclick="openRequestList('withdrawal')">
+                  Review
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <div class="request-card">
+
+              <div class="request-top">
+                <strong>Transfer Requests</strong>
+                <span class="badge badge-yellow">Pending</span>
+              </div>
+
+              <div class="request-amount"
+                   id="pendingTransfers">
+                0
+              </div>
+
+              <div class="request-meta">
+                <div>
+                  <span>Source</span>
+                  <span>transfer_requests</span>
+                </div>
+              </div>
+
+              <div class="request-actions">
+
+                <button class="btn btn-secondary btn-sm"
+                        onclick="openRequestList('transfer')">
+                  Review
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="panel" style="margin-top:20px;">
+
+            <div class="panel-header">
+
+              <div>
+                <h2>Request Queue</h2>
+                <span id="requestQueueTitle">
+                  Select a request type above
+                </span>
+              </div>
+
+            </div>
+
+            <div class="panel-body">
+
+              <div class="table-wrap">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+                      <th>Reference</th>
+                      <th>Customer</th>
+                      <th>Amount</th>
+                      <th>Currency</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Action</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody id="requestTableBody">
+
+                    <tr>
+                      <td colspan="7"
+                          class="empty-row">
+                        Select a request type to load the queue.
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div id="settings" class="section" style="display:none;">
-          <div class="panel">
-            <div class="panel-header">
-              <h2>Settings</h2>
-              <span>Admin configuration</span>
+
+        <!-- ==================================================
+             AUDIT
+        =================================================== -->
+
+        <div id="audit"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
+              <h2>Admin Audit Log</h2>
+              <p>
+                Review privileged administrative activity.
+              </p>
             </div>
-            <div class="panel-body">
-              Administrative settings will be added here.
-            </div>
+
+            <button class="btn btn-secondary"
+                    onclick="loadAuditLog()">
+              ↻ Refresh
+            </button>
+
           </div>
+
+
+          <div class="panel">
+
+            <div class="panel-body">
+
+              <div class="table-wrap">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+                      <th>Action</th>
+                      <th>Admin</th>
+                      <th>Reference</th>
+                      <th>Description</th>
+                      <th>Date</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody id="auditTableBody">
+
+                    <tr>
+                      <td colspan="5"
+                          class="empty-row">
+                        Audit entries will appear after the Admin API is connected.
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             SETTINGS
+        =================================================== -->
+
+        <div id="settings"
+             class="section"
+             style="display:none;">
+
+          <div class="section-head">
+
+            <div>
+              <h2>Settings</h2>
+              <p>
+                Administration configuration.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="grid-2">
+
+            <div class="panel">
+
+              <div class="panel-header">
+
+                <div>
+                  <h2>Administrator</h2>
+                  <span>Current administrative account</span>
+                </div>
+
+              </div>
+
+              <div class="panel-body">
+
+                <div class="info-grid">
+
+                  <div class="info-box">
+                    <label>Role</label>
+                    <strong>Administrator</strong>
+                  </div>
+
+                  <div class="info-box">
+                    <label>Access</label>
+                    <strong>Privileged</strong>
+                  </div>
+
+                  <div class="info-box">
+                    <label>Database</label>
+                    <strong>Neon PostgreSQL</strong>
+                  </div>
+
+                  <div class="info-box">
+                    <label>Authentication</label>
+                    <strong>Server session</strong>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="panel">
+
+              <div class="panel-header">
+
+                <div>
+                  <h2>Security</h2>
+                  <span>Administrative safeguards</span>
+                </div>
+
+              </div>
+
+              <div class="panel-body">
+
+                <div class="activity">
+
+                  <div class="activity-icon">🔐</div>
+
+                  <div class="activity-info">
+                    <strong>Server-side authorization</strong>
+                    <span>
+                      Privileged financial actions must be checked server-side.
+                    </span>
+                  </div>
+
+                  <span class="badge badge-green">
+                    Required
+                  </span>
+
+                </div>
+
+
+                <div class="activity">
+
+                  <div class="activity-icon">📋</div>
+
+                  <div class="activity-info">
+                    <strong>Audit logging</strong>
+                    <span>
+                      Administrative actions should be recorded.
+                    </span>
+                  </div>
+
+                  <span class="badge badge-green">
+                    Enabled
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
       </section>
@@ -863,7 +2832,139 @@
 
   </div>
 
+
+  <!-- ======================================================
+       TRANSACTION MODAL
+  ======================================================= -->
+
+  <div class="modal-backdrop"
+       id="transactionModal">
+
+    <div class="modal">
+
+      <div class="modal-header">
+
+        <h3>Create Transaction Record</h3>
+
+        <button class="modal-close"
+                onclick="closeModal('transactionModal')">
+          ×
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="notice warning">
+          This form only prepares the request. A secured backend endpoint
+          must validate and authorize the operation before writing to Neon.
+        </div>
+
+        <div class="form-group">
+
+          <label>Customer ID</label>
+
+          <input
+            id="txCustomerId"
+            type="text"
+            placeholder="Customer UUID"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Transaction Type</label>
+
+          <select id="txType">
+
+            <option value="deposit">Deposit</option>
+            <option value="withdrawal">Withdrawal</option>
+            <option value="transfer">Transfer</option>
+            <option value="adjustment">Adjustment</option>
+            <option value="other">Other</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Direction</label>
+
+          <select id="txDirection">
+
+            <option value="credit">Credit</option>
+            <option value="debit">Debit</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Amount</label>
+
+          <input
+            id="txAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Description</label>
+
+          <textarea
+            id="txDescription"
+            placeholder="Transaction description..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button class="btn btn-secondary"
+                onclick="closeModal('transactionModal')">
+          Cancel
+        </button>
+
+        <button class="btn btn-primary"
+                onclick="submitTransactionRequest()">
+          Submit Request
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       TOASTS
+  ======================================================= -->
+
+  <div class="toast-container"
+       id="toastContainer"></div>
+
+
   <script>
+    /* =====================================================
+       COINFOREST ADMIN FRONTEND
+       ===================================================== */
+
     const titles = {
       dashboard: "Dashboard",
       customers: "Customers",
@@ -873,41 +2974,2142 @@
       investments: "Investments",
       transactions: "Transactions",
       requests: "Pending Requests",
+      audit: "Audit Log",
       settings: "Settings"
     };
 
+    const subtitles = {
+      dashboard: "CoinForest administration panel",
+      customers: "Customer account management",
+      kyc: "Customer verification review",
+      chat: "Customer support conversations",
+      wallets: "Customer wallet overview",
+      investments: "Customer investment activity",
+      transactions: "Transaction records",
+      requests: "Deposit, withdrawal and transfer requests",
+      audit: "Administrative activity history",
+      settings: "Administration configuration"
+    };
+
+    let currentSection = "dashboard";
+
+    let customers = [];
+    let wallets = [];
+    let investments = [];
+    let transactions = [];
+    let chats = [];
+
+    let selectedKyc = null;
+    let selectedChat = null;
+
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+
     function showSection(id, clickedButton = null) {
+
       document.querySelectorAll(".section").forEach(section => {
         section.style.display = "none";
       });
 
       const target = document.getElementById(id);
 
-      if (target) {
-        target.style.display = "block";
+      if (!target) {
+        return;
       }
+
+      target.style.display = "block";
+
+      currentSection = id;
 
       document.querySelectorAll(".nav-item").forEach(item => {
         item.classList.remove("active");
       });
 
       if (clickedButton) {
+
         clickedButton.classList.add("active");
+
+      } else {
+
+        const matchingButton =
+          document.querySelector(
+            `.nav-item[onclick*="'${id}'"]`
+          );
+
+        if (matchingButton) {
+          matchingButton.classList.add("active");
+        }
+
       }
 
       document.getElementById("pageTitle").textContent =
         titles[id] || "CoinForest Admin";
 
+      document.getElementById("pageSubtitle").textContent =
+        subtitles[id] || "CoinForest administration panel";
+
       if (window.innerWidth <= 760) {
-        toggleSidebar();
+        closeSidebar();
+      }
+
+      sectionEntered(id);
+    }
+
+
+    function sectionEntered(id) {
+
+      switch (id) {
+
+        case "customers":
+          loadCustomers();
+          break;
+
+        case "kyc":
+          loadKyc();
+          break;
+
+        case "chat":
+          loadChats();
+          break;
+
+        case "wallets":
+          loadWallets();
+          break;
+
+        case "investments":
+          loadInvestments();
+          break;
+
+        case "transactions":
+          loadTransactions();
+          break;
+
+        case "requests":
+          loadRequests();
+          break;
+
+        case "audit":
+          loadAuditLog();
+          break;
+
       }
     }
 
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("open");
-      document.getElementById("overlay").classList.toggle("open");
+
+    function refreshCurrentSection() {
+
+      sectionEntered(currentSection);
+
+      showToast(
+        "Refresh requested.",
+        "success"
+      );
     }
+
+
+    /* =====================================================
+       SIDEBAR
+    ===================================================== */
+
+    function toggleSidebar() {
+
+      document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+      document
+        .getElementById("overlay")
+        .classList.toggle("open");
+    }
+
+
+    function closeSidebar() {
+
+      document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+      document
+        .getElementById("overlay")
+        .classList.remove("open");
+    }
+
+
+    /* =====================================================
+       API HELPER
+    ===================================================== */
+
+    async function adminFetch(endpoint, options = {}) {
+
+      /*
+       * The frontend intentionally does not contain Neon
+       * credentials.
+       *
+       * The backend should authenticate the current session,
+       * verify the user's Admin role, validate the operation,
+       * and then access Neon.
+       */
+
+      const response = await fetch(
+        endpoint,
+        {
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+          },
+          ...options
+        }
+      );
+
+      let data = null;
+
+      try {
+        data = await response.json();
+      } catch (_) {
+        data = null;
+      }
+
+      if (!response.ok) {
+
+        const message =
+          data?.error ||
+          `Request failed (${response.status})`;
+
+        throw new Error(message);
+      }
+
+      return data;
+    }
+
+
+    /* =====================================================
+       DASHBOARD
+    ===================================================== */
+
+    async function loadDashboard() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/dashboard");
+
+        setText(
+          "totalCustomers",
+          data.totalCustomers ?? 0
+        );
+
+        setText(
+          "pendingKyc",
+          data.pendingKyc ?? 0
+        );
+
+        setText(
+          "activeInvestments",
+          data.activeInvestments ?? 0
+        );
+
+        setText(
+          "pendingRequests",
+          data.pendingRequests ?? 0
+        );
+
+        setText(
+          "kycBadge",
+          data.pendingKyc ?? 0
+        );
+
+        setText(
+          "requestBadge",
+          data.pendingRequests ?? 0
+        );
+
+        setText(
+          "chatBadge",
+          data.openChats ?? 0
+        );
+
+        renderDashboardActivity(
+          data.activity || []
+        );
+
+      } catch (error) {
+
+        console.warn(
+          "Dashboard API unavailable:",
+          error.message
+        );
+
+      }
+
+    }
+
+
+    function renderDashboardActivity(items) {
+
+      const container =
+        document.getElementById("dashboardActivity");
+
+      if (!items.length) {
+
+        container.innerHTML = `
+          <div class="activity">
+            <div class="activity-icon">🌲</div>
+            <div class="activity-info">
+              <strong>No recent activity</strong>
+              <span>There are no recorded administrative events.</span>
+            </div>
+          </div>
+        `;
+
+        return;
+      }
+
+      container.innerHTML =
+        items.map(item => `
+          <div class="activity">
+
+            <div class="activity-icon">
+              ${escapeHtml(item.icon || "•")}
+            </div>
+
+            <div class="activity-info">
+              <strong>
+                ${escapeHtml(item.action || "Administrative action")}
+              </strong>
+
+              <span>
+                ${escapeHtml(item.description || "")}
+              </span>
+            </div>
+
+            <span class="activity-amount">
+              ${formatDate(item.created_at)}
+            </span>
+
+          </div>
+        `).join("");
+    }
+
+
+    /* =====================================================
+       CUSTOMERS
+    ===================================================== */
+
+    async function loadCustomers() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/customers");
+
+        customers =
+          Array.isArray(data)
+            ? data
+            : (data.customers || []);
+
+        renderCustomers(customers);
+
+      } catch (error) {
+
+        console.warn(
+          "Customer API unavailable:",
+          error.message
+        );
+
+        renderCustomers([]);
+
+      }
+
+    }
+
+
+    function renderCustomers(items) {
+
+      const grid =
+        document.getElementById("customerGrid");
+
+      if (!items.length) {
+
+        grid.innerHTML = `
+          <div class="customer-card">
+            <div class="customer-top">
+              <div class="customer-avatar">—</div>
+              <div class="customer-name">
+                <strong>No customer data</strong>
+                <span>
+                  Connect the Admin API to load customer accounts.
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        return;
+      }
+
+      grid.innerHTML =
+        items.map(customer => {
+
+          const name =
+            [
+              customer.first_name,
+              customer.last_name
+            ]
+              .filter(Boolean)
+              .join(" ") ||
+            customer.username ||
+            "Customer";
+
+          const initials =
+            name
+              .split(/\s+/)
+              .slice(0, 2)
+              .map(x => x[0])
+              .join("")
+              .toUpperCase();
+
+          return `
+            <div class="customer-card">
+
+              <div class="customer-top">
+
+                <div class="customer-avatar">
+                  ${escapeHtml(initials || "C")}
+                </div>
+
+                <div class="customer-name">
+
+                  <strong>
+                    ${escapeHtml(name)}
+                  </strong>
+
+                  <span>
+                    ${escapeHtml(customer.email || "No email")}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="customer-details">
+
+                <div class="detail-line">
+                  <span>Status</span>
+                  <span>
+                    ${statusBadge(customer.status)}
+                  </span>
+                </div>
+
+                <div class="detail-line">
+                  <span>KYC</span>
+                  <span>
+                    ${statusBadge(customer.kyc_status)}
+                  </span>
+                </div>
+
+                <div class="detail-line">
+                  <span>Username</span>
+                  <span>
+                    ${escapeHtml(customer.username || "—")}
+                  </span>
+                </div>
+
+              </div>
+
+
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="viewCustomer('${escapeAttr(customer.id)}')">
+                View Customer
+              </button>
+
+            </div>
+          `;
+
+        }).join("");
+    }
+
+
+    function filterCustomers() {
+
+      const search =
+        document
+          .getElementById("customerSearch")
+          .value
+          .trim()
+          .toLowerCase();
+
+      const status =
+        document
+          .getElementById("customerStatusFilter")
+          .value;
+
+      const kyc =
+        document
+          .getElementById("customerKycFilter")
+          .value;
+
+      const filtered =
+        customers.filter(customer => {
+
+          const name =
+            `${customer.first_name || ""}
+             ${customer.last_name || ""}
+             ${customer.username || ""}
+             ${customer.email || ""}`
+              .toLowerCase();
+
+          const matchesSearch =
+            !search ||
+            name.includes(search);
+
+          const matchesStatus =
+            status === "all" ||
+            customer.status === status;
+
+          const matchesKyc =
+            kyc === "all" ||
+            customer.kyc_status === kyc;
+
+          return (
+            matchesSearch &&
+            matchesStatus &&
+            matchesKyc
+          );
+
+        });
+
+      renderCustomers(filtered);
+    }
+
+
+    function viewCustomer(id) {
+
+      const customer =
+        customers.find(x => x.id === id);
+
+      if (!customer) {
+        return;
+      }
+
+      showToast(
+        `Customer selected: ${customer.email || customer.id}`,
+        "success"
+      );
+
+      /*
+       * A full customer-detail endpoint can populate a
+       * dedicated customer drawer/modal here.
+       */
+    }
+
+
+    /* =====================================================
+       KYC
+    ===================================================== */
+
+    async function loadKyc() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/kyc");
+
+        const items =
+          Array.isArray(data)
+            ? data
+            : (data.submissions || []);
+
+        renderKycList(items);
+
+      } catch (error) {
+
+        console.warn(
+          "KYC API unavailable:",
+          error.message
+        );
+
+        renderKycList([]);
+
+      }
+
+    }
+
+
+    function renderKycList(items) {
+
+      const list =
+        document.getElementById("kycList");
+
+      if (!items.length) {
+
+        list.innerHTML = `
+          <div class="panel-body">
+            <div class="empty-row">
+              No KYC submissions available.
+            </div>
+          </div>
+        `;
+
+        return;
+      }
+
+      list.innerHTML =
+        items.map(item => {
+
+          const name =
+            item.customer_name ||
+            item.email ||
+            item.user_id ||
+            "Customer";
+
+          return `
+            <div
+              class="kyc-item"
+              onclick='selectKyc(${JSON.stringify(item)})'>
+
+              <div class="kyc-item-top">
+
+                <div>
+                  <strong>
+                    ${escapeHtml(name)}
+                  </strong>
+
+                  <small>
+                    ${escapeHtml(
+                      item.kyc_reference || item.id || ""
+                    )}
+                  </small>
+                </div>
+
+                ${statusBadge(item.status)}
+
+              </div>
+
+            </div>
+          `;
+
+        }).join("");
+    }
+
+
+    function selectKyc(item) {
+
+      selectedKyc = item;
+
+      document.getElementById(
+        "kycDetailReference"
+      ).textContent =
+        item.kyc_reference ||
+        item.id ||
+        "KYC submission";
+
+      document.getElementById(
+        "kycDetails"
+      ).innerHTML = `
+
+        <div class="info-grid">
+
+          <div class="info-box">
+            <label>Customer</label>
+            <strong>
+              ${escapeHtml(
+                item.customer_name ||
+                item.email ||
+                item.user_id ||
+                "—"
+              )}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <label>KYC Reference</label>
+            <strong>
+              ${escapeHtml(item.kyc_reference || "—")}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <label>Verification Level</label>
+            <strong>
+              ${escapeHtml(item.verification_level || "basic")}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <label>Status</label>
+            <strong>
+              ${statusBadge(item.status)}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <label>Submitted</label>
+            <strong>
+              ${formatDate(item.submitted_at)}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <label>Reviewed</label>
+            <strong>
+              ${formatDate(item.reviewed_at)}
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div class="kyc-actions">
+
+          <button
+            class="btn btn-success"
+            onclick="reviewKyc('approved')">
+            ✓ Approve
+          </button>
+
+          <button
+            class="btn btn-danger"
+            onclick="reviewKyc('rejected')">
+            Reject
+          </button>
+
+        </div>
+      `;
+    }
+
+
+    async function reviewKyc(status) {
+
+      if (!selectedKyc) {
+
+        showToast(
+          "Select a KYC submission first.",
+          "error"
+        );
+
+        return;
+      }
+
+      const reason =
+        status === "rejected"
+          ? prompt("Enter rejection reason:")
+          : "";
+
+      if (
+        status === "rejected" &&
+        !reason
+      ) {
+        return;
+      }
+
+      try {
+
+        await adminFetch(
+          `/api/admin/kyc/${encodeURIComponent(selectedKyc.id)}/review`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              status,
+              reason
+            })
+          }
+        );
+
+        showToast(
+          `KYC ${status}.`,
+          "success"
+        );
+
+        selectedKyc = null;
+
+        loadKyc();
+        loadDashboard();
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       CHAT
+    ===================================================== */
+
+    async function loadChats() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/chats");
+
+        chats =
+          Array.isArray(data)
+            ? data
+            : (data.chats || []);
+
+        renderChats(chats);
+
+      } catch (error) {
+
+        console.warn(
+          "Chat API unavailable:",
+          error.message
+        );
+
+        renderChats([]);
+
+      }
+
+    }
+
+
+    function renderChats(items) {
+
+      const list =
+        document.getElementById("chatList");
+
+      if (!items.length) {
+
+        list.innerHTML = `
+          <div class="empty-row">
+            No customer conversations available.
+          </div>
+        `;
+
+        return;
+      }
+
+      list.innerHTML =
+        items.map(chat => `
+
+          <div
+            class="chat-item"
+            onclick="selectChat('${escapeAttr(chat.id)}')">
+
+            <strong>
+              ${escapeHtml(
+                chat.customer_name ||
+                chat.subject ||
+                "Customer"
+              )}
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                chat.subject ||
+                chat.last_message ||
+                "No message"
+              )}
+            </span>
+
+          </div>
+
+        `).join("");
+    }
+
+
+    async function selectChat(id) {
+
+      selectedChat =
+        chats.find(x => x.id === id) || null;
+
+      if (!selectedChat) {
+        return;
+      }
+
+      document.getElementById(
+        "chatCustomerName"
+      ).textContent =
+        selectedChat.customer_name ||
+        "Customer";
+
+      document.getElementById(
+        "chatTicketReference"
+      ).textContent =
+        selectedChat.ticket_reference ||
+        selectedChat.subject ||
+        "Support conversation";
+
+      document.getElementById(
+        "chatMessage"
+      ).disabled = false;
+
+      document.getElementById(
+        "sendChatButton"
+      ).disabled = false;
+
+      try {
+
+        const data =
+          await adminFetch(
+            `/api/admin/chats/${encodeURIComponent(id)}/messages`
+          );
+
+        const messages =
+          Array.isArray(data)
+            ? data
+            : (data.messages || []);
+
+        renderMessages(messages);
+
+      } catch (error) {
+
+        renderMessages([]);
+
+        console.warn(
+          "Messages API unavailable:",
+          error.message
+        );
+
+      }
+
+    }
+
+
+    function renderMessages(messages) {
+
+      const container =
+        document.getElementById("messages");
+
+      if (!messages.length) {
+
+        container.innerHTML = `
+          <div class="empty-row">
+            No messages in this conversation.
+          </div>
+        `;
+
+        return;
+      }
+
+      container.innerHTML =
+        messages.map(message => {
+
+          const role =
+            message.sender_role === "admin"
+              ? "admin"
+              : "customer";
+
+          return `
+            <div class="message ${role}">
+
+              ${escapeHtml(message.message || "")}
+
+              <span class="message-time">
+                ${formatDate(message.created_at)}
+              </span>
+
+            </div>
+          `;
+
+        }).join("");
+
+      container.scrollTop =
+        container.scrollHeight;
+    }
+
+
+    async function sendChatMessage() {
+
+      if (!selectedChat) {
+        return;
+      }
+
+      const input =
+        document.getElementById("chatMessage");
+
+      const message =
+        input.value.trim();
+
+      if (!message) {
+        return;
+      }
+
+      try {
+
+        await adminFetch(
+          `/api/admin/chats/${encodeURIComponent(selectedChat.id)}/messages`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              message
+            })
+          }
+        );
+
+        input.value = "";
+
+        await selectChat(selectedChat.id);
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       WALLETS
+    ===================================================== */
+
+    async function loadWallets() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/wallets");
+
+        wallets =
+          Array.isArray(data)
+            ? data
+            : (data.wallets || []);
+
+        renderWallets(wallets);
+
+      } catch (error) {
+
+        console.warn(
+          "Wallet API unavailable:",
+          error.message
+        );
+
+        renderWallets([]);
+
+      }
+
+    }
+
+
+    function renderWallets(items) {
+
+      const body =
+        document.getElementById(
+          "walletTableBody"
+        );
+
+      if (!items.length) {
+
+        body.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-row">
+              Wallet data will appear after the Admin API is connected.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        items.map(wallet => `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                wallet.customer_name ||
+                wallet.user_id ||
+                "Customer"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(wallet.wallet_type || "—")}
+            </td>
+
+            <td>
+              ${escapeHtml(wallet.currency || "USD")}
+            </td>
+
+            <td>
+              ${formatMoney(
+                wallet.balance ??
+                wallet.total_balance ??
+                0,
+                wallet.currency
+              )}
+            </td>
+
+            <td>
+              ${statusBadge(wallet.status)}
+            </td>
+
+            <td>
+
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="requestWalletReview('${escapeAttr(wallet.id)}')">
+                Manage
+              </button>
+
+            </td>
+
+          </tr>
+
+        `).join("");
+    }
+
+
+    function filterWallets() {
+
+      const query =
+        document
+          .getElementById("walletSearch")
+          .value
+          .toLowerCase()
+          .trim();
+
+      const filtered =
+        wallets.filter(wallet => {
+
+          const text =
+            `${wallet.customer_name || ""}
+             ${wallet.user_id || ""}
+             ${wallet.wallet_type || ""}
+             ${wallet.currency || ""}`
+              .toLowerCase();
+
+          return !query || text.includes(query);
+
+        });
+
+      renderWallets(filtered);
+    }
+
+
+    function requestWalletReview(walletId) {
+
+      showToast(
+        "Wallet management requires the secured Admin backend.",
+        "success"
+      );
+
+      /*
+       * The eventual backend operation should:
+       *
+       * 1. Verify the Admin session.
+       * 2. Verify role = admin.
+       * 3. Validate wallet ownership.
+       * 4. Apply the authorized adjustment.
+       * 5. Keep wallet_balances consistent.
+       * 6. Write wallet_balance_ledger.
+       * 7. Record admin_audit_logs.
+       */
+    }
+
+
+    /* =====================================================
+       INVESTMENTS
+    ===================================================== */
+
+    async function loadInvestments() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/investments");
+
+        investments =
+          Array.isArray(data)
+            ? data
+            : (data.investments || []);
+
+        renderInvestments(investments);
+
+      } catch (error) {
+
+        console.warn(
+          "Investment API unavailable:",
+          error.message
+        );
+
+        renderInvestments([]);
+
+      }
+
+    }
+
+
+    function renderInvestments(items) {
+
+      const body =
+        document.getElementById(
+          "investmentTableBody"
+        );
+
+      if (!items.length) {
+
+        body.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-row">
+              Investment data will appear after the Admin API is connected.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        items.map(item => `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                item.investment_reference || item.id
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.customer_name ||
+                item.user_id ||
+                "Customer"
+              )}
+            </td>
+
+            <td>
+              ${formatMoney(
+                item.principal_amount,
+                item.currency
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                `${item.roi_percentage ?? 0}%`
+              )}
+            </td>
+
+            <td>
+              ${formatMoney(
+                item.expected_profit,
+                item.currency
+              )}
+            </td>
+
+            <td>
+              ${statusBadge(item.status)}
+            </td>
+
+            <td>
+              ${formatDate(item.started_at)}
+            </td>
+
+          </tr>
+
+        `).join("");
+    }
+
+
+    function filterInvestments() {
+
+      const query =
+        document
+          .getElementById("investmentSearch")
+          .value
+          .toLowerCase()
+          .trim();
+
+      const status =
+        document
+          .getElementById("investmentStatus")
+          .value;
+
+      const filtered =
+        investments.filter(item => {
+
+          const text =
+            `${item.investment_reference || ""}
+             ${item.customer_name || ""}
+             ${item.user_id || ""}`
+              .toLowerCase();
+
+          return (
+            (!query || text.includes(query)) &&
+            (status === "all" || item.status === status)
+          );
+
+        });
+
+      renderInvestments(filtered);
+    }
+
+
+    /* =====================================================
+       TRANSACTIONS
+    ===================================================== */
+
+    async function loadTransactions() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/transactions");
+
+        transactions =
+          Array.isArray(data)
+            ? data
+            : (data.transactions || []);
+
+        renderTransactions(transactions);
+
+      } catch (error) {
+
+        console.warn(
+          "Transaction API unavailable:",
+          error.message
+        );
+
+        renderTransactions([]);
+
+      }
+
+    }
+
+
+    function renderTransactions(items) {
+
+      const body =
+        document.getElementById(
+          "transactionTableBody"
+        );
+
+      if (!items.length) {
+
+        body.innerHTML = `
+          <tr>
+            <td colspan="8" class="empty-row">
+              Transaction data will appear after the Admin API is connected.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        items.map(item => `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                item.transaction_reference || item.id
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.customer_name ||
+                item.user_id ||
+                "Customer"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.transaction_type || "—"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.direction || "—"
+              )}
+            </td>
+
+            <td>
+              ${formatMoney(
+                item.amount,
+                item.currency
+              )}
+            </td>
+
+            <td>
+              ${statusBadge(item.status)}
+            </td>
+
+            <td>
+              ${formatDate(item.created_at)}
+            </td>
+
+            <td>
+
+              <button
+                class="btn btn-secondary btn-sm"
+                onclick="viewTransaction('${escapeAttr(item.id)}')">
+                View
+              </button>
+
+            </td>
+
+          </tr>
+
+        `).join("");
+    }
+
+
+    function filterTransactions() {
+
+      const query =
+        document
+          .getElementById("transactionSearch")
+          .value
+          .toLowerCase()
+          .trim();
+
+      const status =
+        document
+          .getElementById("transactionStatus")
+          .value;
+
+      const filtered =
+        transactions.filter(item => {
+
+          const text =
+            `${item.transaction_reference || ""}
+             ${item.customer_name || ""}
+             ${item.user_id || ""}
+             ${item.transaction_type || ""}`
+              .toLowerCase();
+
+          return (
+            (!query || text.includes(query)) &&
+            (status === "all" || item.status === status)
+          );
+
+        });
+
+      renderTransactions(filtered);
+    }
+
+
+    function viewTransaction(id) {
+
+      const transaction =
+        transactions.find(x => x.id === id);
+
+      if (!transaction) {
+        return;
+      }
+
+      showToast(
+        `Transaction ${transaction.transaction_reference || id}`,
+        "success"
+      );
+    }
+
+
+    async function submitTransactionRequest() {
+
+      const customerId =
+        document
+          .getElementById("txCustomerId")
+          .value
+          .trim();
+
+      const type =
+        document
+          .getElementById("txType")
+          .value;
+
+      const direction =
+        document
+          .getElementById("txDirection")
+          .value;
+
+      const amount =
+        document
+          .getElementById("txAmount")
+          .value;
+
+      const description =
+        document
+          .getElementById("txDescription")
+          .value
+          .trim();
+
+      if (
+        !customerId ||
+        !amount ||
+        Number(amount) <= 0
+      ) {
+
+        showToast(
+          "Customer ID and a valid amount are required.",
+          "error"
+        );
+
+        return;
+      }
+
+      try {
+
+        await adminFetch(
+          "/api/admin/transactions",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              customer_id: customerId,
+              transaction_type: type,
+              direction,
+              amount: Number(amount),
+              description
+            })
+          }
+        );
+
+        closeModal("transactionModal");
+
+        showToast(
+          "Transaction request submitted.",
+          "success"
+        );
+
+        loadTransactions();
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       REQUESTS
+    ===================================================== */
+
+    async function loadRequests() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/requests/summary");
+
+        setText(
+          "pendingDeposits",
+          data.deposits ?? 0
+        );
+
+        setText(
+          "pendingWithdrawals",
+          data.withdrawals ?? 0
+        );
+
+        setText(
+          "pendingTransfers",
+          data.transfers ?? 0
+        );
+
+        setText(
+          "pendingRequests",
+          (
+            Number(data.deposits || 0) +
+            Number(data.withdrawals || 0) +
+            Number(data.transfers || 0)
+          )
+        );
+
+      } catch (error) {
+
+        console.warn(
+          "Request API unavailable:",
+          error.message
+        );
+
+      }
+
+    }
+
+
+    async function openRequestList(type) {
+
+      const titlesMap = {
+        deposit: "Deposit Requests",
+        withdrawal: "Withdrawal Requests",
+        transfer: "Transfer Requests"
+      };
+
+      document.getElementById(
+        "requestQueueTitle"
+      ).textContent =
+        titlesMap[type] || "Request Queue";
+
+      const body =
+        document.getElementById(
+          "requestTableBody"
+        );
+
+      body.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty-row">
+            Loading...
+          </td>
+        </tr>
+      `;
+
+      try {
+
+        const data =
+          await adminFetch(
+            `/api/admin/requests/${encodeURIComponent(type)}`
+          );
+
+        const items =
+          Array.isArray(data)
+            ? data
+            : (data.requests || []);
+
+        if (!items.length) {
+
+          body.innerHTML = `
+            <tr>
+              <td colspan="7" class="empty-row">
+                No pending ${type} requests.
+              </td>
+            </tr>
+          `;
+
+          return;
+        }
+
+        body.innerHTML =
+          items.map(item => `
+
+            <tr>
+
+              <td>
+                ${escapeHtml(
+                  item.reference ||
+                  item.deposit_reference ||
+                  item.withdrawal_reference ||
+                  item.transfer_reference ||
+                  item.id
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.customer_name ||
+                  item.user_id ||
+                  "Customer"
+                )}
+              </td>
+
+              <td>
+                ${formatMoney(
+                  item.amount,
+                  item.currency
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.currency || "USD"
+                )}
+              </td>
+
+              <td>
+                ${statusBadge(item.status)}
+              </td>
+
+              <td>
+                ${formatDate(
+                  item.created_at ||
+                  item.submitted_at ||
+                  item.requested_at
+                )}
+              </td>
+
+              <td>
+
+                <button
+                  class="btn btn-secondary btn-sm"
+                  onclick="reviewRequest('${escapeAttr(type)}','${escapeAttr(item.id)}')">
+                  Review
+                </button>
+
+              </td>
+
+            </tr>
+
+          `).join("");
+
+      } catch (error) {
+
+        body.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-row">
+              ${escapeHtml(error.message)}
+            </td>
+          </tr>
+        `;
+
+      }
+
+    }
+
+
+    function reviewRequest(type, id) {
+
+      showToast(
+        `${capitalize(type)} review requires the secured Admin backend.`,
+        "success"
+      );
+
+      /*
+       * Backend workflow:
+       *
+       * - authenticate session
+       * - verify admin role
+       * - validate request
+       * - approve/reject
+       * - create/update appropriate transaction
+       * - update wallet state when appropriate
+       * - create audit record
+       */
+    }
+
+
+    /* =====================================================
+       AUDIT
+    ===================================================== */
+
+    async function loadAuditLog() {
+
+      try {
+
+        const data =
+          await adminFetch("/api/admin/audit");
+
+        const items =
+          Array.isArray(data)
+            ? data
+            : (data.logs || []);
+
+        renderAudit(items);
+
+      } catch (error) {
+
+        console.warn(
+          "Audit API unavailable:",
+          error.message
+        );
+
+        renderAudit([]);
+
+      }
+
+    }
+
+
+    function renderAudit(items) {
+
+      const body =
+        document.getElementById(
+          "auditTableBody"
+        );
+
+      if (!items.length) {
+
+        body.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-row">
+              No audit entries available.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        items.map(item => `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(item.action || "—")}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.admin_name ||
+                item.admin_id ||
+                "Admin"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.reference_id || "—"
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                item.description ||
+                item.metadata?.description ||
+                "—"
+              )}
+            </td>
+
+            <td>
+              ${formatDate(item.created_at)}
+            </td>
+
+          </tr>
+
+        `).join("");
+    }
+
+
+    /* =====================================================
+       MODALS
+    ===================================================== */
+
+    function openModal(id) {
+
+      const modal =
+        document.getElementById(id);
+
+      if (!modal) {
+        return;
+      }
+
+      modal.classList.add("open");
+
+      document.body.classList.add(
+        "modal-open"
+      );
+    }
+
+
+    function closeModal(id) {
+
+      const modal =
+        document.getElementById(id);
+
+      if (!modal) {
+        return;
+      }
+
+      modal.classList.remove("open");
+
+      document.body.classList.remove(
+        "modal-open"
+      );
+    }
+
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Escape") {
+
+          document
+            .querySelectorAll(".modal-backdrop.open")
+            .forEach(modal => {
+              modal.classList.remove("open");
+            });
+
+          document.body.classList.remove(
+            "modal-open"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    function showToast(
+      message,
+      type = ""
+    ) {
+
+      const container =
+        document.getElementById(
+          "toastContainer"
+        );
+
+      const toast =
+        document.createElement("div");
+
+      toast.className =
+        `toast ${type}`;
+
+      toast.textContent =
+        message;
+
+      container.appendChild(toast);
+
+      setTimeout(
+        () => toast.remove(),
+        3500
+      );
+    }
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function setText(id, value) {
+
+      const element =
+        document.getElementById(id);
+
+      if (element) {
+        element.textContent = value;
+      }
+    }
+
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+
+    function capitalize(value) {
+
+      if (!value) {
+        return "";
+      }
+
+      return value.charAt(0).toUpperCase() +
+        value.slice(1);
+    }
+
+
+    function formatDate(value) {
+
+      if (!value) {
+        return "—";
+      }
+
+      const date =
+        new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "—";
+      }
+
+      return date.toLocaleString(
+        undefined,
+        {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }
+      );
+    }
+
+
+    function formatMoney(
+      value,
+      currency = "USD"
+    ) {
+
+      const number =
+        Number(value || 0);
+
+      try {
+
+        return new Intl.NumberFormat(
+          undefined,
+          {
+            style: "currency",
+            currency: currency || "USD",
+            minimumFractionDigits: 2
+          }
+        ).format(number);
+
+      } catch (_) {
+
+        return `${currency || "USD"} ${number.toFixed(2)}`;
+
+      }
+    }
+
+
+    function statusBadge(status) {
+
+      const value =
+        String(status || "unknown")
+          .toLowerCase();
+
+      let cls = "badge-gray";
+
+      if (
+        [
+          "approved",
+          "verified",
+          "active",
+          "completed",
+          "success",
+          "open"
+        ].includes(value)
+      ) {
+        cls = "badge-green";
+      }
+
+      else if (
+        [
+          "rejected",
+          "failed",
+          "cancelled",
+          "disabled",
+          "suspended"
+        ].includes(value)
+      ) {
+        cls = "badge-red";
+      }
+
+      else if (
+        [
+          "pending",
+          "processing",
+          "under_review"
+        ].includes(value)
+      ) {
+        cls = "badge-yellow";
+      }
+
+      else if (
+        [
+          "reviewed",
+          "info"
+        ].includes(value)
+      ) {
+        cls = "badge-blue";
+      }
+
+      return `
+        <span class="badge ${cls}">
+          ${escapeHtml(
+            String(status || "unknown").replace(/_/g, " ")
+          )}
+        </span>
+      `;
+    }
+
+
+    /* =====================================================
+       INITIALIZATION
+    ===================================================== */
+
+    async function initializeAdmin() {
+
+      /*
+       * The backend endpoint should:
+       *
+       * 1. Validate the current session.
+       * 2. Resolve user_id.
+       * 3. Resolve profiles.role_id.
+       * 4. Confirm role.name = 'admin'.
+       *
+       * If unauthorized, it should return HTTP 401/403.
+       */
+
+      try {
+
+        const data =
+          await adminFetch(
+            "/api/admin/session"
+          );
+
+        if (data?.admin) {
+
+          const name =
+            data.admin.first_name ||
+            data.admin.username ||
+            "Administrator";
+
+          setText(
+            "adminName",
+            name
+          );
+
+          setText(
+            "adminRole",
+            "Admin account"
+          );
+
+          const initial =
+            name.charAt(0).toUpperCase();
+
+          setText(
+            "adminAvatar",
+            initial
+          );
+
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "Admin session API unavailable:",
+          error.message
+        );
+
+      }
+
+      loadDashboard();
+
+    }
+
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeAdmin
+    );
   </script>
 
 </body>
-</html>
+  </html>
