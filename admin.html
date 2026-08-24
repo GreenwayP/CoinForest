@@ -1,1 +1,913 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoinForest Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --green: #126b3a;
+      --green-dark: #0b4d2a;
+      --green-light: #eaf7ef;
+      --gold: #d9a441;
+      --gold-light: #fff7e3;
+      --bg: #f5f7f6;
+      --card: #ffffff;
+      --text: #17231d;
+      --muted: #718078;
+      --border: #e4e9e6;
+      --danger: #c94343;
+      --shadow: 0 8px 28px rgba(20, 45, 32, .07);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================
+       APP LAYOUT
+    ========================= */
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 21px;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 17px;
+      color: var(--green-dark);
+    }
+
+    .brand-text span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .nav {
+      padding: 20px 12px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-label {
+      color: #9aa59f;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 12px 9px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 13px;
+      margin-bottom: 4px;
+      border-radius: 11px;
+      color: #58655e;
+      text-align: left;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .nav-item:hover {
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    .nav-item.active {
+      background: var(--green);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      width: 23px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar-footer {
+      padding: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .admin-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      color: #9b711c;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .admin-mini strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .admin-mini span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      min-width: 0;
+    }
+
+    .topbar {
+      height: 76px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-left h1 {
+      font-size: 20px;
+      color: var(--text);
+    }
+
+    .topbar-left p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+      color: #5e6a63;
+    }
+
+    .content {
+      padding: 28px 30px 40px;
+      max-width: 1500px;
+    }
+
+    /* =========================
+       STAT CARDS
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 17px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stat-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .stat-value {
+      font-size: 25px;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+
+    .stat-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* =========================
+       CONTENT CARDS
+    ========================= */
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-header h2 {
+      font-size: 15px;
+    }
+
+    .panel-header span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .panel-body {
+      padding: 18px 20px;
+    }
+
+    /* =========================
+       QUICK ACTIONS
+    ========================= */
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .action {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: left;
+      transition: .2s;
+    }
+
+    .action:hover {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .action-icon {
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+
+    .action strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .action span {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* =========================
+       ACTIVITY
+    ========================= */
+
+    .activity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf0ee;
+    }
+
+    .activity:last-child {
+      border-bottom: 0;
+    }
+
+    .activity-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--green-light);
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .activity-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .activity-info strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .activity-info span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .activity-amount {
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    .mobile-menu {
+      display: none;
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      z-index: 90;
+    }
+
+    @media (max-width: 1050px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .overlay.open {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .topbar-left h1 {
+        font-size: 17px;
+      }
+
+      .content {
+        padding: 20px 15px 30px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-value {
+        font-size: 20px;
+      }
+
+      .stat-icon {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    @media (max-width: 440px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="brand">
+        <div class="brand-logo">🌲</div>
+        <div class="brand-text">
+          <strong>CoinForest</strong>
+          <span>Administration</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+
+        <div class="nav-label">Overview</div>
+
+        <button class="nav-item active" onclick="showSection('dashboard', this)">
+          <span class="nav-icon">⌂</span>
+          Dashboard
+        </button>
+
+        <div class="nav-label" style="margin-top:18px;">Customers</div>
+
+        <button class="nav-item" onclick="showSection('customers', this)">
+          <span class="nav-icon">👥</span>
+          Customers
+        </button>
+
+        <button class="nav-item" onclick="showSection('kyc', this)">
+          <span class="nav-icon">✓</span>
+          KYC Review
+        </button>
+
+        <button class="nav-item" onclick="showSection('chat', this)">
+          <span class="nav-icon">💬</span>
+          Customer Chat
+        </button>
+
+        <div class="nav-label" style="margin-top:18px;">Financial</div>
+
+        <button class="nav-item" onclick="showSection('wallets', this)">
+          <span class="nav-icon">💳</span>
+          Wallets
+        </button>
+
+        <button class="nav-item" onclick="showSection('investments', this)">
+          <span class="nav-icon">📈</span>
+          Investments
+        </button>
+
+        <button class="nav-item" onclick="showSection('transactions', this)">
+          <span class="nav-icon">↔</span>
+          Transactions
+        </button>
+
+        <button class="nav-item" onclick="showSection('requests', this)">
+          <span class="nav-icon">⏳</span>
+          Pending Requests
+        </button>
+
+        <div class="nav-label" style="margin-top:18px;">System</div>
+
+        <button class="nav-item" onclick="showSection('settings', this)">
+          <span class="nav-icon">⚙</span>
+          Settings
+        </button>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-mini">
+          <div class="admin-avatar">A</div>
+          <div>
+            <strong>Administrator</strong>
+            <span>Admin account</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <header class="topbar">
+
+        <div class="topbar-left">
+          <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+          <div>
+            <h1 id="pageTitle">Dashboard</h1>
+            <p>CoinForest administration panel</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button class="icon-btn" title="Notifications">🔔</button>
+          <button class="icon-btn" title="Admin profile">A</button>
+        </div>
+
+      </header>
+
+      <section class="content">
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="section">
+
+          <div class="stats">
+
+            <div class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Total Customers</span>
+                <div class="stat-icon">👥</div>
+              </div>
+              <div class="stat-value" id="totalCustomers">0</div>
+              <div class="stat-note">Registered accounts</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Pending KYC</span>
+                <div class="stat-icon">✓</div>
+              </div>
+              <div class="stat-value" id="pendingKyc">0</div>
+              <div class="stat-note">Awaiting review</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Active Investments</span>
+                <div class="stat-icon">📈</div>
+              </div>
+              <div class="stat-value" id="activeInvestments">0</div>
+              <div class="stat-note">Customer investments</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Pending Requests</span>
+                <div class="stat-icon">⏳</div>
+              </div>
+              <div class="stat-value" id="pendingRequests">0</div>
+              <div class="stat-note">Deposit, withdrawal & transfers</div>
+            </div>
+
+          </div>
+
+          <div class="grid-2">
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Quick Actions</h2>
+                  <span>Administrative controls</span>
+                </div>
+              </div>
+
+              <div class="panel-body">
+
+                <div class="quick-actions">
+
+                  <button class="action" onclick="showSection('kyc')">
+                    <div class="action-icon">✓</div>
+                    <strong>Review KYC</strong>
+                    <span>Review and approve customer verification.</span>
+                  </button>
+
+                  <button class="action" onclick="showSection('wallets')">
+                    <div class="action-icon">💳</div>
+                    <strong>Manage Wallet</strong>
+                    <span>Edit Main Wallet and Profit Wallet balances.</span>
+                  </button>
+
+                  <button class="action" onclick="showSection('transactions')">
+                    <div class="action-icon">＋</div>
+                    <strong>Add Transaction</strong>
+                    <span>Create an administrative transaction record.</span>
+                  </button>
+
+                  <button class="action" onclick="showSection('chat')">
+                    <div class="action-icon">💬</div>
+                    <strong>Customer Chat</strong>
+                    <span>View and respond to customer messages.</span>
+                  </button>
+
+                </div>
+
+              </div>
+            </div>
+
+            <div class="panel">
+
+              <div class="panel-header">
+                <div>
+                  <h2>Recent Activity</h2>
+                  <span>Latest administrative activity</span>
+                </div>
+              </div>
+
+              <div class="panel-body">
+
+                <div class="activity">
+                  <div class="activity-icon">👤</div>
+                  <div class="activity-info">
+                    <strong>System ready</strong>
+                    <span>Admin dashboard initialized</span>
+                  </div>
+                </div>
+
+                <div class="activity">
+                  <div class="activity-icon">🌲</div>
+                  <div class="activity-info">
+                    <strong>CoinForest Admin</strong>
+                    <span>Awaiting Neon connection</span>
+                  </div>
+                </div>
+
+                <div class="activity">
+                  <div class="activity-icon">🔐</div>
+                  <div class="activity-info">
+                    <strong>Administrative access</strong>
+                    <span>Secure admin session required</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- PLACEHOLDER SECTIONS -->
+
+        <div id="customers" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Customers</h2>
+              <span>Customer account management</span>
+            </div>
+            <div class="panel-body">
+              Customer management will be connected to Neon here.
+            </div>
+          </div>
+        </div>
+
+        <div id="kyc" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>KYC Review</h2>
+              <span>Approve or reject customer verification</span>
+            </div>
+            <div class="panel-body">
+              KYC management will be connected to Neon here.
+            </div>
+          </div>
+        </div>
+
+        <div id="chat" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Customer Chat</h2>
+              <span>Customer ↔ Admin conversations</span>
+            </div>
+            <div class="panel-body">
+              Customer chat will be connected to Neon here.
+            </div>
+          </div>
+        </div>
+
+        <div id="wallets" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Wallet Management</h2>
+              <span>Main Wallet and Profit Wallet controls</span>
+            </div>
+            <div class="panel-body">
+              Wallet management will be connected to Neon here.
+            </div>
+          </div>
+        </div>
+
+        <div id="investments" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Investments</h2>
+              <span>View customer investments</span>
+            </div>
+            <div class="panel-body">
+              Investments are customer-initiated after KYC approval. No Admin approval workflow will be used here.
+            </div>
+          </div>
+        </div>
+
+        <div id="transactions" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Transactions</h2>
+              <span>Add, view and manage transaction records</span>
+            </div>
+            <div class="panel-body">
+              Transaction management will be connected to Neon here.
+            </div>
+          </div>
+        </div>
+
+        <div id="requests" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Pending Requests</h2>
+              <span>Administrative approval queue</span>
+            </div>
+            <div class="panel-body">
+              Deposit, withdrawal, send and other non-investment requests will appear here.
+            </div>
+          </div>
+        </div>
+
+        <div id="settings" class="section" style="display:none;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Settings</h2>
+              <span>Admin configuration</span>
+            </div>
+            <div class="panel-body">
+              Administrative settings will be added here.
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    const titles = {
+      dashboard: "Dashboard",
+      customers: "Customers",
+      kyc: "KYC Review",
+      chat: "Customer Chat",
+      wallets: "Wallet Management",
+      investments: "Investments",
+      transactions: "Transactions",
+      requests: "Pending Requests",
+      settings: "Settings"
+    };
+
+    function showSection(id, clickedButton = null) {
+      document.querySelectorAll(".section").forEach(section => {
+        section.style.display = "none";
+      });
+
+      const target = document.getElementById(id);
+
+      if (target) {
+        target.style.display = "block";
+      }
+
+      document.querySelectorAll(".nav-item").forEach(item => {
+        item.classList.remove("active");
+      });
+
+      if (clickedButton) {
+        clickedButton.classList.add("active");
+      }
+
+      document.getElementById("pageTitle").textContent =
+        titles[id] || "CoinForest Admin";
+
+      if (window.innerWidth <= 760) {
+        toggleSidebar();
+      }
+    }
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("open");
+      document.getElementById("overlay").classList.toggle("open");
+    }
+  </script>
+
+</body>
+</html>
