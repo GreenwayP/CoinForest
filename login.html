@@ -81,7 +81,8 @@
       flex-direction: column;
       justify-content: space-between;
 
-      min-heigconst}
+      min-height: 650px;
+    }
 
     .logo {
       font-size: 29px;
@@ -504,10 +505,6 @@
 
   <main class="page">
 
-    <!-- ===================================================
-         LEFT SIDE
-    ==================================================== -->
-
     <section class="visual">
 
       <div class="logo">
@@ -563,11 +560,6 @@
 
     </section>
 
-
-    <!-- ===================================================
-         LOGIN FORM
-    ==================================================== -->
-
     <section class="form-area">
 
       <div class="form-container">
@@ -584,10 +576,7 @@
 
         </div>
 
-
         <form id="loginForm" autocomplete="off">
-
-          <!-- EMAIL -->
 
           <div class="field">
 
@@ -605,9 +594,6 @@
             >
 
           </div>
-
-
-          <!-- PASSWORD -->
 
           <div class="field">
 
@@ -638,9 +624,6 @@
 
           </div>
 
-
-          <!-- LOGIN BUTTON -->
-
           <button
             class="submit-btn"
             id="submitBtn"
@@ -649,18 +632,12 @@
             Sign In
           </button>
 
-
-          <!-- MESSAGE -->
-
           <div
             id="message"
             class="message"
           ></div>
 
         </form>
-
-
-        <!-- REGISTER -->
 
         <div class="register">
 
@@ -671,9 +648,6 @@
           </a>
 
         </div>
-
-
-        <!-- BACK -->
 
         <div class="back">
 
@@ -697,129 +671,470 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const forgotPassword = document.getElementById("forgotPassword");
 
-const API_URL = "https://coinforest-api-test-2026.onrender.com";
+const API_URL =
+  "https://coinforest-api-test-2026.onrender.com";
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
 
 function showMessage(text, type) {
+
   message.textContent = text;
-  message.className = "message " + type;
+
+  message.className =
+    "message " + type;
+
 }
+
 
 function resetLoginButton() {
+
   button.disabled = false;
-  button.textContent = "Sign In";
+
+  button.textContent =
+    "Sign In";
+
 }
 
-forgotPassword.addEventListener("click", function (event) {
-  event.preventDefault();
 
-  showMessage(
-    "Password recovery will be available once the CoinForest email service is configured.",
-    "success"
-  );
-});
+/* =====================================================
+   USER RESPONSE NORMALIZATION
+===================================================== */
 
-form.addEventListener("submit", async function (event) {
-  event.preventDefault();
+function extractUser(data) {
 
-  const email = emailInput.value.trim().toLowerCase();
-  const password = passwordInput.value;
+  if (
+    data &&
+    data.user &&
+    typeof data.user === "object"
+  ) {
 
-  if (!email || !password) {
-    showMessage(
-      "Please enter your email and password.",
-      "error"
-    );
-    return;
+    return data.user;
+
   }
 
-  button.disabled = true;
-  button.textContent = "Signing in...";
-  message.className = "message";
+
+  if (
+    data &&
+    data.data &&
+    data.data.user &&
+    typeof data.data.user === "object"
+  ) {
+
+    return data.data.user;
+
+  }
+
+
+  if (
+    data &&
+    data.data &&
+    typeof data.data === "object" &&
+    (
+      data.data.role ||
+      data.data.email ||
+      data.data.id
+    )
+  ) {
+
+    return data.data;
+
+  }
+
+
+  if (
+    data &&
+    typeof data === "object" &&
+    (
+      data.role ||
+      data.email ||
+      data.id
+    )
+  ) {
+
+    return data;
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =====================================================
+   ROLE NORMALIZATION
+===================================================== */
+
+function normalizeRole(user, data) {
+
+  const possibleRole =
+    user?.role ??
+    user?.user_role ??
+    user?.account_role ??
+    data?.role ??
+    data?.user_role ??
+    data?.account_role ??
+    data?.data?.role ??
+    "";
+
+
+  return String(
+    possibleRole
+  )
+    .trim()
+    .toLowerCase();
+
+}
+
+
+/* =====================================================
+   JWT ROLE FALLBACK
+=====================================================
+
+   This only helps recover the role when the API returns
+   a token but omits the user object.
+
+   The server remains responsible for authorization.
+===================================================== */
+
+function getRoleFromToken(token) {
 
   try {
-    const response = await fetch(
-      `${API_URL}/api/auth/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email,
-          password
-        })
-      }
+
+    const parts =
+      String(token).split(".");
+
+    if (parts.length !== 3) {
+      return "";
+    }
+
+    let payload =
+      parts[1]
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+    while (
+      payload.length % 4
+    ) {
+      payload += "=";
+    }
+
+    const decoded =
+      JSON.parse(
+        atob(payload)
+      );
+
+    return String(
+      decoded?.role ??
+      decoded?.user_role ??
+      decoded?.account_role ??
+      ""
+    )
+      .trim()
+      .toLowerCase();
+
+  } catch (error) {
+
+    console.warn(
+      "Unable to read token role:",
+      error
     );
 
-    const text = await response.text();
+    return "";
 
-    let data;
+  }
 
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new Error(
-        `Server returned an invalid response (${response.status}).`
-      );
-    }
+}
 
-    if (!response.ok) {
-      throw new Error(
-        data.error || `Login failed (${response.status}).`
-      );
-    }
 
-    if (!data.token) {
-      throw new Error(
-        "Login succeeded but no session token was returned."
-      );
-    }
+/* =====================================================
+   FORGOT PASSWORD
+===================================================== */
 
-    localStorage.setItem(
-      "coinforest_token",
-      data.token
-    );
+forgotPassword.addEventListener(
+  "click",
+  function (event) {
 
-    if (data.user) {
-      localStorage.setItem(
-        "coinforest_user",
-        JSON.stringify(data.user)
-      );
-    }
+    event.preventDefault();
 
     showMessage(
-      "Login successful. Opening your dashboard...",
+      "Password recovery will be available once the CoinForest email service is configured.",
       "success"
     );
 
-    resetLoginButton();
-
-    setTimeout(() => {
-  const role = String(data.user?.role || "").toLowerCase();
-
-  if (role === "admin") {
-    window.location.href = "admin.html";
-  } else {
-    window.location.href = "dashboard.html";
   }
-}, 500);
+);
 
-  } catch (error) {
-    console.error("CoinForest login error:", error);
 
-    showMessage(
-      error.message ||
-      "Unable to connect to the CoinForest server.",
-      "error"
-    );
+/* =====================================================
+   LOGIN
+===================================================== */
 
-    resetLoginButton();
+form.addEventListener(
+  "submit",
+  async function (event) {
+
+    event.preventDefault();
+
+
+    const email =
+      emailInput.value
+        .trim()
+        .toLowerCase();
+
+
+    const password =
+      passwordInput.value;
+
+
+    if (
+      !email ||
+      !password
+    ) {
+
+      showMessage(
+        "Please enter your email and password.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "Signing in...";
+
+    message.className =
+      "message";
+
+
+    try {
+
+      const response =
+        await fetch(
+          `${API_URL}/api/auth/login`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Accept":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              email,
+              password
+            })
+          }
+        );
+
+
+      const text =
+        await response.text();
+
+
+      let data;
+
+
+      try {
+
+        data =
+          JSON.parse(text);
+
+      } catch {
+
+        throw new Error(
+          `Server returned an invalid response (${response.status}).`
+        );
+
+      }
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          data.message ||
+          `Login failed (${response.status}).`
+        );
+
+      }
+
+
+      const token =
+        data?.token ??
+        data?.access_token ??
+        data?.data?.token ??
+        data?.data?.access_token;
+
+
+      if (!token) {
+
+        throw new Error(
+          "Login succeeded but no session token was returned."
+        );
+
+      }
+
+
+      /*
+       * Extract the user regardless of whether the
+       * backend returns {user}, {data:{user}}, etc.
+       */
+
+      let user =
+        extractUser(data);
+
+
+      /*
+       * Determine the role from every supported location.
+       */
+
+      let role =
+        normalizeRole(
+          user,
+          data
+        );
+
+
+      /*
+       * If no role was supplied alongside the user,
+       * recover it from the token when possible.
+       */
+
+      if (!role) {
+
+        role =
+          getRoleFromToken(
+            token
+          );
+
+      }
+
+
+      /*
+       * Always create a normalized user object.
+       *
+       * This is the important part of the fix.
+       */
+
+      if (!user) {
+
+        user = {};
+
+      }
+
+
+      user = {
+        ...user,
+
+        role:
+          role || user.role || ""
+      };
+
+
+      /*
+       * Store the exact same session keys that
+       * admin.html reads.
+       */
+
+      localStorage.setItem(
+        "coinforest_token",
+        token
+      );
+
+
+      localStorage.setItem(
+        "coinforest_user",
+        JSON.stringify(user)
+      );
+
+
+      /*
+       * Keep role available separately as well.
+       * This gives the admin page another reliable
+       * local session reference.
+       */
+
+      if (role) {
+
+        localStorage.setItem(
+          "coinforest_role",
+          role
+        );
+
+      } else {
+
+        localStorage.removeItem(
+          "coinforest_role"
+        );
+
+      }
+
+
+      showMessage(
+        "Login successful. Opening your account...",
+        "success"
+      );
+
+
+      resetLoginButton();
+
+
+      setTimeout(
+        function () {
+
+          if (
+            role === "admin"
+          ) {
+
+            window.location.href =
+              "admin.html";
+
+          } else {
+
+            window.location.href =
+              "dashboard.html";
+
+          }
+
+        },
+        400
+      );
+
+    } catch (error) {
+
+      console.error(
+        "CoinForest login error:",
+        error
+      );
+
+
+      showMessage(
+        error.message ||
+        "Unable to connect to the CoinForest server.",
+        "error"
+      );
+
+
+      resetLoginButton();
+
+    }
+
   }
-});
-  
+);
+
 </script>
-
-  
 
 </body>
 </html>
