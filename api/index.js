@@ -6,9 +6,15 @@ const sql = neon(process.env.DATABASE_URL);
 const headers = {
   "Content-Type": "application/json; charset=utf-8",
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Admin-Reset-Key",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+  "Access-Control-Allow-Headers":
+    "Content-Type, Authorization, X-Admin-Reset-Key",
+  "Access-Control-Allow-Methods":
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
 };
+
+/* =====================================================
+   RESPONSE HELPERS
+===================================================== */
 
 function response(status, data) {
   return new Response(JSON.stringify(data), {
@@ -16,6 +22,25 @@ function response(status, data) {
     headers
   });
 }
+
+function ok(data = {}) {
+  return response(200, {
+    success: true,
+    ...data
+  });
+}
+
+function bad(status, error, extra = {}) {
+  return response(status, {
+    success: false,
+    error,
+    ...extra
+  });
+}
+
+/* =====================================================
+   BASIC HELPERS
+===================================================== */
 
 function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
@@ -91,7 +116,9 @@ function getSiteUrl(request) {
     return "https://coinforest.vercel.app";
   }
 
-  return `https://${String(host).split(",")[0].trim()}`;
+  return `https://${String(host)
+    .split(",")[0]
+    .trim()}`;
 }
 
 function escapeHtml(value) {
@@ -102,6 +129,32 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
+function jsonBody(request) {
+  return request.json().catch(() => ({}));
+}
+
+function numberValue(value, fallback = 0) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function cleanLimit(value, fallback = 100) {
+  const n = Number(value);
+
+  if (!Number.isFinite(n)) {
+    return fallback;
+  }
+
+  return Math.min(
+    Math.max(Math.floor(n), 1),
+    500
+  );
+}
+
+/* =====================================================
+   EMAIL
+===================================================== */
 
 async function sendEmail({ to, subject, html }) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -121,7 +174,9 @@ async function sendEmail({ to, subject, html }) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        from: "CoinForest <onboarding@resend.dev>",
+        from:
+          process.env.EMAIL_FROM ||
+          "CoinForest <onboarding@resend.dev>",
         to: [to],
         subject,
         html
@@ -134,8 +189,8 @@ async function sendEmail({ to, subject, html }) {
   if (!result.ok) {
     throw new Error(
       data?.message ||
-      data?.error ||
-      "Unable to send email."
+        data?.error ||
+        "Unable to send email."
     );
   }
 
@@ -172,7 +227,8 @@ async function createEmailToken(
       ${userId},
       ${tokenHash},
       ${tokenType},
-      NOW() + (${expiresMinutes} * INTERVAL '1 minute'),
+      NOW() +
+        (${expiresMinutes} * INTERVAL '1 minute'),
       NOW()
     )
   `;
@@ -180,7 +236,10 @@ async function createEmailToken(
   return rawToken;
 }
 
-async function sendVerificationEmail(request, user) {
+async function sendVerificationEmail(
+  request,
+  user
+) {
   const token = await createEmailToken(
     user.id,
     "email_verification",
@@ -188,14 +247,19 @@ async function sendVerificationEmail(request, user) {
   );
 
   const verificationUrl =
-    `${getSiteUrl(request)}/verify-email.html?token=${encodeURIComponent(token)}`;
+    `${getSiteUrl(request)}` +
+    `/verify-email.html?token=` +
+    encodeURIComponent(token);
 
   const firstName =
-    String(user.first_name || "Customer").trim();
+    String(
+      user.first_name || "Customer"
+    ).trim();
 
   return sendEmail({
     to: user.email,
-    subject: "Confirm your CoinForest account",
+    subject:
+      "Confirm your CoinForest account",
     html: `
       <div style="
         max-width:600px;
@@ -217,19 +281,24 @@ async function sendVerificationEmail(request, user) {
             font-size:28px;
             font-weight:800;
           ">
-            Coin<span style="color:#2ecc71;">Forest</span>
+            Coin<span style="color:#2ecc71;">
+              Forest
+            </span>
           </div>
         </div>
 
         <div style="padding:35px;">
           <h2>Confirm your account</h2>
 
-          <p>Hello ${escapeHtml(firstName)},</p>
+          <p>
+            Hello ${escapeHtml(firstName)},
+          </p>
 
           <p style="line-height:1.7;">
-            Thank you for creating your CoinForest account.
-            Please confirm your email address to activate
-            your account.
+            Thank you for creating your
+            CoinForest account.
+            Please confirm your email address
+            to activate your account.
           </p>
 
           <div style="
@@ -264,47 +333,59 @@ async function sendVerificationEmail(request, user) {
   });
 }
 
+/* =====================================================
+   REGISTER
+===================================================== */
+
 async function register(request, body) {
-  const email = normalizeEmail(body.email);
-  const password = String(body.password || "");
-  const firstName = String(body.first_name || "").trim();
-  const lastName = String(body.last_name || "").trim();
-  const username = String(body.username || "").trim();
+  const email =
+    normalizeEmail(body.email);
+
+  const password =
+    String(body.password || "");
+
+  const firstName =
+    String(body.first_name || "").trim();
+
+  const lastName =
+    String(body.last_name || "").trim();
+
+  const username =
+    String(body.username || "").trim();
 
   if (!email || !password) {
-    return response(400, {
-      success: false,
-      error: "Email and password are required."
-    });
+    return bad(
+      400,
+      "Email and password are required."
+    );
   }
 
   if (!firstName) {
-    return response(400, {
-      success: false,
-      error: "First name is required."
-    });
+    return bad(
+      400,
+      "First name is required."
+    );
   }
 
   if (!lastName) {
-    return response(400, {
-      success: false,
-      error: "Last name is required."
-    });
+    return bad(
+      400,
+      "Last name is required."
+    );
   }
 
   if (!username) {
-    return response(400, {
-      success: false,
-      error: "Username is required."
-    });
+    return bad(
+      400,
+      "Username is required."
+    );
   }
 
   if (password.length < 6) {
-    return response(400, {
-      success: false,
-      error:
-        "Password must contain at least 6 characters."
-    });
+    return bad(
+      400,
+      "Password must contain at least 6 characters."
+    );
   }
 
   const existingEmail = await sql`
@@ -315,30 +396,31 @@ async function register(request, body) {
   `;
 
   if (existingEmail.length) {
-    return response(409, {
-      success: false,
-      error:
-        "An account with this email already exists."
-    });
+    return bad(
+      409,
+      "An account with this email already exists."
+    );
   }
 
   const existingUsername = await sql`
     SELECT id
     FROM profiles
-    WHERE LOWER(username) = LOWER(${username})
+    WHERE LOWER(username) =
+      LOWER(${username})
     LIMIT 1
   `;
 
   if (existingUsername.length) {
-    return response(409, {
-      success: false,
-      error: "That username is already in use."
-    });
+    return bad(
+      409,
+      "That username is already in use."
+    );
   }
 
   const id = crypto.randomUUID();
 
-  const passwordHash = hashPassword(password);
+  const passwordHash =
+    hashPassword(password);
 
   await sql`
     INSERT INTO profiles (
@@ -401,7 +483,10 @@ async function register(request, body) {
   };
 
   try {
-    await sendVerificationEmail(request, user);
+    await sendVerificationEmail(
+      request,
+      user
+    );
   } catch (error) {
     console.error(
       "Verification email error:",
@@ -426,15 +511,22 @@ async function register(request, body) {
   });
 }
 
+/* =====================================================
+   LOGIN
+===================================================== */
+
 async function login(body) {
-  const email = normalizeEmail(body.email);
-  const password = String(body.password || "");
+  const email =
+    normalizeEmail(body.email);
+
+  const password =
+    String(body.password || "");
 
   if (!email || !password) {
-    return response(400, {
-      success: false,
-      error: "Email and password are required."
-    });
+    return bad(
+      400,
+      "Email and password are required."
+    );
   }
 
   const result = await sql`
@@ -461,17 +553,18 @@ async function login(body) {
   `;
 
   if (!result.length) {
-    return response(401, {
-      success: false,
-      error: "Invalid email or password."
-    });
+    return bad(
+      401,
+      "Invalid email or password."
+    );
   }
 
   const user = result[0];
 
   if (
     user.locked_until &&
-    new Date(user.locked_until) > new Date()
+    new Date(user.locked_until) >
+      new Date()
   ) {
     return response(423, {
       success: false,
@@ -487,7 +580,9 @@ async function login(body) {
     )
   ) {
     const attempts =
-      Number(user.failed_login_attempts || 0) + 1;
+      Number(
+        user.failed_login_attempts || 0
+      ) + 1;
 
     if (attempts >= 5) {
       await sql`
@@ -495,7 +590,8 @@ async function login(body) {
         SET
           failed_login_attempts = 0,
           locked_until =
-            NOW() + INTERVAL '15 minutes',
+            NOW() +
+            INTERVAL '15 minutes',
           updated_at = NOW()
         WHERE user_id = ${user.id}
       `;
@@ -515,10 +611,10 @@ async function login(body) {
       WHERE user_id = ${user.id}
     `;
 
-    return response(401, {
-      success: false,
-      error: "Invalid email or password."
-    });
+    return bad(
+      401,
+      "Invalid email or password."
+    );
   }
 
   await sql`
@@ -555,8 +651,7 @@ async function login(body) {
     )
   `;
 
-  return response(200, {
-    success: true,
+  return ok({
     message: "Login successful.",
     token,
     user: {
@@ -566,171 +661,25 @@ async function login(body) {
       last_name: user.last_name,
       username: user.username,
       role: user.role_name,
-      email_verified: !!user.email_verified_at
+      email_verified:
+        !!user.email_verified_at
     }
   });
 }
 
-
 /* =====================================================
-   TEMPORARY ADMIN PASSWORD RESET
-   ===================================================== */
+   AUTHENTICATE SESSION
+===================================================== */
 
-async function resetAdminPassword(request, body) {
-
-  const resetKey =
-    request.headers.get("x-admin-reset-key");
-
-  const configuredKey =
-    process.env.ADMIN_RESET_KEY;
-
-  if (
-    !configuredKey ||
-    resetKey !== configuredKey
-  ) {
-    return response(403, {
-      success: false,
-      error: "Unauthorized."
-    });
-  }
-
-  const email =
-    normalizeEmail(body.email);
-
-  const password =
-    String(body.password || "");
-
-  if (!email || !password) {
-    return response(400, {
-      success: false,
-      error:
-        "Email and password are required."
-    });
-  }
-
-  if (password.length < 6) {
-    return response(400, {
-      success: false,
-      error:
-        "Password must contain at least 6 characters."
-    });
-  }
-
-  const passwordHash =
-    hashPassword(password);
-
-  const result = await sql`
-    UPDATE auth_credentials
-    SET
-      password_hash = ${passwordHash},
-      password_updated_at = NOW(),
-      failed_login_attempts = 0,
-      locked_until = NULL,
-      updated_at = NOW()
-    WHERE user_id = (
-      SELECT p.id
-      FROM profiles p
-      INNER JOIN roles r
-        ON r.id = p.role_id
-      WHERE LOWER(p.email) = ${email}
-        AND LOWER(r.name) = 'admin'
-      LIMIT 1
-    )
-    RETURNING user_id
-  `;
-
-  if (!result.length) {
-    return response(404, {
-      success: false,
-      error:
-        "Admin account not found."
-    });
-  }
-
-  return response(200, {
-    success: true,
-    message:
-      "Admin password reset successfully."
-  });
-}
-
-
-/* =====================================================
-   EMAIL VERIFICATION
-   ===================================================== */
-
-async function verifyEmail(token) {
-  const cleanToken =
-    String(token || "").trim();
-
-  if (!cleanToken) {
-    return response(400, {
-      success: false,
-      error:
-        "Verification token is required."
-    });
-  }
-
-  const tokenHash =
-    hashToken(cleanToken);
-
-  const result = await sql`
-    SELECT
-      t.id AS token_id,
-      t.user_id
-    FROM auth_email_tokens t
-    WHERE t.token_hash = ${tokenHash}
-      AND t.token_type = 'email_verification'
-      AND t.used_at IS NULL
-      AND t.expires_at > NOW()
-    LIMIT 1
-  `;
-
-  if (!result.length) {
-    return response(400, {
-      success: false,
-      error:
-        "This verification link is invalid or has expired."
-    });
-  }
-
-  const item = result[0];
-
-  await sql`
-    UPDATE profiles
-    SET
-      email_verified_at = NOW(),
-      updated_at = NOW()
-    WHERE id = ${item.user_id}
-  `;
-
-  await sql`
-    UPDATE auth_email_tokens
-    SET used_at = NOW()
-    WHERE id = ${item.token_id}
-  `;
-
-  return response(200, {
-    success: true,
-    message:
-      "Your email has been confirmed successfully."
-  });
-}
-
-
-/* =====================================================
-   CURRENT USER
-   ===================================================== */
-
-async function me(request) {
+async function authenticate(request) {
   const token = bearer(request);
 
   if (!token) {
-    return response(401, {
-      success: false,
-      error:
-        "Authentication required."
-    });
+    return {
+      ok: false,
+      status: 401,
+      error: "Authentication required."
+    };
   }
 
   const tokenHash =
@@ -753,18 +702,21 @@ async function me(request) {
       ON p.id = s.user_id
     LEFT JOIN roles r
       ON r.id = p.role_id
-    WHERE s.session_token_hash = ${tokenHash}
+    WHERE
+      s.session_token_hash =
+        ${tokenHash}
       AND s.status = 'active'
       AND s.expires_at > NOW()
     LIMIT 1
   `;
 
   if (!result.length) {
-    return response(401, {
-      success: false,
+    return {
+      ok: false,
+      status: 401,
       error:
         "Invalid or expired session."
-    });
+    };
   }
 
   await sql`
@@ -772,14 +724,65 @@ async function me(request) {
     SET
       last_activity_at = NOW(),
       updated_at = NOW()
-    WHERE session_token_hash = ${tokenHash}
+    WHERE
+      session_token_hash =
+        ${tokenHash}
       AND status = 'active'
   `;
 
-  const user = result[0];
+  return {
+    ok: true,
+    user: result[0],
+    token
+  };
+}
 
-  return response(200, {
-    success: true,
+async function requireAdmin(request) {
+  const auth =
+    await authenticate(request);
+
+  if (!auth.ok) {
+    return auth;
+  }
+
+  const role =
+    String(
+      auth.user.role_name || ""
+    ).toLowerCase();
+
+  if (
+    role !== "admin" &&
+    role !== "administrator"
+  ) {
+    return {
+      ok: false,
+      status: 403,
+      error:
+        "Administrator access required."
+    };
+  }
+
+  return auth;
+}
+
+/* =====================================================
+   CURRENT USER
+===================================================== */
+
+async function me(request) {
+  const auth =
+    await authenticate(request);
+
+  if (!auth.ok) {
+    return bad(
+      auth.status,
+      auth.error
+    );
+  }
+
+  const user = auth.user;
+
+  return ok({
     user: {
       id: user.id,
       email: user.email,
@@ -795,10 +798,9 @@ async function me(request) {
   });
 }
 
-
 /* =====================================================
    LOGOUT
-   ===================================================== */
+===================================================== */
 
 async function logout(request) {
   const token = bearer(request);
@@ -810,50 +812,1374 @@ async function logout(request) {
         status = 'revoked',
         revoked_at = NOW(),
         updated_at = NOW()
-      WHERE session_token_hash = ${hashToken(token)}
+      WHERE
+        session_token_hash =
+          ${hashToken(token)}
         AND status = 'active'
     `;
   }
 
-  return response(200, {
-    success: true,
+  return ok({
     message:
       "Logged out successfully."
   });
 }
 
-
 /* =====================================================
    HEALTH
-   ===================================================== */
+===================================================== */
 
 async function health() {
-  return response(200, {
-    success: true,
-    message:
-      "CoinForest API is running."
+  try {
+    await sql`SELECT 1`;
+
+    return ok({
+      message:
+        "CoinForest API is running.",
+      database: true
+    });
+  } catch (error) {
+    console.error(
+      "Health database error:",
+      error
+    );
+
+    return response(503, {
+      success: false,
+      message:
+        "CoinForest API is running, but database connection failed.",
+      database: false
+    });
+  }
+}
+
+/* =====================================================
+   ADMIN — DASHBOARD
+===================================================== */
+
+async function adminDashboard() {
+  const [
+    customers,
+    pendingKyc,
+    investments,
+    transactions,
+    pendingRequests
+  ] = await Promise.all([
+    sql`
+      SELECT COUNT(*)::int AS count
+      FROM profiles p
+      LEFT JOIN roles r
+        ON r.id = p.role_id
+      WHERE LOWER(COALESCE(r.name, 'user'))
+        <> 'admin'
+    `,
+
+    sql`
+      SELECT COUNT(*)::int AS count
+      FROM profiles
+      WHERE LOWER(COALESCE(kyc_status, 'pending'))
+        = 'pending'
+    `,
+
+    sql`
+      SELECT COUNT(*)::int AS count
+      FROM investments
+    `,
+
+    sql`
+      SELECT COUNT(*)::int AS count
+      FROM transactions
+    `,
+
+    sql`
+      SELECT COUNT(*)::int AS count
+      FROM pending_requests
+      WHERE LOWER(COALESCE(status, 'pending'))
+        = 'pending'
+    `
+  ]);
+
+  return ok({
+    stats: {
+      customers:
+        customers[0]?.count || 0,
+
+      pending_kyc:
+        pendingKyc[0]?.count || 0,
+
+      investments:
+        investments[0]?.count || 0,
+
+      transactions:
+        transactions[0]?.count || 0,
+
+      pending_requests:
+        pendingRequests[0]?.count || 0
+    }
   });
 }
 
+/* =====================================================
+   ADMIN — CUSTOMERS
+===================================================== */
+
+async function adminCustomers(url) {
+  const search =
+    String(
+      url.searchParams.get("search") || ""
+    ).trim();
+
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  const offset =
+    Math.max(
+      Number(
+        url.searchParams.get("offset") || 0
+      ),
+      0
+    );
+
+  const rows = await sql`
+    SELECT
+      p.id,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email,
+      p.status,
+      p.kyc_status,
+      p.email_verified_at,
+      p.two_factor_enabled,
+      p.created_at,
+      p.updated_at,
+      r.name AS role
+    FROM profiles p
+    LEFT JOIN roles r
+      ON r.id = p.role_id
+    WHERE
+      LOWER(COALESCE(r.name, 'user'))
+        <> 'admin'
+      AND (
+        ${search} = ''
+        OR LOWER(COALESCE(p.first_name, ''))
+          LIKE LOWER(${"%" + search + "%"})
+        OR LOWER(COALESCE(p.last_name, ''))
+          LIKE LOWER(${"%" + search + "%"})
+        OR LOWER(COALESCE(p.username, ''))
+          LIKE LOWER(${"%" + search + "%"})
+        OR LOWER(COALESCE(p.email, ''))
+          LIKE LOWER(${"%" + search + "%"})
+      )
+    ORDER BY p.created_at DESC
+    LIMIT ${limit}
+    OFFSET ${offset}
+  `;
+
+  return ok({
+    customers: rows
+  });
+}
+
+async function adminCustomer(id) {
+  if (!id) {
+    return bad(
+      400,
+      "Customer ID is required."
+    );
+  }
+
+  const result = await sql`
+    SELECT
+      p.*,
+      r.name AS role
+    FROM profiles p
+    LEFT JOIN roles r
+      ON r.id = p.role_id
+    WHERE p.id = ${id}
+    LIMIT 1
+  `;
+
+  if (!result.length) {
+    return bad(
+      404,
+      "Customer not found."
+    );
+  }
+
+  return ok({
+    customer: result[0]
+  });
+}
+
+/* =====================================================
+   ADMIN — WALLETS
+===================================================== */
+
+async function adminWallets(url) {
+  const search =
+    String(
+      url.searchParams.get("search") || ""
+    ).trim();
+
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  const rows = await sql`
+    SELECT
+      w.*,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM wallets w
+    INNER JOIN profiles p
+      ON p.id = w.user_id
+    WHERE
+      ${search} = ''
+      OR LOWER(COALESCE(p.username, ''))
+        LIKE LOWER(${"%" + search + "%"})
+      OR LOWER(COALESCE(p.email, ''))
+        LIKE LOWER(${"%" + search + "%"})
+    ORDER BY w.created_at DESC
+    LIMIT ${limit}
+  `;
+
+  return ok({
+    wallets: rows
+  });
+}
+
+async function adminWallet(userId) {
+  if (!userId) {
+    return bad(
+      400,
+      "User ID is required."
+    );
+  }
+
+  const wallets = await sql`
+    SELECT
+      w.*,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM wallets w
+    INNER JOIN profiles p
+      ON p.id = w.user_id
+    WHERE w.user_id = ${userId}
+    ORDER BY w.created_at ASC
+  `;
+
+  let ledger = [];
+
+  try {
+    ledger = await sql`
+      SELECT *
+      FROM wallet_ledger
+      WHERE user_id = ${userId}
+      ORDER BY created_at DESC
+      LIMIT 200
+    `;
+  } catch (error) {
+    console.warn(
+      "wallet_ledger unavailable:",
+      error?.message
+    );
+  }
+
+  return ok({
+    wallets,
+    ledger
+  });
+}
+
+/* =====================================================
+   ADMIN — WALLET ADJUSTMENT
+===================================================== */
+
+async function adjustWallet(
+  request,
+  body
+) {
+  const admin =
+    await requireAdmin(request);
+
+  if (!admin.ok) {
+    return bad(
+      admin.status,
+      admin.error
+    );
+  }
+
+  const userId =
+    String(
+      body.user_id || ""
+    ).trim();
+
+  const walletType =
+    String(
+      body.wallet_type ||
+        body.wallet ||
+        "main"
+    )
+      .trim()
+      .toLowerCase();
+
+  const amount =
+    numberValue(body.amount, NaN);
+
+  const reason =
+    String(
+      body.reason ||
+        "Administrator balance adjustment"
+    ).trim();
+
+  if (!userId) {
+    return bad(
+      400,
+      "User ID is required."
+    );
+  }
+
+  if (!Number.isFinite(amount) ||
+      amount === 0) {
+    return bad(
+      400,
+      "A non-zero adjustment amount is required."
+    );
+  }
+
+  if (
+    walletType !== "main" &&
+    walletType !== "profit"
+  ) {
+    return bad(
+      400,
+      "Wallet must be main or profit."
+    );
+  }
+
+  const walletRows = await sql`
+    SELECT *
+    FROM wallets
+    WHERE user_id = ${userId}
+    LIMIT 1
+  `;
+
+  if (!walletRows.length) {
+    return bad(
+      404,
+      "Customer wallet not found."
+    );
+  }
+
+  const wallet =
+    walletRows[0];
+
+  const column =
+    walletType === "profit"
+      ? "profit_balance"
+      : "main_balance";
+
+  const current =
+    numberValue(
+      wallet[column],
+      0
+    );
+
+  const next =
+    current + amount;
+
+  if (next < 0) {
+    return bad(
+      400,
+      "Insufficient wallet balance."
+    );
+  }
+
+  let updated;
+
+  if (walletType === "profit") {
+    updated = await sql`
+      UPDATE wallets
+      SET
+        profit_balance = ${next},
+        updated_at = NOW()
+      WHERE user_id = ${userId}
+      RETURNING *
+    `;
+  } else {
+    updated = await sql`
+      UPDATE wallets
+      SET
+        main_balance = ${next},
+        updated_at = NOW()
+      WHERE user_id = ${userId}
+      RETURNING *
+    `;
+  }
+
+  try {
+    await sql`
+      INSERT INTO wallet_ledger (
+        id,
+        user_id,
+        wallet_type,
+        amount,
+        balance_before,
+        balance_after,
+        entry_type,
+        description,
+        created_by,
+        created_at
+      )
+      VALUES (
+        ${crypto.randomUUID()},
+        ${userId},
+        ${walletType},
+        ${amount},
+        ${current},
+        ${next},
+        'admin_adjustment',
+        ${reason},
+        ${admin.user.id},
+        NOW()
+      )
+    `;
+  } catch (error) {
+    console.warn(
+      "wallet_ledger insert failed:",
+      error?.message
+    );
+  }
+
+  return ok({
+    message:
+      "Wallet balance updated successfully.",
+    wallet:
+      updated[0]
+  });
+}
+
+/* =====================================================
+   ADMIN — KYC
+===================================================== */
+
+async function adminKyc(url) {
+  const status =
+    String(
+      url.searchParams.get("status") || ""
+    ).trim().toLowerCase();
+
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  let rows;
+
+  if (status) {
+    rows = await sql`
+      SELECT
+        k.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email,
+        p.status AS account_status,
+        p.kyc_status
+      FROM kyc_submissions k
+      INNER JOIN profiles p
+        ON p.id = k.user_id
+      WHERE LOWER(COALESCE(k.status, 'pending'))
+        = ${status}
+      ORDER BY k.created_at DESC
+      LIMIT ${limit}
+    `;
+  } else {
+    rows = await sql`
+      SELECT
+        k.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email,
+        p.status AS account_status,
+        p.kyc_status
+      FROM kyc_submissions k
+      INNER JOIN profiles p
+        ON p.id = k.user_id
+      ORDER BY k.created_at DESC
+      LIMIT ${limit}
+    `;
+  }
+
+  return ok({
+    submissions: rows
+  });
+}
+
+async function reviewKyc(
+  request,
+  id,
+  body
+) {
+  const admin =
+    await requireAdmin(request);
+
+  if (!admin.ok) {
+    return bad(
+      admin.status,
+      admin.error
+    );
+  }
+
+  const decision =
+    String(
+      body.status ||
+        body.decision ||
+        ""
+    )
+      .trim()
+      .toLowerCase();
+
+  if (
+    decision !== "approved" &&
+    decision !== "rejected"
+  ) {
+    return bad(
+      400,
+      "KYC decision must be approved or rejected."
+    );
+  }
+
+  const submission =
+    await sql`
+      SELECT *
+      FROM kyc_submissions
+      WHERE id = ${id}
+      LIMIT 1
+    `;
+
+  if (!submission.length) {
+    return bad(
+      404,
+      "KYC submission not found."
+    );
+  }
+
+  const userId =
+    submission[0].user_id;
+
+  const updated =
+    await sql`
+      UPDATE kyc_submissions
+      SET
+        status = ${decision},
+        reviewed_by = ${admin.user.id},
+        reviewed_at = NOW(),
+        updated_at = NOW()
+      WHERE id = ${id}
+      RETURNING *
+    `;
+
+  await sql`
+    UPDATE profiles
+    SET
+      kyc_status = ${decision},
+      updated_at = NOW()
+    WHERE id = ${userId}
+  `;
+
+  return ok({
+    message:
+      `KYC ${decision} successfully.`,
+    submission:
+      updated[0]
+  });
+}
+
+/* =====================================================
+   ADMIN — INVESTMENTS
+===================================================== */
+
+async function adminInvestments(url) {
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  const rows = await sql`
+    SELECT
+      i.*,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM investments i
+    INNER JOIN profiles p
+      ON p.id = i.user_id
+    ORDER BY i.created_at DESC
+    LIMIT ${limit}
+  `;
+
+  return ok({
+    investments: rows
+  });
+}
+
+/* =====================================================
+   ADMIN — TRANSACTIONS
+===================================================== */
+
+async function adminTransactions(url) {
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  const type =
+    String(
+      url.searchParams.get("type") || ""
+    ).trim();
+
+  let rows;
+
+  if (type) {
+    rows = await sql`
+      SELECT
+        t.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email
+      FROM transactions t
+      INNER JOIN profiles p
+        ON p.id = t.user_id
+      WHERE LOWER(COALESCE(t.type, ''))
+        = LOWER(${type})
+      ORDER BY t.created_at DESC
+      LIMIT ${limit}
+    `;
+  } else {
+    rows = await sql`
+      SELECT
+        t.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email
+      FROM transactions t
+      INNER JOIN profiles p
+        ON p.id = t.user_id
+      ORDER BY t.created_at DESC
+      LIMIT ${limit}
+    `;
+  }
+
+  return ok({
+    transactions: rows
+  });
+}
+
+/* =====================================================
+   ADMIN — PENDING REQUESTS
+===================================================== */
+
+async function adminRequests(url) {
+  const status =
+    String(
+      url.searchParams.get("status") ||
+        "pending"
+    )
+      .trim()
+      .toLowerCase();
+
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  const rows = await sql`
+    SELECT
+      r.*,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM pending_requests r
+    INNER JOIN profiles p
+      ON p.id = r.user_id
+    WHERE LOWER(COALESCE(r.status, 'pending'))
+      = ${status}
+    ORDER BY r.created_at DESC
+    LIMIT ${limit}
+  `;
+
+  return ok({
+    requests: rows
+  });
+}
+
+async function processRequest(
+  request,
+  id,
+  body
+) {
+  const admin =
+    await requireAdmin(request);
+
+  if (!admin.ok) {
+    return bad(
+      admin.status,
+      admin.error
+    );
+  }
+
+  const decision =
+    String(
+      body.status ||
+        body.decision ||
+        ""
+    )
+      .trim()
+      .toLowerCase();
+
+  if (
+    decision !== "approved" &&
+    decision !== "rejected"
+  ) {
+    return bad(
+      400,
+      "Decision must be approved or rejected."
+    );
+  }
+
+  const rows = await sql`
+    SELECT *
+    FROM pending_requests
+    WHERE id = ${id}
+    LIMIT 1
+  `;
+
+  if (!rows.length) {
+    return bad(
+      404,
+      "Request not found."
+    );
+  }
+
+  const item = rows[0];
+
+  const updated =
+    await sql`
+      UPDATE pending_requests
+      SET
+        status = ${decision},
+        reviewed_by = ${admin.user.id},
+        reviewed_at = NOW(),
+        updated_at = NOW()
+      WHERE id = ${id}
+      RETURNING *
+    `;
+
+  /*
+   * The request itself is now finalized.
+   *
+   * Wallet/transaction side-effects should only
+   * happen when the corresponding request row
+   * contains enough information to identify the
+   * requested operation.
+   */
+
+  if (
+    decision === "approved" &&
+    item.type &&
+    item.user_id
+  ) {
+    const type =
+      String(item.type)
+        .toLowerCase();
+
+    const amount =
+      numberValue(
+        item.amount,
+        0
+      );
+
+    if (
+      amount > 0 &&
+      (
+        type === "deposit" ||
+        type === "transfer"
+      )
+    ) {
+      try {
+        const wallets =
+          await sql`
+            SELECT *
+            FROM wallets
+            WHERE user_id = ${item.user_id}
+            LIMIT 1
+          `;
+
+        if (wallets.length) {
+          const wallet =
+            wallets[0];
+
+          const oldBalance =
+            numberValue(
+              wallet.main_balance,
+              0
+            );
+
+          const newBalance =
+            oldBalance + amount;
+
+          await sql`
+            UPDATE wallets
+            SET
+              main_balance =
+                ${newBalance},
+              updated_at = NOW()
+            WHERE user_id =
+              ${item.user_id}
+          `;
+        }
+      } catch (error) {
+        console.warn(
+          "Request wallet processing warning:",
+          error?.message
+        );
+      }
+    }
+  }
+
+  return ok({
+    message:
+      `Request ${decision} successfully.`,
+    request:
+      updated[0]
+  });
+}
+
+/* =====================================================
+   ADMIN — CHAT CONVERSATIONS
+===================================================== */
+
+async function adminConversations() {
+  const rows =
+    await sql`
+      SELECT
+        c.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email
+      FROM chat_conversations c
+      INNER JOIN profiles p
+        ON p.id = c.user_id
+      ORDER BY
+        COALESCE(
+          c.updated_at,
+          c.created_at
+        ) DESC
+    `;
+
+  return ok({
+    conversations: rows
+  });
+}
+
+async function adminMessages(
+  conversationId
+) {
+  if (!conversationId) {
+    return bad(
+      400,
+      "Conversation ID is required."
+    );
+  }
+
+  const rows =
+    await sql`
+      SELECT *
+      FROM chat_messages
+      WHERE conversation_id =
+        ${conversationId}
+      ORDER BY created_at ASC
+    `;
+
+  return ok({
+    messages: rows
+  });
+}
+
+async function adminSendMessage(
+  request,
+  conversationId,
+  body
+) {
+  const admin =
+    await requireAdmin(request);
+
+  if (!admin.ok) {
+    return bad(
+      admin.status,
+      admin.error
+    );
+  }
+
+  const message =
+    String(
+      body.message ||
+        body.content ||
+        ""
+    ).trim();
+
+  if (!conversationId) {
+    return bad(
+      400,
+      "Conversation ID is required."
+    );
+  }
+
+  if (!message) {
+    return bad(
+      400,
+      "Message cannot be empty."
+    );
+  }
+
+  const conversation =
+    await sql`
+      SELECT id
+      FROM chat_conversations
+      WHERE id = ${conversationId}
+      LIMIT 1
+    `;
+
+  if (!conversation.length) {
+    return bad(
+      404,
+      "Conversation not found."
+    );
+  }
+
+  const id =
+    crypto.randomUUID();
+
+  const rows =
+    await sql`
+      INSERT INTO chat_messages (
+        id,
+        conversation_id,
+        sender_id,
+        sender_type,
+        message,
+        created_at
+      )
+      VALUES (
+        ${id},
+        ${conversationId},
+        ${admin.user.id},
+        'admin',
+        ${message},
+        NOW()
+      )
+      RETURNING *
+    `;
+
+  try {
+    await sql`
+      UPDATE chat_conversations
+      SET
+        updated_at = NOW()
+      WHERE id = ${conversationId}
+    `;
+  } catch {
+    /* optional column */
+  }
+
+  return ok({
+    message:
+      "Message sent.",
+    data:
+      rows[0]
+  });
+}
+
+/* =====================================================
+   ADMIN — RECENT ACTIVITY
+===================================================== */
+
+async function adminActivity() {
+  const activities = [];
+
+  try {
+    const rows =
+      await sql`
+        SELECT
+          id,
+          'transaction' AS activity_type,
+          type AS action,
+          amount,
+          user_id,
+          created_at
+        FROM transactions
+        ORDER BY created_at DESC
+        LIMIT 20
+      `;
+
+    activities.push(
+      ...rows
+    );
+  } catch {}
+
+  try {
+    const rows =
+      await sql`
+        SELECT
+          id,
+          'investment' AS activity_type,
+          'investment_created'
+            AS action,
+          amount,
+          user_id,
+          created_at
+        FROM investments
+        ORDER BY created_at DESC
+        LIMIT 20
+      `;
+
+    activities.push(
+      ...rows
+    );
+  } catch {}
+
+  activities.sort(
+    (a, b) =>
+      new Date(b.created_at) -
+      new Date(a.created_at)
+  );
+
+  return ok({
+    activity:
+      activities.slice(0, 30)
+  });
+}
+
+/* =====================================================
+   ADMIN — UPDATE CUSTOMER
+===================================================== */
+
+async function updateCustomer(
+  request,
+  id,
+  body
+) {
+  const admin =
+    await requireAdmin(request);
+
+  if (!admin.ok) {
+    return bad(
+      admin.status,
+      admin.error
+    );
+  }
+
+  if (!id) {
+    return bad(
+      400,
+      "Customer ID is required."
+    );
+  }
+
+  const current =
+    await sql`
+      SELECT id
+      FROM profiles
+      WHERE id = ${id}
+      LIMIT 1
+    `;
+
+  if (!current.length) {
+    return bad(
+      404,
+      "Customer not found."
+    );
+  }
+
+  const firstName =
+    body.first_name !== undefined
+      ? String(
+          body.first_name
+        ).trim()
+      : null;
+
+  const lastName =
+    body.last_name !== undefined
+      ? String(
+          body.last_name
+        ).trim()
+      : null;
+
+  const username =
+    body.username !== undefined
+      ? String(
+          body.username
+        ).trim()
+      : null;
+
+  const status =
+    body.status !== undefined
+      ? String(
+          body.status
+        ).trim()
+      : null;
+
+  const kycStatus =
+    body.kyc_status !== undefined
+      ? String(
+          body.kyc_status
+        ).trim()
+      : null;
+
+  const updated =
+    await sql`
+      UPDATE profiles
+      SET
+        first_name =
+          COALESCE(
+            ${firstName},
+            first_name
+          ),
+        last_name =
+          COALESCE(
+            ${lastName},
+            last_name
+          ),
+        username =
+          COALESCE(
+            ${username},
+            username
+          ),
+        status =
+          COALESCE(
+            ${status},
+            status
+          ),
+        kyc_status =
+          COALESCE(
+            ${kycStatus},
+            kyc_status
+          ),
+        updated_at = NOW()
+      WHERE id = ${id}
+      RETURNING *
+    `;
+
+  return ok({
+    message:
+      "Customer updated successfully.",
+    customer:
+      updated[0]
+  });
+}
+
+/* =====================================================
+   ADMIN PASSWORD RESET
+===================================================== */
+
+async function resetAdminPassword(
+  request,
+  body
+) {
+  const resetKey =
+    request.headers.get(
+      "x-admin-reset-key"
+    );
+
+  const configuredKey =
+    process.env.ADMIN_RESET_KEY;
+
+  if (
+    !configuredKey ||
+    resetKey !== configuredKey
+  ) {
+    return bad(
+      403,
+      "Unauthorized."
+    );
+  }
+
+  const email =
+    normalizeEmail(
+      body.email
+    );
+
+  const password =
+    String(
+      body.password || ""
+    );
+
+  if (!email || !password) {
+    return bad(
+      400,
+      "Email and password are required."
+    );
+  }
+
+  if (password.length < 6) {
+    return bad(
+      400,
+      "Password must contain at least 6 characters."
+    );
+  }
+
+  const passwordHash =
+    hashPassword(password);
+
+  const result =
+    await sql`
+      UPDATE auth_credentials
+      SET
+        password_hash =
+          ${passwordHash},
+        password_updated_at =
+          NOW(),
+        failed_login_attempts = 0,
+        locked_until = NULL,
+        updated_at = NOW()
+      WHERE user_id = (
+        SELECT p.id
+        FROM profiles p
+        INNER JOIN roles r
+          ON r.id = p.role_id
+        WHERE
+          LOWER(p.email) =
+            ${email}
+          AND LOWER(r.name) =
+            'admin'
+        LIMIT 1
+      )
+      RETURNING user_id
+    `;
+
+  if (!result.length) {
+    return bad(
+      404,
+      "Admin account not found."
+    );
+  }
+
+  return ok({
+    message:
+      "Admin password reset successfully."
+  });
+}
+
+/* =====================================================
+   EMAIL VERIFICATION
+===================================================== */
+
+async function verifyEmail(token) {
+  const cleanToken =
+    String(token || "").trim();
+
+  if (!cleanToken) {
+    return bad(
+      400,
+      "Verification token is required."
+    );
+  }
+
+  const tokenHash =
+    hashToken(cleanToken);
+
+  const result =
+    await sql`
+      SELECT
+        t.id AS token_id,
+        t.user_id
+      FROM auth_email_tokens t
+      WHERE
+        t.token_hash =
+          ${tokenHash}
+        AND t.token_type =
+          'email_verification'
+        AND t.used_at IS NULL
+        AND t.expires_at > NOW()
+      LIMIT 1
+    `;
+
+  if (!result.length) {
+    return bad(
+      400,
+      "This verification link is invalid or has expired."
+    );
+  }
+
+  const item =
+    result[0];
+
+  await sql`
+    UPDATE profiles
+    SET
+      email_verified_at =
+        NOW(),
+      updated_at = NOW()
+    WHERE id =
+      ${item.user_id}
+  `;
+
+  await sql`
+    UPDATE auth_email_tokens
+    SET used_at = NOW()
+    WHERE id =
+      ${item.token_id}
+  `;
+
+  return ok({
+    message:
+      "Your email has been confirmed successfully."
+  });
+}
 
 /* =====================================================
    NODE REQUEST → WEB REQUEST
-   ===================================================== */
+===================================================== */
 
 function createWebRequest(req) {
   const protocol =
     String(
-      req.headers["x-forwarded-proto"] ||
-      "https"
+      req.headers[
+        "x-forwarded-proto"
+      ] ||
+        "https"
     )
       .split(",")[0]
       .trim();
 
   const host =
     String(
-      req.headers["x-forwarded-host"] ||
-      req.headers.host ||
-      "coinforest.vercel.app"
+      req.headers[
+        "x-forwarded-host"
+      ] ||
+        req.headers.host ||
+        "coinforest.vercel.app"
     )
       .split(",")[0]
       .trim();
@@ -871,8 +2197,9 @@ function createWebRequest(req) {
     new Headers();
 
   for (
-    const [key, value]
-    of Object.entries(req.headers || {})
+    const [key, value] of Object.entries(
+      req.headers || {}
+    )
   ) {
     if (Array.isArray(value)) {
       requestHeaders.set(
@@ -937,10 +2264,9 @@ function createWebRequest(req) {
   );
 }
 
-
 /* =====================================================
    WEB RESPONSE → NODE RESPONSE
-   ===================================================== */
+===================================================== */
 
 async function writeWebResponse(
   res,
@@ -966,17 +2292,15 @@ async function writeWebResponse(
   res.end(body);
 }
 
-
 /* =====================================================
-   MAIN HANDLER
-   ===================================================== */
+   MAIN ROUTER
+===================================================== */
 
 export default async function handler(
   req,
   res
 ) {
   try {
-
     const request =
       createWebRequest(req);
 
@@ -998,7 +2322,7 @@ export default async function handler(
 
       res.setHeader(
         "Access-Control-Allow-Methods",
-        "GET, POST, OPTIONS"
+        "GET, POST, PUT, PATCH, DELETE, OPTIONS"
       );
 
       res.end();
@@ -1012,13 +2336,15 @@ export default async function handler(
     const path =
       url.pathname;
 
+    const method =
+      request.method.toUpperCase();
 
-    /* ================================
+    /* =================================================
        HEALTH
-    ================================= */
+    ================================================= */
 
     if (
-      request.method === "GET" &&
+      method === "GET" &&
       path === "/api/health"
     ) {
       return writeWebResponse(
@@ -1027,77 +2353,49 @@ export default async function handler(
       );
     }
 
-
-    /* ================================
+    /* =================================================
        REGISTER
-    ================================= */
+    ================================================= */
 
     if (
-      request.method === "POST" &&
+      method === "POST" &&
       path === "/api/auth/register"
     ) {
-      const body =
-        await request.json();
-
       return writeWebResponse(
         res,
         await register(
           request,
-          body
+          await jsonBody(request)
         )
       );
     }
 
-
-    /* ================================
+    /* =================================================
        LOGIN
-    ================================= */
+    ================================================= */
 
     if (
-      request.method === "POST" &&
+      method === "POST" &&
       path === "/api/auth/login"
     ) {
-      const body =
-        await request.json();
-
       return writeWebResponse(
         res,
-        await login(body)
-      );
-    }
-
-
-    /* ================================
-       TEMPORARY ADMIN PASSWORD RESET
-    ================================= */
-
-    if (
-      request.method === "POST" &&
-      path === "/api/admin/reset-password"
-    ) {
-      const body =
-        await request.json();
-
-      return writeWebResponse(
-        res,
-        await resetAdminPassword(
-          request,
-          body
+        await login(
+          await jsonBody(request)
         )
       );
     }
 
-
-    /* ================================
+    /* =================================================
        VERIFY EMAIL
-    ================================= */
+    ================================================= */
 
     if (
-      request.method === "POST" &&
+      method === "POST" &&
       path === "/api/auth/verify-email"
     ) {
       const body =
-        await request.json();
+        await jsonBody(request);
 
       return writeWebResponse(
         res,
@@ -1107,13 +2405,12 @@ export default async function handler(
       );
     }
 
-
-    /* ================================
+    /* =================================================
        LOGOUT
-    ================================= */
+    ================================================= */
 
     if (
-      request.method === "POST" &&
+      method === "POST" &&
       path === "/api/auth/logout"
     ) {
       return writeWebResponse(
@@ -1122,13 +2419,12 @@ export default async function handler(
       );
     }
 
-
-    /* ================================
+    /* =================================================
        CURRENT USER
-    ================================= */
+    ================================================= */
 
     if (
-      request.method === "GET" &&
+      method === "GET" &&
       path === "/api/auth/me"
     ) {
       return writeWebResponse(
@@ -1137,23 +2433,470 @@ export default async function handler(
       );
     }
 
+    /* =================================================
+       ADMIN PASSWORD RESET
+    ================================================= */
 
-    /* ================================
+    if (
+      method === "POST" &&
+      path === "/api/admin/reset-password"
+    ) {
+      return writeWebResponse(
+        res,
+        await resetAdminPassword(
+          request,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN DASHBOARD
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      (
+        path === "/api/admin/dashboard" ||
+        path === "/api/admin/stats"
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminDashboard()
+      );
+    }
+
+    /* =================================================
+       ADMIN ACTIVITY
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      path === "/api/admin/activity"
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminActivity()
+      );
+    }
+
+    /* =================================================
+       ADMIN CUSTOMERS
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      path === "/api/admin/customers"
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      const id =
+        url.searchParams.get("id");
+
+      if (id) {
+        return writeWebResponse(
+          res,
+          await adminCustomer(id)
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminCustomers(url)
+      );
+    }
+
+    if (
+      (
+        method === "PUT" ||
+        method === "PATCH"
+      ) &&
+      path.startsWith(
+        "/api/admin/customers/"
+      )
+    ) {
+      const id =
+        path.split("/").pop();
+
+      return writeWebResponse(
+        res,
+        await updateCustomer(
+          request,
+          id,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN WALLETS
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      (
+        path === "/api/admin/wallets" ||
+        path === "/api/admin/wallet"
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      const userId =
+        url.searchParams.get(
+          "user_id"
+        );
+
+      if (userId) {
+        return writeWebResponse(
+          res,
+          await adminWallet(userId)
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminWallets(url)
+      );
+    }
+
+    if (
+      method === "POST" &&
+      (
+        path ===
+          "/api/admin/wallets/adjust" ||
+        path ===
+          "/api/admin/wallet/adjust"
+      )
+    ) {
+      return writeWebResponse(
+        res,
+        await adjustWallet(
+          request,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN KYC
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      path === "/api/admin/kyc"
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminKyc(url)
+      );
+    }
+
+    if (
+      (
+        method === "POST" ||
+        method === "PATCH" ||
+        method === "PUT"
+      ) &&
+      path.startsWith(
+        "/api/admin/kyc/"
+      )
+    ) {
+      const id =
+        path.split("/").pop();
+
+      return writeWebResponse(
+        res,
+        await reviewKyc(
+          request,
+          id,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN INVESTMENTS
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      path === "/api/admin/investments"
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminInvestments(url)
+      );
+    }
+
+    /* =================================================
+       ADMIN TRANSACTIONS
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      path === "/api/admin/transactions"
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminTransactions(url)
+      );
+    }
+
+    /* =================================================
+       ADMIN PENDING REQUESTS
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      (
+        path ===
+          "/api/admin/requests" ||
+        path ===
+          "/api/admin/pending-requests"
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminRequests(url)
+      );
+    }
+
+    if (
+      (
+        method === "POST" ||
+        method === "PATCH" ||
+        method === "PUT"
+      ) &&
+      (
+        path.startsWith(
+          "/api/admin/requests/"
+        ) ||
+        path.startsWith(
+          "/api/admin/pending-requests/"
+        )
+      )
+    ) {
+      const id =
+        path.split("/").pop();
+
+      return writeWebResponse(
+        res,
+        await processRequest(
+          request,
+          id,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
+       ADMIN CHAT CONVERSATIONS
+    ================================================= */
+
+    if (
+      method === "GET" &&
+      (
+        path ===
+          "/api/admin/chat" ||
+        path ===
+          "/api/admin/conversations"
+      )
+    ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
+      const conversationId =
+        url.searchParams.get(
+          "conversation_id"
+        );
+
+      if (conversationId) {
+        return writeWebResponse(
+          res,
+          await adminMessages(
+            conversationId
+          )
+        );
+      }
+
+      return writeWebResponse(
+        res,
+        await adminConversations()
+      );
+    }
+
+    if (
+      method === "GET" &&
+      path.startsWith(
+        "/api/admin/chat/"
+      )
+    ) {
+      const conversationId =
+        path.split("/").pop();
+
+      return writeWebResponse(
+        res,
+        await adminMessages(
+          conversationId
+        )
+      );
+    }
+
+    if (
+      method === "POST" &&
+      (
+        path.startsWith(
+          "/api/admin/chat/"
+        ) ||
+        path.startsWith(
+          "/api/admin/conversations/"
+        )
+      )
+    ) {
+      const parts =
+        path.split("/");
+
+      const conversationId =
+        parts[parts.length - 1];
+
+      return writeWebResponse(
+        res,
+        await adminSendMessage(
+          request,
+          conversationId,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    /* =================================================
        UNKNOWN ROUTE
-    ================================= */
+    ================================================= */
 
     return writeWebResponse(
       res,
-      response(404, {
-        success: false,
-        error:
-          "API route not found.",
-        path
-      })
+      bad(
+        404,
+        "API route not found.",
+        {
+          path,
+          method
+        }
+      )
     );
 
   } catch (error) {
-
     console.error(
       "CoinForest API error:",
       error
@@ -1169,8 +2912,9 @@ export default async function handler(
       response(500, {
         success: false,
         error:
+          error?.message ||
           "Internal server error."
       })
     );
   }
-        }
+}
