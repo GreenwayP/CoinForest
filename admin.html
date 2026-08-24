@@ -71,20 +71,31 @@ button{cursor:pointer}
 }
 
 .brand-logo{
-  width:42px;height:42px;border-radius:13px;
+  width:42px;
+  height:42px;
+  border-radius:13px;
   background:linear-gradient(135deg,var(--green),var(--green-dark));
-  display:grid;place-items:center;color:#fff;font-size:21px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:21px;
   box-shadow:0 6px 14px rgba(18,107,58,.18);
 }
 
 .brand-text strong{
-  display:block;font-size:17px;font-weight:900;
-  color:var(--green-dark);letter-spacing:-.2px
+  display:block;
+  font-size:17px;
+  font-weight:900;
+  color:var(--green-dark);
+  letter-spacing:-.2px
 }
 
 .brand-text span{
-  display:block;color:var(--muted);font-size:11px;
-  font-weight:700;margin-top:3px
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+  margin-top:3px
 }
 
 .nav{
@@ -94,15 +105,28 @@ button{cursor:pointer}
 }
 
 .nav-label{
-  color:#9aa59f;font-size:10px;text-transform:uppercase;
-  letter-spacing:1.15px;padding:0 12px 9px;font-weight:900
+  color:#9aa59f;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.15px;
+  padding:0 12px 9px;
+  font-weight:900
 }
 
 .nav-item{
-  width:100%;border:0;background:transparent;
-  display:flex;align-items:center;gap:12px;
-  padding:12px 13px;margin-bottom:4px;border-radius:11px;
-  color:#58655e;text-align:left;font-size:13px;font-weight:700;
+  width:100%;
+  border:0;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 13px;
+  margin-bottom:4px;
+  border-radius:11px;
+  color:#58655e;
+  text-align:left;
+  font-size:13px;
+  font-weight:700;
   transition:.2s
 }
 
@@ -114,33 +138,69 @@ button{cursor:pointer}
 
 .nav-item.active{
   background:linear-gradient(135deg,var(--green),var(--green-dark));
-  color:#fff;font-weight:900;
+  color:#fff;
+  font-weight:900;
   box-shadow:0 6px 15px rgba(18,107,58,.14)
 }
 
 .nav-icon{
-  width:23px;text-align:center;font-size:16px;flex-shrink:0
+  width:23px;
+  text-align:center;
+  font-size:16px;
+  flex-shrink:0
 }
 
 .sidebar-footer{
-  padding:14px;border-top:1px solid var(--border);flex-shrink:0
+  padding:14px;
+  border-top:1px solid var(--border);
+  flex-shrink:0
+}
+
+.sidebar-nav-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-bottom:10px
+}
+
+.sidebar-action-btn{
+  padding:9px 8px;
+  font-size:10px;
+  width:100%
 }
 
 .admin-mini{
-  display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:12px
 }
 
 .admin-avatar{
-  width:36px;height:36px;border-radius:50%;
-  background:var(--gold-light);color:#9b711c;
-  display:grid;place-items:center;font-weight:900;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:var(--gold-light);
+  color:#9b711c;
+  display:grid;
+  place-items:center;
+  font-weight:900;
   border:1px solid rgba(217,164,65,.15)
 }
 
-.admin-mini strong{display:block;font-size:12px;font-weight:900}
+.admin-mini strong{
+  display:block;
+  font-size:12px;
+  font-weight:900
+}
+
 .admin-mini span{
-  display:block;color:var(--muted);font-size:10px;
-  font-weight:700;margin-top:3px
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700;
+  margin-top:3px
 }
 
 .main{
@@ -150,30 +210,50 @@ button{cursor:pointer}
 }
 
 .topbar{
-  height:76px;background:rgba(255,255,255,.96);
+  height:76px;
+  background:rgba(255,255,255,.96);
   border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 30px;position:sticky;top:0;z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  position:sticky;
+  top:0;
+  z-index:50;
   backdrop-filter:blur(12px)
 }
 
 .topbar-left{min-width:0}
 
 .topbar-left h1{
-  font-size:20px;color:var(--text-strong);
-  font-weight:900;letter-spacing:-.35px
+  font-size:20px;
+  color:var(--text-strong);
+  font-weight:900;
+  letter-spacing:-.35px
 }
 
 .topbar-left p{
-  font-size:12px;color:var(--muted);margin-top:4px;font-weight:700
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+  font-weight:700
 }
 
-.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
 
 .icon-btn,.mobile-menu{
-  width:38px;height:38px;border:1px solid var(--border);
-  background:#fff;border-radius:10px;color:#5e6a63;
-  transition:.2s;font-weight:900
+  width:38px;
+  height:38px;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:10px;
+  color:#5e6a63;
+  transition:.2s;
+  font-weight:900
 }
 
 .icon-btn:hover,.mobile-menu:hover{
@@ -183,9 +263,13 @@ button{cursor:pointer}
 }
 
 .logout-btn{
-  padding:9px 13px;border-radius:10px;
-  border:1px solid #efd0d0;background:#fff;
-  color:var(--danger);font-size:12px;font-weight:900
+  padding:9px 13px;
+  border-radius:10px;
+  border:1px solid #efd0d0;
+  background:#fff;
+  color:var(--danger);
+  font-size:12px;
+  font-weight:900
 }
 
 .logout-btn:hover{background:var(--danger-light)}
@@ -203,14 +287,19 @@ button{cursor:pointer}
 }
 
 .stats{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:17px;margin-bottom:24px
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:17px;
+  margin-bottom:24px
 }
 
 .stat-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:20px;
-  box-shadow:var(--shadow);transition:.2s
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  transition:.2s
 }
 
 .stat-card:hover{
@@ -220,111 +309,192 @@ button{cursor:pointer}
 }
 
 .stat-top{
-  display:flex;align-items:center;justify-content:space-between
+  display:flex;
+  align-items:center;
+  justify-content:space-between
 }
 
-.stat-label{font-size:12px;color:var(--muted);font-weight:800}
+.stat-label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:800
+}
 
 .stat-icon{
-  width:38px;height:38px;border-radius:11px;
-  display:grid;place-items:center;
-  background:var(--green-light);color:var(--green);
-  font-size:16px;font-weight:900
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:var(--green-light);
+  color:var(--green);
+  font-size:16px;
+  font-weight:900
 }
 
 .stat-value{
-  font-size:26px;font-weight:900;letter-spacing:-.5px;
-  margin-top:15px;color:var(--text-strong)
+  font-size:26px;
+  font-weight:900;
+  letter-spacing:-.5px;
+  margin-top:15px;
+  color:var(--text-strong)
 }
 
 .stat-note{
-  font-size:11px;color:var(--muted);margin-top:6px;font-weight:700
+  font-size:11px;
+  color:var(--muted);
+  margin-top:6px;
+  font-weight:700
 }
 
 .grid-2{
-  display:grid;grid-template-columns:1.35fr 1fr;gap:20px
+  display:grid;
+  grid-template-columns:1.35fr 1fr;
+  gap:20px
 }
 
 .panel{
-  background:#fff;border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  overflow:hidden;margin-bottom:20px
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  margin-bottom:20px
 }
 
 .panel-header{
-  padding:18px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   gap:15px
 }
 
 .panel-header h2{
-  font-size:15px;font-weight:900;color:var(--text-strong)
+  font-size:15px;
+  font-weight:900;
+  color:var(--text-strong)
 }
 
 .panel-header span{
-  color:var(--muted);font-size:11px;font-weight:700
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700
 }
 
 .panel-body{
-  padding:18px 20px;color:#536159;
-  font-size:13px;line-height:1.6;font-weight:600
+  padding:18px 20px;
+  color:#536159;
+  font-size:13px;
+  line-height:1.6;
+  font-weight:600
 }
 
 .quick-actions{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px
 }
 
 .action{
-  border:1px solid var(--border);background:#fff;
-  border-radius:12px;padding:15px;text-align:left;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:12px;
+  padding:15px;
+  text-align:left;
   transition:.2s
 }
 
 .action:hover{
-  border-color:#b9d8c5;background:var(--green-light);
-  transform:translateY(-1px);box-shadow:0 6px 16px rgba(18,107,58,.07)
+  border-color:#b9d8c5;
+  background:var(--green-light);
+  transform:translateY(-1px);
+  box-shadow:0 6px 16px rgba(18,107,58,.07)
 }
 
-.action-icon{font-size:19px;margin-bottom:8px}
-.action strong{display:block;font-size:12px;color:var(--text-strong);font-weight:900}
+.action-icon{
+  font-size:19px;
+  margin-bottom:8px
+}
+
+.action strong{
+  display:block;
+  font-size:12px;
+  color:var(--text-strong);
+  font-weight:900
+}
+
 .action span{
-  display:block;font-size:10px;color:var(--muted);
-  margin-top:4px;line-height:1.5;font-weight:700
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:4px;
+  line-height:1.5;
+  font-weight:700
 }
 
 .activity{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 0;border-bottom:1px solid #edf0ee
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid #edf0ee
 }
 
 .activity:last-child{border-bottom:0}
 
 .activity-icon{
-  width:34px;height:34px;border-radius:10px;
-  display:grid;place-items:center;background:var(--green-light);
-  color:var(--green);flex-shrink:0;font-size:14px
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:var(--green-light);
+  color:var(--green);
+  flex-shrink:0;
+  font-size:14px
 }
 
-.activity-info{min-width:0;flex:1}
-.activity-info strong{
-  display:block;font-size:12px;color:var(--text-strong);font-weight:900
+.activity-info{
+  min-width:0;
+  flex:1
 }
+
+.activity-info strong{
+  display:block;
+  font-size:12px;
+  color:var(--text-strong);
+  font-weight:900
+}
+
 .activity-info span{
-  display:block;color:var(--muted);font-size:10px;
-  margin-top:3px;font-weight:700
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+  font-weight:700
 }
 
 .toolbar{
-  display:flex;align-items:center;gap:9px;
-  flex-wrap:wrap;margin-bottom:14px
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-bottom:14px
 }
 
 .search{
-  flex:1;min-width:200px;
+  flex:1;
+  min-width:200px;
   border:1px solid var(--border);
-  background:#fff;border-radius:10px;
-  padding:10px 12px;outline:none;font-size:12px;
-  font-weight:700;color:var(--text)
+  background:#fff;
+  border-radius:10px;
+  padding:10px 12px;
+  outline:none;
+  font-size:12px;
+  font-weight:700;
+  color:var(--text)
 }
 
 .search:focus{
@@ -333,53 +503,91 @@ button{cursor:pointer}
 }
 
 .select{
-  border:1px solid var(--border);background:#fff;
-  border-radius:10px;padding:10px 12px;
-  outline:none;font-size:12px;font-weight:800;color:var(--text)
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:10px;
+  padding:10px 12px;
+  outline:none;
+  font-size:12px;
+  font-weight:800;
+  color:var(--text)
 }
 
 .primary-btn,.secondary-btn,.danger-btn,.success-btn,.gold-btn{
-  border:0;border-radius:10px;padding:10px 14px;
-  font-size:12px;font-weight:900;transition:.2s
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:900;
+  transition:.2s
 }
 
-.primary-btn{background:var(--green);color:#fff}
+.primary-btn{
+  background:var(--green);
+  color:#fff
+}
+
 .primary-btn:hover{background:var(--green-dark)}
 
 .secondary-btn{
-  background:#fff;color:var(--green-dark);
+  background:#fff;
+  color:var(--green-dark);
   border:1px solid #cfe0d5
 }
 
 .secondary-btn:hover{background:var(--green-light)}
 
-.danger-btn{background:var(--danger);color:#fff}
+.danger-btn{
+  background:var(--danger);
+  color:#fff
+}
+
 .danger-btn:hover{filter:brightness(.92)}
 
-.success-btn{background:var(--success);color:#fff}
+.success-btn{
+  background:var(--success);
+  color:#fff
+}
+
 .success-btn:hover{filter:brightness(.92)}
 
-.gold-btn{background:var(--gold);color:#fff}
+.gold-btn{
+  background:var(--gold);
+  color:#fff
+}
+
 .gold-btn:hover{filter:brightness(.94)}
 
 .table-wrap{
-  overflow-x:auto;border:1px solid var(--border);
-  border-radius:12px;background:#fff
+  overflow-x:auto;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff
 }
 
-table{width:100%;border-collapse:collapse;min-width:760px}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:760px
+}
 
 th{
-  background:#f8faf9;color:#68756e;
-  text-align:left;font-size:10px;
-  text-transform:uppercase;letter-spacing:.5px;
-  padding:12px;font-weight:900;
+  background:#f8faf9;
+  color:#68756e;
+  text-align:left;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  padding:12px;
+  font-weight:900;
   border-bottom:1px solid var(--border)
 }
 
 td{
-  padding:13px 12px;font-size:11px;
-  font-weight:700;color:#35433b;
+  padding:13px 12px;
+  font-size:11px;
+  font-weight:700;
+  color:#35433b;
   border-bottom:1px solid #edf0ee;
   vertical-align:middle
 }
@@ -388,95 +596,165 @@ tr:last-child td{border-bottom:0}
 tr:hover td{background:#fbfdfc}
 
 .customer-name{
-  font-weight:900;color:var(--text-strong)
+  font-weight:900;
+  color:var(--text-strong)
 }
 
 .muted{color:var(--muted)!important}
-.amount{font-weight:900;color:var(--text-strong)}
+.amount{
+  font-weight:900;
+  color:var(--text-strong)
+}
 
 .badge{
-  display:inline-flex;align-items:center;
-  padding:5px 8px;border-radius:999px;
-  font-size:9px;font-weight:900;white-space:nowrap
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap
 }
 
-.badge-success{background:var(--success-light);color:var(--success)}
-.badge-warning{background:var(--warning-light);color:var(--warning)}
-.badge-danger{background:var(--danger-light);color:var(--danger)}
-.badge-neutral{background:#eef2f0;color:#647169}
-.badge-gold{background:var(--gold-light);color:#9b711c}
+.badge-success{
+  background:var(--success-light);
+  color:var(--success)
+}
 
-.row-actions{display:flex;gap:5px;flex-wrap:wrap}
+.badge-warning{
+  background:var(--warning-light);
+  color:var(--warning)
+}
+
+.badge-danger{
+  background:var(--danger-light);
+  color:var(--danger)
+}
+
+.badge-neutral{
+  background:#eef2f0;
+  color:#647169
+}
+
+.badge-gold{
+  background:var(--gold-light);
+  color:#9b711c
+}
+
+.row-actions{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap
+}
 
 .small-btn{
-  border:1px solid var(--border);background:#fff;
-  padding:6px 9px;border-radius:8px;
-  font-size:9px;font-weight:900;color:#526058
+  border:1px solid var(--border);
+  background:#fff;
+  padding:6px 9px;
+  border-radius:8px;
+  font-size:9px;
+  font-weight:900;
+  color:#526058
 }
 
-.small-btn:hover{background:var(--green-light);color:var(--green-dark)}
+.small-btn:hover{
+  background:var(--green-light);
+  color:var(--green-dark)
+}
 
 .empty{
-  text-align:center;padding:35px 20px;
-  color:var(--muted);font-size:12px;font-weight:700
+  text-align:center;
+  padding:35px 20px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700
 }
 
 .loading{
-  text-align:center;padding:30px;
-  color:var(--muted);font-size:12px;font-weight:800
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800
 }
 
 .error-box{
-  padding:12px 14px;border-radius:10px;
-  background:var(--danger-light);color:var(--danger);
-  font-size:11px;font-weight:800;margin-bottom:12px
+  padding:12px 14px;
+  border-radius:10px;
+  background:var(--danger-light);
+  color:var(--danger);
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:12px
 }
 
 .detail-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px
 }
 
 .detail-item{
   border:1px solid var(--border);
-  border-radius:11px;padding:12px;background:#fbfcfb
+  border-radius:11px;
+  padding:12px;
+  background:#fbfcfb
 }
 
 .detail-item label{
-  display:block;text-transform:uppercase;
-  font-size:9px;letter-spacing:.5px;
-  color:var(--muted);font-weight:900;margin-bottom:5px
+  display:block;
+  text-transform:uppercase;
+  font-size:9px;
+  letter-spacing:.5px;
+  color:var(--muted);
+  font-weight:900;
+  margin-bottom:5px
 }
 
 .detail-item strong{
-  display:block;color:var(--text-strong);
-  font-size:12px;font-weight:900;
+  display:block;
+  color:var(--text-strong);
+  font-size:12px;
+  font-weight:900;
   word-break:break-word
 }
 
 .wallet-cards{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px
 }
 
 .wallet-card{
-  padding:15px;border-radius:12px;
+  padding:15px;
+  border-radius:12px;
   background:var(--green-light);
   border:1px solid #d6eadc
 }
 
 .wallet-card span{
-  display:block;font-size:10px;color:var(--muted);font-weight:800
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800
 }
 
 .wallet-card strong{
-  display:block;margin-top:6px;
-  font-size:20px;color:var(--green-dark);font-weight:900
+  display:block;
+  margin-top:6px;
+  font-size:20px;
+  color:var(--green-dark);
+  font-weight:900
 }
 
 .modal{
-  position:fixed;inset:0;
+  position:fixed;
+  inset:0;
   background:rgba(8,25,16,.45);
-  z-index:1000;display:none;
-  align-items:center;justify-content:center;
+  z-index:1000;
+  display:none;
+  align-items:center;
+  justify-content:center;
   padding:18px
 }
 
@@ -484,43 +762,64 @@ tr:hover td{background:#fbfdfc}
 
 .modal-card{
   width:min(650px,100%);
-  max-height:90vh;overflow:auto;
-  background:#fff;border-radius:18px;
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
   box-shadow:0 25px 70px rgba(0,0,0,.2)
 }
 
 .modal-header{
-  padding:18px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between
 }
 
 .modal-header h3{
-  font-size:15px;color:var(--text-strong);font-weight:900
+  font-size:15px;
+  color:var(--text-strong);
+  font-weight:900
 }
 
 .modal-close{
-  width:34px;height:34px;border:0;border-radius:9px;
-  background:#f1f4f2;color:#526058;font-weight:900
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:9px;
+  background:#f1f4f2;
+  color:#526058;
+  font-weight:900
 }
 
 .modal-body{padding:20px}
 
 .form-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px
 }
 
 .form-group{margin-bottom:12px}
 .form-group.full{grid-column:1/-1}
 
 .form-group label{
-  display:block;font-size:10px;color:var(--muted);
-  font-weight:900;margin-bottom:6px
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:900;
+  margin-bottom:6px
 }
 
 .form-control{
-  width:100%;border:1px solid var(--border);
-  border-radius:10px;padding:10px 11px;
-  outline:none;font-size:12px;font-weight:700
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 11px;
+  outline:none;
+  font-size:12px;
+  font-weight:700
 }
 
 .form-control:focus{
@@ -528,15 +827,22 @@ tr:hover td{background:#fbfdfc}
   box-shadow:0 0 0 3px rgba(18,107,58,.07)
 }
 
-textarea.form-control{min-height:100px;resize:vertical}
+textarea.form-control{
+  min-height:100px;
+  resize:vertical
+}
 
 .modal-footer{
-  padding:14px 20px;border-top:1px solid var(--border);
-  display:flex;justify-content:flex-end;gap:8px
+  padding:14px 20px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  gap:8px
 }
 
 .chat-layout{
-  display:grid;grid-template-columns:280px 1fr;
+  display:grid;
+  grid-template-columns:280px 1fr;
   min-height:500px
 }
 
@@ -546,92 +852,150 @@ textarea.form-control{min-height:100px;resize:vertical}
 }
 
 .conversation{
-  padding:13px;border-bottom:1px solid #edf0ee;
-  cursor:pointer;transition:.2s
+  padding:13px;
+  border-bottom:1px solid #edf0ee;
+  cursor:pointer;
+  transition:.2s
 }
 
-.conversation:hover,.conversation.active{background:var(--green-light)}
+.conversation:hover,
+.conversation.active{
+  background:var(--green-light)
+}
 
 .conversation strong{
-  display:block;font-size:11px;font-weight:900;color:var(--text-strong)
+  display:block;
+  font-size:11px;
+  font-weight:900;
+  color:var(--text-strong)
 }
 
 .conversation span{
-  display:block;font-size:9px;color:var(--muted);
-  margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  display:block;
+  font-size:9px;
+  color:var(--muted);
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
 }
 
-.chat-panel{display:flex;flex-direction:column;min-width:0}
+.chat-panel{
+  display:flex;
+  flex-direction:column;
+  min-width:0
+}
 
 .messages{
-  flex:1;padding:18px;overflow:auto;
-  min-height:400px;background:#fafcfb
+  flex:1;
+  padding:18px;
+  overflow:auto;
+  min-height:400px;
+  background:#fafcfb
 }
 
 .message{
-  max-width:75%;padding:10px 12px;
-  border-radius:12px;margin-bottom:9px;
-  font-size:11px;line-height:1.5;font-weight:700
+  max-width:75%;
+  padding:10px 12px;
+  border-radius:12px;
+  margin-bottom:9px;
+  font-size:11px;
+  line-height:1.5;
+  font-weight:700
 }
 
 .message.customer{
-  background:#fff;border:1px solid var(--border)
+  background:#fff;
+  border:1px solid var(--border)
 }
 
 .message.admin{
   margin-left:auto;
-  background:var(--green);color:#fff
+  background:var(--green);
+  color:#fff
 }
 
 .message small{
-  display:block;margin-top:4px;
-  opacity:.65;font-size:8px
+  display:block;
+  margin-top:4px;
+  opacity:.65;
+  font-size:8px
 }
 
 .chat-compose{
-  padding:12px;border-top:1px solid var(--border);
-  display:flex;gap:8px
+  padding:12px;
+  border-top:1px solid var(--border);
+  display:flex;
+  gap:8px
 }
 
 .chat-compose textarea{
-  flex:1;min-height:45px;max-height:100px;
-  resize:vertical;border:1px solid var(--border);
-  border-radius:10px;padding:10px;outline:none;
-  font-size:11px;font-weight:700
+  flex:1;
+  min-height:45px;
+  max-height:100px;
+  resize:vertical;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+  outline:none;
+  font-size:11px;
+  font-weight:700
 }
 
 .mobile-menu{display:none}
 
 .overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.35);z-index:90
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:90
 }
 
 #adminAccessMessage{
-  position:fixed;inset:0;z-index:9999;
+  position:fixed;
+  inset:0;
+  z-index:9999;
   background:var(--bg);
-  display:flex;align-items:center;justify-content:center;padding:20px
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px
 }
 
 .admin-access-card{
-  width:min(430px,100%);background:#fff;
-  border:1px solid var(--border);border-radius:18px;
-  padding:30px 24px;text-align:center;
+  width:min(430px,100%);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:30px 24px;
+  text-align:center;
   box-shadow:0 12px 40px rgba(20,45,32,.10)
 }
 
 .admin-access-icon{
-  width:58px;height:58px;margin:0 auto 16px;
-  border-radius:16px;display:grid;place-items:center;
-  background:var(--green-light);font-size:27px
+  width:58px;
+  height:58px;
+  margin:0 auto 16px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:var(--green-light);
+  font-size:27px
 }
 
 .admin-access-card h2{
-  color:var(--text-strong);font-size:19px;margin-bottom:9px;font-weight:900
+  color:var(--text-strong);
+  font-size:19px;
+  margin-bottom:9px;
+  font-weight:900
 }
 
 .admin-access-card p{
-  color:var(--muted);font-size:13px;line-height:1.6;font-weight:600
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  font-weight:600
 }
 
 @media(max-width:1050px){
@@ -648,34 +1012,59 @@ textarea.form-control{min-height:100px;resize:vertical}
   .sidebar.open{transform:translateX(0)}
   .overlay.open{display:block}
 
-  .main{margin-left:0;width:100%}
+  .main{
+    margin-left:0;
+    width:100%
+  }
+
   .mobile-menu{display:block}
 
   .topbar{padding:0 16px}
+
   .topbar-left{
-    display:flex;align-items:center;gap:10px
+    display:flex;
+    align-items:center;
+    gap:10px
   }
 
   .topbar-left h1{font-size:17px}
   .topbar-left p{font-size:10px}
 
-  .content{padding:20px 15px 30px}
-  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .content{
+    padding:20px 15px 30px
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+    gap:10px
+  }
+
   .stat-card{padding:15px}
   .stat-label{font-size:11px}
   .stat-value{font-size:21px}
-  .stat-icon{width:32px;height:32px;font-size:14px}
+
+  .stat-icon{
+    width:32px;
+    height:32px;
+    font-size:14px
+  }
 
   .panel-header{padding:16px}
   .panel-body{padding:16px}
 
   .chat-layout{grid-template-columns:1fr}
+
   .conversations{
-    max-height:190px;border-right:0;
+    max-height:190px;
+    border-right:0;
     border-bottom:1px solid var(--border)
   }
 
-  .detail-grid,.form-grid{grid-template-columns:1fr}
+  .detail-grid,
+  .form-grid{
+    grid-template-columns:1fr
+  }
+
   .form-group.full{grid-column:auto}
 }
 
@@ -684,9 +1073,21 @@ textarea.form-control{min-height:100px;resize:vertical}
   .quick-actions{grid-template-columns:1fr}
   .wallet-cards{grid-template-columns:1fr}
   .topbar-right{gap:4px}
-  .icon-btn{width:35px;height:35px}
-  .content{padding-left:12px;padding-right:12px}
-  .logout-btn{padding:8px 9px;font-size:10px}
+
+  .icon-btn{
+    width:35px;
+    height:35px
+  }
+
+  .content{
+    padding-left:12px;
+    padding-right:12px
+  }
+
+  .logout-btn{
+    padding:8px 9px;
+    font-size:10px
+  }
 }
 </style>
 </head>
@@ -701,6 +1102,7 @@ textarea.form-control{min-height:100px;resize:vertical}
 
   <div class="brand">
     <div class="brand-logo">🌲</div>
+
     <div class="brand-text">
       <strong>CoinForest</strong>
       <span>Administration</span>
@@ -713,58 +1115,92 @@ textarea.form-control{min-height:100px;resize:vertical}
 
     <button class="nav-item active"
       onclick="showSection('dashboard',this)">
-      <span class="nav-icon">⌂</span>Dashboard
+      <span class="nav-icon">⌂</span>
+      Dashboard
     </button>
 
-    <div class="nav-label" style="margin-top:18px">Customers</div>
+    <div class="nav-label" style="margin-top:18px">
+      Customers
+    </div>
 
     <button class="nav-item"
       onclick="showSection('customers',this)">
-      <span class="nav-icon">👥</span>Customers
+      <span class="nav-icon">👥</span>
+      Customers
     </button>
 
     <button class="nav-item"
       onclick="showSection('kyc',this)">
-      <span class="nav-icon">✓</span>KYC Review
+      <span class="nav-icon">✓</span>
+      KYC Review
     </button>
 
     <button class="nav-item"
       onclick="showSection('chat',this)">
-      <span class="nav-icon">💬</span>Customer Chat
+      <span class="nav-icon">💬</span>
+      Customer Chat
     </button>
 
-    <div class="nav-label" style="margin-top:18px">Financial</div>
+    <div class="nav-label" style="margin-top:18px">
+      Financial
+    </div>
 
     <button class="nav-item"
       onclick="showSection('wallets',this)">
-      <span class="nav-icon">💳</span>Wallets
+      <span class="nav-icon">💳</span>
+      Wallets
     </button>
 
     <button class="nav-item"
       onclick="showSection('investments',this)">
-      <span class="nav-icon">📈</span>Investments
+      <span class="nav-icon">📈</span>
+      Investments
     </button>
 
     <button class="nav-item"
       onclick="showSection('transactions',this)">
-      <span class="nav-icon">↔</span>Transactions
+      <span class="nav-icon">↔</span>
+      Transactions
     </button>
 
     <button class="nav-item"
       onclick="showSection('requests',this)">
-      <span class="nav-icon">⏳</span>Pending Requests
+      <span class="nav-icon">⏳</span>
+      Pending Requests
     </button>
 
-    <div class="nav-label" style="margin-top:18px">System</div>
+    <div class="nav-label" style="margin-top:18px">
+      System
+    </div>
 
     <button class="nav-item"
       onclick="showSection('settings',this)">
-      <span class="nav-icon">⚙</span>Settings
+      <span class="nav-icon">⚙</span>
+      Settings
     </button>
 
   </nav>
 
   <div class="sidebar-footer">
+
+    <div class="sidebar-nav-actions">
+
+      <button
+        class="secondary-btn sidebar-action-btn"
+        type="button"
+        onclick="adminBack()">
+        ← Back
+      </button>
+
+      <button
+        class="secondary-btn sidebar-action-btn"
+        type="button"
+        onclick="adminCancel()">
+        ✕ Cancel
+      </button>
+
+    </div>
+
     <div class="admin-mini">
 
       <div class="admin-avatar" id="adminAvatar">A</div>
@@ -775,6 +1211,7 @@ textarea.form-control{min-height:100px;resize:vertical}
       </div>
 
     </div>
+
   </div>
 
 </aside>
@@ -785,7 +1222,11 @@ textarea.form-control{min-height:100px;resize:vertical}
 
   <div class="topbar-left">
 
-    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+    <button
+      class="mobile-menu"
+      onclick="toggleSidebar()">
+      ☰
+    </button>
 
     <div>
       <h1 id="pageTitle">Dashboard</h1>
@@ -796,23 +1237,31 @@ textarea.form-control{min-height:100px;resize:vertical}
 
   <div class="topbar-right">
 
-    <button class="icon-btn" title="Refresh"
-      onclick="refreshCurrentSection()">↻</button>
+    <button
+      class="icon-btn"
+      title="Refresh"
+      onclick="refreshCurrentSection()">
+      ↻
+    </button>
 
-    <button class="icon-btn"
+    <button
+      class="icon-btn"
       id="topAdminAvatar"
-      title="Admin profile">A</button>
+      title="Admin profile">
+      A
+    </button>
 
-    <button class="logout-btn"
-      onclick="logoutAdmin()">Logout</button>
+    <button
+      class="logout-btn"
+      onclick="logoutAdmin()">
+      Logout
+    </button>
 
   </div>
 
 </header>
 
 <section class="content">
-
-<!-- ================= DASHBOARD ================= -->
 
 <div id="dashboard" class="section">
 
@@ -823,6 +1272,7 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span class="stat-label">Total Customers</span>
         <div class="stat-icon">👥</div>
       </div>
+
       <div class="stat-value" id="totalCustomers">0</div>
       <div class="stat-note">Registered accounts</div>
     </div>
@@ -832,6 +1282,7 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span class="stat-label">Pending KYC</span>
         <div class="stat-icon">✓</div>
       </div>
+
       <div class="stat-value" id="pendingKyc">0</div>
       <div class="stat-note">Awaiting review</div>
     </div>
@@ -841,6 +1292,7 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span class="stat-label">Active Investments</span>
         <div class="stat-icon">📈</div>
       </div>
+
       <div class="stat-value" id="activeInvestments">0</div>
       <div class="stat-note">Customer investments</div>
     </div>
@@ -850,6 +1302,7 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span class="stat-label">Pending Requests</span>
         <div class="stat-icon">⏳</div>
       </div>
+
       <div class="stat-value" id="pendingRequests">0</div>
       <div class="stat-note">Deposit, withdrawal & transfers</div>
     </div>
@@ -861,50 +1314,76 @@ textarea.form-control{min-height:100px;resize:vertical}
     <div class="panel">
 
       <div class="panel-header">
+
         <div>
           <h2>Quick Actions</h2>
           <span>Administrative controls</span>
         </div>
+
       </div>
 
       <div class="panel-body">
 
         <div class="quick-actions">
 
-          <button class="action" onclick="showSection('customers')">
+          <button
+            class="action"
+            onclick="showSection('customers')">
+
             <div class="action-icon">👥</div>
             <strong>Customers</strong>
             <span>View registered customer accounts.</span>
+
           </button>
 
-          <button class="action" onclick="showSection('kyc')">
+          <button
+            class="action"
+            onclick="showSection('kyc')">
+
             <div class="action-icon">✓</div>
             <strong>Review KYC</strong>
             <span>Review and process customer verification.</span>
+
           </button>
 
-          <button class="action" onclick="showSection('wallets')">
+          <button
+            class="action"
+            onclick="showSection('wallets')">
+
             <div class="action-icon">💳</div>
             <strong>Manage Wallets</strong>
             <span>Manage Main Wallet and Profit Wallet balances.</span>
+
           </button>
 
-          <button class="action" onclick="showSection('requests')">
+          <button
+            class="action"
+            onclick="showSection('requests')">
+
             <div class="action-icon">⏳</div>
             <strong>Pending Requests</strong>
             <span>Process pending financial requests.</span>
+
           </button>
 
-          <button class="action" onclick="showSection('transactions')">
+          <button
+            class="action"
+            onclick="showSection('transactions')">
+
             <div class="action-icon">↔</div>
             <strong>Transactions</strong>
             <span>View the transaction history.</span>
+
           </button>
 
-          <button class="action" onclick="showSection('chat')">
+          <button
+            class="action"
+            onclick="showSection('chat')">
+
             <div class="action-icon">💬</div>
             <strong>Customer Chat</strong>
             <span>Respond to customer conversations.</span>
+
           </button>
 
         </div>
@@ -916,14 +1395,18 @@ textarea.form-control{min-height:100px;resize:vertical}
     <div class="panel">
 
       <div class="panel-header">
+
         <div>
           <h2>Recent Activity</h2>
           <span>Latest platform activity</span>
         </div>
+
       </div>
 
       <div class="panel-body" id="recentActivity">
-        <div class="loading">Loading activity...</div>
+        <div class="loading">
+          Loading activity...
+        </div>
       </div>
 
     </div>
@@ -933,21 +1416,25 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= CUSTOMERS ================= -->
-
-<div id="customers" class="section" style="display:none">
+<div id="customers"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
     <div class="panel-header">
+
       <div>
         <h2>Customers</h2>
         <span>Customer account management</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadCustomers()">
+      <button
+        class="secondary-btn"
+        onclick="loadCustomers()">
         Refresh
       </button>
+
     </div>
 
     <div class="panel-body">
@@ -960,20 +1447,25 @@ textarea.form-control{min-height:100px;resize:vertical}
           placeholder="Search name, email, username or phone..."
           oninput="filterCustomers()">
 
-        <select id="customerStatusFilter"
+        <select
+          id="customerStatusFilter"
           class="select"
           onchange="filterCustomers()">
+
           <option value="">All status</option>
           <option value="active">Active</option>
           <option value="pending">Pending</option>
           <option value="suspended">Suspended</option>
           <option value="inactive">Inactive</option>
+
         </select>
 
       </div>
 
       <div id="customersContainer">
-        <div class="loading">Loading customers...</div>
+        <div class="loading">
+          Loading customers...
+        </div>
       </div>
 
     </div>
@@ -983,9 +1475,9 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= KYC ================= -->
-
-<div id="kyc" class="section" style="display:none">
+<div id="kyc"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
@@ -996,7 +1488,9 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span>Approve or reject customer verification</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadKyc()">
+      <button
+        class="secondary-btn"
+        onclick="loadKyc()">
         Refresh
       </button>
 
@@ -1006,12 +1500,13 @@ textarea.form-control{min-height:100px;resize:vertical}
 
       <div class="toolbar">
 
-        <select id="kycFilter"
+        <select
+          id="kycFilter"
           class="select"
           onchange="loadKyc()">
 
+          <option value="">All KYC</option>
           <option value="pending">Pending</option>
-          <option value="">All</option>
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
 
@@ -1020,7 +1515,9 @@ textarea.form-control{min-height:100px;resize:vertical}
       </div>
 
       <div id="kycContainer">
-        <div class="loading">Loading KYC records...</div>
+        <div class="loading">
+          Loading KYC records...
+        </div>
       </div>
 
     </div>
@@ -1030,9 +1527,9 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= CHAT ================= -->
-
-<div id="chat" class="section" style="display:none">
+<div id="chat"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
@@ -1043,7 +1540,9 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span>Customer ↔ Admin conversations</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadConversations()">
+      <button
+        class="secondary-btn"
+        onclick="loadConversations()">
         Refresh
       </button>
 
@@ -1051,16 +1550,26 @@ textarea.form-control{min-height:100px;resize:vertical}
 
     <div class="chat-layout">
 
-      <div class="conversations" id="conversationList">
-        <div class="loading">Loading...</div>
+      <div
+        class="conversations"
+        id="conversationList">
+
+        <div class="loading">
+          Loading...
+        </div>
+
       </div>
 
       <div class="chat-panel">
 
-        <div class="messages" id="messages">
+        <div
+          class="messages"
+          id="messages">
+
           <div class="empty">
             Select a conversation.
           </div>
+
         </div>
 
         <div class="chat-compose">
@@ -1070,7 +1579,8 @@ textarea.form-control{min-height:100px;resize:vertical}
             placeholder="Write a reply..."
             onkeydown="handleChatKey(event)"></textarea>
 
-          <button class="primary-btn"
+          <button
+            class="primary-btn"
             onclick="sendChatMessage()">
             Send
           </button>
@@ -1086,9 +1596,9 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= WALLETS ================= -->
-
-<div id="wallets" class="section" style="display:none">
+<div id="wallets"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
@@ -1096,10 +1606,12 @@ textarea.form-control{min-height:100px;resize:vertical}
 
       <div>
         <h2>Wallet Management</h2>
-        <span>Main Wallet and Profit Wallet controls</span>
+        <span>Main Wallet and Profit Wallet balances</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadWallets()">
+      <button
+        class="secondary-btn"
+        onclick="loadWallets()">
         Refresh
       </button>
 
@@ -1118,7 +1630,9 @@ textarea.form-control{min-height:100px;resize:vertical}
       </div>
 
       <div id="walletsContainer">
-        <div class="loading">Loading wallets...</div>
+        <div class="loading">
+          Loading wallets...
+        </div>
       </div>
 
     </div>
@@ -1128,9 +1642,9 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= INVESTMENTS ================= -->
-
-<div id="investments" class="section" style="display:none">
+<div id="investments"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
@@ -1141,7 +1655,9 @@ textarea.form-control{min-height:100px;resize:vertical}
         <span>Customer investment records</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadInvestments()">
+      <button
+        class="secondary-btn"
+        onclick="loadInvestments()">
         Refresh
       </button>
 
@@ -1166,13 +1682,16 @@ textarea.form-control{min-height:100px;resize:vertical}
           <option value="active">Active</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
+          <option value="pending">Pending</option>
 
         </select>
 
       </div>
 
       <div id="investmentsContainer">
-        <div class="loading">Loading investments...</div>
+        <div class="loading">
+          Loading investments...
+        </div>
       </div>
 
     </div>
@@ -1182,9 +1701,9 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= TRANSACTIONS ================= -->
-
-<div id="transactions" class="section" style="display:none">
+<div id="transactions"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
@@ -1192,10 +1711,12 @@ textarea.form-control{min-height:100px;resize:vertical}
 
       <div>
         <h2>Transactions</h2>
-        <span>Deposits, withdrawals, transfers and other records</span>
+        <span>Platform transaction history</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadTransactions()">
+      <button
+        class="secondary-btn"
+        onclick="loadTransactions()">
         Refresh
       </button>
 
@@ -1203,33 +1724,10 @@ textarea.form-control{min-height:100px;resize:vertical}
 
     <div class="panel-body">
 
-      <div class="toolbar">
-
-        <input
-          id="transactionSearch"
-          class="search"
-          placeholder="Search customer, reference or transaction type..."
-          oninput="filterTransactions()">
-
-        <select
-          id="transactionTypeFilter"
-          class="select"
-          onchange="filterTransactions()">
-
-          <option value="">All types</option>
-          <option value="deposit">Deposit</option>
-          <option value="withdrawal">Withdrawal</option>
-          <option value="transfer">Transfer</option>
-          <option value="send">Send</option>
-          <option value="profit">Profit</option>
-          <option value="adjustment">Adjustment</option>
-
-        </select>
-
-      </div>
-
       <div id="transactionsContainer">
-        <div class="loading">Loading transactions...</div>
+        <div class="loading">
+          Loading transactions...
+        </div>
       </div>
 
     </div>
@@ -1239,9 +1737,9 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= REQUESTS ================= -->
-
-<div id="requests" class="section" style="display:none">
+<div id="requests"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
@@ -1249,10 +1747,12 @@ textarea.form-control{min-height:100px;resize:vertical}
 
       <div>
         <h2>Pending Requests</h2>
-        <span>Deposit, withdrawal, transfer and other requests</span>
+        <span>Deposit, withdrawal and transfer requests</span>
       </div>
 
-      <button class="secondary-btn" onclick="loadRequests()">
+      <button
+        class="secondary-btn"
+        onclick="loadRequests()">
         Refresh
       </button>
 
@@ -1260,25 +1760,10 @@ textarea.form-control{min-height:100px;resize:vertical}
 
     <div class="panel-body">
 
-      <div class="toolbar">
-
-        <select
-          id="requestTypeFilter"
-          class="select"
-          onchange="filterRequests()">
-
-          <option value="">All types</option>
-          <option value="deposit">Deposit</option>
-          <option value="withdrawal">Withdrawal</option>
-          <option value="transfer">Transfer</option>
-          <option value="send">Send</option>
-
-        </select>
-
-      </div>
-
       <div id="requestsContainer">
-        <div class="loading">Loading requests...</div>
+        <div class="loading">
+          Loading requests...
+        </div>
       </div>
 
     </div>
@@ -1288,17 +1773,17 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= SETTINGS ================= -->
-
-<div id="settings" class="section" style="display:none">
+<div id="settings"
+  class="section"
+  style="display:none">
 
   <div class="panel">
 
     <div class="panel-header">
 
       <div>
-        <h2>Settings</h2>
-        <span>Administrator account and system controls</span>
+        <h2>Admin Settings</h2>
+        <span>Current administrator session</span>
       </div>
 
     </div>
@@ -1309,12 +1794,16 @@ textarea.form-control{min-height:100px;resize:vertical}
 
         <div class="detail-item">
           <label>Administrator</label>
-          <strong id="settingsAdminName">Administrator</strong>
+          <strong id="settingsAdminName">
+            Administrator
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>Email</label>
-          <strong id="settingsAdminEmail">—</strong>
+          <strong id="settingsAdminEmail">
+            —
+          </strong>
         </div>
 
         <div class="detail-item">
@@ -1323,17 +1812,11 @@ textarea.form-control{min-height:100px;resize:vertical}
         </div>
 
         <div class="detail-item">
-          <label>Authentication</label>
-          <strong>Authenticated session</strong>
+          <label>Platform</label>
+          <strong>CoinForest</strong>
         </div>
 
       </div>
-
-      <br>
-
-      <button class="danger-btn" onclick="logoutAdmin()">
-        Logout Administrator
-      </button>
 
     </div>
 
@@ -1346,19 +1829,29 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= CUSTOMER MODAL ================= -->
-
-<div class="modal" id="customerModal">
+<div class="modal"
+  id="customerModal">
 
   <div class="modal-card">
 
     <div class="modal-header">
+
       <h3>Customer Details</h3>
-      <button class="modal-close" onclick="closeModal('customerModal')">✕</button>
+
+      <button
+        class="modal-close"
+        onclick="closeModal('customerModal')">
+        ✕
+      </button>
+
     </div>
 
-    <div class="modal-body" id="customerModalBody">
+    <div
+      class="modal-body"
+      id="customerModalBody">
+
       Loading...
+
     </div>
 
   </div>
@@ -1366,15 +1859,21 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= WALLET MODAL ================= -->
-
-<div class="modal" id="walletModal">
+<div class="modal"
+  id="walletModal">
 
   <div class="modal-card">
 
     <div class="modal-header">
+
       <h3>Wallet Adjustment</h3>
-      <button class="modal-close" onclick="closeModal('walletModal')">✕</button>
+
+      <button
+        class="modal-close"
+        onclick="closeModal('walletModal')">
+        ✕
+      </button>
+
     </div>
 
     <div class="modal-body">
@@ -1386,25 +1885,51 @@ textarea.form-control{min-height:100px;resize:vertical}
       <div class="form-grid">
 
         <div class="form-group">
+
           <label>Wallet</label>
 
-          <select id="adjustWalletType" class="form-control">
-            <option value="main_wallet">Main Wallet</option>
-            <option value="profit_wallet">Profit Wallet</option>
+          <select
+            id="adjustWalletType"
+            class="form-control">
+
+            <option value="main_wallet">
+              Main Wallet
+            </option>
+
+            <option value="profit_wallet">
+              Profit Wallet
+            </option>
+
           </select>
+
         </div>
 
         <div class="form-group">
+
           <label>Action</label>
 
-          <select id="adjustAction" class="form-control">
-            <option value="add">Add Balance</option>
-            <option value="subtract">Subtract Balance</option>
-            <option value="set">Set Balance</option>
+          <select
+            id="adjustAction"
+            class="form-control">
+
+            <option value="add">
+              Add Balance
+            </option>
+
+            <option value="subtract">
+              Subtract Balance
+            </option>
+
+            <option value="set">
+              Set Balance
+            </option>
+
           </select>
+
         </div>
 
         <div class="form-group">
+
           <label>Amount</label>
 
           <input
@@ -1414,24 +1939,29 @@ textarea.form-control{min-height:100px;resize:vertical}
             step="0.01"
             min="0"
             placeholder="0.00">
+
         </div>
 
         <div class="form-group">
+
           <label>Reference</label>
 
           <input
             id="adjustReference"
             class="form-control"
             placeholder="Optional reference">
+
         </div>
 
         <div class="form-group full">
+
           <label>Reason</label>
 
           <textarea
             id="adjustReason"
             class="form-control"
             placeholder="Reason for this administrative adjustment"></textarea>
+
         </div>
 
       </div>
@@ -1440,12 +1970,14 @@ textarea.form-control{min-height:100px;resize:vertical}
 
     <div class="modal-footer">
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="closeModal('walletModal')">
         Cancel
       </button>
 
-      <button class="primary-btn"
+      <button
+        class="primary-btn"
         onclick="submitWalletAdjustment()">
         Save Adjustment
       </button>
@@ -1457,9 +1989,8 @@ textarea.form-control{min-height:100px;resize:vertical}
 </div>
 
 
-<!-- ================= KYC MODAL ================= -->
-
-<div class="modal" id="kycModal">
+<div class="modal"
+  id="kycModal">
 
   <div class="modal-card">
 
@@ -1467,15 +1998,20 @@ textarea.form-control{min-height:100px;resize:vertical}
 
       <h3>KYC Review</h3>
 
-      <button class="modal-close"
+      <button
+        class="modal-close"
         onclick="closeModal('kycModal')">
         ✕
       </button>
 
     </div>
 
-    <div class="modal-body" id="kycModalBody">
+    <div
+      class="modal-body"
+      id="kycModalBody">
+
       Loading...
+
     </div>
 
   </div>
@@ -1501,13 +2037,10 @@ let conversationsData = [];
 let selectedConversationId = null;
 
 
-/* =====================================================
-   SESSION
-===================================================== */
-
 function getStoredToken(){
   return localStorage.getItem("coinforest_token");
 }
+
 
 function getStoredUser(){
 
@@ -1523,6 +2056,7 @@ function getStoredUser(){
   }
 
 }
+
 
 function getStoredRole(){
 
@@ -1542,10 +2076,6 @@ function getStoredRole(){
 }
 
 
-/* =====================================================
-   TOKEN ROLE
-===================================================== */
-
 function getRoleFromToken(token){
 
   try{
@@ -1553,7 +2083,8 @@ function getRoleFromToken(token){
     const parts =
       String(token).split(".");
 
-    if(parts.length !== 3) return "";
+    if(parts.length !== 3)
+      return "";
 
     let payload =
       parts[1]
@@ -1580,35 +2111,46 @@ function getRoleFromToken(token){
 }
 
 
-/* =====================================================
-   USER EXTRACTION
-===================================================== */
-
 function extractUser(data){
 
-  if(data?.user && typeof data.user === "object")
+  if(
+    data?.user &&
+    typeof data.user === "object"
+  )
     return data.user;
 
-  if(data?.data?.user && typeof data.data.user === "object")
+  if(
+    data?.data?.user &&
+    typeof data.data.user === "object"
+  )
     return data.data.user;
 
   if(
     data?.data &&
     typeof data.data === "object" &&
-    (data.data.role || data.data.email || data.data.id)
+    (
+      data.data.role ||
+      data.data.email ||
+      data.data.id
+    )
   )
     return data.data;
 
   if(
     data &&
     typeof data === "object" &&
-    (data.role || data.email || data.id)
+    (
+      data.role ||
+      data.email ||
+      data.id
+    )
   )
     return data;
 
   return null;
 
 }
+
 
 function getRoleFromObject(user,data){
 
@@ -1626,10 +2168,6 @@ function getRoleFromObject(user,data){
 }
 
 
-/* =====================================================
-   ACCESS MESSAGE
-===================================================== */
-
 function showAdminAccessMessage(title,message){
 
   let existing =
@@ -1637,13 +2175,16 @@ function showAdminAccessMessage(title,message){
 
   if(existing){
 
-    existing.querySelector(".admin-access-title")
-      .textContent = title;
+    existing.querySelector(
+      ".admin-access-title"
+    ).textContent = title;
 
-    existing.querySelector(".admin-access-text")
-      .textContent = message;
+    existing.querySelector(
+      ".admin-access-text"
+    ).textContent = message;
 
     return;
+
   }
 
   const box =
@@ -1655,7 +2196,9 @@ function showAdminAccessMessage(title,message){
 
     <div class="admin-access-card">
 
-      <div class="admin-access-icon">🔐</div>
+      <div class="admin-access-icon">
+        🔐
+      </div>
 
       <h2 class="admin-access-title">
         ${escapeHtml(title)}
@@ -1673,19 +2216,19 @@ function showAdminAccessMessage(title,message){
 
 }
 
+
 function hideAdminAccessMessage(){
 
   const box =
-    document.getElementById("adminAccessMessage");
+    document.getElementById(
+      "adminAccessMessage"
+    );
 
-  if(box) box.remove();
+  if(box)
+    box.remove();
 
 }
 
-
-/* =====================================================
-   AUTH / ME
-===================================================== */
 
 async function fetchCurrentUser(token){
 
@@ -1711,11 +2254,20 @@ async function fetchCurrentUser(token){
     data = text ? JSON.parse(text) : null;
   }catch{}
 
-  if(response.status === 401 || response.status === 403)
-    return {invalid:true,user:null};
+  if(
+    response.status === 401 ||
+    response.status === 403
+  )
+    return {
+      invalid:true,
+      user:null
+    };
 
   if(!response.ok)
-    return {invalid:false,user:null};
+    return {
+      invalid:false,
+      user:null
+    };
 
   return {
     invalid:false,
@@ -1727,16 +2279,25 @@ async function fetchCurrentUser(token){
 
 async function requireAdmin(){
 
-  const token = getStoredToken();
-  const storedUser = getStoredUser();
+  const token =
+    getStoredToken();
 
-  let role = getStoredRole();
+  const storedUser =
+    getStoredUser();
+
+  let role =
+    getStoredRole();
 
   if(!role && storedUser)
-    role = getRoleFromObject(storedUser,null);
+    role =
+      getRoleFromObject(
+        storedUser,
+        null
+      );
 
   if(!role && token)
-    role = getRoleFromToken(token);
+    role =
+      getRoleFromToken(token);
 
 
   if(role === "admin"){
@@ -1758,15 +2319,22 @@ async function requireAdmin(){
       "admin"
     );
 
-    updateAdminIdentity(normalizedUser);
+    updateAdminIdentity(
+      normalizedUser
+    );
+
     hideAdminAccessMessage();
 
     if(token)
-      verifyAdminInBackground(token,normalizedUser);
+      verifyAdminInBackground(
+        token,
+        normalizedUser
+      );
 
     await loadDashboard();
 
     return true;
+
   }
 
 
@@ -1779,13 +2347,18 @@ async function requireAdmin(){
 
       if(result.user){
 
-        const serverUser = result.user;
+        const serverUser =
+          result.user;
 
         let serverRole =
-          getRoleFromObject(serverUser,null);
+          getRoleFromObject(
+            serverUser,
+            null
+          );
 
         if(!serverRole)
-          serverRole = getRoleFromToken(token);
+          serverRole =
+            getRoleFromToken(token);
 
         if(serverRole === "admin"){
 
@@ -1806,15 +2379,22 @@ async function requireAdmin(){
 
           adminAuthenticated = true;
 
-          updateAdminIdentity(normalizedUser);
+          updateAdminIdentity(
+            normalizedUser
+          );
+
           hideAdminAccessMessage();
 
           await loadDashboard();
 
           return true;
+
         }
 
-        if(serverRole && serverRole !== "admin"){
+        if(
+          serverRole &&
+          serverRole !== "admin"
+        ){
 
           showAdminAccessMessage(
             "Administrator access required",
@@ -1822,7 +2402,9 @@ async function requireAdmin(){
           );
 
           return false;
+
         }
+
       }
 
     }catch(error){
@@ -1846,7 +2428,10 @@ async function requireAdmin(){
 }
 
 
-async function verifyAdminInBackground(token,storedUser){
+async function verifyAdminInBackground(
+  token,
+  storedUser
+){
 
   try{
 
@@ -1855,13 +2440,18 @@ async function verifyAdminInBackground(token,storedUser){
 
     if(result.user){
 
-      const serverUser = result.user;
+      const serverUser =
+        result.user;
 
       let serverRole =
-        getRoleFromObject(serverUser,null);
+        getRoleFromObject(
+          serverUser,
+          null
+        );
 
       if(!serverRole)
-        serverRole = getRoleFromToken(token);
+        serverRole =
+          getRoleFromToken(token);
 
       if(serverRole === "admin"){
 
@@ -1880,12 +2470,18 @@ async function verifyAdminInBackground(token,storedUser){
           "admin"
         );
 
-        updateAdminIdentity(normalizedUser);
+        updateAdminIdentity(
+          normalizedUser
+        );
 
         return;
+
       }
 
-      if(serverRole && serverRole !== "admin"){
+      if(
+        serverRole &&
+        serverRole !== "admin"
+      ){
 
         adminAuthenticated = false;
 
@@ -1910,69 +2506,91 @@ async function verifyAdminInBackground(token,storedUser){
 }
 
 
-/* =====================================================
-   IDENTITY
-===================================================== */
-
 function updateAdminIdentity(user){
 
   const firstName =
-    String(user?.first_name || "").trim();
+    String(
+      user?.first_name || ""
+    ).trim();
 
   const lastName =
-    String(user?.last_name || "").trim();
+    String(
+      user?.last_name || ""
+    ).trim();
 
   const email =
-    String(user?.email || "").trim();
+    String(
+      user?.email || ""
+    ).trim();
 
   const fullName =
     `${firstName} ${lastName}`.trim();
 
   const displayName =
-    fullName || email || "Administrator";
+    fullName ||
+    email ||
+    "Administrator";
 
   const initials =
     (
       `${firstName.charAt(0)}${lastName.charAt(0)}`
-      || email.charAt(0)
-      || "A"
+      ||
+      email.charAt(0)
+      ||
+      "A"
     ).toUpperCase();
 
   const name =
-    document.getElementById("adminName");
+    document.getElementById(
+      "adminName"
+    );
 
   const avatar =
-    document.getElementById("adminAvatar");
+    document.getElementById(
+      "adminAvatar"
+    );
 
   const top =
-    document.getElementById("topAdminAvatar");
+    document.getElementById(
+      "topAdminAvatar"
+    );
 
-  if(name) name.textContent = displayName;
-  if(avatar) avatar.textContent = initials;
-  if(top) top.textContent = initials;
+  if(name)
+    name.textContent =
+      displayName;
+
+  if(avatar)
+    avatar.textContent =
+      initials;
+
+  if(top)
+    top.textContent =
+      initials;
 
   const settingsName =
-    document.getElementById("settingsAdminName");
+    document.getElementById(
+      "settingsAdminName"
+    );
 
   const settingsEmail =
-    document.getElementById("settingsAdminEmail");
+    document.getElementById(
+      "settingsAdminEmail"
+    );
 
   if(settingsName)
-    settingsName.textContent = displayName;
+    settingsName.textContent =
+      displayName;
 
   if(settingsEmail)
-    settingsEmail.textContent = email || "—";
+    settingsEmail.textContent =
+      email || "—";
 
 }
 
 
-/* =====================================================
-   API HELPER
-===================================================== */
-
 async function apiRequest(
   path,
-  options = {}
+  options={}
 ){
 
   const token =
@@ -1980,12 +2598,15 @@ async function apiRequest(
 
   const headers = {
     Accept:"application/json",
-    ...(options.body ? {"Content-Type":"application/json"} : {}),
+    ...(options.body
+      ? {"Content-Type":"application/json"}
+      : {}),
     ...(options.headers || {})
   };
 
   if(token)
-    headers.Authorization = `Bearer ${token}`;
+    headers.Authorization =
+      `Bearer ${token}`;
 
   const response =
     await fetch(
@@ -2003,9 +2624,14 @@ async function apiRequest(
   let data = null;
 
   try{
-    data = text ? JSON.parse(text) : null;
+    data =
+      text
+        ? JSON.parse(text)
+        : null;
   }catch{
-    data = {raw:text};
+    data = {
+      raw:text
+    };
   }
 
   if(response.status === 401){
@@ -2017,7 +2643,10 @@ async function apiRequest(
       "Your administrator session is no longer valid. Please sign in again."
     );
 
-    throw new Error("Unauthorized");
+    throw new Error(
+      "Unauthorized"
+    );
+
   }
 
   if(!response.ok){
@@ -2029,6 +2658,7 @@ async function apiRequest(
       `Request failed (${response.status})`;
 
     throw new Error(message);
+
   }
 
   return data;
@@ -2036,29 +2666,94 @@ async function apiRequest(
 }
 
 
-/* =====================================================
-   DATA NORMALIZER
-===================================================== */
+async function apiRequestWithFallback(
+  paths,
+  options={}
+){
 
-function extractArray(data,keys=[]){
+  let lastError = null;
+
+  for(
+    const path of paths
+  ){
+
+    try{
+
+      return await apiRequest(
+        path,
+        options
+      );
+
+    }catch(error){
+
+      lastError = error;
+
+      if(
+        !/404|not found|route/i.test(
+          String(
+            error.message || ""
+          )
+        )
+      ){
+
+        throw error;
+
+      }
+
+    }
+
+  }
+
+  throw (
+    lastError ||
+    new Error(
+      "API route not found."
+    )
+  );
+
+}
+
+
+function extractArray(
+  data,
+  keys=[]
+){
 
   if(Array.isArray(data))
     return data;
 
-  for(const key of keys){
+  for(
+    const key of keys
+  ){
 
-    if(Array.isArray(data?.[key]))
+    if(
+      Array.isArray(
+        data?.[key]
+      )
+    )
       return data[key];
 
-    if(Array.isArray(data?.data?.[key]))
+    if(
+      Array.isArray(
+        data?.data?.[key]
+      )
+    )
       return data.data[key];
 
   }
 
-  if(Array.isArray(data?.data))
+  if(
+    Array.isArray(
+      data?.data
+    )
+  )
     return data.data;
 
-  if(Array.isArray(data?.results))
+  if(
+    Array.isArray(
+      data?.results
+    )
+  )
     return data.results;
 
   return [];
@@ -2066,13 +2761,11 @@ function extractArray(data,keys=[]){
 }
 
 
-/* =====================================================
-   ESCAPE
-===================================================== */
-
 function escapeHtml(value){
 
-  return String(value ?? "")
+  return String(
+    value ?? ""
+  )
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
@@ -2082,99 +2775,124 @@ function escapeHtml(value){
 }
 
 
-/* =====================================================
-   FORMATTERS
-===================================================== */
-
 function money(value){
 
-  const n = Number(value || 0);
+  const number =
+    Number(value || 0);
 
-  return "$" + n.toLocaleString(
+  return new Intl.NumberFormat(
     "en-US",
     {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
+      style:"currency",
+      currency:"USD",
+      minimumFractionDigits:2
     }
+  ).format(
+    Number.isFinite(number)
+      ? number
+      : 0
   );
 
 }
 
+
 function date(value){
 
-  if(!value) return "—";
+  if(!value)
+    return "—";
 
-  const d = new Date(value);
+  const d =
+    new Date(value);
 
   if(Number.isNaN(d.getTime()))
-    return String(value);
+    return "—";
 
   return d.toLocaleString(
     "en-US",
     {
-      dateStyle:"medium",
-      timeStyle:"short"
+      year:"numeric",
+      month:"short",
+      day:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
     }
   );
 
 }
 
-function statusBadge(status){
 
-  const s =
-    String(status || "unknown").toLowerCase();
+function statusBadge(value){
 
-  let cls = "badge-neutral";
+  const status =
+    String(
+      value || "unknown"
+    ).toLowerCase();
+
+  let cls =
+    "badge-neutral";
 
   if(
-    ["approved","active","completed","success","successful","delivered"]
-      .includes(s)
+    [
+      "approved",
+      "active",
+      "completed",
+      "success",
+      "verified"
+    ].includes(status)
   )
     cls = "badge-success";
 
   else if(
-    ["pending","processing","review","submitted"]
-      .includes(s)
+    [
+      "pending",
+      "processing",
+      "review",
+      "under_review"
+    ].includes(status)
   )
     cls = "badge-warning";
 
   else if(
-    ["rejected","declined","failed","cancelled","suspended"]
-      .includes(s)
+    [
+      "rejected",
+      "declined",
+      "failed",
+      "cancelled",
+      "suspended"
+    ].includes(status)
   )
     cls = "badge-danger";
 
   else if(
-    ["profit","verified"]
-      .includes(s)
+    [
+      "gold",
+      "vip"
+    ].includes(status)
   )
     cls = "badge-gold";
 
   return `
     <span class="badge ${cls}">
-      ${escapeHtml(status || "Unknown")}
+      ${escapeHtml(value || "Unknown")}
     </span>
   `;
 
 }
 
 
-/* =====================================================
-   DASHBOARD
-===================================================== */
-
 async function loadDashboard(){
 
   try{
 
     const data =
-      await apiRequest("/api/admin/dashboard");
+      await apiRequest(
+        "/api/admin/dashboard"
+      );
 
     const stats =
       data?.stats ||
-      data?.data?.stats ||
-      data ||
-      {};
+      data?.data ||
+      data;
 
     setText(
       "totalCustomers",
@@ -2204,25 +2922,33 @@ async function loadDashboard(){
       0
     );
 
-    renderActivity(
-      extractArray(
-        data,
-        ["recentActivity","recent_activity","activities"]
-      )
+    renderRecentActivity(
+      data?.recentActivity ||
+      data?.recent_activity ||
+      data?.activity ||
+      []
     );
 
   }catch(error){
 
-    console.warn(
-      "Dashboard API unavailable:",
-      error
-    );
-
-    /*
-     * Keep the dashboard usable if the summary route
-     * isn't available yet.
-     */
     await loadDashboardFallback();
+
+    const activity =
+      document.getElementById(
+        "recentActivity"
+      );
+
+    if(
+      activity &&
+      !activity.innerHTML.trim()
+    ){
+
+      activity.innerHTML =
+        `<div class="error-box">
+          ${escapeHtml(error.message)}
+        </div>`;
+
+    }
 
   }
 
@@ -2231,127 +2957,194 @@ async function loadDashboard(){
 
 async function loadDashboardFallback(){
 
-  const jobs = await Promise.allSettled([
-    apiRequest("/api/admin/customers"),
-    apiRequest("/api/admin/kyc?status=pending"),
-    apiRequest("/api/admin/investments?status=active"),
-    apiRequest("/api/admin/requests?status=pending")
-  ]);
+  const jobs =
+    await Promise.allSettled([
+
+      apiRequest(
+        "/api/admin/customers"
+      ),
+
+      apiRequest(
+        "/api/admin/kyc?status=pending"
+      ),
+
+      apiRequest(
+        "/api/admin/investments?status=active"
+      ),
+
+      apiRequest(
+        "/api/admin/requests?status=pending"
+      )
+
+    ]);
 
   const customers =
     jobs[0].status === "fulfilled"
-      ? extractArray(jobs[0].value,["customers"])
+      ? extractArray(
+          jobs[0].value,
+          ["customers","users"]
+        )
       : [];
 
   const kyc =
     jobs[1].status === "fulfilled"
-      ? extractArray(jobs[1].value,["kyc","submissions"])
+      ? extractArray(
+          jobs[1].value,
+          ["kyc","submissions"]
+        )
       : [];
 
   const investments =
     jobs[2].status === "fulfilled"
-      ? extractArray(jobs[2].value,["investments"])
+      ? extractArray(
+          jobs[2].value,
+          ["investments"]
+        )
       : [];
 
   const requests =
     jobs[3].status === "fulfilled"
-      ? extractArray(jobs[3].value,["requests"])
+      ? extractArray(
+          jobs[3].value,
+          ["requests"]
+        )
       : [];
 
-  setText("totalCustomers",customers.length);
-  setText("pendingKyc",kyc.length);
-  setText("activeInvestments",investments.length);
-  setText("pendingRequests",requests.length);
+  setText(
+    "totalCustomers",
+    customers.length
+  );
 
-  renderActivity([]);
+  setText(
+    "pendingKyc",
+    kyc.length
+  );
+
+  setText(
+    "activeInvestments",
+    investments.length
+  );
+
+  setText(
+    "pendingRequests",
+    requests.length
+  );
 
 }
 
 
-function renderActivity(items){
+function renderRecentActivity(items){
 
   const box =
-    document.getElementById("recentActivity");
+    document.getElementById(
+      "recentActivity"
+    );
 
-  if(!box) return;
+  if(!box)
+    return;
 
-  if(!items.length){
+  if(!Array.isArray(items) || !items.length){
 
-    box.innerHTML = `
-      <div class="empty">
-        No recent activity available.
-      </div>
-    `;
+    box.innerHTML =
+      `<div class="empty">
+        No recent activity.
+      </div>`;
 
     return;
+
   }
 
   box.innerHTML =
-    items.slice(0,8).map(item => `
+    items
+      .slice(0,8)
+      .map(item => `
 
-      <div class="activity">
+        <div class="activity">
 
-        <div class="activity-icon">
-          ${escapeHtml(item.icon || "•")}
+          <div class="activity-icon">
+            ${escapeHtml(
+              item.icon || "•"
+            )}
+          </div>
+
+          <div class="activity-info">
+
+            <strong>
+              ${escapeHtml(
+                item.title ||
+                item.action ||
+                item.type ||
+                "Activity"
+              )}
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                item.description ||
+                item.message ||
+                item.details ||
+                ""
+              )}
+
+              ${
+                item.created_at
+                  ? " • " +
+                    escapeHtml(
+                      date(
+                        item.created_at
+                      )
+                    )
+                  : ""
+              }
+
+            </span>
+
+          </div>
+
         </div>
 
-        <div class="activity-info">
-
-          <strong>
-            ${escapeHtml(
-              item.title ||
-              item.action ||
-              item.type ||
-              "Activity"
-            )}
-          </strong>
-
-          <span>
-            ${escapeHtml(
-              item.description ||
-              item.message ||
-              item.details ||
-              ""
-            )}
-            ${item.created_at ? " • " + escapeHtml(date(item.created_at)) : ""}
-          </span>
-
-        </div>
-
-      </div>
-
-    `).join("");
+      `)
+      .join("");
 
 }
 
-
-/* =====================================================
-   CUSTOMERS
-===================================================== */
 
 async function loadCustomers(){
 
   const box =
-    document.getElementById("customersContainer");
+    document.getElementById(
+      "customersContainer"
+    );
 
   box.innerHTML =
-    `<div class="loading">Loading customers...</div>`;
+    `<div class="loading">
+      Loading customers...
+    </div>`;
 
   try{
 
     const data =
-      await apiRequest("/api/admin/customers");
+      await apiRequest(
+        "/api/admin/customers"
+      );
 
     customersData =
-      extractArray(data,["customers","users"]);
+      extractArray(
+        data,
+        ["customers","users"]
+      );
 
-    renderCustomers(customersData);
+    renderCustomers(
+      customersData
+    );
 
   }catch(error){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -2362,14 +3155,19 @@ async function loadCustomers(){
 function renderCustomers(list){
 
   const box =
-    document.getElementById("customersContainer");
+    document.getElementById(
+      "customersContainer"
+    );
 
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No customers found.</div>`;
+      `<div class="empty">
+        No customers found.
+      </div>`;
 
     return;
+
   }
 
   box.innerHTML = `
@@ -2398,33 +3196,64 @@ function renderCustomers(list){
 
             const name =
               `${user.first_name || ""} ${user.last_name || ""}`.trim()
-              || user.name
-              || user.email
-              || "Customer";
+              ||
+              user.name
+              ||
+              user.email
+              ||
+              "Customer";
 
             return `
 
               <tr>
 
                 <td>
+
                   <div class="customer-name">
                     ${escapeHtml(name)}
                   </div>
 
                   <div class="muted">
-                    ${escapeHtml(user.id || "")}
+                    ${escapeHtml(
+                      user.id || ""
+                    )}
                   </div>
+
                 </td>
 
-                <td>${escapeHtml(user.email || "—")}</td>
+                <td>
+                  ${escapeHtml(
+                    user.email || "—"
+                  )}
+                </td>
 
-                <td>${escapeHtml(user.username || "—")}</td>
+                <td>
+                  ${escapeHtml(
+                    user.username || "—"
+                  )}
+                </td>
 
-                <td>${statusBadge(user.status || "active")}</td>
+                <td>
+                  ${statusBadge(
+                    user.status || "active"
+                  )}
+                </td>
 
-                <td>${statusBadge(user.kyc_status || user.kycStatus || "pending")}</td>
+                <td>
+                  ${statusBadge(
+                    user.kyc_status ||
+                    user.kycStatus ||
+                    "pending"
+                  )}
+                </td>
 
-                <td>${escapeHtml(date(user.created_at))}</td>
+                <td>
+                  ${escapeHtml(
+                    date(
+                      user.created_at
+                    )
+                  )}
+                </td>
 
                 <td>
 
@@ -2467,54 +3296,72 @@ function filterCustomers(){
 
   const q =
     String(
-      document.getElementById("customerSearch").value || ""
+      document.getElementById(
+        "customerSearch"
+      ).value || ""
     ).toLowerCase();
 
   const status =
     String(
-      document.getElementById("customerStatusFilter").value || ""
+      document.getElementById(
+        "customerStatusFilter"
+      ).value || ""
     ).toLowerCase();
 
   const filtered =
-    customersData.filter(user => {
+    customersData.filter(
+      user => {
 
-      const text =
-        [
-          user.id,
-          user.email,
-          user.username,
-          user.name,
-          user.first_name,
-          user.last_name,
-          user.phone
-        ]
-        .join(" ")
-        .toLowerCase();
+        const text =
+          [
+            user.id,
+            user.email,
+            user.username,
+            user.name,
+            user.first_name,
+            user.last_name,
+            user.phone
+          ]
+            .join(" ")
+            .toLowerCase();
 
-      const userStatus =
-        String(user.status || "").toLowerCase();
+        const userStatus =
+          String(
+            user.status || ""
+          ).toLowerCase();
 
-      return (
-        (!q || text.includes(q)) &&
-        (!status || userStatus === status)
-      );
+        return (
+          (!q ||
+            text.includes(q)) &&
+          (!status ||
+            userStatus === status)
+        );
 
-    });
+      }
+    );
 
-  renderCustomers(filtered);
+  renderCustomers(
+    filtered
+  );
 
 }
 
 
 async function viewCustomer(id){
 
-  openModal("customerModal");
+  openModal(
+    "customerModal"
+  );
 
   const body =
-    document.getElementById("customerModalBody");
+    document.getElementById(
+      "customerModalBody"
+    );
 
   body.innerHTML =
-    `<div class="loading">Loading customer...</div>`;
+    `<div class="loading">
+      Loading customer...
+    </div>`;
 
   try{
 
@@ -2531,8 +3378,10 @@ async function viewCustomer(id){
 
     const name =
       `${user.first_name || ""} ${user.last_name || ""}`.trim()
-      || user.name
-      || "Customer";
+      ||
+      user.name
+      ||
+      "Customer";
 
     body.innerHTML = `
 
@@ -2540,42 +3389,76 @@ async function viewCustomer(id){
 
         <div class="detail-item">
           <label>Name</label>
-          <strong>${escapeHtml(name)}</strong>
+          <strong>
+            ${escapeHtml(name)}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>Email</label>
-          <strong>${escapeHtml(user.email || "—")}</strong>
+          <strong>
+            ${escapeHtml(
+              user.email || "—"
+            )}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>Username</label>
-          <strong>${escapeHtml(user.username || "—")}</strong>
+          <strong>
+            ${escapeHtml(
+              user.username || "—"
+            )}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>Phone</label>
-          <strong>${escapeHtml(user.phone || "—")}</strong>
+          <strong>
+            ${escapeHtml(
+              user.phone || "—"
+            )}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>Account Status</label>
-          <strong>${escapeHtml(user.status || "—")}</strong>
+          <strong>
+            ${escapeHtml(
+              user.status || "—"
+            )}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>KYC Status</label>
-          <strong>${escapeHtml(user.kyc_status || user.kycStatus || "—")}</strong>
+          <strong>
+            ${escapeHtml(
+              user.kyc_status ||
+              user.kycStatus ||
+              "—"
+            )}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>User ID</label>
-          <strong>${escapeHtml(user.id || "—")}</strong>
+          <strong>
+            ${escapeHtml(
+              user.id || "—"
+            )}
+          </strong>
         </div>
 
         <div class="detail-item">
           <label>Created</label>
-          <strong>${escapeHtml(date(user.created_at))}</strong>
+          <strong>
+            ${escapeHtml(
+              date(
+                user.created_at
+              )
+            )}
+          </strong>
         </div>
 
       </div>
@@ -2586,7 +3469,9 @@ async function viewCustomer(id){
 
     body.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -2594,20 +3479,22 @@ async function viewCustomer(id){
 }
 
 
-/* =====================================================
-   KYC
-===================================================== */
-
 async function loadKyc(){
 
   const box =
-    document.getElementById("kycContainer");
+    document.getElementById(
+      "kycContainer"
+    );
 
   box.innerHTML =
-    `<div class="loading">Loading KYC records...</div>`;
+    `<div class="loading">
+      Loading KYC records...
+    </div>`;
 
   const status =
-    document.getElementById("kycFilter").value;
+    document.getElementById(
+      "kycFilter"
+    ).value;
 
   try{
 
@@ -2624,16 +3511,24 @@ async function loadKyc(){
     kycData =
       extractArray(
         data,
-        ["kyc","submissions","customers"]
+        [
+          "kyc",
+          "submissions",
+          "customers"
+        ]
       );
 
-    renderKyc(kycData);
+    renderKyc(
+      kycData
+    );
 
   }catch(error){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -2644,14 +3539,19 @@ async function loadKyc(){
 function renderKyc(list){
 
   const box =
-    document.getElementById("kycContainer");
+    document.getElementById(
+      "kycContainer"
+    );
 
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No KYC records found.</div>`;
+      `<div class="empty">
+        No KYC records found.
+      </div>`;
 
     return;
+
   }
 
   box.innerHTML = `
@@ -2676,46 +3576,65 @@ function renderKyc(list){
 
           ${list.map(item => {
 
+            const id =
+              item.id ||
+              item.submission_id;
+
             const name =
+              item.name ||
               `${item.first_name || ""} ${item.last_name || ""}`.trim()
-              || item.name
-              || item.email
-              || "Customer";
+              ||
+              item.email ||
+              "Customer";
+
+            const status =
+              item.kyc_status ||
+              item.status ||
+              "pending";
 
             return `
 
               <tr>
 
-                <td class="customer-name">
-                  ${escapeHtml(name)}
+                <td>
+                  <div class="customer-name">
+                    ${escapeHtml(name)}
+                  </div>
+
+                  <div class="muted">
+                    ${escapeHtml(
+                      item.user_id ||
+                      ""
+                    )}
+                  </div>
                 </td>
 
-                <td>${escapeHtml(item.email || "—")}</td>
-
                 <td>
-                  ${statusBadge(
-                    item.kyc_status ||
-                    item.status ||
-                    "pending"
+                  ${escapeHtml(
+                    item.email || "—"
                   )}
                 </td>
 
-                <td>${escapeHtml(date(
-                  item.submitted_at ||
-                  item.created_at
-                ))}</td>
+                <td>
+                  ${statusBadge(status)}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    date(
+                      item.submitted_at ||
+                      item.created_at
+                    )
+                  )}
+                </td>
 
                 <td>
 
-                  <div class="row-actions">
-
-                    <button
-                      class="small-btn"
-                      onclick="reviewKyc('${escapeAttr(item.id)}')">
-                      Review
-                    </button>
-
-                  </div>
+                  <button
+                    class="small-btn"
+                    onclick="reviewKyc('${escapeAttr(id)}')">
+                    Review
+                  </button>
 
                 </td>
 
@@ -2738,13 +3657,19 @@ function renderKyc(list){
 
 async function reviewKyc(id){
 
-  openModal("kycModal");
+  openModal(
+    "kycModal"
+  );
 
   const body =
-    document.getElementById("kycModalBody");
+    document.getElementById(
+      "kycModalBody"
+    );
 
   body.innerHTML =
-    `<div class="loading">Loading KYC information...</div>`;
+    `<div class="loading">
+      Loading KYC information...
+    </div>`;
 
   try{
 
@@ -2764,30 +3689,62 @@ async function reviewKyc(id){
       <div class="detail-grid">
 
         <div class="detail-item">
+
           <label>Customer</label>
+
           <strong>
+
             ${escapeHtml(
               item.name ||
-              `${item.first_name || ""} ${item.last_name || ""}`.trim() ||
+              `${item.first_name || ""} ${item.last_name || ""}`.trim()
+              ||
               item.email ||
               "Customer"
             )}
+
           </strong>
+
         </div>
 
         <div class="detail-item">
+
           <label>Email</label>
-          <strong>${escapeHtml(item.email || "—")}</strong>
+
+          <strong>
+            ${escapeHtml(
+              item.email || "—"
+            )}
+          </strong>
+
         </div>
 
         <div class="detail-item">
+
           <label>Status</label>
-          <strong>${escapeHtml(item.kyc_status || item.status || "pending")}</strong>
+
+          <strong>
+            ${escapeHtml(
+              item.kyc_status ||
+              item.status ||
+              "pending"
+            )}
+          </strong>
+
         </div>
 
         <div class="detail-item">
+
           <label>Submitted</label>
-          <strong>${escapeHtml(date(item.submitted_at || item.created_at))}</strong>
+
+          <strong>
+            ${escapeHtml(
+              date(
+                item.submitted_at ||
+                item.created_at
+              )
+            )}
+          </strong>
+
         </div>
 
       </div>
@@ -2824,7 +3781,9 @@ async function reviewKyc(id){
 
     body.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -2835,32 +3794,68 @@ async function reviewKyc(id){
 function renderKycFields(item){
 
   const keys = [
-    ["Document Type","document_type"],
-    ["Document Number","document_number"],
-    ["Date of Birth","date_of_birth"],
-    ["Address","address"],
-    ["Country","country"],
-    ["Phone","phone"]
+
+    [
+      "Document Type",
+      "document_type"
+    ],
+
+    [
+      "Document Number",
+      "document_number"
+    ],
+
+    [
+      "Date of Birth",
+      "date_of_birth"
+    ],
+
+    [
+      "Address",
+      "address"
+    ],
+
+    [
+      "Country",
+      "country"
+    ],
+
+    [
+      "Phone",
+      "phone"
+    ]
+
   ];
 
-  return keys.map(([label,key]) => `
+  return keys
+    .map(
+      ([label,key]) => `
 
-    <div class="detail-item">
+        <div class="detail-item">
 
-      <label>${escapeHtml(label)}</label>
+          <label>
+            ${escapeHtml(label)}
+          </label>
 
-      <strong>
-        ${escapeHtml(item[key] || "—")}
-      </strong>
+          <strong>
+            ${escapeHtml(
+              item[key] || "—"
+            )}
+          </strong>
 
-    </div>
+        </div>
 
-  `).join("");
+      `
+    )
+    .join("");
 
 }
 
 
-async function processKyc(id,status){
+async function processKyc(
+  id,
+  status
+){
 
   if(
     !confirm(
@@ -2881,47 +3876,64 @@ async function processKyc(id,status){
       }
     );
 
-    closeModal("kycModal");
+    closeModal(
+      "kycModal"
+    );
 
     await loadKyc();
     await loadDashboard();
 
   }catch(error){
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
   }
 
 }
 
 
-/* =====================================================
-   WALLETS
-===================================================== */
-
 async function loadWallets(){
 
   const box =
-    document.getElementById("walletsContainer");
+    document.getElementById(
+      "walletsContainer"
+    );
 
   box.innerHTML =
-    `<div class="loading">Loading wallets...</div>`;
+    `<div class="loading">
+      Loading wallets...
+    </div>`;
 
   try{
 
     const data =
-      await apiRequest("/api/admin/wallets");
+      await apiRequest(
+        "/api/admin/wallets"
+      );
 
     walletsData =
-      extractArray(data,["wallets","customers","users"]);
+      extractArray(
+        data,
+        [
+          "wallets",
+          "customers",
+          "users"
+        ]
+      );
 
-    renderWallets(walletsData);
+    renderWallets(
+      walletsData
+    );
 
   }catch(error){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -2932,12 +3944,16 @@ async function loadWallets(){
 function renderWallets(list){
 
   const box =
-    document.getElementById("walletsContainer");
+    document.getElementById(
+      "walletsContainer"
+    );
 
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No wallet records found.</div>`;
+      `<div class="empty">
+        No wallet records found.
+      </div>`;
 
     return;
 
@@ -2967,9 +3983,12 @@ function renderWallets(list){
 
             const name =
               `${item.first_name || ""} ${item.last_name || ""}`.trim()
-              || item.name
-              || item.email
-              || "Customer";
+              ||
+              item.name
+              ||
+              item.email
+              ||
+              "Customer";
 
             const main =
               Number(
@@ -2998,7 +4017,11 @@ function renderWallets(list){
                   </div>
 
                   <div class="muted">
-                    ${escapeHtml(item.email || item.id || "")}
+                    ${escapeHtml(
+                      item.email ||
+                      item.id ||
+                      ""
+                    )}
                   </div>
 
                 </td>
@@ -3012,7 +4035,9 @@ function renderWallets(list){
                 </td>
 
                 <td class="amount">
-                  ${money(main + profit)}
+                  ${money(
+                    main + profit
+                  )}
                 </td>
 
                 <td>
@@ -3046,27 +4071,30 @@ function filterWallets(){
 
   const q =
     String(
-      document.getElementById("walletSearch").value || ""
+      document.getElementById(
+        "walletSearch"
+      ).value || ""
     ).toLowerCase();
 
   renderWallets(
-    walletsData.filter(item => {
+    walletsData.filter(
+      item => {
 
-      const text =
-        [
-          item.id,
-          item.email,
-          item.username,
-          item.name,
-          item.first_name,
-          item.last_name
-        ]
-        .join(" ")
-        .toLowerCase();
+        const text =
+          [
+            item.id,
+            item.email,
+            item.name,
+            item.first_name,
+            item.last_name
+          ]
+            .join(" ")
+            .toLowerCase();
 
-      return text.includes(q);
+        return text.includes(q);
 
-    })
+      }
+    )
   );
 
 }
@@ -3074,23 +4102,33 @@ function filterWallets(){
 
 function openWalletForCustomer(id){
 
-  showSection("wallets");
+  showSection(
+    "wallets"
+  );
 
-  setTimeout(() => {
+  setTimeout(
+    () => {
 
-    const user =
-      walletsData.find(
-        x => String(x.id) === String(id)
-      );
+      const user =
+        walletsData.find(
+          x =>
+            String(x.id) ===
+            String(id)
+        );
 
-    if(user)
-      openWalletAdjustment(id);
-    else
-      loadWallets().then(() =>
-        openWalletAdjustment(id)
-      );
+      if(user)
+        openWalletAdjustment(id);
 
-  },100);
+      else
+        loadWallets()
+          .then(
+            () =>
+              openWalletAdjustment(id)
+          );
+
+    },
+    100
+  );
 
 }
 
@@ -3099,21 +4137,29 @@ function openWalletAdjustment(id){
 
   const user =
     walletsData.find(
-      x => String(x.id) === String(id)
+      x =>
+        String(x.id) ===
+        String(id)
     );
 
   if(!user){
 
-    alert("Customer wallet could not be found.");
+    alert(
+      "Customer wallet could not be found."
+    );
+
     return;
 
   }
 
   const name =
     `${user.first_name || ""} ${user.last_name || ""}`.trim()
-    || user.name
-    || user.email
-    || "Customer";
+    ||
+    user.name
+    ||
+    user.email
+    ||
+    "Customer";
 
   document.getElementById(
     "walletAdjustmentCustomer"
@@ -3123,7 +4169,9 @@ function openWalletAdjustment(id){
 
       <div class="wallet-card">
 
-        <span>Main Wallet</span>
+        <span>
+          Main Wallet
+        </span>
 
         <strong>
           ${money(
@@ -3137,7 +4185,9 @@ function openWalletAdjustment(id){
 
       <div class="wallet-card">
 
-        <span>Profit Wallet</span>
+        <span>
+          Profit Wallet
+        </span>
 
         <strong>
           ${money(
@@ -3158,19 +4208,34 @@ function openWalletAdjustment(id){
     </div>
 
     <div class="muted">
-      ${escapeHtml(user.email || user.id || "")}
+      ${escapeHtml(
+        user.email ||
+        user.id ||
+        ""
+      )}
     </div>
 
   `;
 
-  document.getElementById("walletModal")
-    .dataset.customerId = id;
+  document.getElementById(
+    "walletModal"
+  ).dataset.customerId = id;
 
-  document.getElementById("adjustAmount").value = "";
-  document.getElementById("adjustReference").value = "";
-  document.getElementById("adjustReason").value = "";
+  document.getElementById(
+    "adjustAmount"
+  ).value = "";
 
-  openModal("walletModal");
+  document.getElementById(
+    "adjustReference"
+  ).value = "";
+
+  document.getElementById(
+    "adjustReason"
+  ).value = "";
+
+  openModal(
+    "walletModal"
+  );
 
 }
 
@@ -3178,38 +4243,59 @@ function openWalletAdjustment(id){
 async function submitWalletAdjustment(){
 
   const modal =
-    document.getElementById("walletModal");
+    document.getElementById(
+      "walletModal"
+    );
 
   const customerId =
     modal.dataset.customerId;
 
   const wallet =
-    document.getElementById("adjustWalletType").value;
+    document.getElementById(
+      "adjustWalletType"
+    ).value;
 
   const action =
-    document.getElementById("adjustAction").value;
+    document.getElementById(
+      "adjustAction"
+    ).value;
 
   const amount =
     Number(
-      document.getElementById("adjustAmount").value
+      document.getElementById(
+        "adjustAmount"
+      ).value
     );
 
   const reference =
-    document.getElementById("adjustReference").value.trim();
+    document.getElementById(
+      "adjustReference"
+    ).value.trim();
 
   const reason =
-    document.getElementById("adjustReason").value.trim();
+    document.getElementById(
+      "adjustReason"
+    ).value.trim();
 
   if(!customerId){
 
-    alert("Customer is missing.");
+    alert(
+      "Customer is missing."
+    );
+
     return;
 
   }
 
-  if(!Number.isFinite(amount) || amount < 0){
+  if(
+    !Number.isFinite(amount) ||
+    amount < 0
+  ){
 
-    alert("Enter a valid amount.");
+    alert(
+      "Enter a valid amount."
+    );
+
     return;
 
   }
@@ -3219,19 +4305,27 @@ async function submitWalletAdjustment(){
     action !== "set"
   ){
 
-    alert("Please provide a reason.");
+    alert(
+      "Please provide a reason."
+    );
+
     return;
 
   }
 
   try{
 
-    await apiRequest(
-      `/api/admin/wallets/${encodeURIComponent(customerId)}/adjust`,
+    await apiRequestWithFallback(
+      [
+        `/api/admin/wallets/${encodeURIComponent(customerId)}/adjust`,
+        `/api/admin/wallet-balances/${encodeURIComponent(customerId)}/adjust`,
+        `/api/admin/wallet-adjustments/${encodeURIComponent(customerId)}`
+      ],
       {
         method:"POST",
         body:JSON.stringify({
           wallet,
+          wallet_type:wallet,
           action,
           amount,
           reference,
@@ -3240,49 +4334,64 @@ async function submitWalletAdjustment(){
       }
     );
 
-    closeModal("walletModal");
+    closeModal(
+      "walletModal"
+    );
 
     await loadWallets();
     await loadDashboard();
 
-    alert("Wallet adjustment saved successfully.");
+    alert(
+      "Wallet adjustment saved successfully."
+    );
 
   }catch(error){
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
   }
 
 }
 
 
-/* =====================================================
-   INVESTMENTS
-===================================================== */
-
 async function loadInvestments(){
 
   const box =
-    document.getElementById("investmentsContainer");
+    document.getElementById(
+      "investmentsContainer"
+    );
 
   box.innerHTML =
-    `<div class="loading">Loading investments...</div>`;
+    `<div class="loading">
+      Loading investments...
+    </div>`;
 
   try{
 
     const data =
-      await apiRequest("/api/admin/investments");
+      await apiRequest(
+        "/api/admin/investments"
+      );
 
     investmentsData =
-      extractArray(data,["investments"]);
+      extractArray(
+        data,
+        ["investments"]
+      );
 
-    renderInvestments(investmentsData);
+    renderInvestments(
+      investmentsData
+    );
 
   }catch(error){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -3293,12 +4402,16 @@ async function loadInvestments(){
 function renderInvestments(list){
 
   const box =
-    document.getElementById("investmentsContainer");
+    document.getElementById(
+      "investmentsContainer"
+    );
 
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No investments found.</div>`;
+      `<div class="empty">
+        No investments found.
+      </div>`;
 
     return;
 
@@ -3365,18 +4478,26 @@ function renderInvestments(list){
               </td>
 
               <td>
-                ${statusBadge(item.status)}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  date(item.start_date || item.started_at)
+                ${statusBadge(
+                  item.status
                 )}
               </td>
 
               <td>
                 ${escapeHtml(
-                  date(item.end_date || item.ends_at)
+                  date(
+                    item.start_date ||
+                    item.started_at
+                  )
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  date(
+                    item.end_date ||
+                    item.ends_at
+                  )
                 )}
               </td>
 
@@ -3408,61 +4529,76 @@ function filterInvestments(){
     ).value.toLowerCase();
 
   renderInvestments(
-    investmentsData.filter(item => {
+    investmentsData.filter(
+      item => {
 
-      const text =
-        [
-          item.customer_name,
-          item.name,
-          item.email,
-          item.plan_name,
-          item.plan,
-          item.user_id
-        ]
-        .join(" ")
-        .toLowerCase();
+        const text =
+          [
+            item.customer_name,
+            item.name,
+            item.email,
+            item.plan_name,
+            item.plan,
+            item.user_id
+          ]
+            .join(" ")
+            .toLowerCase();
 
-      const itemStatus =
-        String(item.status || "").toLowerCase();
+        const itemStatus =
+          String(
+            item.status || ""
+          ).toLowerCase();
 
-      return (
-        (!q || text.includes(q)) &&
-        (!status || itemStatus === status)
-      );
+        return (
+          (!q ||
+            text.includes(q)) &&
+          (!status ||
+            itemStatus === status)
+        );
 
-    })
+      }
+    )
   );
 
 }
 
 
-/* =====================================================
-   TRANSACTIONS
-===================================================== */
-
 async function loadTransactions(){
 
   const box =
-    document.getElementById("transactionsContainer");
+    document.getElementById(
+      "transactionsContainer"
+    );
 
   box.innerHTML =
-    `<div class="loading">Loading transactions...</div>`;
+    `<div class="loading">
+      Loading transactions...
+    </div>`;
 
   try{
 
     const data =
-      await apiRequest("/api/admin/transactions");
+      await apiRequest(
+        "/api/admin/transactions"
+      );
 
     transactionsData =
-      extractArray(data,["transactions"]);
+      extractArray(
+        data,
+        ["transactions"]
+      );
 
-    renderTransactions(transactionsData);
+    renderTransactions(
+      transactionsData
+    );
 
   }catch(error){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -3473,12 +4609,16 @@ async function loadTransactions(){
 function renderTransactions(list){
 
   const box =
-    document.getElementById("transactionsContainer");
+    document.getElementById(
+      "transactionsContainer"
+    );
 
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No transactions found.</div>`;
+      `<div class="empty">
+        No transactions found.
+      </div>`;
 
     return;
 
@@ -3496,6 +4636,7 @@ function renderTransactions(list){
             <th>Reference</th>
             <th>Customer</th>
             <th>Type</th>
+            <th>Direction</th>
             <th>Amount</th>
             <th>Status</th>
             <th>Date</th>
@@ -3511,8 +4652,8 @@ function renderTransactions(list){
 
               <td>
                 ${escapeHtml(
+                  item.transaction_reference ||
                   item.reference ||
-                  item.transaction_id ||
                   item.id ||
                   "—"
                 )}
@@ -3530,8 +4671,15 @@ function renderTransactions(list){
 
               <td>
                 ${escapeHtml(
-                  item.type ||
                   item.transaction_type ||
+                  item.type ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.direction ||
                   "—"
                 )}
               </td>
@@ -3543,14 +4691,15 @@ function renderTransactions(list){
               </td>
 
               <td>
-                ${statusBadge(item.status)}
+                ${statusBadge(
+                  item.status
+                )}
               </td>
 
               <td>
                 ${escapeHtml(
                   date(
-                    item.created_at ||
-                    item.transaction_date
+                    item.created_at
                   )
                 )}
               </td>
@@ -3570,65 +4719,17 @@ function renderTransactions(list){
 }
 
 
-function filterTransactions(){
-
-  const q =
-    document.getElementById(
-      "transactionSearch"
-    ).value.toLowerCase();
-
-  const type =
-    document.getElementById(
-      "transactionTypeFilter"
-    ).value.toLowerCase();
-
-  renderTransactions(
-    transactionsData.filter(item => {
-
-      const text =
-        [
-          item.reference,
-          item.transaction_id,
-          item.id,
-          item.customer_name,
-          item.name,
-          item.email,
-          item.user_id,
-          item.type,
-          item.transaction_type
-        ]
-        .join(" ")
-        .toLowerCase();
-
-      const itemType =
-        String(
-          item.type ||
-          item.transaction_type ||
-          ""
-        ).toLowerCase();
-
-      return (
-        (!q || text.includes(q)) &&
-        (!type || itemType === type)
-      );
-
-    })
-  );
-
-}
-
-
-/* =====================================================
-   REQUESTS
-===================================================== */
-
 async function loadRequests(){
 
   const box =
-    document.getElementById("requestsContainer");
+    document.getElementById(
+      "requestsContainer"
+    );
 
   box.innerHTML =
-    `<div class="loading">Loading requests...</div>`;
+    `<div class="loading">
+      Loading requests...
+    </div>`;
 
   try{
 
@@ -3638,15 +4739,22 @@ async function loadRequests(){
       );
 
     requestsData =
-      extractArray(data,["requests"]);
+      extractArray(
+        data,
+        ["requests"]
+      );
 
-    renderRequests(requestsData);
+    renderRequests(
+      requestsData
+    );
 
   }catch(error){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -3657,12 +4765,16 @@ async function loadRequests(){
 function renderRequests(list){
 
   const box =
-    document.getElementById("requestsContainer");
+    document.getElementById(
+      "requestsContainer"
+    );
 
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No pending requests.</div>`;
+      `<div class="empty">
+        No pending requests.
+      </div>`;
 
     return;
 
@@ -3680,7 +4792,7 @@ function renderRequests(list){
             <th>Customer</th>
             <th>Type</th>
             <th>Amount</th>
-            <th>Reference</th>
+            <th>Status</th>
             <th>Date</th>
             <th>Action</th>
           </tr>
@@ -3705,27 +4817,30 @@ function renderRequests(list){
 
               <td>
                 ${escapeHtml(
-                  item.type ||
                   item.request_type ||
-                  "—"
+                  item.type ||
+                  item.transaction_type ||
+                  "Request"
                 )}
               </td>
 
               <td class="amount">
-                ${money(item.amount)}
+                ${money(
+                  item.amount
+                )}
               </td>
 
               <td>
-                ${escapeHtml(
-                  item.reference ||
-                  item.id ||
-                  "—"
+                ${statusBadge(
+                  item.status
                 )}
               </td>
 
               <td>
                 ${escapeHtml(
-                  date(item.created_at)
+                  date(
+                    item.created_at
+                  )
                 )}
               </td>
 
@@ -3734,13 +4849,13 @@ function renderRequests(list){
                 <div class="row-actions">
 
                   <button
-                    class="small-btn"
+                    class="success-btn"
                     onclick="processRequest('${escapeAttr(item.id)}','approved')">
                     Approve
                   </button>
 
                   <button
-                    class="small-btn"
+                    class="danger-btn"
                     onclick="processRequest('${escapeAttr(item.id)}','rejected')">
                     Reject
                   </button>
@@ -3764,32 +4879,10 @@ function renderRequests(list){
 }
 
 
-function filterRequests(){
-
-  const type =
-    document.getElementById(
-      "requestTypeFilter"
-    ).value.toLowerCase();
-
-  renderRequests(
-    requestsData.filter(item => {
-
-      const itemType =
-        String(
-          item.type ||
-          item.request_type ||
-          ""
-        ).toLowerCase();
-
-      return !type || itemType === type;
-
-    })
-  );
-
-}
-
-
-async function processRequest(id,status){
+async function processRequest(
+  id,
+  status
+){
 
   const action =
     status === "approved"
@@ -3824,16 +4917,14 @@ async function processRequest(id,status){
 
   }catch(error){
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
   }
 
 }
 
-
-/* =====================================================
-   CHAT
-===================================================== */
 
 async function loadConversations(){
 
@@ -3843,19 +4934,28 @@ async function loadConversations(){
     );
 
   box.innerHTML =
-    `<div class="loading">Loading conversations...</div>`;
+    `<div class="loading">
+      Loading conversations...
+    </div>`;
 
   try{
 
     const data =
-      await apiRequest(
-        "/api/admin/chat/conversations"
+      await apiRequestWithFallback(
+        [
+          "/api/admin/support/tickets",
+          "/api/admin/support/tickets?status=open"
+        ]
       );
 
     conversationsData =
       extractArray(
         data,
-        ["conversations","chats"]
+        [
+          "conversations",
+          "chats",
+          "tickets"
+        ]
       );
 
     renderConversations(
@@ -3866,7 +4966,9 @@ async function loadConversations(){
 
     box.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -3897,7 +4999,10 @@ function renderConversations(list){
 
       <div
         class="conversation ${
-          String(item.id) === String(selectedConversationId)
+          String(item.id) ===
+          String(
+            selectedConversationId
+          )
             ? "active"
             : ""
         }"
@@ -3917,6 +5022,8 @@ function renderConversations(list){
           ${escapeHtml(
             item.last_message ||
             item.preview ||
+            item.subject ||
+            item.description ||
             "Open conversation"
           )}
         </span>
@@ -3930,36 +5037,53 @@ function renderConversations(list){
 
 async function openConversation(id){
 
-  selectedConversationId = id;
+  selectedConversationId =
+    id;
 
-  renderConversations(conversationsData);
+  renderConversations(
+    conversationsData
+  );
 
   const messages =
-    document.getElementById("messages");
+    document.getElementById(
+      "messages"
+    );
 
   messages.innerHTML =
-    `<div class="loading">Loading messages...</div>`;
+    `<div class="loading">
+      Loading messages...
+    </div>`;
 
   try{
 
     const data =
-      await apiRequest(
-        `/api/admin/chat/conversations/${encodeURIComponent(id)}/messages`
+      await apiRequestWithFallback(
+        [
+          `/api/admin/support/tickets/${encodeURIComponent(id)}/messages`,
+          `/api/admin/support/tickets/${encodeURIComponent(id)}`
+        ]
       );
 
     const list =
       extractArray(
         data,
-        ["messages"]
+        [
+          "messages",
+          "ticket_messages"
+        ]
       );
 
-    renderMessages(list);
+    renderMessages(
+      list
+    );
 
   }catch(error){
 
     messages.innerHTML =
       `<div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>`;
 
   }
@@ -3970,7 +5094,9 @@ async function openConversation(id){
 function renderMessages(list){
 
   const box =
-    document.getElementById("messages");
+    document.getElementById(
+      "messages"
+    );
 
   if(!list.length){
 
@@ -4001,7 +5127,9 @@ function renderMessages(list){
       return `
 
         <div class="message ${
-          admin ? "admin" : "customer"
+          admin
+            ? "admin"
+            : "customer"
         }">
 
           ${escapeHtml(
@@ -4026,7 +5154,8 @@ function renderMessages(list){
 
     }).join("");
 
-  box.scrollTop = box.scrollHeight;
+  box.scrollTop =
+    box.scrollHeight;
 
 }
 
@@ -4051,13 +5180,18 @@ async function sendChatMessage(){
 
   if(!selectedConversationId){
 
-    alert("Select a conversation first.");
+    alert(
+      "Select a conversation first."
+    );
+
     return;
 
   }
 
   const input =
-    document.getElementById("chatInput");
+    document.getElementById(
+      "chatInput"
+    );
 
   const message =
     input.value.trim();
@@ -4067,8 +5201,11 @@ async function sendChatMessage(){
 
   try{
 
-    await apiRequest(
-      `/api/admin/chat/conversations/${encodeURIComponent(selectedConversationId)}/messages`,
+    await apiRequestWithFallback(
+      [
+        `/api/admin/support/tickets/${encodeURIComponent(selectedConversationId)}/messages`,
+        `/api/admin/support/tickets/${encodeURIComponent(selectedConversationId)}`
+      ],
       {
         method:"POST",
         body:JSON.stringify({
@@ -4087,16 +5224,14 @@ async function sendChatMessage(){
 
   }catch(error){
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
   }
 
 }
 
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
 
 const titles = {
 
@@ -4115,7 +5250,8 @@ const titles = {
 
 function showSection(
   id,
-  clickedButton=null
+  clickedButton=null,
+  updateHistory=true
 ){
 
   if(!adminAuthenticated){
@@ -4129,55 +5265,101 @@ function showSection(
 
   }
 
-  currentSection = id;
+  currentSection =
+    id;
+
+  if(updateHistory){
+
+    history.pushState(
+      {
+        coinforestAdmin:true,
+        section:id
+      },
+      "",
+      window.location.href
+    );
+
+  }
 
   document
-    .querySelectorAll(".section")
-    .forEach(section => {
-      section.style.display = "none";
-    });
+    .querySelectorAll(
+      ".section"
+    )
+    .forEach(
+      section => {
+        section.style.display =
+          "none";
+      }
+    );
 
   const target =
-    document.getElementById(id);
+    document.getElementById(
+      id
+    );
 
   if(target)
-    target.style.display = "block";
+    target.style.display =
+      "block";
 
   document
-    .querySelectorAll(".nav-item")
-    .forEach(item => {
-      item.classList.remove("active");
-    });
+    .querySelectorAll(
+      ".nav-item"
+    )
+    .forEach(
+      item => {
+        item.classList.remove(
+          "active"
+        );
+      }
+    );
 
   if(clickedButton){
 
-    clickedButton.classList.add("active");
+    clickedButton.classList.add(
+      "active"
+    );
 
   }else{
 
     const matching =
-      [...document.querySelectorAll(".nav-item")]
-        .find(item =>
-          item.getAttribute("onclick")?.includes(
-            `'${id}'`
-          )
-        );
+      [
+        ...document.querySelectorAll(
+          ".nav-item"
+        )
+      ]
+      .find(
+        item =>
+          item
+            .getAttribute(
+              "onclick"
+            )
+            ?.includes(
+              `'${id}'`
+            )
+      );
 
     if(matching)
-      matching.classList.add("active");
+      matching.classList.add(
+        "active"
+      );
 
   }
 
   const title =
-    document.getElementById("pageTitle");
+    document.getElementById(
+      "pageTitle"
+    );
 
   if(title)
     title.textContent =
-      titles[id] || "CoinForest Admin";
+      titles[id] ||
+      "CoinForest Admin";
 
   closeSidebar();
 
-  loadSectionData(id);
+  loadSectionData(
+    id
+  );
 
 }
 
@@ -4235,20 +5417,25 @@ async function refreshCurrentSection(){
 }
 
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
 function toggleSidebar(){
 
   const sidebar =
-    document.getElementById("sidebar");
+    document.getElementById(
+      "sidebar"
+    );
 
   const overlay =
-    document.getElementById("overlay");
+    document.getElementById(
+      "overlay"
+    );
 
-  sidebar.classList.toggle("open");
-  overlay.classList.toggle("open");
+  sidebar.classList.toggle(
+    "open"
+  );
+
+  overlay.classList.toggle(
+    "open"
+  );
 
 }
 
@@ -4256,70 +5443,92 @@ function toggleSidebar(){
 function closeSidebar(){
 
   document
-    .getElementById("sidebar")
-    .classList.remove("open");
+    .getElementById(
+      "sidebar"
+    )
+    .classList.remove(
+      "open"
+    );
 
   document
-    .getElementById("overlay")
-    .classList.remove("open");
+    .getElementById(
+      "overlay"
+    )
+    .classList.remove(
+      "open"
+    );
 
 }
+
 
 window.addEventListener(
   "resize",
   () => {
 
-    if(window.innerWidth > 760)
+    if(
+      window.innerWidth > 760
+    )
       closeSidebar();
 
   }
 );
 
 
-/* =====================================================
-   MODALS
-===================================================== */
-
 function openModal(id){
 
   const modal =
-    document.getElementById(id);
+    document.getElementById(
+      id
+    );
 
   if(modal)
-    modal.classList.add("open");
+    modal.classList.add(
+      "open"
+    );
 
 }
+
 
 function closeModal(id){
 
   const modal =
-    document.getElementById(id);
+    document.getElementById(
+      id
+    );
 
   if(modal)
-    modal.classList.remove("open");
+    modal.classList.remove(
+      "open"
+    );
 
 }
 
+
 document
-  .querySelectorAll(".modal")
-  .forEach(modal => {
+  .querySelectorAll(
+    ".modal"
+  )
+  .forEach(
+    modal => {
 
-    modal.addEventListener(
-      "click",
-      event => {
+      modal.addEventListener(
+        "click",
+        event => {
 
-        if(event.target === modal)
-          modal.classList.remove("open");
+          if(
+            event.target ===
+            modal
+          )
+            modal.classList.remove(
+              "open"
+            );
 
-      }
-    );
+        }
+      );
 
-  });
+    }
+  );
 
-
-/* =====================================================
-   LOGOUT
-===================================================== */
 
 function logoutAdmin(){
 
@@ -4330,67 +5539,149 @@ function logoutAdmin(){
   )
     return;
 
-  adminAuthenticated = false;
+  adminAuthenticated =
+    false;
 
-  localStorage.removeItem("coinforest_token");
-  localStorage.removeItem("coinforest_user");
-  localStorage.removeItem("coinforest_role");
+  localStorage.removeItem(
+    "coinforest_token"
+  );
 
-  /*
-   * Explicit logout only.
-   * Browser Back does not trigger this function.
-   */
+  localStorage.removeItem(
+    "coinforest_user"
+  );
 
-  window.location.href = "login.html";
+  localStorage.removeItem(
+    "coinforest_role"
+  );
+
+  window.location.href =
+    "login.html";
 
 }
 
 
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function setText(id,value){
+function setText(
+  id,
+  value
+){
 
   const el =
-    document.getElementById(id);
+    document.getElementById(
+      id
+    );
 
   if(el)
-    el.textContent = value;
+    el.textContent =
+      value;
 
 }
+
 
 function escapeAttr(value){
 
-  return String(value ?? "")
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'");
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    );
 
 }
 
 
-/* =====================================================
-   BROWSER BACK HANDLING
-===================================================== */
+function adminBack(){
+
+  if(!adminAuthenticated)
+    return;
+
+  if(
+    currentSection !==
+    "dashboard"
+  ){
+
+    history.back();
+
+  }else{
+
+    showSection(
+      "dashboard",
+      null,
+      false
+    );
+
+  }
+
+}
+
+
+function adminCancel(){
+
+  if(!adminAuthenticated)
+    return;
+
+  document
+    .querySelectorAll(
+      ".modal.open"
+    )
+    .forEach(
+      modal =>
+        modal.classList.remove(
+          "open"
+        )
+    );
+
+  closeSidebar();
+
+  if(
+    currentSection !==
+    "dashboard"
+  )
+    adminBack();
+
+}
+
 
 window.addEventListener(
   "popstate",
   () => {
 
-    if(!adminAuthenticated)
+    if(!adminAuthenticated){
+
+      history.pushState(
+        {
+          coinforestAdmin:true,
+          section:
+            currentSection ||
+            "dashboard"
+        },
+        "",
+        window.location.href
+      );
+
       return;
 
+    }
+
+    const section =
+      history.state?.coinforestAdmin
+        ? history.state.section
+        : "dashboard";
+
     showSection(
-      "dashboard"
+      section ||
+      "dashboard",
+      null,
+      false
     );
 
   }
 );
 
-
-/* =====================================================
-   START
-===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -4406,10 +5697,19 @@ document.addEventListener(
       getStoredUser() || {}
     );
 
+    history.replaceState(
+      {
+        coinforestAdmin:true,
+        section:"dashboard"
+      },
+      "",
+      window.location.href
+    );
+
   }
 );
 
 </script>
 
 </body>
-</html>
+      </html>
