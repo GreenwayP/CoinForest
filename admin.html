@@ -900,8 +900,8 @@ textarea.form-control{
 .chat-composer textarea{
   flex:1;
   min-height:42px;
-  max-height:120px;
-  resize:none;
+  max-height:110px;
+  resize:vertical;
   border:1px solid var(--border);
   border-radius:10px;
   padding:10px;
@@ -913,58 +913,17 @@ textarea.form-control{
   display:none;
 }
 
-.admin-access-card{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
+.back-btn{
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  background:var(--bg);
-  z-index:2000;
-  padding:30px;
-  text-align:center;
-}
-
-.admin-access-icon{
-  width:70px;
-  height:70px;
-  border-radius:20px;
-  background:var(--green-light);
-  display:grid;
-  place-items:center;
-  font-size:30px;
-  margin-bottom:16px;
-}
-
-.admin-access-card h2{
-  font-size:22px;
-  color:var(--text-strong);
-  font-weight:900;
-}
-
-.admin-access-card p{
-  max-width:480px;
-  margin-top:9px;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
-}
-
-.back-row{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  margin-bottom:15px;
-}
-
-.back-btn{
-  border:1px solid var(--border);
+  gap:7px;
+  border:1px solid #cfe0d5;
   background:#fff;
   color:var(--green-dark);
   border-radius:10px;
   padding:9px 13px;
-  font-size:11px;
+  font-size:12px;
   font-weight:900;
 }
 
@@ -972,18 +931,31 @@ textarea.form-control{
   background:var(--green-light);
 }
 
-.notice{
-  border:1px solid #d9e8df;
-  background:var(--green-light);
-  color:var(--green-dark);
-  border-radius:11px;
-  padding:11px 13px;
-  font-size:11px;
-  line-height:1.5;
-  margin-bottom:12px;
+.modal-footer .back-btn{
+  margin-right:auto;
 }
 
-@media(max-width:1100px){
+.chat-error{
+  padding:14px;
+  border-radius:10px;
+  background:var(--danger-light);
+  color:var(--danger);
+  font-size:11px;
+  font-weight:800;
+}
+
+.ledger-note{
+  padding:10px 12px;
+  margin-bottom:12px;
+  border-radius:10px;
+  background:var(--green-light);
+  color:var(--green-dark);
+  font-size:10px;
+  font-weight:800;
+}
+
+@media(max-width:1050px){
+
   .stats{
     grid-template-columns:repeat(2,1fr);
   }
@@ -991,12 +963,17 @@ textarea.form-control{
   .grid-2{
     grid-template-columns:1fr;
   }
+
+  .chat-layout{
+    grid-template-columns:280px 1fr;
+  }
 }
 
 @media(max-width:820px){
+
   .sidebar{
     transform:translateX(-100%);
-    transition:.2s;
+    transition:.25s;
   }
 
   .sidebar.open{
@@ -1038,6 +1015,7 @@ textarea.form-control{
 }
 
 @media(max-width:620px){
+
   .stats{
     grid-template-columns:1fr;
   }
@@ -1094,6 +1072,7 @@ textarea.form-control{
     </div>
 
     <button
+      type="button"
       class="nav-item active"
       data-section="dashboard"
       onclick="navigateTo('dashboard')">
@@ -1109,6 +1088,7 @@ textarea.form-control{
     </div>
 
     <button
+      type="button"
       class="nav-item"
       data-section="customers"
       onclick="navigateTo('customers')">
@@ -1118,7 +1098,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="wallets"
       onclick="navigateTo('wallets')">
@@ -1128,7 +1110,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="kyc"
       onclick="navigateTo('kyc')">
@@ -1138,7 +1122,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="investments"
       onclick="navigateTo('investments')">
@@ -1148,7 +1134,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="transactions"
       onclick="navigateTo('transactions')">
@@ -1158,7 +1146,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="requests"
       onclick="navigateTo('requests')">
@@ -1168,7 +1158,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="chat"
       onclick="navigateTo('chat')">
@@ -1184,6 +1176,7 @@ textarea.form-control{
     </div>
 
     <button
+      type="button"
       class="nav-item"
       data-section="activity"
       onclick="navigateTo('activity')">
@@ -1193,7 +1186,9 @@ textarea.form-control{
 
     </button>
 
+
     <button
+      type="button"
       class="nav-item"
       data-section="settings"
       onclick="navigateTo('settings')">
@@ -1255,17 +1250,21 @@ textarea.form-control{
     <div class="topbar-right">
 
       <button
+        type="button"
         class="mobile-menu"
         onclick="toggleSidebar()">
         ☰
       </button>
 
+
       <button
+        type="button"
         class="icon-btn"
         onclick="refreshCurrentSection()"
         title="Refresh">
         ↻
       </button>
+
 
       <div
         class="admin-avatar"
@@ -1273,7 +1272,9 @@ textarea.form-control{
         A
       </div>
 
+
       <button
+        type="button"
         class="logout-btn"
         onclick="logoutAdmin()">
         Logout
@@ -1414,19 +1415,24 @@ textarea.form-control{
       <div class="panel-header">
 
         <div>
+
           <h2>Quick Actions</h2>
+
           <span>
             Common administrator tasks
           </span>
+
         </div>
 
       </div>
+
 
       <div class="panel-body">
 
         <div class="quick-actions">
 
           <button
+            type="button"
             class="action"
             onclick="navigateTo('customers')">
 
@@ -1446,6 +1452,7 @@ textarea.form-control{
 
 
           <button
+            type="button"
             class="action"
             onclick="navigateTo('wallets')">
 
@@ -1465,6 +1472,7 @@ textarea.form-control{
 
 
           <button
+            type="button"
             class="action"
             onclick="navigateTo('kyc')">
 
@@ -1484,6 +1492,7 @@ textarea.form-control{
 
 
           <button
+            type="button"
             class="action"
             onclick="navigateTo('requests')">
 
@@ -1513,13 +1522,17 @@ textarea.form-control{
       <div class="panel-header">
 
         <div>
+
           <h2>Recent Activity</h2>
+
           <span>
             Latest platform events
           </span>
+
         </div>
 
       </div>
+
 
       <div
         class="panel-body"
@@ -1552,19 +1565,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>Customers</h2>
+
         <span>
           Manage customer accounts
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadCustomers()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1575,6 +1594,7 @@ textarea.form-control{
           id="customerSearch"
           placeholder="Search customers..."
           oninput="filterCustomers()">
+
 
         <select
           class="select"
@@ -1635,19 +1655,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>Wallet Management</h2>
+
         <span>
           Customer wallet balances
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadWallets()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1660,6 +1686,7 @@ textarea.form-control{
           oninput="filterWallets()">
 
       </div>
+
 
       <div id="walletsContainer">
 
@@ -1690,19 +1717,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>KYC Review</h2>
+
         <span>
           Review customer verification submissions
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadKyc()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1733,6 +1766,7 @@ textarea.form-control{
 
       </div>
 
+
       <div id="kycContainer">
 
         <div class="loading">
@@ -1762,19 +1796,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>Investments</h2>
+
         <span>
           Customer investment records
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadInvestments()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1807,19 +1847,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>Transactions</h2>
+
         <span>
           Transaction ledger
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadTransactions()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1852,19 +1898,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>Pending Requests</h2>
+
         <span>
           Deposit, withdrawal and operational requests
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadRequests()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1897,19 +1949,25 @@ textarea.form-control{
     <div class="panel-header">
 
       <div>
+
         <h2>Customer Chat</h2>
+
         <span>
           Customer support conversations
         </span>
+
       </div>
 
+
       <button
+        type="button"
         class="secondary-btn"
         onclick="loadConversations()">
         Refresh
       </button>
 
     </div>
+
 
     <div class="panel-body">
 
@@ -1961,7 +2019,9 @@ textarea.form-control{
               placeholder="Type your reply..."
               disabled></textarea>
 
+
             <button
+              type="button"
               class="primary-btn"
               id="chatSendButton"
               onclick="sendChatMessage()"
@@ -1982,6 +2042,442 @@ textarea.form-control{
 </section>
 
 
+<!-- =====================================================
+     ACTIVITY
+===================================================== -->
+
+<section
+  class="section"
+  id="section-activity"
+  style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>Activity</h2>
+
+        <span>
+          Recent platform activity
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="secondary-btn"
+        onclick="loadActivity()">
+        Refresh
+      </button>
+
+    </div>
+
+
+    <div class="panel-body">
+
+      <div id="activityContainer">
+
+        <div class="loading">
+          Loading activity...
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<section
+  class="section"
+  id="section-settings"
+  style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>Settings</h2>
+
+        <span>
+          Administrator settings
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="detail-grid">
+
+        <div class="detail-item">
+
+          <label>
+            Platform
+          </label>
+
+          <strong>
+            CoinForest
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>
+            Access
+          </label>
+
+          <strong>
+            Administrator
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>
+            Authentication
+          </label>
+
+          <strong>
+            Protected Admin Session
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>
+            Status
+          </label>
+
+          <strong>
+            Active
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+  </main>
+
+</main>
+
+</div>
+
+
+<!-- =====================================================
+     CUSTOMER DETAILS MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="customerModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>
+        Customer Details
+      </h3>
+
+      <button
+        type="button"
+        class="modal-close"
+        onclick="closeModal('customerModal')"
+        aria-label="Close">
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      class="modal-body"
+      id="customerModalBody">
+
+      <div class="loading">
+        Loading customer...
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="back-btn"
+        onclick="closeModal('customerModal')">
+        ← Back
+      </button>
+
+      <button
+        type="button"
+        class="secondary-btn"
+        onclick="closeModal('customerModal')">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     WALLET ADJUSTMENT MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="walletModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>
+        Wallet Adjustment
+      </h3>
+
+      <button
+        type="button"
+        class="modal-close"
+        onclick="closeModal('walletModal')"
+        aria-label="Close">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div
+        id="walletModalCustomer"
+        class="ledger-note">
+        Select a customer wallet.
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label>
+            Wallet
+          </label>
+
+          <select
+            class="form-control"
+            id="adjustWalletType">
+
+            <option value="main">
+              Main Wallet
+            </option>
+
+            <option value="profit">
+              Profit Wallet
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Adjustment Type
+          </label>
+
+          <select
+            class="form-control"
+            id="adjustmentType">
+
+            <option value="credit">
+              Add Funds
+            </option>
+
+            <option value="debit">
+              Remove Funds
+            </option>
+
+            <option value="set">
+              Set Balance
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Amount
+          </label>
+
+          <input
+            class="form-control"
+            id="adjustmentAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00">
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Currency
+          </label>
+
+          <input
+            class="form-control"
+            id="adjustmentCurrency"
+            value="USD"
+            readonly>
+
+        </div>
+
+
+        <div class="form-group full">
+
+          <label>
+            Reason
+          </label>
+
+          <textarea
+            class="form-control"
+            id="adjustmentReason"
+            placeholder="Reason for this wallet adjustment..."></textarea>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="back-btn"
+        onclick="closeModal('walletModal')">
+        ← Back
+      </button>
+
+      <button
+        type="button"
+        class="secondary-btn"
+        onclick="closeModal('walletModal')">
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="primary-btn"
+        id="walletAdjustmentButton"
+        onclick="submitWalletAdjustment()">
+        Save Adjustment
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     KYC MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="kycModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>
+        KYC Review
+      </h3>
+
+      <button
+        type="button"
+        class="modal-close"
+        onclick="closeModal('kycModal')"
+        aria-label="Close">
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      class="modal-body"
+      id="kycModalBody">
+
+      <div class="loading">
+        Loading KYC submission...
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="back-btn"
+        onclick="closeModal('kycModal')">
+        ← Back
+      </button>
+
+      <button
+        type="button"
+        class="secondary-btn"
+        onclick="closeModal('kycModal')">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 <!-- =====================================================
      ACTIVITY
 ===================================================== -->
@@ -2077,7 +2573,8 @@ textarea.form-control{
 
       <br>
 
-      <button class="danger-btn"
+      <button
+        class="danger-btn"
         onclick="logoutAdmin()">
         Logout Administrator
       </button>
@@ -2087,6 +2584,8 @@ textarea.form-control{
   </div>
 
 </section>
+
+
 </main>
 </div>
 
@@ -2100,15 +2599,19 @@ textarea.form-control{
   <div class="modal-card">
 
     <div class="modal-header">
+
       <h3>Customer Details</h3>
 
-      <button class="modal-close"
+      <button
+        class="modal-close"
         onclick="closeModal('customerModal')">
         ✕
       </button>
+
     </div>
 
-    <div class="modal-body"
+    <div
+      class="modal-body"
       id="customerModalBody">
       Loading...
     </div>
@@ -2127,12 +2630,15 @@ textarea.form-control{
   <div class="modal-card">
 
     <div class="modal-header">
+
       <h3>Wallet Adjustment</h3>
 
-      <button class="modal-close"
+      <button
+        class="modal-close"
         onclick="closeModal('walletModal')">
         ✕
       </button>
+
     </div>
 
     <div class="modal-body">
@@ -2163,6 +2669,7 @@ textarea.form-control{
 
         </div>
 
+
         <div class="form-group">
 
           <label>Action</label>
@@ -2187,6 +2694,7 @@ textarea.form-control{
 
         </div>
 
+
         <div class="form-group">
 
           <label>Amount</label>
@@ -2201,6 +2709,7 @@ textarea.form-control{
 
         </div>
 
+
         <div class="form-group">
 
           <label>Reference</label>
@@ -2211,6 +2720,7 @@ textarea.form-control{
             placeholder="Optional reference">
 
         </div>
+
 
         <div class="form-group full">
 
@@ -2227,14 +2737,17 @@ textarea.form-control{
 
     </div>
 
+
     <div class="modal-footer">
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="closeModal('walletModal')">
         Cancel
       </button>
 
-      <button class="primary-btn"
+      <button
+        class="primary-btn"
         onclick="submitWalletAdjustment()">
         Save Adjustment
       </button>
@@ -2258,14 +2771,16 @@ textarea.form-control{
 
       <h3>KYC Review</h3>
 
-      <button class="modal-close"
+      <button
+        class="modal-close"
         onclick="closeModal('kycModal')">
         ✕
       </button>
 
     </div>
 
-    <div class="modal-body"
+    <div
+      class="modal-body"
       id="kycModalBody">
       Loading...
     </div>
@@ -2284,18 +2799,30 @@ textarea.form-control{
 const API_BASE =
   "https://coinforest-api-test-2026.onrender.com";
 
+
 let adminAuthenticated = false;
-let currentSection = "dashboard";
+
+let currentSection =
+  "dashboard";
+
 
 let customersData = [];
+
 let walletsData = [];
+
 let kycData = [];
+
 let investmentsData = [];
+
 let transactionsData = [];
+
 let requestsData = [];
+
 let conversationsData = [];
 
-let selectedConversationId = null;
+
+let selectedConversationId =
+  null;
 
 
 /* =====================================================
@@ -2303,23 +2830,35 @@ let selectedConversationId = null;
 ===================================================== */
 
 function getStoredToken(){
-  return localStorage.getItem("coinforest_token");
+
+  return localStorage.getItem(
+    "coinforest_token"
+  );
+
 }
+
 
 function getStoredUser(){
 
   try{
 
     const raw =
-      localStorage.getItem("coinforest_user");
+      localStorage.getItem(
+        "coinforest_user"
+      );
 
-    return raw ? JSON.parse(raw) : null;
+    return raw
+      ? JSON.parse(raw)
+      : null;
 
   }catch{
+
     return null;
+
   }
 
 }
+
 
 function getStoredRole(){
 
@@ -2327,12 +2866,22 @@ function getStoredRole(){
     getStoredUser();
 
   return String(
+
     user?.role ||
+
     user?.user_role ||
+
     user?.account_role ||
-    localStorage.getItem("coinforest_role") ||
+
+    localStorage.getItem(
+      "coinforest_role"
+    ) ||
+
     ""
-  ).trim().toLowerCase();
+
+  )
+  .trim()
+  .toLowerCase();
 
 }
 
@@ -2349,11 +2898,13 @@ function extractUser(data){
   )
     return data.user;
 
+
   if(
     data?.data?.user &&
     typeof data.data.user === "object"
   )
     return data.data.user;
+
 
   if(
     data?.data &&
@@ -2366,6 +2917,7 @@ function extractUser(data){
   )
     return data.data;
 
+
   if(
     data &&
     typeof data === "object" &&
@@ -2377,21 +2929,38 @@ function extractUser(data){
   )
     return data;
 
+
   return null;
+
 }
 
-function getRoleFromObject(user,data){
+
+function getRoleFromObject(
+  user,
+  data
+){
 
   return String(
+
     user?.role ??
+
     user?.user_role ??
+
     user?.account_role ??
+
     data?.role ??
+
     data?.user_role ??
+
     data?.account_role ??
+
     data?.data?.role ??
+
     ""
-  ).trim().toLowerCase();
+
+  )
+  .trim()
+  .toLowerCase();
 
 }
 
@@ -2400,30 +2969,45 @@ function getRoleFromObject(user,data){
    ACCESS
 ===================================================== */
 
-function showAdminAccessMessage(title,message){
+function showAdminAccessMessage(
+  title,
+  message
+){
 
   let existing =
     document.getElementById(
       "adminAccessMessage"
     );
 
+
   if(existing){
 
     existing.querySelector(
       ".admin-access-title"
-    ).textContent = title;
+    ).textContent =
+      title;
+
 
     existing.querySelector(
       ".admin-access-text"
-    ).textContent = message;
+    ).textContent =
+      message;
+
 
     return;
+
   }
 
-  const box =
-    document.createElement("div");
 
-  box.id = "adminAccessMessage";
+  const box =
+    document.createElement(
+      "div"
+    );
+
+
+  box.id =
+    "adminAccessMessage";
+
 
   box.innerHTML = `
 
@@ -2445,9 +3029,13 @@ function showAdminAccessMessage(title,message){
 
   `;
 
-  document.body.appendChild(box);
+
+  document.body.appendChild(
+    box
+  );
 
 }
+
 
 function hideAdminAccessMessage(){
 
@@ -2455,6 +3043,7 @@ function hideAdminAccessMessage(){
     document.getElementById(
       "adminAccessMessage"
     );
+
 
   if(box)
     box.remove();
@@ -2466,48 +3055,89 @@ function hideAdminAccessMessage(){
    AUTH
 ===================================================== */
 
-async function fetchCurrentUser(token){
+async function fetchCurrentUser(
+  token
+){
 
   const response =
     await fetch(
+
       `${API_BASE}/api/auth/me`,
+
       {
+
         method:"GET",
+
         headers:{
-          Authorization:`Bearer ${token}`,
-          Accept:"application/json"
+
+          Authorization:
+            `Bearer ${token}`,
+
+          Accept:
+            "application/json"
+
         },
+
         cache:"no-store"
+
       }
+
     );
+
 
   const text =
     await response.text();
 
+
   let data = null;
 
+
   try{
-    data = text ? JSON.parse(text) : null;
+
+    data =
+      text
+        ? JSON.parse(text)
+        : null;
+
   }catch{}
+
 
   if(
     response.status === 401 ||
     response.status === 403
-  )
+  ){
+
     return {
+
       invalid:true,
+
       user:null
+
     };
 
-  if(!response.ok)
+  }
+
+
+  if(!response.ok){
+
     return {
+
       invalid:false,
+
       user:null
+
     };
+
+  }
+
 
   return {
+
     invalid:false,
-    user:extractUser(data)
+
+    user:
+      extractUser(data)
+
   };
 
 }
@@ -2518,18 +3148,24 @@ async function requireAdmin(){
   const token =
     getStoredToken();
 
+
   const storedUser =
     getStoredUser();
 
+
   let role =
     getStoredRole();
+
 
   if(!role && token){
 
     try{
 
       const result =
-        await fetchCurrentUser(token);
+        await fetchCurrentUser(
+          token
+        );
+
 
       if(result.user){
 
@@ -2539,37 +3175,58 @@ async function requireAdmin(){
             null
           );
 
+
         if(
           serverRole === "admin" ||
           serverRole === "administrator"
         ){
 
           const normalizedUser = {
+
             ...result.user,
+
             role:"admin"
+
           };
 
+
           localStorage.setItem(
+
             "coinforest_user",
-            JSON.stringify(normalizedUser)
+
+            JSON.stringify(
+              normalizedUser
+            )
+
           );
+
 
           localStorage.setItem(
+
             "coinforest_role",
+
             "admin"
+
           );
 
-          adminAuthenticated = true;
+
+          adminAuthenticated =
+            true;
+
 
           updateAdminIdentity(
             normalizedUser
           );
 
+
           hideAdminAccessMessage();
+
 
           await loadDashboard();
 
+
           return true;
+
         }
 
       }
@@ -2577,52 +3234,80 @@ async function requireAdmin(){
     }catch(error){
 
       console.warn(
+
         "Admin verification failed:",
+
         error
+
       );
 
     }
 
   }
 
+
   if(
     role === "admin" ||
     role === "administrator"
   ){
 
-    adminAuthenticated = true;
+    adminAuthenticated =
+      true;
+
 
     const normalizedUser = {
+
       ...(storedUser || {}),
+
       role:"admin"
+
     };
 
-    localStorage.setItem(
-      "coinforest_user",
-      JSON.stringify(normalizedUser)
-    );
 
     localStorage.setItem(
-      "coinforest_role",
-      "admin"
+
+      "coinforest_user",
+
+      JSON.stringify(
+        normalizedUser
+      )
+
     );
+
+
+    localStorage.setItem(
+
+      "coinforest_role",
+
+      "admin"
+
+    );
+
 
     updateAdminIdentity(
       normalizedUser
     );
 
+
     hideAdminAccessMessage();
 
+
     await loadDashboard();
+
 
     return true;
 
   }
 
+
   showAdminAccessMessage(
+
     "Administrator session required",
+
     "Please sign in with an administrator account before accessing the administration panel."
+
   );
+
 
   return false;
 
@@ -2633,57 +3318,71 @@ async function requireAdmin(){
    IDENTITY
 ===================================================== */
 
-function updateAdminIdentity(user){
+function updateAdminIdentity(
+  user
+){
 
   const firstName =
     String(
       user?.first_name || ""
     ).trim();
 
+
   const lastName =
     String(
       user?.last_name || ""
     ).trim();
+
 
   const email =
     String(
       user?.email || ""
     ).trim();
 
+
   const fullName =
     `${firstName} ${lastName}`.trim();
+
 
   const displayName =
     fullName ||
     email ||
     "Administrator";
 
+
   const initials =
     (
       `${firstName.charAt(0)}${lastName.charAt(0)}`
-      || email.charAt(0)
-      || "A"
+      ||
+      email.charAt(0)
+      ||
+      "A"
     ).toUpperCase();
+
 
   setText(
     "adminName",
     displayName
   );
 
+
   setText(
     "adminAvatar",
     initials
   );
+
 
   setText(
     "topAdminAvatar",
     initials
   );
 
+
   setText(
     "settingsAdminName",
     displayName
   );
+
 
   setText(
     "settingsAdminEmail",
@@ -2705,69 +3404,115 @@ async function apiRequest(
   const token =
     getStoredToken();
 
+
   const headers = {
-    Accept:"application/json",
+
+    Accept:
+      "application/json",
+
     ...(options.body
-      ? {"Content-Type":"application/json"}
+      ? {
+          "Content-Type":
+            "application/json"
+        }
       : {}),
+
     ...(options.headers || {})
+
   };
 
+
   if(token)
+
     headers.Authorization =
       `Bearer ${token}`;
 
+
   const response =
     await fetch(
+
       `${API_BASE}${path}`,
+
       {
+
         ...options,
+
         headers,
-        cache:"no-store"
+
+        cache:
+          "no-store"
+
       }
+
     );
+
 
   const text =
     await response.text();
 
+
   let data = null;
 
+
   try{
+
     data =
       text
         ? JSON.parse(text)
         : null;
+
   }catch{
+
     data = {
+
       raw:text
+
     };
+
   }
+
 
   if(response.status === 401){
 
-    adminAuthenticated = false;
+    adminAuthenticated =
+      false;
+
 
     showAdminAccessMessage(
+
       "Session expired",
+
       "Your administrator session is no longer valid. Please sign in again."
+
     );
+
 
     throw new Error(
       "Unauthorized"
     );
+
   }
+
 
   if(!response.ok){
 
     const message =
+
       data?.message ||
+
       data?.error ||
+
       data?.detail ||
+
       `Request failed (${response.status})`;
 
-    throw new Error(message);
+
+    throw new Error(
+      message
+    );
 
   }
+
 
   return data;
 
@@ -2784,23 +3529,51 @@ function extractArray(
 ){
 
   if(Array.isArray(data))
+
     return data;
 
-  for(const key of keys){
 
-    if(Array.isArray(data?.[key]))
+  for(
+    const key of keys
+  ){
+
+    if(
+      Array.isArray(
+        data?.[key]
+      )
+    )
+
       return data[key];
 
-    if(Array.isArray(data?.data?.[key]))
+
+    if(
+      Array.isArray(
+        data?.data?.[key]
+      )
+    )
+
       return data.data[key];
 
   }
 
-  if(Array.isArray(data?.data))
+
+  if(
+    Array.isArray(
+      data?.data
+    )
+  )
+
     return data.data;
 
-  if(Array.isArray(data?.results))
+
+  if(
+    Array.isArray(
+      data?.results
+    )
+  )
+
     return data.results;
+
 
   return [];
 
@@ -2809,21 +3582,53 @@ function extractArray(
 
 function escapeHtml(value){
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+  return String(
+    value ?? ""
+  )
+
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+
+  .replace(
+    /</g,
+    "&lt;"
+  )
+
+  .replace(
+    />/g,
+    "&gt;"
+  )
+
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+
+  .replace(
+    /'/g,
+    "&#039;"
+  );
 
 }
 
 
 function escapeAttr(value){
 
-  return String(value ?? "")
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'");
+  return String(
+    value ?? ""
+  )
+
+  .replace(
+    /\\/g,
+    "\\\\"
+  )
+
+  .replace(
+    /'/g,
+    "\\'"
+  );
 
 }
 
@@ -2831,15 +3636,27 @@ function escapeAttr(value){
 function money(value){
 
   const n =
-    Number(value || 0);
+    Number(
+      value || 0
+    );
+
 
   return "$" +
+
     n.toLocaleString(
+
       "en-US",
+
       {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
+
+        minimumFractionDigits:
+          2,
+
+        maximumFractionDigits:
+          2
+
       }
+
     );
 
 }
@@ -2848,89 +3665,153 @@ function money(value){
 function date(value){
 
   if(!value)
+
     return "—";
+
 
   const d =
     new Date(value);
 
-  if(Number.isNaN(d.getTime()))
-    return String(value);
+
+  if(
+    Number.isNaN(
+      d.getTime()
+    )
+  )
+
+    return String(
+      value
+    );
+
 
   return d.toLocaleString(
+
     "en-US",
+
     {
-      dateStyle:"medium",
-      timeStyle:"short"
+
+      dateStyle:
+        "medium",
+
+      timeStyle:
+        "short"
+
     }
+
   );
 
 }
 
 
-function statusBadge(status){
+function statusBadge(
+  status
+){
 
   const s =
     String(
-      status || "unknown"
+      status ||
+      "unknown"
     ).toLowerCase();
+
 
   let cls =
     "badge-neutral";
 
+
   if(
+
     [
+
       "approved",
       "active",
       "completed",
       "success",
       "successful",
       "verified"
+
     ].includes(s)
+
   )
-    cls = "badge-success";
+
+    cls =
+      "badge-success";
+
 
   else if(
+
     [
+
       "pending",
       "processing",
       "review",
       "submitted"
+
     ].includes(s)
+
   )
-    cls = "badge-warning";
+
+    cls =
+      "badge-warning";
+
 
   else if(
+
     [
+
       "rejected",
       "declined",
       "failed",
       "cancelled",
       "suspended",
       "inactive"
+
     ].includes(s)
+
   )
-    cls = "badge-danger";
+
+    cls =
+      "badge-danger";
+
 
   else if(
+
     ["profit"].includes(s)
+
   )
-    cls = "badge-gold";
+
+    cls =
+      "badge-gold";
+
 
   return `
+
     <span class="badge ${cls}">
-      ${escapeHtml(status || "Unknown")}
+
+      ${escapeHtml(
+        status ||
+        "Unknown"
+      )}
+
     </span>
+
   `;
 
 }
 
 
-function setText(id,value){
+function setText(
+  id,
+  value
+){
 
   const el =
-    document.getElementById(id);
+    document.getElementById(
+      id
+    );
+
 
   if(el)
+
     el.textContent =
       value;
 
@@ -2950,87 +3831,152 @@ async function loadDashboard(){
         "/api/admin/dashboard"
       );
 
+
     const stats =
+
       data?.stats ||
+
       data?.data?.stats ||
+
       data ||
+
       {};
 
+
     setText(
+
       "totalCustomers",
+
       stats.customers ??
+
       stats.totalCustomers ??
+
       stats.total_customers ??
+
       0
+
     );
 
+
     setText(
+
       "pendingKyc",
+
       stats.pending_kyc ??
+
       stats.pendingKyc ??
+
       0
+
     );
 
+
     setText(
+
       "activeInvestments",
+
       stats.investments ??
+
       stats.activeInvestments ??
+
       stats.active_investments ??
+
       0
+
     );
 
+
     setText(
+
       "pendingRequests",
+
       stats.pending_requests ??
+
       stats.pendingRequests ??
+
       0
+
     );
+
 
     renderActivity(
+
       extractArray(
+
         data,
+
         [
+
           "recentActivity",
+
           "recent_activity",
+
           "activities",
+
           "activity"
+
         ]
+
       )
+
     );
 
+
     if(
+
       !Number(
+
         stats.pending_kyc ??
+
         stats.pendingKyc ??
+
         0
+
       )
+
     ){
 
       const customers =
         await fetchAllCustomers();
 
+
       const pending =
         customers.filter(
+
           x =>
+
             String(
-              x.kyc_status || ""
+
+              x.kyc_status ||
+              ""
+
             ).toLowerCase() ===
             "pending"
+
         );
 
+
       setText(
+
         "pendingKyc",
+
         pending.length
+
       );
 
     }
 
+
   }catch(error){
 
     console.warn(
+
       "Dashboard error:",
+
       error
+
     );
+
 
     await loadDashboardFallback();
 
@@ -3062,146 +4008,282 @@ async function loadDashboardFallback(){
 
     ]);
 
+
   const customers =
-    results[0].status === "fulfilled"
+
+    results[0].status ===
+    "fulfilled"
+
       ? extractArray(
+
           results[0].value,
-          ["customers","users"]
+
+          [
+
+            "customers",
+
+            "users"
+
+          ]
+
         )
+
       : [];
+
 
   const kyc =
-    results[1].status === "fulfilled"
+
+    results[1].status ===
+    "fulfilled"
+
       ? extractArray(
+
           results[1].value,
-          ["submissions","kyc"]
+
+          [
+
+            "submissions",
+
+            "kyc"
+
+          ]
+
         )
+
       : [];
+
 
   const investments =
-    results[2].status === "fulfilled"
+
+    results[2].status ===
+    "fulfilled"
+
       ? extractArray(
+
           results[2].value,
-          ["investments"]
+
+          [
+
+            "investments"
+
+          ]
+
         )
+
       : [];
 
+
   const requests =
-    results[3].status === "fulfilled"
+
+    results[3].status ===
+    "fulfilled"
+
       ? extractArray(
+
           results[3].value,
-          ["requests"]
+
+          [
+
+            "requests"
+
+          ]
+
         )
+
       : [];
+
 
   const pendingProfiles =
     customers.filter(
+
       x =>
+
         String(
-          x.kyc_status || ""
-        ).toLowerCase() === "pending"
+
+          x.kyc_status ||
+          ""
+
+        ).toLowerCase() ===
+        "pending"
+
     );
 
+
   setText(
+
     "totalCustomers",
+
     customers.length
+
   );
 
+
   setText(
+
     "pendingKyc",
+
     Math.max(
+
       kyc.length,
+
       pendingProfiles.length
+
     )
+
   );
 
+
   setText(
+
     "activeInvestments",
+
     investments.filter(
+
       x =>
+
         String(
-          x.status || ""
-        ).toLowerCase() === "active"
+
+          x.status ||
+          ""
+
+        ).toLowerCase() ===
+        "active"
+
     ).length
+
   );
 
+
   setText(
+
     "pendingRequests",
+
     requests.length
+
   );
+
 
   renderActivity([]);
 
 }
 
 
-function renderActivity(items){
+function renderActivity(
+  items
+){
 
   const box =
     document.getElementById(
       "recentActivity"
     );
 
+
   if(!box)
+
     return;
+
 
   if(!items.length){
 
     box.innerHTML = `
+
       <div class="empty">
+
         No recent activity available.
+
       </div>
+
     `;
 
     return;
+
   }
 
+
   box.innerHTML =
+
     items
-      .slice(0,8)
-      .map(item => `
 
-        <div class="activity">
+      .slice(
+        0,
+        8
+      )
 
-          <div class="activity-icon">
-            ${escapeHtml(item.icon || "•")}
-          </div>
+      .map(
 
-          <div class="activity-info">
+        item => `
 
-            <strong>
+          <div class="activity">
+
+            <div class="activity-icon">
+
               ${escapeHtml(
-                item.title ||
-                item.action ||
-                item.type ||
-                "Activity"
-              )}
-            </strong>
-
-            <span>
-              ${escapeHtml(
-                item.description ||
-                item.message ||
-                item.details ||
-                ""
+                item.icon ||
+                "•"
               )}
 
-              ${
-                item.created_at
-                  ? " • " +
-                    escapeHtml(
-                      date(item.created_at)
-                    )
-                  : ""
-              }
+            </div>
 
-            </span>
+            <div class="activity-info">
+
+              <strong>
+
+                ${escapeHtml(
+
+                  item.title ||
+
+                  item.action ||
+
+                  item.type ||
+
+                  "Activity"
+
+                )}
+
+              </strong>
+
+              <span>
+
+                ${escapeHtml(
+
+                  item.description ||
+
+                  item.message ||
+
+                  item.details ||
+
+                  ""
+
+                )}
+
+                ${
+
+                  item.created_at
+
+                    ? " • " +
+
+                      escapeHtml(
+
+                        date(
+                          item.created_at
+                        )
+
+                      )
+
+                    : ""
+
+                }
+
+              </span>
+
+            </div>
 
           </div>
 
-        </div>
+        `
 
-      `)
+      )
+
       .join("");
 
 }
@@ -3215,15 +4297,24 @@ async function fetchAllCustomers(){
 
   const data =
     await apiRequest(
+
       "/api/admin/customers?limit=500"
+
     );
 
+
   return extractArray(
+
     data,
+
     [
+
       "customers",
+
       "users"
+
     ]
+
   );
 
 }
@@ -3236,24 +4327,35 @@ async function loadCustomers(){
       "customersContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading customers...</div>`;
+
 
   try{
 
     customersData =
       await fetchAllCustomers();
 
+
     renderCustomers(
       customersData
     );
 
+
   }catch(error){
 
     box.innerHTML = `
+
       <div class="error-box">
-        ${escapeHtml(error.message)}
+
+        ${escapeHtml(
+          error.message
+        )}
+
       </div>
+
     `;
 
   }
@@ -3261,38 +4363,55 @@ async function loadCustomers(){
 }
 
 
-function customerName(user){
+function customerName(
+  user
+){
 
   return (
+
     `${user?.first_name || ""} ${user?.last_name || ""}`.trim()
+
     ||
+
     user?.name
+
     ||
+
     user?.username
+
     ||
+
     user?.email
+
     ||
+
     "Customer"
+
   );
 
 }
 
 
-function renderCustomers(list){
+function renderCustomers(
+  list
+){
 
   const box =
     document.getElementById(
       "customersContainer"
     );
 
+
   if(!list.length){
 
     box.innerHTML =
+
       `<div class="empty">No customers found.</div>`;
 
     return;
 
   }
+
 
   box.innerHTML = `
 
@@ -3303,135 +4422,216 @@ function renderCustomers(list){
         <thead>
 
           <tr>
+
             <th>Customer</th>
+
             <th>Email</th>
+
             <th>Username</th>
+
             <th>Status</th>
+
             <th>KYC</th>
+
             <th>Created</th>
+
             <th>Actions</th>
+
           </tr>
 
         </thead>
 
+
         <tbody>
 
           ${
-            list.map(user => {
 
-              const id =
-                user.id;
+            list.map(
+              user => {
 
-              return `
+                const id =
+                  user.id;
 
-                <tr>
 
-                  <td>
+                return `
 
-                    <div class="customer-name">
+                  <tr>
+
+                    <td>
+
+                      <div class="customer-name">
+
+                        ${escapeHtml(
+
+                          customerName(
+                            user
+                          )
+
+                        )}
+
+                      </div>
+
+                      <div class="muted">
+
+                        ${escapeHtml(
+                          id || ""
+                        )}
+
+                      </div>
+
+                    </td>
+
+
+                    <td>
+
                       ${escapeHtml(
-                        customerName(user)
-                      )}
-                    </div>
 
-                    <div class="muted">
+                        user.email ||
+                        "—"
+
+                      )}
+
+                    </td>
+
+
+                    <td>
+
                       ${escapeHtml(
-                        id || ""
+
+                        user.username ||
+                        "—"
+
                       )}
-                    </div>
 
-                  </td>
+                    </td>
 
-                  <td>
-                    ${escapeHtml(
-                      user.email || "—"
-                    )}
-                  </td>
 
-                  <td>
-                    ${escapeHtml(
-                      user.username || "—"
-                    )}
-                  </td>
+                    <td>
 
-                  <td>
-                    ${statusBadge(
-                      user.status ||
-                      "active"
-                    )}
-                  </td>
+                      ${statusBadge(
 
-                  <td>
-                    ${statusBadge(
-                      user.kyc_status ||
-                      "pending"
-                    )}
-                  </td>
+                        user.status ||
+                        "active"
 
-                  <td>
-                    ${escapeHtml(
-                      date(user.created_at)
-                    )}
-                  </td>
+                      )}
 
-                  <td>
+                    </td>
 
-                    <div class="row-actions">
 
-                      <button
-                        class="small-btn"
-                        onclick="viewCustomer('${escapeAttr(id)}')">
-                        View
-                      </button>
+                    <td>
 
-                      <button
-                        class="small-btn"
-                        onclick="openCustomerWallet('${escapeAttr(id)}')">
-                        Wallet
-                      </button>
+                      ${statusBadge(
 
-                      <button
-                        class="small-btn"
-                        onclick="openWalletAdjustment('${escapeAttr(id)}')">
-                        Adjust
-                      </button>
+                        user.kyc_status ||
+                        "pending"
 
-                      ${
-                        String(
-                          user.status || ""
-                        ).toLowerCase() ===
-                        "suspended"
+                      )}
 
-                        ? `
+                    </td>
 
-                          <button
-                            class="small-btn"
-                            onclick="changeCustomerStatus('${escapeAttr(id)}','active')">
-                            Activate
-                          </button>
 
-                        `
+                    <td>
 
-                        : `
+                      ${escapeHtml(
 
-                          <button
-                            class="small-btn"
-                            onclick="changeCustomerStatus('${escapeAttr(id)}','suspended')">
-                            Suspend
-                          </button>
+                        date(
+                          user.created_at
+                        )
 
-                        `
-                      }
+                      )}
 
-                    </div>
+                    </td>
 
-                  </td>
 
-                </tr>
+                    <td>
 
-              `;
+                      <div class="row-actions">
 
-            }).join("")
+                        <button
+
+                          class="small-btn"
+
+                          onclick="viewCustomer('${escapeAttr(id)}')">
+
+                          View
+
+                        </button>
+
+
+                        <button
+
+                          class="small-btn"
+
+                          onclick="openCustomerWallet('${escapeAttr(id)}')">
+
+                          Wallet
+
+                        </button>
+
+
+                        <button
+
+                          class="small-btn"
+
+                          onclick="openWalletAdjustment('${escapeAttr(id)}')">
+
+                          Adjust
+
+                        </button>
+
+
+                        ${
+
+                          String(
+
+                            user.status ||
+                            ""
+
+                          ).toLowerCase() ===
+                          "suspended"
+
+                            ? `
+
+                              <button
+
+                                class="small-btn"
+
+                                onclick="changeCustomerStatus('${escapeAttr(id)}','active')">
+
+                                Activate
+
+                              </button>
+
+                            `
+
+                            : `
+
+                              <button
+
+                                class="small-btn"
+
+                                onclick="changeCustomerStatus('${escapeAttr(id)}','suspended')">
+
+                                Suspend
+
+                              </button>
+
+                            `
+
+                        }
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                `;
+
+              }
+
+            ).join("")
+
           }
 
         </tbody>
@@ -3448,51 +4648,103 @@ function renderCustomers(list){
 function filterCustomers(){
 
   const search =
+
     String(
+
       document.getElementById(
         "customerSearch"
       )?.value || ""
-    ).toLowerCase().trim();
+
+    )
+
+    .toLowerCase()
+    .trim();
+
 
   const status =
+
     String(
+
       document.getElementById(
         "customerStatusFilter"
       )?.value || ""
-    ).toLowerCase();
+
+    )
+
+    .toLowerCase();
+
 
   const filtered =
-    customersData.filter(user => {
 
-      const haystack =
-        [
-          user.first_name,
-          user.last_name,
-          user.username,
-          user.email,
-          user.id
-        ]
-        .map(x => String(x || "").toLowerCase())
-        .join(" ");
+    customersData.filter(
 
-      const matchesSearch =
-        !search ||
-        haystack.includes(search);
+      user => {
 
-      const matchesStatus =
-        !status ||
-        String(
-          user.status || ""
-        ).toLowerCase() === status;
+        const haystack =
 
-      return (
-        matchesSearch &&
-        matchesStatus
-      );
+          [
 
-    });
+            user.first_name,
 
-  renderCustomers(filtered);
+            user.last_name,
+
+            user.username,
+
+            user.email,
+
+            user.id
+
+          ]
+
+          .map(
+
+            x =>
+
+              String(
+                x || ""
+              ).toLowerCase()
+
+          )
+
+          .join(" ");
+
+
+        const matchesSearch =
+
+          !search ||
+          haystack.includes(
+            search
+          );
+
+
+        const matchesStatus =
+
+          !status ||
+
+          String(
+
+            user.status ||
+            ""
+
+          ).toLowerCase() ===
+          status;
+
+
+        return (
+
+          matchesSearch &&
+          matchesStatus
+
+        );
+
+      }
+
+    );
+
+
+  renderCustomers(
+    filtered
+  );
 
 }
 
@@ -3501,194 +4753,331 @@ function filterCustomers(){
    CUSTOMER VIEW
 ===================================================== */
 
-async function viewCustomer(id){
+async function viewCustomer(
+  id
+){
 
   if(!id)
+
     return;
+
 
   const modal =
     document.getElementById(
       "customerModal"
     );
 
+
   const body =
     document.getElementById(
       "customerModalBody"
     );
 
+
   body.innerHTML =
+
     `<div class="loading">Loading customer...</div>`;
 
-  modal.classList.add("show");
+
+  modal.classList.add(
+    "show"
+  );
+
 
   try{
 
     const data =
+
       await apiRequest(
+
         `/api/admin/customers?id=${encodeURIComponent(id)}`
+
       );
+
 
     const customer =
+
       data?.customer ||
+
       data?.data?.customer ||
+
       data?.data ||
+
       data;
 
+
     if(!customer)
+
       throw new Error(
+
         "Customer details could not be loaded."
+
       );
+
 
     body.innerHTML = `
 
       <div class="back-row">
 
         <button
+
           class="back-btn"
+
           onclick="closeModal('customerModal')">
+
           ← Back
+
         </button>
 
       </div>
+
 
       <div class="detail-grid">
 
         <div class="detail-item">
+
           <label>Full Name</label>
+
           <strong>
+
             ${escapeHtml(
-              customerName(customer)
+
+              customerName(
+                customer
+              )
+
             )}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Email</label>
+
           <strong>
+
             ${escapeHtml(
-              customer.email || "—"
+
+              customer.email ||
+              "—"
+
             )}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Username</label>
+
           <strong>
+
             ${escapeHtml(
-              customer.username || "—"
+
+              customer.username ||
+              "—"
+
             )}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Account Status</label>
+
           <strong>
+
             ${statusBadge(
-              customer.status || "active"
+
+              customer.status ||
+              "active"
+
             )}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>KYC Status</label>
+
           <strong>
+
             ${statusBadge(
-              customer.kyc_status || "pending"
+
+              customer.kyc_status ||
+              "pending"
+
             )}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Email Verified</label>
+
           <strong>
+
             ${
+
               customer.email_verified_at
+
                 ? "Verified"
+
                 : "Not verified"
+
             }
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Created</label>
+
           <strong>
+
             ${escapeHtml(
-              date(customer.created_at)
+
+              date(
+                customer.created_at
+              )
+
             )}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Customer ID</label>
+
           <strong>
+
             ${escapeHtml(
-              customer.id || id
+
+              customer.id ||
+              id
+
             )}
+
           </strong>
+
         </div>
 
       </div>
 
+
       <br>
+
 
       <div class="row-actions">
 
         <button
+
           class="secondary-btn"
+
           onclick="openCustomerWallet('${escapeAttr(customer.id || id)}')">
+
           View Wallet
+
         </button>
+
 
         <button
+
           class="primary-btn"
+
           onclick="openWalletAdjustment('${escapeAttr(customer.id || id)}')">
+
           Adjust Wallet
+
         </button>
 
+
         ${
+
           String(
-            customer.status || ""
-          ).toLowerCase() === "suspended"
 
-          ? `
+            customer.status ||
+            ""
 
-            <button
-              class="success-btn"
-              onclick="changeCustomerStatus('${escapeAttr(customer.id || id)}','active')">
-              Activate Account
-            </button>
+          ).toLowerCase() ===
+          "suspended"
 
-          `
+            ? `
 
-          : `
+              <button
 
-            <button
-              class="danger-btn"
-              onclick="changeCustomerStatus('${escapeAttr(customer.id || id)}','suspended')">
-              Suspend Account
-            </button>
+                class="success-btn"
 
-          `
+                onclick="changeCustomerStatus('${escapeAttr(customer.id || id)}','active')">
+
+                Activate Account
+
+              </button>
+
+            `
+
+            : `
+
+              <button
+
+                class="danger-btn"
+
+                onclick="changeCustomerStatus('${escapeAttr(customer.id || id)}','suspended')">
+
+                Suspend Account
+
+              </button>
+
+            `
+
         }
 
       </div>
 
     `;
 
+
   }catch(error){
 
     body.innerHTML = `
 
       <div class="error-box">
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
 
+
       <button
+
         class="secondary-btn"
+
         onclick="closeModal('customerModal')">
+
         Cancel
+
       </button>
 
     `;
@@ -3704,43 +5093,69 @@ async function changeCustomerStatus(
 ){
 
   if(!id)
+
     return;
+
 
   const action =
+
     status === "suspended"
+
       ? "suspend"
+
       : "activate";
 
+
   if(
+
     !confirm(
+
       `Are you sure you want to ${action} this customer account?`
+
     )
+
   )
+
     return;
+
 
   try{
 
     await apiRequest(
+
       `/api/admin/customers/${encodeURIComponent(id)}`,
+
       {
+
         method:"PATCH",
+
         body:JSON.stringify({
+
           status
+
         })
+
       }
+
     );
 
+
     await loadCustomers();
+
 
     closeModal(
       "customerModal"
     );
 
+
   }catch(error){
 
     alert(
+
       error.message ||
+
       "Unable to update customer status."
+
     );
 
   }
@@ -3759,34 +5174,51 @@ async function loadWallets(){
       "walletsContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading wallets...</div>`;
+
 
   try{
 
     const data =
+
       await apiRequest(
+
         "/api/admin/wallets?limit=500"
+
       );
 
+
     walletsData =
+
       extractArray(
+
         data,
+
         ["wallets"]
+
       );
+
 
     renderWallets(
       walletsData
     );
 
+
   }catch(error){
 
     box.innerHTML = `
+
       <div class="error-box">
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
+
     `;
 
   }
@@ -3794,42 +5226,61 @@ async function loadWallets(){
 }
 
 
-function walletBalance(wallet,type){
+function walletBalance(
+  wallet,
+  type
+){
 
   if(
     type === "profit"
   )
+
     return Number(
+
       wallet?.profit_balance ??
+
       wallet?.profitBalance ??
+
       0
+
     );
 
+
   return Number(
+
     wallet?.main_balance ??
+
     wallet?.mainBalance ??
+
     wallet?.balance ??
+
     0
+
   );
 
 }
 
 
-function renderWallets(list){
+function renderWallets(
+  list
+){
 
   const box =
     document.getElementById(
       "walletsContainer"
     );
 
+
   if(!list.length){
 
     box.innerHTML =
+
       `<div class="empty">No wallets found.</div>`;
 
     return;
 
   }
+
 
   box.innerHTML = `
 
@@ -3840,100 +5291,164 @@ function renderWallets(list){
         <thead>
 
           <tr>
+
             <th>Customer</th>
+
             <th>Email</th>
+
             <th>Main Wallet</th>
+
             <th>Profit Wallet</th>
+
             <th>Status</th>
+
             <th>Actions</th>
+
           </tr>
 
         </thead>
 
+
         <tbody>
 
           ${
-            list.map(wallet => {
 
-              const id =
-                wallet.user_id ||
-                wallet.userId;
+            list.map(
 
-              return `
+              wallet => {
 
-                <tr>
+                const id =
 
-                  <td>
+                  wallet.user_id ||
 
-                    <div class="customer-name">
+                  wallet.userId;
+
+
+                return `
+
+                  <tr>
+
+                    <td>
+
+                      <div class="customer-name">
+
+                        ${escapeHtml(
+
+                          customerName(
+                            wallet
+                          )
+
+                        )}
+
+                      </div>
+
+
+                      <div class="muted">
+
+                        ${escapeHtml(
+                          id || ""
+                        )}
+
+                      </div>
+
+                    </td>
+
+
+                    <td>
+
                       ${escapeHtml(
-                        customerName(wallet)
+
+                        wallet.email ||
+                        "—"
+
                       )}
-                    </div>
 
-                    <div class="muted">
-                      ${escapeHtml(
-                        id || ""
+                    </td>
+
+
+                    <td class="amount">
+
+                      ${money(
+
+                        walletBalance(
+
+                          wallet,
+
+                          "main"
+
+                        )
+
                       )}
-                    </div>
 
-                  </td>
+                    </td>
 
-                  <td>
-                    ${escapeHtml(
-                      wallet.email || "—"
-                    )}
-                  </td>
 
-                  <td class="amount">
-                    ${money(
-                      walletBalance(
-                        wallet,
-                        "main"
-                      )
-                    )}
-                  </td>
+                    <td class="amount">
 
-                  <td class="amount">
-                    ${money(
-                      walletBalance(
-                        wallet,
-                        "profit"
-                      )
-                    )}
-                  </td>
+                      ${money(
 
-                  <td>
-                    ${statusBadge(
-                      wallet.status || "active"
-                    )}
-                  </td>
+                        walletBalance(
 
-                  <td>
+                          wallet,
 
-                    <div class="row-actions">
+                          "profit"
 
-                      <button
-                        class="small-btn"
-                        onclick="openCustomerWallet('${escapeAttr(id)}')">
-                        View
-                      </button>
+                        )
 
-                      <button
-                        class="small-btn"
-                        onclick="openWalletAdjustment('${escapeAttr(id)}')">
-                        Adjust
-                      </button>
+                      )}
 
-                    </div>
+                    </td>
 
-                  </td>
 
-                </tr>
+                    <td>
 
-              `;
+                      ${statusBadge(
 
-            }).join("")
+                        wallet.status ||
+                        "active"
+
+                      )}
+
+                    </td>
+
+
+                    <td>
+
+                      <div class="row-actions">
+
+                        <button
+
+                          class="small-btn"
+
+                          onclick="openCustomerWallet('${escapeAttr(id)}')">
+
+                          View
+
+                        </button>
+
+
+                        <button
+
+                          class="small-btn"
+
+                          onclick="openWalletAdjustment('${escapeAttr(id)}')">
+
+                          Adjust
+
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                `;
+
+              }
+
+            ).join("")
+
           }
 
         </tbody>
@@ -3950,37 +5465,70 @@ function renderWallets(list){
 function filterWallets(){
 
   const search =
+
     String(
+
       document.getElementById(
         "walletSearch"
       )?.value || ""
-    ).toLowerCase().trim();
+
+    )
+
+    .toLowerCase()
+    .trim();
+
 
   const filtered =
-    walletsData.filter(wallet => {
 
-      const haystack =
-        [
-          wallet.first_name,
-          wallet.last_name,
-          wallet.username,
-          wallet.email,
-          wallet.user_id,
-          wallet.id
-        ]
-        .map(x =>
-          String(
-            x || ""
-          ).toLowerCase()
-        )
-        .join(" ");
+    walletsData.filter(
 
-      return (
-        !search ||
-        haystack.includes(search)
-      );
+      wallet => {
 
-    });
+        const haystack =
+
+          [
+
+            wallet.first_name,
+
+            wallet.last_name,
+
+            wallet.username,
+
+            wallet.email,
+
+            wallet.user_id,
+
+            wallet.id
+
+          ]
+
+          .map(
+
+            x =>
+
+              String(
+                x || ""
+              ).toLowerCase()
+
+          )
+
+          .join(" ");
+
+
+        return (
+
+          !search ||
+
+          haystack.includes(
+            search
+          )
+
+        );
+
+      }
+
+    );
+
 
   renderWallets(
     filtered
@@ -3994,100 +5542,184 @@ async function openCustomerWallet(
 ){
 
   if(!userId)
+
+    return;
+  async function openCustomerWallet(
+  userId
+){
+
+  if(!userId)
+
     return;
 
-  const modal =
-    document.getElementById(
-      "customerModal"
-    );
-
-  const body =
-    document.getElementById(
-      "customerModalBody"
-    );
-
-  body.innerHTML =
-    `<div class="loading">Loading wallet...</div>`;
-
-  modal.classList.add("show");
 
   try{
 
     const data =
+
       await apiRequest(
+
         `/api/admin/wallets?user_id=${encodeURIComponent(userId)}`
+
       );
+
 
     const wallets =
+
       extractArray(
+
         data,
+
         ["wallets"]
+
       );
 
-    const ledger =
-      extractArray(
-        data,
-        ["ledger"]
+
+    const wallet =
+
+      wallets[0] ||
+
+      data?.wallet ||
+
+      data?.data?.wallet ||
+
+      data?.data;
+
+
+    if(!wallet){
+
+      alert(
+        "No wallet information was returned for this customer."
       );
-
-    if(!wallets.length){
-
-      body.innerHTML = `
-
-        <div class="error-box">
-          Customer wallet could not be found.
-        </div>
-
-        <button
-          class="secondary-btn"
-          onclick="closeModal('customerModal')">
-          Cancel
-        </button>
-
-      `;
 
       return;
 
     }
 
-    const customer =
-      wallets[0];
+
+    const name =
+      customerName(
+        wallet
+      );
+
+
+    const mainBalance =
+      walletBalance(
+        wallet,
+        "main"
+      );
+
+
+    const profitBalance =
+      walletBalance(
+        wallet,
+        "profit"
+      );
+
+
+    const modal =
+      document.getElementById(
+        "customerModal"
+      );
+
+
+    const body =
+      document.getElementById(
+        "customerModalBody"
+      );
+
 
     body.innerHTML = `
 
       <div class="back-row">
 
         <button
+
+          type="button"
+
           class="back-btn"
+
           onclick="closeModal('customerModal')">
+
           ← Back
+
         </button>
 
       </div>
 
+
       <div class="detail-grid">
 
         <div class="detail-item">
+
           <label>Customer</label>
+
           <strong>
-            ${escapeHtml(
-              customerName(customer)
-            )}
+
+            ${escapeHtml(name)}
+
           </strong>
+
         </div>
 
+
         <div class="detail-item">
+
           <label>Email</label>
+
           <strong>
+
             ${escapeHtml(
-              customer.email || "—"
+
+              wallet.email ||
+              "—"
+
             )}
+
           </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>Customer ID</label>
+
+          <strong>
+
+            ${escapeHtml(
+
+              userId
+
+            )}
+
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>Wallet Status</label>
+
+          <strong>
+
+            ${statusBadge(
+
+              wallet.status ||
+              "active"
+
+            )}
+
+          </strong>
+
         </div>
 
       </div>
 
+
       <br>
+
 
       <div class="wallet-cards">
 
@@ -4098,18 +5730,20 @@ async function openCustomerWallet(
           </div>
 
           <div class="wallet-balance">
+
             ${money(
-              walletBalance(
-                customer,
-                "main"
-              )
+              mainBalance
             )}
+
           </div>
 
           <div class="wallet-status">
+
             ${statusBadge(
-              customer.status || "active"
+              wallet.main_status ||
+              "active"
             )}
+
           </div>
 
         </div>
@@ -4122,168 +5756,63 @@ async function openCustomerWallet(
           </div>
 
           <div class="wallet-balance">
+
             ${money(
-              walletBalance(
-                customer,
-                "profit"
-              )
+              profitBalance
             )}
+
           </div>
 
           <div class="wallet-status">
+
             ${statusBadge(
-              customer.status || "active"
+              wallet.profit_status ||
+              "active"
             )}
+
           </div>
 
         </div>
 
       </div>
 
+
       <br>
+
 
       <div class="row-actions">
 
         <button
+
+          type="button"
+
           class="primary-btn"
+
           onclick="closeModal('customerModal');openWalletAdjustment('${escapeAttr(userId)}')">
+
           Adjust Wallet
+
         </button>
 
       </div>
 
-      <br>
-
-      <div class="panel">
-
-        <div class="panel-header">
-
-          <div>
-            <h2>Wallet Ledger</h2>
-            <span>
-              Recent wallet adjustments
-            </span>
-          </div>
-
-        </div>
-
-        <div class="panel-body">
-
-          ${
-            ledger.length
-
-            ? `
-
-              <div class="table-wrap">
-
-                <table>
-
-                  <thead>
-
-                    <tr>
-                      <th>Type</th>
-                      <th>Amount</th>
-                      <th>Before</th>
-                      <th>After</th>
-                      <th>Description</th>
-                      <th>Date</th>
-                    </tr>
-
-                  </thead>
-
-                  <tbody>
-
-                    ${
-                      ledger.map(entry => `
-
-                        <tr>
-
-                          <td>
-                            ${escapeHtml(
-                              entry.entry_type ||
-                              entry.type ||
-                              "—"
-                            )}
-                          </td>
-
-                          <td class="amount">
-                            ${money(
-                              entry.amount
-                            )}
-                          </td>
-
-                          <td>
-                            ${money(
-                              entry.balance_before
-                            )}
-                          </td>
-
-                          <td>
-                            ${money(
-                              entry.balance_after
-                            )}
-                          </td>
-
-                          <td>
-                            ${escapeHtml(
-                              entry.description ||
-                              "—"
-                            )}
-                          </td>
-
-                          <td>
-                            ${escapeHtml(
-                              date(
-                                entry.created_at
-                              )
-                            )}
-                          </td>
-
-                        </tr>
-
-                      `).join("")
-                    }
-
-                  </tbody>
-
-                </table>
-
-              </div>
-
-            `
-
-            : `
-
-              <div class="empty">
-                No wallet ledger entries found.
-              </div>
-
-            `
-          }
-
-        </div>
-
-      </div>
-
     `;
+
+
+    modal.classList.add(
+      "show"
+    );
+
 
   }catch(error){
 
-    body.innerHTML = `
+    alert(
 
-      <div class="error-box">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>
+      error.message ||
 
-      <button
-        class="secondary-btn"
-        onclick="closeModal('customerModal')">
-        Cancel
-      </button>
+      "Unable to load wallet."
 
-    `;
+    );
 
   }
 
@@ -4294,117 +5823,182 @@ async function openCustomerWallet(
    WALLET ADJUSTMENT
 ===================================================== */
 
-let adjustmentUserId = null;
+let adjustmentUserId =
+  null;
+
 
 async function openWalletAdjustment(
   userId
 ){
 
+  if(!userId)
+
+    return;
+
+
   adjustmentUserId =
     userId;
 
-  const box =
+
+  const modal =
+    document.getElementById(
+      "walletModal"
+    );
+
+
+  const customerBox =
     document.getElementById(
       "walletAdjustmentCustomer"
     );
 
-  box.innerHTML =
-    `<div class="loading">Loading customer wallet...</div>`;
 
-  document.getElementById(
-    "adjustAmount"
-  ).value = "";
+  const amount =
+    document.getElementById(
+      "adjustAmount"
+    );
 
-  document.getElementById(
-    "adjustReference"
-  ).value = "";
 
-  document.getElementById(
-    "adjustReason"
-  ).value = "";
+  const reference =
+    document.getElementById(
+      "adjustReference"
+    );
 
-  document.getElementById(
-    "adjustAction"
-  ).value = "add";
 
-  document.getElementById(
-    "adjustWalletType"
-  ).value = "main";
+  const reason =
+    document.getElementById(
+      "adjustReason"
+    );
 
-  document.getElementById(
-    "walletModal"
-  ).classList.add("show");
+
+  if(amount)
+    amount.value = "";
+
+
+  if(reference)
+    reference.value = "";
+
+
+  if(reason)
+    reason.value = "";
+
+
+  customerBox.innerHTML =
+
+    `<div class="loading">Loading wallet...</div>`;
+
+
+  modal.classList.add(
+    "show"
+  );
+
 
   try{
 
     const data =
+
       await apiRequest(
+
         `/api/admin/wallets?user_id=${encodeURIComponent(userId)}`
+
       );
+
 
     const wallets =
+
       extractArray(
+
         data,
+
         ["wallets"]
+
       );
 
-    if(!wallets.length){
-
-      box.innerHTML = `
-        <div class="error-box">
-          Customer wallet could not be found.
-        </div>
-      `;
-
-      return;
-
-    }
 
     const wallet =
-      wallets[0];
 
-    box.innerHTML = `
+      wallets[0] ||
 
-      <div class="notice">
+      data?.wallet ||
+
+      data?.data?.wallet ||
+
+      data?.data;
+
+
+    const customer =
+
+      wallet ||
+
+      customersData.find(
+
+        x =>
+          String(
+            x.id
+          ) ===
+          String(userId)
+
+      );
+
+
+    customerBox.innerHTML = `
+
+      <div class="ledger-note">
 
         <strong>
+
           ${escapeHtml(
-            customerName(wallet)
+
+            customerName(
+              customer
+            )
+
           )}
+
         </strong>
 
         <br>
 
-        Main:
+        Current Main Wallet:
+
         ${money(
+
           walletBalance(
             wallet,
             "main"
           )
+
         )}
 
         &nbsp; • &nbsp;
 
-        Profit:
+        Current Profit Wallet:
+
         ${money(
+
           walletBalance(
             wallet,
             "profit"
           )
+
         )}
 
       </div>
 
     `;
 
+
   }catch(error){
 
-    box.innerHTML = `
+    customerBox.innerHTML = `
+
       <div class="error-box">
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
+
     `;
 
   }
@@ -4417,47 +6011,60 @@ async function submitWalletAdjustment(){
   if(!adjustmentUserId){
 
     alert(
-      "Customer wallet is not selected."
+      "No customer selected."
     );
 
     return;
 
   }
 
+
   const walletType =
+
     document.getElementById(
       "adjustWalletType"
-    ).value;
+    )?.value ||
+    "main";
+
 
   const action =
+
     document.getElementById(
       "adjustAction"
-    ).value;
+    )?.value ||
+    "add";
+
 
   const amount =
+
     Number(
+
       document.getElementById(
         "adjustAmount"
-      ).value
+      )?.value || 0
+
     );
 
+
   const reference =
-    String(
-      document.getElementById(
-        "adjustReference"
-      ).value || ""
-    ).trim();
+
+    document.getElementById(
+      "adjustReference"
+    )?.value
+    .trim();
+
 
   const reason =
-    String(
-      document.getElementById(
-        "adjustReason"
-      ).value || ""
-    ).trim();
+
+    document.getElementById(
+      "adjustReason"
+    )?.value
+    .trim();
+
 
   if(
     !Number.isFinite(amount) ||
-    amount <= 0
+    amount < 0
   ){
 
     alert(
@@ -4467,6 +6074,21 @@ async function submitWalletAdjustment(){
     return;
 
   }
+
+
+  if(
+    action !== "set" &&
+    amount === 0
+  ){
+
+    alert(
+      "Enter an amount greater than zero."
+    );
+
+    return;
+
+  }
+
 
   if(!reason){
 
@@ -4478,58 +6100,115 @@ async function submitWalletAdjustment(){
 
   }
 
-  let signedAmount =
-    amount;
 
-  if(action === "subtract")
-    signedAmount =
-      -amount;
+  const button =
+    document.querySelector(
+      "#walletModal .primary-btn"
+    );
+
+
+  if(button){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "Saving...";
+
+  }
+
 
   try{
 
+    /*
+      Keep the existing admin wallet route.
+      The server remains responsible for validating
+      balance protection and writing the ledger entry.
+    */
+
+    const payload = {
+
+      user_id:
+        adjustmentUserId,
+
+      wallet_type:
+        walletType,
+
+      action,
+
+      amount,
+
+      reference:
+        reference || null,
+
+      reason
+
+    };
+
+
     await apiRequest(
+
       "/api/admin/wallets/adjust",
+
       {
+
         method:"POST",
-        body:JSON.stringify({
-          user_id:
-            adjustmentUserId,
-          wallet_type:
-            walletType,
-          amount:
-            signedAmount,
-          reason:
-            reason,
-          reference:
-            reference
-        })
+
+        body:
+          JSON.stringify(
+            payload
+          )
+
       }
+
     );
 
+
     alert(
-      "Wallet balance updated successfully."
+      "Wallet adjustment completed successfully."
     );
+
 
     closeModal(
       "walletModal"
     );
 
-    await loadWallets();
 
-    if(
-      currentSection ===
-      "customers"
-    )
-      await loadCustomers();
+    await Promise.allSettled([
 
-    await loadDashboard();
+      loadWallets(),
+
+      loadTransactions(),
+
+      loadActivity(),
+
+      loadDashboard()
+
+    ]);
+
 
   }catch(error){
 
     alert(
+
       error.message ||
+
       "Unable to adjust wallet."
+
     );
+
+
+  }finally{
+
+    if(button){
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "Save Adjustment";
+
+    }
 
   }
 
@@ -4547,49 +6226,73 @@ async function loadKyc(){
       "kycContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading KYC submissions...</div>`;
 
+
   const status =
-    String(
-      document.getElementById(
-        "kycStatusFilter"
-      )?.value || ""
-    ).trim();
+
+    document.getElementById(
+      "kycStatusFilter"
+    )?.value ||
+    "";
+
 
   try{
 
-    const path =
+    const endpoint =
+
       status
-        ? `/api/admin/kyc?status=${encodeURIComponent(status)}&limit=500`
-        : "/api/admin/kyc?limit=500";
+
+        ? `/api/admin/kyc?status=${encodeURIComponent(status)}`
+
+        : "/api/admin/kyc";
+
 
     const data =
       await apiRequest(
-        path
+        endpoint
       );
 
+
     kycData =
+
       extractArray(
+
         data,
+
         [
+
           "submissions",
-          "kyc"
+
+          "kyc",
+
+          "requests"
+
         ]
+
       );
+
 
     renderKyc(
       kycData
     );
 
+
   }catch(error){
 
     box.innerHTML = `
+
       <div class="error-box">
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
+
     `;
 
   }
@@ -4597,21 +6300,26 @@ async function loadKyc(){
 }
 
 
-function renderKyc(list){
+function renderKyc(
+  list
+){
 
   const box =
     document.getElementById(
       "kycContainer"
     );
 
+
   if(!list.length){
 
     box.innerHTML =
+
       `<div class="empty">No KYC submissions found.</div>`;
 
     return;
 
   }
+
 
   box.innerHTML = `
 
@@ -4622,110 +6330,126 @@ function renderKyc(list){
         <thead>
 
           <tr>
+
             <th>Customer</th>
+
             <th>Email</th>
+
             <th>Status</th>
+
             <th>Submitted</th>
+
             <th>Actions</th>
+
           </tr>
 
         </thead>
 
+
         <tbody>
 
           ${
-            list.map(item => {
 
-              const id =
-                item.id;
+            list.map(
 
-              return `
+              item => {
 
-                <tr>
+                const id =
 
-                  <td>
+                  item.id ||
 
-                    <div class="customer-name">
+                  item.kyc_id;
+
+
+                return `
+
+                  <tr>
+
+                    <td>
+
+                      <div class="customer-name">
+
+                        ${escapeHtml(
+
+                          customerName(
+                            item
+                          )
+
+                        )}
+
+                      </div>
+
+                    </td>
+
+
+                    <td>
+
                       ${escapeHtml(
-                        customerName(item)
+
+                        item.email ||
+                        "—"
+
                       )}
-                    </div>
 
-                    <div class="muted">
-                      ${escapeHtml(
-                        item.user_id || ""
-                      )}
-                    </div>
+                    </td>
 
-                  </td>
 
-                  <td>
-                    ${escapeHtml(
-                      item.email || "—"
-                    )}
-                  </td>
+                    <td>
 
-                  <td>
-                    ${statusBadge(
-                      item.status ||
-                      item.kyc_status ||
-                      "pending"
-                    )}
-                  </td>
+                      ${statusBadge(
 
-                  <td>
-                    ${escapeHtml(
-                      date(
-                        item.created_at
-                      )
-                    )}
-                  </td>
-
-                  <td>
-
-                    <div class="row-actions">
-
-                      <button
-                        class="small-btn"
-                        onclick="viewKyc('${escapeAttr(id)}')">
-                        View
-                      </button>
-
-                      ${
-                        String(
-                          item.status ||
-                          ""
-                        ).toLowerCase() ===
+                        item.status ||
+                        item.kyc_status ||
                         "pending"
 
-                        ? `
+                      )}
 
-                          <button
-                            class="small-btn"
-                            onclick="reviewKyc('${escapeAttr(id)}','approved')">
-                            Approve
-                          </button>
+                    </td>
 
-                          <button
-                            class="small-btn"
-                            onclick="reviewKyc('${escapeAttr(id)}','rejected')">
-                            Decline
-                          </button>
 
-                        `
+                    <td>
 
-                        : ""
-                      }
+                      ${escapeHtml(
 
-                    </div>
+                        date(
 
-                  </td>
+                          item.submitted_at ||
 
-                </tr>
+                          item.created_at
 
-              `;
+                        )
 
-            }).join("")
+                      )}
+
+                    </td>
+
+
+                    <td>
+
+                      <div class="row-actions">
+
+                        <button
+
+                          class="small-btn"
+
+                          onclick="viewKyc('${escapeAttr(id)}')">
+
+                          Review
+
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                `;
+
+              }
+
+            ).join("")
+
           }
 
         </tbody>
@@ -4739,214 +6463,299 @@ function renderKyc(list){
 }
 
 
-async function viewKyc(id){
+async function viewKyc(
+  id
+){
 
   if(!id)
+
     return;
+
 
   const modal =
     document.getElementById(
       "kycModal"
     );
 
+
   const body =
     document.getElementById(
       "kycModalBody"
     );
 
+
   body.innerHTML =
-    `<div class="loading">Loading KYC...</div>`;
 
-  modal.classList.add("show");
+    `<div class="loading">Loading KYC submission...</div>`;
 
-  const item =
-    kycData.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    );
 
-  if(!item){
+  modal.classList.add(
+    "show"
+  );
+
+
+  try{
+
+    const data =
+
+      await apiRequest(
+
+        `/api/admin/kyc/${encodeURIComponent(id)}`
+
+      );
+
+
+    const item =
+
+      data?.kyc ||
+
+      data?.submission ||
+
+      data?.data ||
+
+      data;
+
+
+    if(!item)
+
+      throw new Error(
+        "KYC record was not returned."
+      );
+
 
     body.innerHTML = `
-      <div class="error-box">
-        KYC record could not be found in the current list.
+
+      <div class="back-row">
+
+        <button
+
+          type="button"
+
+          class="back-btn"
+
+          onclick="closeModal('kycModal')">
+
+          ← Back
+
+        </button>
+
       </div>
 
-      <button
-        class="secondary-btn"
-        onclick="closeModal('kycModal')">
-        Cancel
-      </button>
+
+      <div class="detail-grid">
+
+        <div class="detail-item">
+
+          <label>Customer</label>
+
+          <strong>
+
+            ${escapeHtml(
+
+              customerName(
+                item
+              )
+
+            )}
+
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>Email</label>
+
+          <strong>
+
+            ${escapeHtml(
+
+              item.email ||
+              "—"
+
+            )}
+
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>KYC Status</label>
+
+          <strong>
+
+            ${statusBadge(
+
+              item.status ||
+              item.kyc_status ||
+              "pending"
+
+            )}
+
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <label>Submitted</label>
+
+          <strong>
+
+            ${escapeHtml(
+
+              date(
+
+                item.submitted_at ||
+
+                item.created_at
+
+              )
+
+            )}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <br>
+
+
+      <div class="row-actions">
+
+        <button
+
+          type="button"
+
+          class="success-btn"
+
+          onclick="updateKyc('${escapeAttr(id)}','approved')">
+
+          Approve KYC
+
+        </button>
+
+
+        <button
+
+          type="button"
+
+          class="danger-btn"
+
+          onclick="updateKyc('${escapeAttr(id)}','rejected')">
+
+          Reject KYC
+
+        </button>
+
+      </div>
+
     `;
 
-    return;
+
+  }catch(error){
+
+    body.innerHTML = `
+
+      <div class="error-box">
+
+        ${escapeHtml(
+          error.message
+        )}
+
+      </div>
+
+    `;
 
   }
-
-  body.innerHTML = `
-
-    <div class="back-row">
-
-      <button
-        class="back-btn"
-        onclick="closeModal('kycModal')">
-        ← Back
-      </button>
-
-    </div>
-
-    <div class="detail-grid">
-
-      <div class="detail-item">
-        <label>Customer</label>
-        <strong>
-          ${escapeHtml(
-            customerName(item)
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <label>Email</label>
-        <strong>
-          ${escapeHtml(
-            item.email || "—"
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <label>KYC Status</label>
-        <strong>
-          ${statusBadge(
-            item.status ||
-            item.kyc_status ||
-            "pending"
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <label>Submitted</label>
-        <strong>
-          ${escapeHtml(
-            date(item.created_at)
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <label>Submission ID</label>
-        <strong>
-          ${escapeHtml(
-            item.id
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <label>User ID</label>
-        <strong>
-          ${escapeHtml(
-            item.user_id
-          )}
-        </strong>
-      </div>
-
-    </div>
-
-    <br>
-
-    ${
-      String(
-        item.status || ""
-      ).toLowerCase() ===
-      "pending"
-
-      ? `
-
-        <div class="row-actions">
-
-          <button
-            class="success-btn"
-            onclick="reviewKyc('${escapeAttr(id)}','approved')">
-            Approve KYC
-          </button>
-
-          <button
-            class="danger-btn"
-            onclick="reviewKyc('${escapeAttr(id)}','rejected')">
-            Decline KYC
-          </button>
-
-        </div>
-
-      `
-
-      : `
-
-        <div class="notice">
-          This KYC submission has already been reviewed.
-        </div>
-
-      `
-    }
-
-  `;
 
 }
 
 
-async function reviewKyc(
-  id,
-  decision
+async function updateKyc(
+id,
+status
 ){
 
   if(!id)
+
     return;
 
-  const label =
-    decision === "approved"
-      ? "approve"
-      : "decline";
 
   if(
+
     !confirm(
-      `Are you sure you want to ${label} this KYC submission?`
+
+      `Confirm KYC ${status}?`
+
     )
+
   )
+
     return;
+
 
   try{
 
     await apiRequest(
+
       `/api/admin/kyc/${encodeURIComponent(id)}`,
+
       {
+
         method:"PATCH",
-        body:JSON.stringify({
-          status:
-            decision
-        })
+
+        body:
+
+          JSON.stringify({
+
+            status
+
+          })
+
       }
+
     );
 
+
     alert(
-      `KYC ${decision} successfully.`
+      `KYC ${status}.`
     );
+
 
     closeModal(
       "kycModal"
     );
 
-    await loadKyc();
-    await loadDashboard();
+
+    await Promise.allSettled([
+
+      loadKyc(),
+
+      loadCustomers(),
+
+      loadDashboard(),
+
+      loadActivity()
+
+    ]);
+
 
   }catch(error){
 
     alert(
+
       error.message ||
+
       "Unable to update KYC."
+
     );
 
   }
@@ -4965,34 +6774,48 @@ async function loadInvestments(){
       "investmentsContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading investments...</div>`;
+
 
   try{
 
     const data =
       await apiRequest(
-        "/api/admin/investments?limit=500"
+        "/api/admin/investments"
       );
 
+
     investmentsData =
+
       extractArray(
+
         data,
+
         ["investments"]
+
       );
+
 
     renderInvestments(
       investmentsData
     );
 
+
   }catch(error){
 
     box.innerHTML = `
+
       <div class="error-box">
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
+
     `;
 
   }
@@ -5000,21 +6823,26 @@ async function loadInvestments(){
 }
 
 
-function renderInvestments(list){
+function renderInvestments(
+list
+){
 
   const box =
     document.getElementById(
       "investmentsContainer"
     );
 
+
   if(!list.length){
 
     box.innerHTML =
+
       `<div class="empty">No investments found.</div>`;
 
     return;
 
   }
+
 
   box.innerHTML = `
 
@@ -5025,66 +6853,141 @@ function renderInvestments(list){
         <thead>
 
           <tr>
+
             <th>Customer</th>
+
             <th>Plan</th>
+
             <th>Amount</th>
+
+            <th>Profit</th>
+
             <th>Status</th>
+
             <th>Created</th>
+
           </tr>
 
         </thead>
 
+
         <tbody>
 
           ${
-            list.map(item => `
 
-              <tr>
+            list.map(
 
-                <td>
-                  <div class="customer-name">
+              item => `
+
+                <tr>
+
+                  <td>
+
+                    <div class="customer-name">
+
+                      ${escapeHtml(
+
+                        customerName(
+                          item
+                        )
+
+                      )}
+
+                    </div>
+
+                    <div class="muted">
+
+                      ${escapeHtml(
+
+                        item.email ||
+                        ""
+
+                      )}
+
+                    </div>
+
+                  </td>
+
+
+                  <td>
+
                     ${escapeHtml(
-                      customerName(item)
+
+                      item.plan_name ||
+
+                      item.plan ||
+
+                      item.name ||
+
+                      "—"
+
                     )}
-                  </div>
-                  <div class="muted">
+
+                  </td>
+
+
+                  <td class="amount">
+
+                    ${money(
+
+                      item.amount ||
+
+                      item.principal ||
+
+                      0
+
+                    )}
+
+                  </td>
+
+
+                  <td class="amount">
+
+                    ${money(
+
+                      item.profit ||
+
+                      item.expected_profit ||
+
+                      0
+
+                    )}
+
+                  </td>
+
+
+                  <td>
+
+                    ${statusBadge(
+
+                      item.status ||
+                      "active"
+
+                    )}
+
+                  </td>
+
+
+                  <td>
+
                     ${escapeHtml(
-                      item.email || ""
+
+                      date(
+
+                        item.created_at
+
+                      )
+
                     )}
-                  </div>
-                </td>
 
-                <td>
-                  ${escapeHtml(
-                    item.plan_name ||
-                    item.plan ||
-                    "—"
-                  )}
-                </td>
+                  </td>
 
-                <td class="amount">
-                  ${money(
-                    item.amount
-                  )}
-                </td>
+                </tr>
 
-                <td>
-                  ${statusBadge(
-                    item.status
-                  )}
-                </td>
+              `
 
-                <td>
-                  ${escapeHtml(
-                    date(
-                      item.created_at
-                    )
-                  )}
-                </td>
+            ).join("")
 
-              </tr>
-
-            `).join("")
           }
 
         </tbody>
@@ -5109,58 +7012,332 @@ async function loadTransactions(){
       "transactionsContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading transactions...</div>`;
+
 
   try{
 
     const data =
+
       await apiRequest(
-        "/api/admin/transactions?limit=500"
+
+        "/api/admin/transactions"
+
       );
 
-    transactionsData =
+
+    let list =
+
       extractArray(
+
         data,
-        ["transactions"]
+
+        [
+
+          "transactions",
+
+          "ledger",
+
+          "entries",
+
+          "records"
+
+        ]
+
       );
+
+
+    /*
+      Important fallback:
+
+      Successful wallet funding already exists
+      in the customer's wallet ledger. If the
+      transaction endpoint returns an empty list,
+      retrieve the wallets and expose their real
+      ledger records instead of showing a false
+      "no transactions" state.
+    */
+
+    if(!list.length){
+
+      list =
+        await collectWalletLedgerTransactions();
+
+    }
+
+
+    transactionsData =
+      list;
+
 
     renderTransactions(
       transactionsData
     );
 
+
   }catch(error){
 
-    box.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>
-    `;
+    /*
+      If the primary transactions endpoint itself
+      fails, try the existing wallet ledger before
+      showing an error.
+    */
+
+    try{
+
+      const fallback =
+        await collectWalletLedgerTransactions();
+
+
+      transactionsData =
+        fallback;
+
+
+      renderTransactions(
+        fallback
+      );
+
+
+    }catch(fallbackError){
+
+      box.innerHTML = `
+
+        <div class="error-box">
+
+          ${escapeHtml(
+            error.message
+          )}
+
+        </div>
+
+      `;
+
+    }
 
   }
 
 }
 
 
-function renderTransactions(list){
+async function collectWalletLedgerTransactions(){
+
+  let wallets = [];
+
+
+  try{
+
+    const data =
+
+      await apiRequest(
+
+        "/api/admin/wallets?limit=500"
+
+      );
+
+
+    wallets =
+
+      extractArray(
+
+        data,
+
+        ["wallets"]
+
+      );
+
+  }catch{
+
+    wallets = [];
+
+  }
+
+
+  const ledger = [];
+
+
+  for(
+    const wallet of wallets
+  ){
+
+    const userId =
+
+      wallet.user_id ||
+
+      wallet.userId ||
+
+      wallet.customer_id;
+
+
+    if(!userId)
+
+      continue;
+
+
+    try{
+
+      const data =
+
+        await apiRequest(
+
+          `/api/admin/wallets?user_id=${encodeURIComponent(userId)}`
+
+        );
+
+
+      const records =
+
+        extractArray(
+
+          data,
+
+          [
+
+            "transactions",
+
+            "ledger",
+
+            "entries",
+
+            "history"
+
+          ]
+
+        );
+
+
+      if(records.length){
+
+        records.forEach(
+
+          record => {
+
+            ledger.push({
+
+              ...record,
+
+              _customer_name:
+
+                customerName(
+                  wallet
+                ),
+
+              _customer_email:
+
+                wallet.email ||
+
+                record.email ||
+
+                ""
+
+            });
+
+          }
+
+        );
+
+      }
+
+    }catch{
+
+      /* Continue with remaining wallets. */
+
+    }
+
+  }
+
+
+  return ledger;
+
+}
+
+
+function transactionDirection(
+item
+){
+
+  const direction =
+
+    String(
+
+      item.direction ||
+
+      item.type ||
+
+      item.transaction_type ||
+
+      item.kind ||
+
+      ""
+
+    ).toLowerCase();
+
+
+  if(
+
+    direction.includes(
+      "debit"
+    ) ||
+
+    direction.includes(
+      "withdraw"
+    ) ||
+
+    direction.includes(
+      "send"
+    ) ||
+
+    direction.includes(
+      "subtract"
+    )
+
+  )
+
+    return "debit";
+
+
+  return "credit";
+
+}
+
+
+function renderTransactions(
+list
+){
 
   const box =
     document.getElementById(
       "transactionsContainer"
     );
 
+
   if(!list.length){
 
-    box.innerHTML =
-      `<div class="empty">No transactions found.</div>`;
+    box.innerHTML = `
+
+      <div class="empty">
+
+        No transactions found in the available ledger.
+
+      </div>
+
+    `;
 
     return;
 
   }
 
+
   box.innerHTML = `
+
+    <div class="ledger-note">
+
+      Transactions are displayed from the platform transaction ledger and, where necessary, the existing customer wallet ledger.
+
+    </div>
+
 
     <div class="table-wrap">
 
@@ -5169,87 +7346,191 @@ function renderTransactions(list){
         <thead>
 
           <tr>
-            <th>Reference</th>
+
             <th>Customer</th>
+
             <th>Type</th>
-            <th>Direction</th>
+
+            <th>Wallet</th>
+
             <th>Amount</th>
+
             <th>Status</th>
+
+            <th>Reference</th>
+
             <th>Date</th>
+
           </tr>
 
         </thead>
 
+
         <tbody>
 
           ${
-            list.map(item => `
 
-              <tr>
+            list.map(
 
-                <td>
-                  ${escapeHtml(
-                    item.transaction_ref ||
-                    item.reference ||
-                    item.id ||
-                    "—"
-                  )}
-                </td>
+              item => {
 
-                <td>
+                const direction =
 
-                  <div class="customer-name">
-                    ${escapeHtml(
-                      customerName(item)
-                    )}
-                  </div>
+                  transactionDirection(
+                    item
+                  );
 
-                  <div class="muted">
-                    ${escapeHtml(
-                      item.email || ""
-                    )}
-                  </div>
 
-                </td>
+                const amount =
 
-                <td>
-                  ${escapeHtml(
-                    item.type ||
-                    item.transaction_type ||
-                    "—"
-                  )}
-                </td>
+                  Number(
 
-                <td>
-                  ${escapeHtml(
-                    item.direction ||
-                    "—"
-                  )}
-                </td>
+                    item.amount ??
 
-                <td class="amount">
-                  ${money(
-                    item.amount
-                  )}
-                </td>
+                    item.value ??
 
-                <td>
-                  ${statusBadge(
-                    item.status
-                  )}
-                </td>
+                    item.balance_change ??
 
-                <td>
-                  ${escapeHtml(
-                    date(
-                      item.created_at
-                    )
-                  )}
-                </td>
+                    0
 
-              </tr>
+                  );
 
-            `).join("")
+
+                return `
+
+                  <tr>
+
+                    <td>
+
+                      <div class="customer-name">
+
+                        ${escapeHtml(
+
+                          item._customer_name ||
+
+                          customerName(
+                            item
+                          )
+
+                        )}
+
+                      </div>
+
+                      <div class="muted">
+
+                        ${escapeHtml(
+
+                          item._customer_email ||
+
+                          item.email ||
+
+                          ""
+
+                        )}
+
+                      </div>
+
+                    </td>
+
+
+                    <td>
+
+                      ${escapeHtml(
+
+                        item.transaction_type ||
+
+                        item.type ||
+
+                        item.description ||
+
+                        "Ledger entry"
+
+                      )}
+
+                    </td>
+
+
+                    <td>
+
+                      ${escapeHtml(
+
+                        item.wallet_type ||
+
+                        item.wallet ||
+
+                        "—"
+
+                      )}
+
+                    </td>
+
+
+                    <td class="amount">
+
+                      ${direction === "debit" ? "-" : "+"}
+
+                      ${money(
+                        amount
+                      )}
+
+                    </td>
+
+
+                    <td>
+
+                      ${statusBadge(
+
+                        item.status ||
+                        "completed"
+
+                      )}
+
+                    </td>
+
+
+                    <td>
+
+                      ${escapeHtml(
+
+                        item.reference ||
+
+                        item.transaction_reference ||
+
+                        item.id ||
+
+                        "—"
+
+                      )}
+
+                    </td>
+
+
+                    <td>
+
+                      ${escapeHtml(
+
+                        date(
+
+                          item.created_at ||
+
+                          item.timestamp ||
+
+                          item.date
+
+                        )
+
+                      )}
+
+                    </td>
+
+                  </tr>
+
+                `;
+
+              }
+
+            ).join("")
+
           }
 
         </tbody>
@@ -5274,34 +7555,59 @@ async function loadRequests(){
       "requestsContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading requests...</div>`;
+
 
   try{
 
     const data =
+
       await apiRequest(
-        "/api/admin/requests?status=pending&limit=500"
+
+        "/api/admin/requests"
+
       );
 
+
     requestsData =
+
       extractArray(
+
         data,
-        ["requests"]
+
+        [
+
+          "requests",
+
+          "deposits",
+
+          "withdrawals"
+
+        ]
+
       );
+
 
     renderRequests(
       requestsData
     );
 
+
   }catch(error){
 
     box.innerHTML = `
+
       <div class="error-box">
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
+
     `;
 
   }
@@ -5309,21 +7615,26 @@ async function loadRequests(){
 }
 
 
-function renderRequests(list){
+function renderRequests(
+list
+){
 
   const box =
     document.getElementById(
       "requestsContainer"
     );
 
+
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">No pending requests found.</div>`;
+
+      `<div class="empty">No requests found.</div>`;
 
     return;
 
   }
+
 
   box.innerHTML = `
 
@@ -5334,91 +7645,144 @@ function renderRequests(list){
         <thead>
 
           <tr>
+
             <th>Customer</th>
+
             <th>Type</th>
+
             <th>Amount</th>
+
             <th>Status</th>
+
             <th>Created</th>
+
             <th>Actions</th>
+
           </tr>
 
         </thead>
 
+
         <tbody>
 
           ${
-            list.map(item => `
 
-              <tr>
+            list.map(
 
-                <td>
+              item => `
 
-                  <div class="customer-name">
+                <tr>
+
+                  <td>
+
+                    <div class="customer-name">
+
+                      ${escapeHtml(
+
+                        customerName(
+                          item
+                        )
+
+                      )}
+
+                    </div>
+
+                    <div class="muted">
+
+                      ${escapeHtml(
+
+                        item.email ||
+                        ""
+
+                      )}
+
+                    </div>
+
+                  </td>
+
+
+                  <td>
+
                     ${escapeHtml(
-                      customerName(item)
-                    )}
-                  </div>
 
-                  <div class="muted">
+                      item.type ||
+
+                      item.request_type ||
+
+                      item.kind ||
+
+                      "Request"
+
+                    )}
+
+                  </td>
+
+
+                  <td class="amount">
+
+                    ${money(
+
+                      item.amount ||
+
+                      0
+
+                    )}
+
+                  </td>
+
+
+                  <td>
+
+                    ${statusBadge(
+
+                      item.status ||
+
+                      "pending"
+
+                    )}
+
+                  </td>
+
+
+                  <td>
+
                     ${escapeHtml(
-                      item.email || ""
+
+                      date(
+
+                        item.created_at
+
+                      )
+
                     )}
-                  </div>
 
-                </td>
+                  </td>
 
-                <td>
-                  ${escapeHtml(
-                    item.type ||
-                    item.request_type ||
-                    "—"
-                  )}
-                </td>
 
-                <td class="amount">
-                  ${money(
-                    item.amount
-                  )}
-                </td>
+                  <td>
 
-                <td>
-                  ${statusBadge(
-                    item.status ||
-                    "pending"
-                  )}
-                </td>
+                    <div class="row-actions">
 
-                <td>
-                  ${escapeHtml(
-                    date(
-                      item.created_at
-                    )
-                  )}
-                </td>
+                      <button
 
-                <td>
+                        class="small-btn"
 
-                  <div class="row-actions">
+                        onclick="viewRequest('${escapeAttr(item.id || "")}')">
 
-                    <button
-                      class="small-btn"
-                      onclick="processRequest('${escapeAttr(item.id)}','approved')">
-                      Approve
-                    </button>
+                        View
 
-                    <button
-                      class="small-btn"
-                      onclick="processRequest('${escapeAttr(item.id)}','rejected')">
-                      Decline
-                    </button>
+                      </button>
 
-                  </div>
+                    </div>
 
-                </td>
+                  </td>
 
-              </tr>
+                </tr>
 
-            `).join("")
+              `
+
+            ).join("")
+
           }
 
         </tbody>
@@ -5432,386 +7796,60 @@ function renderRequests(list){
 }
 
 
-async function processRequest(
-  id,
-  decision
+async function viewRequest(
+id
 ){
 
   if(!id)
+
     return;
 
-  if(
-    !confirm(
-      `Are you sure you want to ${decision} this request?`
-    )
-  )
-    return;
-
-  try{
-
-    await apiRequest(
-      `/api/admin/requests/${encodeURIComponent(id)}`,
-      {
-        method:"PATCH",
-        body:JSON.stringify({
-          status:
-            decision
-        })
-      }
-    );
-
-    alert(
-      `Request ${decision} successfully.`
-    );
-
-    await loadRequests();
-    await loadDashboard();
-
-  }catch(error){
-
-    alert(
-      error.message ||
-      "Unable to process request."
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   CHAT
-===================================================== */
-
-async function loadConversations(){
-
-  const box =
-    document.getElementById(
-      "conversationList"
-    );
-
-  box.innerHTML =
-    `<div class="loading">Loading conversations...</div>`;
 
   try{
 
     const data =
+
       await apiRequest(
-        "/api/admin/chat"
+
+        `/api/admin/requests/${encodeURIComponent(id)}`
+
       );
 
-    conversationsData =
-      extractArray(
-        data,
-        [
-          "conversations",
-          "chats"
-        ]
-      );
 
-    renderConversations(
-      conversationsData
+    const item =
+
+      data?.request ||
+
+      data?.data ||
+
+      data;
+
+
+    alert(
+
+      [
+
+        `Type: ${item.type || item.request_type || "Request"}`,
+
+        `Amount: ${money(item.amount || 0)}`,
+
+        `Status: ${item.status || "pending"}`,
+
+        `Created: ${date(item.created_at)}`
+
+      ].join("\n")
+
     );
 
-  }catch(error){
-
-    box.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>
-    `;
-
-  }
-
-}
-
-
-function renderConversations(list){
-
-  const box =
-    document.getElementById(
-      "conversationList"
-    );
-
-  if(!list.length){
-
-    box.innerHTML =
-      `<div class="empty">No customer conversations found.</div>`;
-
-    return;
-
-  }
-
-  box.innerHTML =
-    list
-      .map(item => {
-
-        const id =
-          item.id;
-
-        return `
-
-          <div
-            class="chat-list-item ${
-              String(
-                selectedConversationId
-              ) === String(id)
-                ? "active"
-                : ""
-            }"
-            onclick="selectConversation('${escapeAttr(id)}')">
-
-            <strong>
-              ${escapeHtml(
-                customerName(item)
-              )}
-            </strong>
-
-            <span>
-              ${escapeHtml(
-                item.email || ""
-              )}
-            </span>
-
-          </div>
-
-        `;
-
-      })
-      .join("");
-
-}
-
-
-async function selectConversation(
-  id
-){
-
-  selectedConversationId =
-    id;
-
-  renderConversations(
-    conversationsData
-  );
-
-  const conversation =
-    conversationsData.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    );
-
-  setText(
-    "chatHeader",
-    ""
-  );
-
-  const header =
-    document.getElementById(
-      "chatHeader"
-    );
-
-  if(header){
-
-    header.innerHTML = `
-
-      <strong>
-        ${escapeHtml(
-          customerName(
-            conversation || {}
-          )
-        )}
-      </strong>
-
-      <span>
-        ${escapeHtml(
-          conversation?.email || ""
-        )}
-      </span>
-
-    `;
-
-  }
-
-  const input =
-    document.getElementById(
-      "chatInput"
-    );
-
-  const send =
-    document.getElementById(
-      "chatSendButton"
-    );
-
-  if(input)
-    input.disabled = false;
-
-  if(send)
-    send.disabled = false;
-
-  await loadConversationMessages(
-    id
-  );
-
-}
-
-
-async function loadConversationMessages(
-  id
-){
-
-  const box =
-    document.getElementById(
-      "chatMessages"
-    );
-
-  box.innerHTML =
-    `<div class="loading">Loading messages...</div>`;
-
-  try{
-
-    const data =
-      await apiRequest(
-        `/api/admin/chat?conversation_id=${encodeURIComponent(id)}`
-      );
-
-    const messages =
-      extractArray(
-        data,
-        [
-          "messages"
-        ]
-      );
-
-    renderMessages(
-      messages
-    );
-
-  }catch(error){
-
-    box.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>
-    `;
-
-  }
-
-}
-
-
-function renderMessages(messages){
-
-  const box =
-    document.getElementById(
-      "chatMessages"
-    );
-
-  if(!messages.length){
-
-    box.innerHTML =
-      `<div class="empty">No messages yet.</div>`;
-
-    return;
-
-  }
-
-  box.innerHTML =
-    messages
-      .map(message => {
-
-        const type =
-          String(
-            message.sender_type ||
-            message.senderType ||
-            ""
-          ).toLowerCase();
-
-        const isAdmin =
-          type === "admin" ||
-          type === "administrator";
-
-        return `
-
-          <div
-            class="message ${
-              isAdmin
-                ? "admin"
-                : "customer"
-            }">
-
-            ${escapeHtml(
-              message.message ||
-              message.content ||
-              ""
-            )}
-
-            <span class="message-time">
-              ${escapeHtml(
-                date(
-                  message.created_at
-                )
-              )}
-            </span>
-
-          </div>
-
-        `;
-
-      })
-      .join("");
-
-  box.scrollTop =
-    box.scrollHeight;
-
-}
-
-
-async function sendChatMessage(){
-
-  if(!selectedConversationId)
-    return;
-
-  const input =
-    document.getElementById(
-      "chatInput"
-    );
-
-  const message =
-    String(
-      input?.value || ""
-    ).trim();
-
-  if(!message)
-    return;
-
-  try{
-
-    await apiRequest(
-      `/api/admin/chat/${encodeURIComponent(selectedConversationId)}`,
-      {
-        method:"POST",
-        body:JSON.stringify({
-          message
-        })
-      }
-    );
-
-    input.value = "";
-
-    await loadConversationMessages(
-      selectedConversationId
-    );
 
   }catch(error){
 
     alert(
+
       error.message ||
-      "Unable to send message."
+
+      "Unable to load request."
+
     );
 
   }
@@ -5830,37 +7868,370 @@ async function loadActivity(){
       "activityContainer"
     );
 
+
   box.innerHTML =
+
     `<div class="loading">Loading activity...</div>`;
+
 
   try{
 
     const data =
+
       await apiRequest(
+
         "/api/admin/activity"
+
       );
 
-    const items =
+
+    let list =
+
       extractArray(
+
         data,
+
         [
+
           "activity",
-          "activities"
+
+          "activities",
+
+          "events",
+
+          "logs"
+
         ]
+
       );
+
+
+    /*
+      Keep activity visible even when the activity
+      endpoint has no rows but the wallet ledger
+      contains real customer funding/adjustment events.
+    */
+
+    if(!list.length){
+
+      list =
+        await collectWalletActivity();
+
+    }
+
 
     renderActivityPage(
-      items
+      list
     );
+
 
   }catch(error){
 
+    try{
+
+      const fallback =
+        await collectWalletActivity();
+
+
+      renderActivityPage(
+        fallback
+      );
+
+
+    }catch{
+
+      box.innerHTML = `
+
+        <div class="error-box">
+
+          ${escapeHtml(
+            error.message
+          )}
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+}
+
+
+async function collectWalletActivity(){
+
+  const transactions =
+
+    await collectWalletLedgerTransactions();
+
+
+  return transactions.map(
+
+    item => ({
+
+      id:
+        item.id,
+
+      title:
+
+        item.description ||
+
+        item.transaction_type ||
+
+        item.type ||
+
+        "Wallet activity",
+
+      action:
+
+        item.transaction_type ||
+
+        item.type ||
+
+        "wallet",
+
+      description:
+
+        `${
+
+          item._customer_name ||
+
+          customerName(
+            item
+          )
+
+        } • ${
+
+          item.wallet_type ||
+
+          item.wallet ||
+
+          "wallet"
+
+        } • ${
+
+          money(
+
+            item.amount ??
+
+            item.value ??
+
+            item.balance_change ??
+
+            0
+
+          )
+
+        }`,
+
+      created_at:
+
+        item.created_at ||
+
+        item.timestamp ||
+
+        item.date,
+
+      icon:
+        "💰"
+
+    })
+
+  );
+
+}
+
+
+function renderActivityPage(
+list
+){
+
+  const box =
+    document.getElementById(
+      "activityContainer"
+    );
+
+
+  if(!list.length){
+
     box.innerHTML = `
-      <div class="error-box">
+
+      <div class="empty">
+
+        No activity records found.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+
+    list
+
+      .slice(
+        0,
+        100
+      )
+
+      .map(
+
+        item => `
+
+          <div class="activity">
+
+            <div class="activity-icon">
+
+              ${escapeHtml(
+
+                item.icon ||
+
+                "•"
+
+              )}
+
+            </div>
+
+
+            <div class="activity-info">
+
+              <strong>
+
+                ${escapeHtml(
+
+                  item.title ||
+
+                  item.action ||
+
+                  item.type ||
+
+                  "Activity"
+
+                )}
+
+              </strong>
+
+
+              <span>
+
+                ${escapeHtml(
+
+                  item.description ||
+
+                  item.message ||
+
+                  item.details ||
+
+                  ""
+
+                )}
+
+                ${
+
+                  item.created_at
+
+                    ? " • " +
+
+                      escapeHtml(
+
+                        date(
+                          item.created_at
+                        )
+
+                      )
+
+                    : ""
+
+                }
+
+              </span>
+
+            </div>
+
+          </div>
+
+        `
+
+      )
+
+      .join("");
+
+}
+
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+async function loadConversations(){
+
+  const listBox =
+    document.getElementById(
+      "conversationList"
+    );
+
+
+  listBox.innerHTML =
+
+    `<div class="loading">Loading conversations...</div>`;
+
+
+  try{
+
+    const data =
+
+      await apiRequest(
+
+        "/api/admin/chat"
+
+      );
+
+
+    conversationsData =
+
+      extractArray(
+
+        data,
+
+        [
+
+          "conversations",
+
+          "chats",
+
+          "threads"
+
+        ]
+
+      );
+
+
+    renderConversations(
+      conversationsData
+    );
+
+
+  }catch(error){
+
+    listBox.innerHTML = `
+
+      <div class="chat-error">
+
+        Chat service returned an error:
+
+        <br><br>
+
         ${escapeHtml(
           error.message
         )}
+
       </div>
+
     `;
 
   }
@@ -5868,80 +8239,588 @@ async function loadActivity(){
 }
 
 
-function renderActivityPage(items){
+function conversationCustomerName(
+conversation
+){
+
+  return (
+
+    conversation.customer_name ||
+
+    conversation.user_name ||
+
+    conversation.name ||
+
+    `${
+
+      conversation.first_name ||
+
+      ""
+
+    } ${
+
+      conversation.last_name ||
+
+      ""
+
+    }`.trim() ||
+
+    conversation.email ||
+
+    "Customer"
+
+  );
+
+}
+
+
+function conversationId(
+conversation
+){
+
+  return (
+
+    conversation.id ||
+
+    conversation.conversation_id ||
+
+    conversation.chat_id ||
+
+    conversation.thread_id
+
+  );
+
+}
+
+
+function renderConversations(
+list
+){
 
   const box =
     document.getElementById(
-      "activityContainer"
+      "conversationList"
     );
 
-  if(!items.length){
 
-    box.innerHTML =
-      `<div class="empty">No recent activity available.</div>`;
+  if(!list.length){
+
+    box.innerHTML = `
+
+      <div class="empty">
+
+        No customer conversations found.
+
+      </div>
+
+    `;
 
     return;
 
   }
 
+
   box.innerHTML =
-    items
-      .slice(0,50)
-      .map(item => `
 
-        <div class="activity">
+    list
 
-          <div class="activity-icon">
-            •
-          </div>
+      .map(
 
-          <div class="activity-info">
+        conversation => {
 
-            <strong>
-              ${escapeHtml(
-                item.action ||
-                item.type ||
-                item.activity_type ||
-                "Activity"
-              )}
-            </strong>
+          const id =
+            conversationId(
+              conversation
+            );
 
-            <span>
-              ${escapeHtml(
-                item.description ||
-                ""
-              )}
 
-              ${
-                item.amount !== undefined
-                  ? " • " +
-                    escapeHtml(
-                      money(
-                        item.amount
-                      )
-                    )
+          return `
+
+            <div
+
+              class="chat-list-item ${
+
+                String(
+                  selectedConversationId
+                ) ===
+                String(id)
+
+                  ? "active"
+
                   : ""
-              }
 
-              ${
-                item.created_at
-                  ? " • " +
-                    escapeHtml(
-                      date(
-                        item.created_at
-                      )
-                    )
-                  : ""
-              }
+              }"
 
-            </span>
+              onclick="selectConversation('${escapeAttr(id)}')">
 
-          </div>
 
-        </div>
+              <strong>
 
-      `)
+                ${escapeHtml(
+
+                  conversationCustomerName(
+                    conversation
+                  )
+
+                )}
+
+              </strong>
+
+
+              <span>
+
+                ${escapeHtml(
+
+                  conversation.last_message ||
+
+                  conversation.preview ||
+
+                  conversation.subject ||
+
+                  "Open conversation"
+
+                )}
+
+              </span>
+
+
+              <span>
+
+                ${escapeHtml(
+
+                  date(
+
+                    conversation.updated_at ||
+
+                    conversation.last_message_at ||
+
+                    conversation.created_at
+
+                  )
+
+                )}
+
+              </span>
+
+            </div>
+
+          `;
+
+        }
+
+      )
+
       .join("");
+
+}
+
+
+async function selectConversation(
+id
+){
+
+  if(!id)
+
+    return;
+
+
+  selectedConversationId =
+    id;
+
+
+  renderConversations(
+    conversationsData
+  );
+
+
+  const messagesBox =
+    document.getElementById(
+      "chatMessages"
+    );
+
+
+  const header =
+    document.getElementById(
+      "chatHeader"
+    );
+
+
+  const input =
+    document.getElementById(
+      "chatInput"
+    );
+
+
+  const send =
+    document.getElementById(
+      "chatSendButton"
+    );
+
+
+  messagesBox.innerHTML =
+
+    `<div class="loading">Loading messages...</div>`;
+
+
+  input.disabled =
+    true;
+
+
+  send.disabled =
+    true;
+
+
+  try{
+
+    /*
+      Use the same admin chat endpoint that
+      supplies conversations. The backend determines
+      the conversation/message response structure.
+    */
+
+    const data =
+
+      await apiRequest(
+
+        `/api/admin/chat?conversation_id=${encodeURIComponent(id)}`
+
+      );
+
+
+    const conversation =
+
+      data?.conversation ||
+
+      data?.data?.conversation ||
+
+      conversationsData.find(
+
+        x =>
+
+          String(
+            conversationId(x)
+          ) ===
+          String(id)
+
+      );
+
+
+    const messages =
+
+      extractArray(
+
+        data,
+
+        [
+
+          "messages",
+
+          "chat_messages",
+
+          "data"
+
+        ]
+
+      );
+
+
+    header.innerHTML = `
+
+      <strong>
+
+        ${escapeHtml(
+
+          conversation
+
+            ? conversationCustomerName(
+                conversation
+              )
+
+            : "Customer conversation"
+
+        )}
+
+      </strong>
+
+
+      <span>
+
+        ${escapeHtml(
+
+          conversation?.email ||
+
+          conversation?.customer_email ||
+
+          ""
+
+        )}
+
+      </span>
+
+    `;
+
+
+    renderChatMessages(
+      messages
+    );
+
+
+    input.disabled =
+      false;
+
+
+    send.disabled =
+      false;
+
+
+  }catch(error){
+
+    /*
+      Do not invent a fake local chat system.
+      Show the actual backend error so the
+      administrator knows why the conversation
+      could not be loaded.
+    */
+
+    messagesBox.innerHTML = `
+
+      <div class="chat-error">
+
+        Unable to load this conversation.
+
+        <br><br>
+
+        ${escapeHtml(
+          error.message
+        )}
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+function renderChatMessages(
+messages
+){
+
+  const box =
+    document.getElementById(
+      "chatMessages"
+    );
+
+
+  if(!messages.length){
+
+    box.innerHTML = `
+
+      <div class="empty">
+
+        No messages in this conversation yet.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+
+    messages
+
+      .map(
+
+        message => {
+
+          const sender =
+
+            String(
+
+              message.sender_type ||
+
+              message.role ||
+
+              message.sender_role ||
+
+              ""
+
+            ).toLowerCase();
+
+
+          const isAdmin =
+
+            sender === "admin" ||
+
+            sender === "administrator";
+
+
+          return `
+
+            <div
+
+              class="message ${
+
+                isAdmin
+                  ? "admin"
+                  : "customer"
+
+              }">
+
+
+              <div>
+
+                ${escapeHtml(
+
+                  message.message ||
+
+                  message.content ||
+
+                  message.body ||
+
+                  ""
+
+                )}
+
+              </div>
+
+
+              <span class="message-time">
+
+                ${escapeHtml(
+
+                  date(
+
+                    message.created_at ||
+
+                    message.sent_at ||
+
+                    message.timestamp
+
+                  )
+
+                )}
+
+              </span>
+
+            </div>
+
+          `;
+
+        }
+
+      )
+
+      .join("");
+
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+async function sendChatMessage(){
+
+  if(!selectedConversationId)
+
+    return;
+
+
+  const input =
+    document.getElementById(
+      "chatInput"
+    );
+
+
+  const button =
+    document.getElementById(
+      "chatSendButton"
+    );
+
+
+  const message =
+    String(
+      input.value || ""
+    ).trim();
+
+
+  if(!message)
+
+    return;
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "Sending...";
+
+
+  try{
+
+    await apiRequest(
+
+      "/api/admin/chat",
+
+      {
+
+        method:"POST",
+
+        body:
+
+          JSON.stringify({
+
+            conversation_id:
+              selectedConversationId,
+
+            message
+
+          })
+
+      }
+
+    );
+
+
+    input.value =
+      "";
+
+
+    await selectConversation(
+      selectedConversationId
+    );
+
+
+    await loadConversations();
+
+
+  }catch(error){
+
+    alert(
+
+      error.message ||
+
+      "Unable to send message."
+
+    );
+
+
+  }finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Send";
+
+  }
 
 }
 
@@ -5953,135 +8832,202 @@ function renderActivityPage(items){
 const sectionMeta = {
 
   dashboard:{
-    title:"Dashboard",
+
+    title:
+      "Dashboard",
+
     subtitle:
       "CoinForest administration center"
+
   },
 
   customers:{
-    title:"Customers",
+
+    title:
+      "Customers",
+
     subtitle:
       "Manage customer accounts"
+
   },
 
   wallets:{
-    title:"Wallets",
+
+    title:
+      "Wallet Management",
+
     subtitle:
-      "Manage customer wallet balances"
+      "Review customer wallet balances"
+
   },
 
   kyc:{
-    title:"KYC",
+
+    title:
+      "KYC Review",
+
     subtitle:
       "Review customer verification"
+
   },
 
   investments:{
-    title:"Investments",
+
+    title:
+      "Investments",
+
     subtitle:
       "Customer investment records"
+
   },
 
   transactions:{
-    title:"Transactions",
+
+    title:
+      "Transactions",
+
     subtitle:
-      "Transaction ledger"
+      "Platform transaction ledger"
+
   },
 
   requests:{
-    title:"Requests",
+
+    title:
+      "Pending Requests",
+
     subtitle:
-      "Pending operational requests"
+      "Requests awaiting action"
+
   },
 
   chat:{
-    title:"Customer Chat",
+
+    title:
+      "Customer Chat",
+
     subtitle:
       "Customer support conversations"
+
   },
 
   activity:{
-    title:"Activity",
+
+    title:
+      "Activity",
+
     subtitle:
-      "Recent platform activity"
+      "Recent platform events"
+
   },
 
   settings:{
-    title:"Settings",
+
+    title:
+      "Settings",
+
     subtitle:
       "Administrator settings"
+
   }
 
 };
 
 
 function navigateTo(
-  section,
-  pushHistory=true
+section,
+pushState=true
 ){
 
   if(
     !sectionMeta[section]
   )
+
     section =
       "dashboard";
 
+
   currentSection =
     section;
+
 
   document
     .querySelectorAll(
       ".section"
     )
-    .forEach(el => {
+    .forEach(
 
-      el.style.display =
-        el.id ===
-        `section-${section}`
-          ? ""
-          : "none";
+      el => {
 
-    });
+        el.style.display =
+
+          el.id ===
+          `section-${section}`
+
+            ? ""
+
+            : "none";
+
+      }
+
+    );
 
 
   document
     .querySelectorAll(
       ".nav-item"
     )
-    .forEach(btn => {
+    .forEach(
 
-      btn.classList.toggle(
-        "active",
-        btn.dataset.section ===
-        section
-      );
+      item => {
 
-    });
+        item.classList.toggle(
 
+          "active",
 
-  const meta =
-    sectionMeta[section];
+          item.dataset.section ===
+          section
+
+        );
+
+      }
+
+    );
+
 
   setText(
+
     "pageTitle",
-    meta.title
+
+    sectionMeta[section].title
+
   );
+
 
   setText(
+
     "pageSubtitle",
-    meta.subtitle
+
+    sectionMeta[section].subtitle
+
   );
 
 
-  if(pushHistory){
+  if(pushState){
 
     history.pushState(
+
       {
-        coinforestAdmin:true,
-        section
+
+        coinforestAdminSection:
+          section
+
       },
+
       "",
+
       `#${section}`
+
     );
 
   }
@@ -6090,133 +9036,135 @@ function navigateTo(
   closeSidebar();
 
 
-  if(section === "dashboard")
-    loadDashboard();
-
-  else if(section === "customers")
-    loadCustomers();
-
-  else if(section === "wallets")
-    loadWallets();
-
-  else if(section === "kyc")
-    loadKyc();
-
-  else if(section === "investments")
-    loadInvestments();
-
-  else if(section === "transactions")
-    loadTransactions();
-
-  else if(section === "requests")
-    loadRequests();
-
-  else if(section === "chat")
-    loadConversations();
-
-  else if(section === "activity")
-    loadActivity();
-
-}
-
-
-function restoreNavigation(){
-
-  const hash =
-    String(
-      location.hash || ""
-    ).replace(
-      /^#/,
-      ""
-    );
-
-  if(
-    hash &&
-    sectionMeta[hash]
-  ){
-
-    currentSection =
-      hash;
-
-    navigateTo(
-      hash,
-      false
-    );
-
-    return;
-
-  }
-
-  navigateTo(
-    "dashboard",
-    false
+  loadSection(
+    section
   );
 
 }
 
 
-window.addEventListener(
-  "popstate",
-  () => {
+function loadSection(
+section
+){
 
-    const hash =
-      String(
-        location.hash || ""
-      ).replace(
-        /^#/,
-        ""
-      );
+  if(
+    section ===
+    "dashboard"
+  )
 
-    if(
-      hash &&
-      sectionMeta[hash]
-    ){
+    loadDashboard();
 
-      navigateTo(
-        hash,
-        false
-      );
 
-    }else{
+  else if(
+    section ===
+    "customers"
+  )
 
-      navigateTo(
-        "dashboard",
-        false
-      );
+    loadCustomers();
 
-    }
+
+  else if(
+    section ===
+    "wallets"
+  )
+
+    loadWallets();
+
+
+  else if(
+    section ===
+    "kyc"
+  )
+
+    loadKyc();
+
+
+  else if(
+    section ===
+    "investments"
+  )
+
+    loadInvestments();
+
+
+  else if(
+    section ===
+    "transactions"
+  )
+
+    loadTransactions();
+
+
+  else if(
+    section ===
+    "requests"
+  )
+
+    loadRequests();
+
+
+  else if(
+    section ===
+    "chat"
+  )
+
+    loadConversations();
+
+
+  else if(
+    section ===
+    "activity"
+  )
+
+    loadActivity();
+
+
+  else if(
+    section ===
+    "settings"
+  ){
+
+    const user =
+      getStoredUser();
+
+    updateAdminIdentity(
+      user || {}
+    );
 
   }
-);
+
+}
 
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
+function refreshCurrentSection(){
+
+  loadSection(
+    currentSection
+  );
+
+}
+
 
 function toggleSidebar(){
 
-  const sidebar =
-    document.getElementById(
+  document
+    .getElementById(
       "sidebar"
+    )
+    .classList.toggle(
+      "open"
     );
-
-  sidebar.classList.toggle(
-    "open"
-  );
 
 }
 
 
 function closeSidebar(){
 
-  const sidebar =
-    document.getElementById(
+  document
+    .getElementById(
       "sidebar"
-    );
-
-  if(sidebar)
-    sidebar.classList.remove(
+    )
+    .classList.remove(
       "open"
     );
 
@@ -6227,188 +9175,403 @@ function closeSidebar(){
    MODALS
 ===================================================== */
 
-function closeModal(id){
+function closeModal(
+id
+){
 
   const modal =
-    document.getElementById(id);
-
-  if(modal)
-    modal.classList.remove(
-      "show"
+    document.getElementById(
+      id
     );
+
+
+  if(!modal)
+
+    return;
+
+
+  modal.classList.remove(
+    "show"
+  );
+
+
+  if(id === "walletModal"){
+
+    adjustmentUserId =
+      null;
+
+  }
 
 }
 
 
-document.addEventListener(
-  "click",
-  event => {
+/*
+  Important Back/Cancel fix:
 
-    if(
-      event.target.classList.contains(
-        "modal"
-      )
-    ){
+  Modal controls are explicitly type="button".
+  Clicking the backdrop or Escape only closes
+  the modal. It never invokes logout.
+*/
 
-      event.target.classList.remove(
-        "show"
+document
+  .querySelectorAll(
+    ".modal"
+  )
+  .forEach(
+
+    modal => {
+
+      modal.addEventListener(
+
+        "click",
+
+        event => {
+
+          if(
+            event.target ===
+            modal
+          ){
+
+            closeModal(
+              modal.id
+            );
+
+          }
+
+        }
+
       );
 
     }
 
+  );
+
+
+document.addEventListener(
+
+  "keydown",
+
+  event => {
+
+    if(
+      event.key ===
+      "Escape"
+    ){
+
+      document
+        .querySelectorAll(
+          ".modal.show"
+        )
+        .forEach(
+
+          modal => {
+
+            closeModal(
+              modal.id
+            );
+
+          }
+
+        );
+
+    }
+
   }
+
 );
 
 
 /* =====================================================
-   REFRESH
+   BROWSER BACK / FORWARD
 ===================================================== */
 
-function refreshCurrentSection(){
+function restoreHashSection(){
 
-  if(
-    currentSection ===
-    "dashboard"
-  )
-    loadDashboard();
+  const hash =
 
-  else if(
-    currentSection ===
-    "customers"
-  )
-    loadCustomers();
+    String(
+      location.hash || ""
+    )
+    .replace(
+      /^#/,
+      ""
+    );
 
-  else if(
-    currentSection ===
-    "wallets"
-  )
-    loadWallets();
 
-  else if(
-    currentSection ===
-    "kyc"
-  )
-    loadKyc();
+  const section =
 
-  else if(
-    currentSection ===
-    "investments"
-  )
-    loadInvestments();
+    sectionMeta[hash]
 
-  else if(
-    currentSection ===
-    "transactions"
-  )
-    loadTransactions();
+      ? hash
 
-  else if(
-    currentSection ===
-    "requests"
-  )
-    loadRequests();
+      : "dashboard";
 
-  else if(
-    currentSection ===
-    "chat"
-  )
-    loadConversations();
 
-  else if(
-    currentSection ===
-    "activity"
-  )
-    loadActivity();
+  navigateTo(
+    section,
+    false
+  );
 
 }
+
+
+window.addEventListener(
+
+  "popstate",
+
+  event => {
+
+    const section =
+
+      event.state
+        ?.coinforestAdminSection;
+
+
+    if(
+      section &&
+      sectionMeta[section]
+    ){
+
+      navigateTo(
+        section,
+        false
+      );
+
+      return;
+
+    }
+
+
+    restoreHashSection();
+
+  }
+
+);
 
 
 /* =====================================================
    LOGOUT
 ===================================================== */
 
+let logoutInProgress =
+  false;
+
+
 async function logoutAdmin(){
 
   if(
+    logoutInProgress
+  )
+
+    return;
+
+
+  if(
+
     !confirm(
       "Are you sure you want to log out?"
     )
+
   )
+
     return;
+
+
+  logoutInProgress =
+    true;
+
 
   try{
 
     const token =
       getStoredToken();
 
+
     if(token){
 
-      await fetch(
-        `${API_BASE}/api/auth/logout`,
-        {
-          method:"POST",
-          headers:{
-            Authorization:
-              `Bearer ${token}`,
-            Accept:
-              "application/json"
-          },
-          cache:"no-store"
-        }
-      );
+      try{
+
+        await fetch(
+
+          `${API_BASE}/api/auth/logout`,
+
+          {
+
+            method:"POST",
+
+            headers:{
+
+              Authorization:
+                `Bearer ${token}`,
+
+              Accept:
+                "application/json"
+
+            }
+
+          }
+
+        );
+
+      }catch{
+
+        /*
+          Local logout must still happen even if
+          the optional server logout endpoint fails.
+        */
+
+      }
 
     }
 
-  }catch(error){
 
-    console.warn(
-      "Logout request failed:",
-      error
+  }finally{
+
+    localStorage.removeItem(
+      "coinforest_token"
     );
 
+    localStorage.removeItem(
+      "coinforest_user"
+    );
+
+    localStorage.removeItem(
+      "coinforest_role"
+    );
+
+
+    sessionStorage.removeItem(
+      "coinforest_token"
+    );
+
+
+    adminAuthenticated =
+      false;
+
+
+    window.location.href =
+      "login.html";
+
   }
-
-  localStorage.removeItem(
-    "coinforest_token"
-  );
-
-  localStorage.removeItem(
-    "coinforest_user"
-  );
-
-  localStorage.removeItem(
-    "coinforest_role"
-  );
-
-  adminAuthenticated =
-    false;
-
-  window.location.href =
-    "index.html";
 
 }
 
 
 /* =====================================================
-   INIT
+   INITIALIZATION
+===================================================== */
+
+async function initAdmin(){
+
+  /*
+    Never bind form-like buttons to submit.
+    The Admin is a single-page interface.
+  */
+
+  document
+    .querySelectorAll(
+      "button"
+    )
+    .forEach(
+
+      button => {
+
+        if(
+          !button.type
+        )
+
+          button.type =
+            "button";
+
+      }
+
+    );
+
+
+  const user =
+    getStoredUser();
+
+
+  if(user)
+
+    updateAdminIdentity(
+      user
+    );
+
+
+  /*
+    Restore the currently selected Admin section
+    without using browser navigation to log out.
+  */
+
+  const hash =
+
+    String(
+      location.hash || ""
+    )
+    .replace(
+      /^#/,
+      ""
+    );
+
+
+  if(
+    sectionMeta[hash]
+  ){
+
+    currentSection =
+      hash;
+
+  }
+
+
+  const allowed =
+    await requireAdmin();
+
+
+  if(!allowed)
+
+    return;
+
+
+  navigateTo(
+    currentSection,
+    false
+  );
+
+
+  /*
+    Load dashboard immediately, then let the selected
+    section refresh itself.
+  */
+
+  await loadDashboard();
+
+
+  loadSection(
+    currentSection
+  );
+
+}
+
+
+/* =====================================================
+   START
 ===================================================== */
 
 document.addEventListener(
+
   "DOMContentLoaded",
-  async () => {
 
-    restoreNavigation();
+  () => {
 
-    const ok =
-      await requireAdmin();
-
-    if(!ok)
-      return;
+    initAdmin();
 
   }
+
 );
 
 </script>
 
 </body>
-  </html>
+</html>
