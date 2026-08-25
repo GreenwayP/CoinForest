@@ -653,83 +653,81 @@ tr:last-child td{border-bottom:0}
 .wallet-cards{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:10px;
+  gap:12px;
 }
 
 .wallet-card{
-  padding:15px;
-  border-radius:12px;
-  background:var(--green-light);
-  border:1px solid #d6eadc;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:16px;
+  background:#fff;
 }
 
-.wallet-card span{
-  display:block;
+.wallet-card .wallet-label{
   font-size:10px;
   color:var(--muted);
-  font-weight:800;
-}
-
-.wallet-card strong{
-  display:block;
-  margin-top:6px;
-  font-size:20px;
-  color:var(--green-dark);
   font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.5px;
 }
 
-.action-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:18px;
+.wallet-card .wallet-balance{
+  font-size:23px;
+  color:var(--text-strong);
+  font-weight:900;
+  margin-top:9px;
+}
+
+.wallet-card .wallet-status{
+  margin-top:8px;
 }
 
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(8,25,16,.45);
-  z-index:1000;
+  background:rgba(12,25,18,.48);
   display:none;
   align-items:center;
   justify-content:center;
-  padding:18px;
+  padding:20px;
+  z-index:500;
+  backdrop-filter:blur(4px);
 }
 
-.modal.open{
+.modal.show{
   display:flex;
 }
 
 .modal-card{
-  width:min(700px,100%);
+  width:min(760px,100%);
   max-height:90vh;
   overflow:auto;
   background:#fff;
   border-radius:18px;
-  box-shadow:0 25px 70px rgba(0,0,0,.2);
+  box-shadow:0 24px 80px rgba(0,0,0,.2);
 }
 
 .modal-header{
-  padding:18px 20px;
-  border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:15px;
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
 }
 
 .modal-header h3{
-  font-size:15px;
-  color:var(--text-strong);
+  font-size:16px;
   font-weight:900;
 }
 
 .modal-close{
   width:34px;
   height:34px;
-  border:0;
+  border:1px solid var(--border);
+  background:#fff;
   border-radius:9px;
-  background:#f1f4f2;
-  color:#526058;
+  color:#65736b;
   font-weight:900;
 }
 
@@ -737,14 +735,24 @@ tr:last-child td{border-bottom:0}
   padding:20px;
 }
 
+.modal-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  padding:15px 20px;
+  border-top:1px solid var(--border);
+}
+
 .form-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:12px;
+  gap:13px;
 }
 
 .form-group{
-  margin-bottom:12px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
 }
 
 .form-group.full{
@@ -752,21 +760,20 @@ tr:last-child td{border-bottom:0}
 }
 
 .form-group label{
-  display:block;
   font-size:10px;
-  color:var(--muted);
+  color:#69756f;
   font-weight:900;
-  margin-bottom:6px;
 }
 
 .form-control{
   width:100%;
   border:1px solid var(--border);
   border-radius:10px;
+  background:#fff;
   padding:10px 11px;
   outline:none;
+  color:var(--text);
   font-size:12px;
-  font-weight:700;
 }
 
 textarea.form-control{
@@ -774,107 +781,127 @@ textarea.form-control{
   resize:vertical;
 }
 
-.modal-footer{
-  padding:14px 20px;
-  border-top:1px solid var(--border);
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
+.form-control:focus{
+  border-color:#9cc7aa;
+  box-shadow:0 0 0 3px rgba(18,107,58,.08);
 }
 
 .chat-layout{
   display:grid;
-  grid-template-columns:280px 1fr;
-  min-height:500px;
+  grid-template-columns:310px 1fr;
+  gap:15px;
+  min-height:580px;
 }
 
-.conversations{
-  border-right:1px solid var(--border);
+.chat-list{
+  border:1px solid var(--border);
+  border-radius:13px;
   overflow:auto;
+  background:#fff;
 }
 
-.conversation{
+.chat-list-item{
   padding:13px;
   border-bottom:1px solid #edf0ee;
   cursor:pointer;
 }
 
-.conversation:hover,
-.conversation.active{
+.chat-list-item:last-child{
+  border-bottom:0;
+}
+
+.chat-list-item:hover,
+.chat-list-item.active{
   background:var(--green-light);
 }
 
-.conversation strong{
+.chat-list-item strong{
   display:block;
-  font-size:11px;
-  font-weight:900;
   color:var(--text-strong);
+  font-size:12px;
 }
 
-.conversation span{
+.chat-list-item span{
   display:block;
-  font-size:9px;
   color:var(--muted);
+  font-size:10px;
   margin-top:4px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
 .chat-panel{
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:#fff;
   display:flex;
   flex-direction:column;
   min-width:0;
 }
 
-.messages{
+.chat-header{
+  padding:14px;
+  border-bottom:1px solid var(--border);
+}
+
+.chat-header strong{
+  display:block;
+  font-size:13px;
+}
+
+.chat-header span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:4px;
+}
+
+.chat-messages{
   flex:1;
-  padding:18px;
+  padding:15px;
   overflow:auto;
   min-height:400px;
-  background:#fafcfb;
+  background:#fbfcfb;
 }
 
 .message{
-  max-width:75%;
+  max-width:78%;
+  margin-bottom:10px;
   padding:10px 12px;
   border-radius:12px;
-  margin-bottom:9px;
   font-size:11px;
   line-height:1.5;
-  font-weight:700;
 }
 
 .message.customer{
   background:#fff;
   border:1px solid var(--border);
+  margin-right:auto;
 }
 
 .message.admin{
-  margin-left:auto;
   background:var(--green);
   color:#fff;
+  margin-left:auto;
 }
 
-.message small{
+.message-time{
   display:block;
-  margin-top:4px;
-  opacity:.65;
+  margin-top:5px;
   font-size:8px;
+  opacity:.65;
 }
 
-.chat-compose{
-  padding:12px;
-  border-top:1px solid var(--border);
+.chat-composer{
   display:flex;
   gap:8px;
+  padding:12px;
+  border-top:1px solid var(--border);
 }
 
-.chat-compose textarea{
+.chat-composer textarea{
   flex:1;
-  min-height:45px;
-  max-height:100px;
-  resize:vertical;
+  min-height:42px;
+  max-height:120px;
+  resize:none;
   border:1px solid var(--border);
   border-radius:10px;
   padding:10px;
@@ -886,64 +913,94 @@ textarea.form-control{
   display:none;
 }
 
-.overlay{
-  display:none;
+.admin-access-card{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.35);
-  z-index:90;
-}
-
-#adminAccessMessage{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  background:var(--bg);
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:20px;
-}
-
-.admin-access-card{
-  width:min(430px,100%);
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:30px 24px;
+  background:var(--bg);
+  z-index:2000;
+  padding:30px;
   text-align:center;
-  box-shadow:0 12px 40px rgba(20,45,32,.10);
 }
 
 .admin-access-icon{
-  width:58px;
-  height:58px;
-  margin:0 auto 16px;
-  border-radius:16px;
+  width:70px;
+  height:70px;
+  border-radius:20px;
+  background:var(--green-light);
   display:grid;
   place-items:center;
+  font-size:30px;
+  margin-bottom:16px;
+}
+
+.admin-access-card h2{
+  font-size:22px;
+  color:var(--text-strong);
+  font-weight:900;
+}
+
+.admin-access-card p{
+  max-width:480px;
+  margin-top:9px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.back-row{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:15px;
+}
+
+.back-btn{
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--green-dark);
+  border-radius:10px;
+  padding:9px 13px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.back-btn:hover{
   background:var(--green-light);
-  font-size:27px;
 }
 
-@media(max-width:1050px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .grid-2{grid-template-columns:1fr}
-  .action-grid{grid-template-columns:1fr 1fr}
+.notice{
+  border:1px solid #d9e8df;
+  background:var(--green-light);
+  color:var(--green-dark);
+  border-radius:11px;
+  padding:11px 13px;
+  font-size:11px;
+  line-height:1.5;
+  margin-bottom:12px;
 }
 
-@media(max-width:760px){
+@media(max-width:1100px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid-2{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:820px){
   .sidebar{
     transform:translateX(-100%);
-    transition:.25s ease;
+    transition:.2s;
   }
 
   .sidebar.open{
     transform:translateX(0);
-  }
-
-  .overlay.open{
-    display:block;
   }
 
   .main{
@@ -955,26 +1012,39 @@ textarea.form-control{
     display:block;
   }
 
+  .content{
+    padding:20px 16px 30px;
+  }
+
   .topbar{
     padding:0 16px;
   }
 
-  .content{
-    padding:20px 15px 30px;
+  .topbar-left h1{
+    font-size:17px;
+  }
+
+  .topbar-left p{
+    display:none;
   }
 
   .chat-layout{
     grid-template-columns:1fr;
   }
 
-  .conversations{
-    max-height:190px;
-    border-right:0;
-    border-bottom:1px solid var(--border);
+  .chat-list{
+    max-height:230px;
+  }
+}
+
+@media(max-width:620px){
+  .stats{
+    grid-template-columns:1fr;
   }
 
   .detail-grid,
-  .form-grid{
+  .form-grid,
+  .wallet-cards{
     grid-template-columns:1fr;
   }
 
@@ -982,21 +1052,15 @@ textarea.form-control{
     grid-column:auto;
   }
 
-  .action-grid{
-    grid-template-columns:1fr;
+  .topbar-right .icon-btn{
+    display:none;
   }
-}
 
-@media(max-width:440px){
-  .stats{
-    grid-template-columns:1fr;
+  .logout-btn{
+    padding:8px 10px;
   }
 
   .quick-actions{
-    grid-template-columns:1fr;
-  }
-
-  .wallet-cards{
     grid-template-columns:1fr;
   }
 }
@@ -1005,224 +1069,436 @@ textarea.form-control{
 
 <body>
 
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
-
 <div class="app">
 
 <aside class="sidebar" id="sidebar">
 
   <div class="brand">
-    <div class="brand-logo">🌲</div>
+
+    <div class="brand-logo">
+      🌲
+    </div>
+
     <div class="brand-text">
       <strong>CoinForest</strong>
       <span>Administration</span>
     </div>
+
   </div>
+
 
   <nav class="nav">
 
-    <div class="nav-label">Overview</div>
+    <div class="nav-label">
+      Overview
+    </div>
 
-    <button class="nav-item active"
-      onclick="showSection('dashboard',this)">
-      <span class="nav-icon">⌂</span>Dashboard
+    <button
+      class="nav-item active"
+      data-section="dashboard"
+      onclick="navigateTo('dashboard')">
+
+      <span class="nav-icon">⌂</span>
+      Dashboard
+
     </button>
 
-    <div class="nav-label" style="margin-top:18px">Customers</div>
 
-    <button class="nav-item"
-      onclick="showSection('customers',this)">
-      <span class="nav-icon">👥</span>Customers
+    <div class="nav-label">
+      Management
+    </div>
+
+    <button
+      class="nav-item"
+      data-section="customers"
+      onclick="navigateTo('customers')">
+
+      <span class="nav-icon">👥</span>
+      Customers
+
     </button>
 
-    <button class="nav-item"
-      onclick="showSection('kyc',this)">
-      <span class="nav-icon">✓</span>KYC Review
+    <button
+      class="nav-item"
+      data-section="wallets"
+      onclick="navigateTo('wallets')">
+
+      <span class="nav-icon">💰</span>
+      Wallets
+
     </button>
 
-    <button class="nav-item"
-      onclick="showSection('chat',this)">
-      <span class="nav-icon">💬</span>Customer Chat
+    <button
+      class="nav-item"
+      data-section="kyc"
+      onclick="navigateTo('kyc')">
+
+      <span class="nav-icon">🪪</span>
+      KYC
+
     </button>
 
-    <div class="nav-label" style="margin-top:18px">Financial</div>
+    <button
+      class="nav-item"
+      data-section="investments"
+      onclick="navigateTo('investments')">
 
-    <button class="nav-item"
-      onclick="showSection('wallets',this)">
-      <span class="nav-icon">💳</span>Wallets
+      <span class="nav-icon">📈</span>
+      Investments
+
     </button>
 
-    <button class="nav-item"
-      onclick="showSection('investments',this)">
-      <span class="nav-icon">📈</span>Investments
+    <button
+      class="nav-item"
+      data-section="transactions"
+      onclick="navigateTo('transactions')">
+
+      <span class="nav-icon">↔</span>
+      Transactions
+
     </button>
 
-    <button class="nav-item"
-      onclick="showSection('transactions',this)">
-      <span class="nav-icon">↔</span>Transactions
+    <button
+      class="nav-item"
+      data-section="requests"
+      onclick="navigateTo('requests')">
+
+      <span class="nav-icon">⏳</span>
+      Requests
+
     </button>
 
-    <button class="nav-item"
-      onclick="showSection('requests',this)">
-      <span class="nav-icon">⏳</span>Pending Requests
+    <button
+      class="nav-item"
+      data-section="chat"
+      onclick="navigateTo('chat')">
+
+      <span class="nav-icon">💬</span>
+      Customer Chat
+
     </button>
 
-    <div class="nav-label" style="margin-top:18px">System</div>
 
-    <button class="nav-item"
-      onclick="showSection('settings',this)">
-      <span class="nav-icon">⚙</span>Settings
+    <div class="nav-label">
+      System
+    </div>
+
+    <button
+      class="nav-item"
+      data-section="activity"
+      onclick="navigateTo('activity')">
+
+      <span class="nav-icon">🕘</span>
+      Activity
+
+    </button>
+
+    <button
+      class="nav-item"
+      data-section="settings"
+      onclick="navigateTo('settings')">
+
+      <span class="nav-icon">⚙</span>
+      Settings
+
     </button>
 
   </nav>
 
+
   <div class="sidebar-footer">
+
     <div class="admin-mini">
-      <div class="admin-avatar" id="adminAvatar">A</div>
-      <div>
-        <strong id="adminName">Administrator</strong>
-        <span>Admin account</span>
+
+      <div
+        class="admin-avatar"
+        id="adminAvatar">
+        A
       </div>
+
+      <div>
+
+        <strong id="adminName">
+          Administrator
+        </strong>
+
+        <span>
+          Admin account
+        </span>
+
+      </div>
+
     </div>
+
   </div>
 
 </aside>
 
+
 <main class="main">
 
-<header class="topbar">
+  <header class="topbar">
 
-  <div class="topbar-left">
+    <div class="topbar-left">
 
-    <button class="mobile-menu"
-      onclick="toggleSidebar()">☰</button>
+      <h1 id="pageTitle">
+        Dashboard
+      </h1>
 
-    <div>
-      <h1 id="pageTitle">Dashboard</h1>
-      <p>CoinForest administration panel</p>
+      <p id="pageSubtitle">
+        CoinForest administration center
+      </p>
+
     </div>
 
-  </div>
 
-  <div class="topbar-right">
+    <div class="topbar-right">
 
-    <button class="icon-btn"
-      title="Refresh"
-      onclick="refreshCurrentSection()">↻</button>
+      <button
+        class="mobile-menu"
+        onclick="toggleSidebar()">
+        ☰
+      </button>
 
-    <button class="icon-btn"
-      id="topAdminAvatar">A</button>
+      <button
+        class="icon-btn"
+        onclick="refreshCurrentSection()"
+        title="Refresh">
+        ↻
+      </button>
 
-    <button class="logout-btn"
-      onclick="logoutAdmin()">Logout</button>
+      <div
+        class="admin-avatar"
+        id="topAdminAvatar">
+        A
+      </div>
 
-  </div>
+      <button
+        class="logout-btn"
+        onclick="logoutAdmin()">
+        Logout
+      </button>
 
-</header>
+    </div>
 
-<section class="content">
+  </header>
+
+
+  <main class="content">
+
 
 <!-- =====================================================
      DASHBOARD
 ===================================================== -->
 
-<div id="dashboard" class="section">
+<section
+  class="section"
+  id="section-dashboard">
 
   <div class="stats">
 
     <div class="stat-card">
+
       <div class="stat-top">
-        <span class="stat-label">Total Customers</span>
-        <div class="stat-icon">👥</div>
+
+        <span class="stat-label">
+          Total Customers
+        </span>
+
+        <div class="stat-icon">
+          👥
+        </div>
+
       </div>
-      <div class="stat-value" id="totalCustomers">0</div>
-      <div class="stat-note">Registered accounts</div>
+
+      <div
+        class="stat-value"
+        id="totalCustomers">
+        0
+      </div>
+
+      <div class="stat-note">
+        Registered customer accounts
+      </div>
+
     </div>
 
-    <div class="stat-card">
-      <div class="stat-top">
-        <span class="stat-label">Pending KYC</span>
-        <div class="stat-icon">✓</div>
-      </div>
-      <div class="stat-value" id="pendingKyc">0</div>
-      <div class="stat-note">Awaiting review</div>
-    </div>
 
     <div class="stat-card">
+
       <div class="stat-top">
-        <span class="stat-label">Active Investments</span>
-        <div class="stat-icon">📈</div>
+
+        <span class="stat-label">
+          Pending KYC
+        </span>
+
+        <div class="stat-icon">
+          🪪
+        </div>
+
       </div>
-      <div class="stat-value" id="activeInvestments">0</div>
-      <div class="stat-note">Customer investments</div>
+
+      <div
+        class="stat-value"
+        id="pendingKyc">
+        0
+      </div>
+
+      <div class="stat-note">
+        Awaiting administrator review
+      </div>
+
     </div>
 
+
     <div class="stat-card">
+
       <div class="stat-top">
-        <span class="stat-label">Pending Requests</span>
-        <div class="stat-icon">⏳</div>
+
+        <span class="stat-label">
+          Investments
+        </span>
+
+        <div class="stat-icon">
+          📈
+        </div>
+
       </div>
-      <div class="stat-value" id="pendingRequests">0</div>
-      <div class="stat-note">Financial requests</div>
+
+      <div
+        class="stat-value"
+        id="activeInvestments">
+        0
+      </div>
+
+      <div class="stat-note">
+        Investment records
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-label">
+          Pending Requests
+        </span>
+
+        <div class="stat-icon">
+          ⏳
+        </div>
+
+      </div>
+
+      <div
+        class="stat-value"
+        id="pendingRequests">
+        0
+      </div>
+
+      <div class="stat-note">
+        Requests awaiting action
+      </div>
+
     </div>
 
   </div>
+
 
   <div class="grid-2">
 
     <div class="panel">
 
       <div class="panel-header">
+
         <div>
           <h2>Quick Actions</h2>
-          <span>Administrative controls</span>
+          <span>
+            Common administrator tasks
+          </span>
         </div>
+
       </div>
 
       <div class="panel-body">
 
         <div class="quick-actions">
 
-          <button class="action"
-            onclick="showSection('customers')">
-            <div class="action-icon">👥</div>
-            <strong>Customers</strong>
-            <span>View and manage registered accounts.</span>
+          <button
+            class="action"
+            onclick="navigateTo('customers')">
+
+            <div class="action-icon">
+              👥
+            </div>
+
+            <strong>
+              Manage Customers
+            </strong>
+
+            <span>
+              View customer accounts and account status.
+            </span>
+
           </button>
 
-          <button class="action"
-            onclick="showSection('kyc')">
-            <div class="action-icon">✓</div>
-            <strong>Review KYC</strong>
-            <span>Review and process customer verification.</span>
+
+          <button
+            class="action"
+            onclick="navigateTo('wallets')">
+
+            <div class="action-icon">
+              💰
+            </div>
+
+            <strong>
+              Manage Wallets
+            </strong>
+
+            <span>
+              Review balances and make authorized adjustments.
+            </span>
+
           </button>
 
-          <button class="action"
-            onclick="showSection('wallets')">
-            <div class="action-icon">💳</div>
-            <strong>Manage Wallets</strong>
-            <span>Manage Main Wallet and Profit Wallet balances.</span>
+
+          <button
+            class="action"
+            onclick="navigateTo('kyc')">
+
+            <div class="action-icon">
+              🪪
+            </div>
+
+            <strong>
+              Review KYC
+            </strong>
+
+            <span>
+              Review customer verification submissions.
+            </span>
+
           </button>
 
-          <button class="action"
-            onclick="showSection('requests')">
-            <div class="action-icon">⏳</div>
-            <strong>Pending Requests</strong>
-            <span>Process pending financial requests.</span>
-          </button>
 
-          <button class="action"
-            onclick="showSection('transactions')">
-            <div class="action-icon">↔</div>
-            <strong>Transactions</strong>
-            <span>View transaction history.</span>
-          </button>
+          <button
+            class="action"
+            onclick="navigateTo('requests')">
 
-          <button class="action"
-            onclick="showSection('chat')">
-            <div class="action-icon">💬</div>
-            <strong>Customer Chat</strong>
-            <span>Respond to customer conversations.</span>
+            <div class="action-icon">
+              ⏳
+            </div>
+
+            <strong>
+              Pending Requests
+            </strong>
+
+            <span>
+              Review pending operational requests.
+            </span>
+
           </button>
 
         </div>
@@ -1231,34 +1507,45 @@ textarea.form-control{
 
     </div>
 
+
     <div class="panel">
 
       <div class="panel-header">
+
         <div>
           <h2>Recent Activity</h2>
-          <span>Latest platform activity</span>
+          <span>
+            Latest platform events
+          </span>
         </div>
+
       </div>
 
-      <div class="panel-body"
+      <div
+        class="panel-body"
         id="recentActivity">
-        <div class="loading">Loading activity...</div>
+
+        <div class="loading">
+          Loading activity...
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
-</div>
+</section>
 
 
 <!-- =====================================================
      CUSTOMERS
 ===================================================== -->
 
-<div id="customers"
-     class="section"
-     style="display:none">
+<section
+  class="section"
+  id="section-customers"
+  style="display:none">
 
   <div class="panel">
 
@@ -1266,10 +1553,13 @@ textarea.form-control{
 
       <div>
         <h2>Customers</h2>
-        <span>Customer account management</span>
+        <span>
+          Manage customer accounts
+        </span>
       </div>
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="loadCustomers()">
         Refresh
       </button>
@@ -1281,144 +1571,45 @@ textarea.form-control{
       <div class="toolbar">
 
         <input
-          id="customerSearch"
           class="search"
-          placeholder="Search name, email, username or phone..."
+          id="customerSearch"
+          placeholder="Search customers..."
           oninput="filterCustomers()">
 
         <select
-          id="customerStatusFilter"
           class="select"
+          id="customerStatusFilter"
           onchange="filterCustomers()">
 
-          <option value="">All status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="suspended">Suspended</option>
-          <option value="inactive">Inactive</option>
+          <option value="">
+            All Statuses
+          </option>
+
+          <option value="active">
+            Active
+          </option>
+
+          <option value="pending">
+            Pending
+          </option>
+
+          <option value="suspended">
+            Suspended
+          </option>
+
+          <option value="inactive">
+            Inactive
+          </option>
 
         </select>
 
       </div>
+
 
       <div id="customersContainer">
-        <div class="loading">Loading customers...</div>
-      </div>
 
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- =====================================================
-     KYC
-===================================================== -->
-
-<div id="kyc"
-     class="section"
-     style="display:none">
-
-  <div class="panel">
-
-    <div class="panel-header">
-
-      <div>
-        <h2>KYC Review</h2>
-        <span>Approve or reject customer verification</span>
-      </div>
-
-      <button class="secondary-btn"
-        onclick="loadKyc()">
-        Refresh
-      </button>
-
-    </div>
-
-    <div class="panel-body">
-
-      <div class="toolbar">
-
-        <select
-          id="kycFilter"
-          class="select"
-          onchange="loadKyc()">
-
-          <option value="pending">Pending</option>
-          <option value="">All</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-
-        </select>
-
-      </div>
-
-      <div id="kycContainer">
-        <div class="loading">Loading KYC records...</div>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- =====================================================
-     CHAT
-===================================================== -->
-
-<div id="chat"
-     class="section"
-     style="display:none">
-
-  <div class="panel">
-
-    <div class="panel-header">
-
-      <div>
-        <h2>Customer Chat</h2>
-        <span>Customer ↔ Admin conversations</span>
-      </div>
-
-      <button class="secondary-btn"
-        onclick="loadConversations()">
-        Refresh
-      </button>
-
-    </div>
-
-    <div class="chat-layout">
-
-      <div class="conversations"
-        id="conversationList">
-        <div class="loading">Loading...</div>
-      </div>
-
-      <div class="chat-panel">
-
-        <div class="messages"
-          id="messages">
-
-          <div class="empty">
-            Select a conversation.
-          </div>
-
-        </div>
-
-        <div class="chat-compose">
-
-          <textarea
-            id="chatInput"
-            placeholder="Write a reply..."
-            onkeydown="handleChatKey(event)"></textarea>
-
-          <button class="primary-btn"
-            onclick="sendChatMessage()">
-            Send
-          </button>
-
+        <div class="loading">
+          Loading customers...
         </div>
 
       </div>
@@ -1427,16 +1618,17 @@ textarea.form-control{
 
   </div>
 
-</div>
+</section>
 
 
 <!-- =====================================================
      WALLETS
 ===================================================== -->
 
-<div id="wallets"
-     class="section"
-     style="display:none">
+<section
+  class="section"
+  id="section-wallets"
+  style="display:none">
 
   <div class="panel">
 
@@ -1444,10 +1636,13 @@ textarea.form-control{
 
       <div>
         <h2>Wallet Management</h2>
-        <span>Main Wallet and Profit Wallet controls</span>
+        <span>
+          Customer wallet balances
+        </span>
       </div>
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="loadWallets()">
         Refresh
       </button>
@@ -1459,31 +1654,108 @@ textarea.form-control{
       <div class="toolbar">
 
         <input
-          id="walletSearch"
           class="search"
-          placeholder="Search customer..."
+          id="walletSearch"
+          placeholder="Search customer wallets..."
           oninput="filterWallets()">
 
       </div>
 
       <div id="walletsContainer">
-        <div class="loading">Loading wallets...</div>
+
+        <div class="loading">
+          Loading wallets...
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
-</div>
+</section>
+
+
+<!-- =====================================================
+     KYC
+===================================================== -->
+
+<section
+  class="section"
+  id="section-kyc"
+  style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>KYC Review</h2>
+        <span>
+          Review customer verification submissions
+        </span>
+      </div>
+
+      <button
+        class="secondary-btn"
+        onclick="loadKyc()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="toolbar">
+
+        <select
+          class="select"
+          id="kycStatusFilter"
+          onchange="loadKyc()">
+
+          <option value="">
+            All KYC
+          </option>
+
+          <option value="pending">
+            Pending
+          </option>
+
+          <option value="approved">
+            Approved
+          </option>
+
+          <option value="rejected">
+            Rejected
+          </option>
+
+        </select>
+
+      </div>
+
+      <div id="kycContainer">
+
+        <div class="loading">
+          Loading KYC submissions...
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
 
 <!-- =====================================================
      INVESTMENTS
 ===================================================== -->
 
-<div id="investments"
-     class="section"
-     style="display:none">
+<section
+  class="section"
+  id="section-investments"
+  style="display:none">
 
   <div class="panel">
 
@@ -1491,10 +1763,13 @@ textarea.form-control{
 
       <div>
         <h2>Investments</h2>
-        <span>Customer investment records</span>
+        <span>
+          Customer investment records
+        </span>
       </div>
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="loadInvestments()">
         Refresh
       </button>
@@ -1503,46 +1778,29 @@ textarea.form-control{
 
     <div class="panel-body">
 
-      <div class="toolbar">
-
-        <input
-          id="investmentSearch"
-          class="search"
-          placeholder="Search customer or plan..."
-          oninput="filterInvestments()">
-
-        <select
-          id="investmentStatusFilter"
-          class="select"
-          onchange="filterInvestments()">
-
-          <option value="">All status</option>
-          <option value="active">Active</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-
-        </select>
-
-      </div>
-
       <div id="investmentsContainer">
-        <div class="loading">Loading investments...</div>
+
+        <div class="loading">
+          Loading investments...
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
-</div>
+</section>
 
 
 <!-- =====================================================
      TRANSACTIONS
 ===================================================== -->
 
-<div id="transactions"
-     class="section"
-     style="display:none">
+<section
+  class="section"
+  id="section-transactions"
+  style="display:none">
 
   <div class="panel">
 
@@ -1550,10 +1808,13 @@ textarea.form-control{
 
       <div>
         <h2>Transactions</h2>
-        <span>Deposits, withdrawals, transfers and other records</span>
+        <span>
+          Transaction ledger
+        </span>
       </div>
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="loadTransactions()">
         Refresh
       </button>
@@ -1562,49 +1823,29 @@ textarea.form-control{
 
     <div class="panel-body">
 
-      <div class="toolbar">
-
-        <input
-          id="transactionSearch"
-          class="search"
-          placeholder="Search customer, reference or transaction type..."
-          oninput="filterTransactions()">
-
-        <select
-          id="transactionTypeFilter"
-          class="select"
-          onchange="filterTransactions()">
-
-          <option value="">All types</option>
-          <option value="deposit">Deposit</option>
-          <option value="withdrawal">Withdrawal</option>
-          <option value="transfer">Transfer</option>
-          <option value="send">Send</option>
-          <option value="profit">Profit</option>
-          <option value="adjustment">Adjustment</option>
-
-        </select>
-
-      </div>
-
       <div id="transactionsContainer">
-        <div class="loading">Loading transactions...</div>
+
+        <div class="loading">
+          Loading transactions...
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
-</div>
+</section>
 
 
 <!-- =====================================================
      REQUESTS
 ===================================================== -->
 
-<div id="requests"
-     class="section"
-     style="display:none">
+<section
+  class="section"
+  id="section-requests"
+  style="display:none">
 
   <div class="panel">
 
@@ -1612,10 +1853,13 @@ textarea.form-control{
 
       <div>
         <h2>Pending Requests</h2>
-        <span>Deposit, withdrawal, transfer and other requests</span>
+        <span>
+          Deposit, withdrawal and operational requests
+        </span>
       </div>
 
-      <button class="secondary-btn"
+      <button
+        class="secondary-btn"
         onclick="loadRequests()">
         Refresh
       </button>
@@ -1624,49 +1868,183 @@ textarea.form-control{
 
     <div class="panel-body">
 
-      <div class="toolbar">
-
-        <select
-          id="requestTypeFilter"
-          class="select"
-          onchange="filterRequests()">
-
-          <option value="">All types</option>
-          <option value="deposit">Deposit</option>
-          <option value="withdrawal">Withdrawal</option>
-          <option value="transfer">Transfer</option>
-          <option value="send">Send</option>
-
-        </select>
-
-      </div>
-
       <div id="requestsContainer">
-        <div class="loading">Loading requests...</div>
+
+        <div class="loading">
+          Loading requests...
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
-</div>
+</section>
 
 
 <!-- =====================================================
-     SETTINGS
+     CHAT
 ===================================================== -->
 
-<div id="settings"
-     class="section"
-     style="display:none">
+<section
+  class="section"
+  id="section-chat"
+  style="display:none">
 
   <div class="panel">
 
     <div class="panel-header">
 
       <div>
-        <h2>Settings</h2>
-        <span>Administrator account and system controls</span>
+        <h2>Customer Chat</h2>
+        <span>
+          Customer support conversations
+        </span>
+      </div>
+
+      <button
+        class="secondary-btn"
+        onclick="loadConversations()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="chat-layout">
+
+        <div
+          class="chat-list"
+          id="conversationList">
+
+          <div class="loading">
+            Loading conversations...
+          </div>
+
+        </div>
+
+
+        <div class="chat-panel">
+
+          <div
+            class="chat-header"
+            id="chatHeader">
+
+            <strong>
+              Select a conversation
+            </strong>
+
+            <span>
+              Customer messages will appear here.
+            </span>
+
+          </div>
+
+
+          <div
+            class="chat-messages"
+            id="chatMessages">
+
+            <div class="empty">
+              Select a customer conversation.
+            </div>
+
+          </div>
+
+
+          <div class="chat-composer">
+
+            <textarea
+              id="chatInput"
+              placeholder="Type your reply..."
+              disabled></textarea>
+
+            <button
+              class="primary-btn"
+              id="chatSendButton"
+              onclick="sendChatMessage()"
+              disabled>
+              Send
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ACTIVITY
+===================================================== -->
+
+<section
+  class="section"
+  id="section-activity"
+  style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Activity</h2>
+        <span>
+          Recent platform activity
+        </span>
+      </div>
+
+      <button
+        class="secondary-btn"
+        onclick="loadActivity()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div id="activityContainer">
+
+        <div class="loading">
+          Loading activity...
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<section
+  class="section"
+  id="section-settings"
+  style="display:none">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Administrator Settings</h2>
+        <span>
+          Current administrator session
+        </span>
       </div>
 
     </div>
@@ -1677,9 +2055,7 @@ textarea.form-control{
 
         <div class="detail-item">
           <label>Administrator</label>
-          <strong id="settingsAdminName">
-            Administrator
-          </strong>
+          <strong id="settingsAdminName">—</strong>
         </div>
 
         <div class="detail-item">
@@ -1709,8 +2085,6 @@ textarea.form-control{
     </div>
 
   </div>
-
-</div>
 
 </section>
 </main>
@@ -2624,12 +2998,6 @@ async function loadDashboard(){
       )
     );
 
-    /*
-      The dashboard endpoint can return a pending-KYC
-      count based on profiles. Keep the UI synchronized
-      with the actual customer list when necessary.
-    */
-
     if(
       !Number(
         stats.pending_kyc ??
@@ -2843,14 +3211,6 @@ function renderActivity(items){
    CUSTOMERS
 ===================================================== */
 
-/*
-  IMPORTANT FIX:
-  The backend route is:
-  GET /api/admin/customers?id=...
-  NOT:
-  GET /api/admin/customers/:id
-*/
-
 async function fetchAllCustomers(){
 
   const data =
@@ -3026,8 +3386,14 @@ function renderCustomers(list){
 
                       <button
                         class="small-btn"
-                        onclick="openWalletForCustomer('${escapeAttr(id)}')">
+                        onclick="openCustomerWallet('${escapeAttr(id)}')">
                         Wallet
+                      </button>
+
+                      <button
+                        class="small-btn"
+                        onclick="openWalletAdjustment('${escapeAttr(id)}')">
+                        Adjust
                       </button>
 
                       ${
@@ -3081,64 +3447,69 @@ function renderCustomers(list){
 
 function filterCustomers(){
 
-  const q =
+  const search =
     String(
       document.getElementById(
         "customerSearch"
-      ).value || ""
-    ).toLowerCase();
+      )?.value || ""
+    ).toLowerCase().trim();
 
   const status =
     String(
       document.getElementById(
         "customerStatusFilter"
-      ).value || ""
+      )?.value || ""
     ).toLowerCase();
 
-  renderCustomers(
-
+  const filtered =
     customersData.filter(user => {
 
-      const text =
+      const haystack =
         [
-          user.id,
-          user.email,
-          user.username,
-          user.name,
           user.first_name,
           user.last_name,
-          user.phone
+          user.username,
+          user.email,
+          user.id
         ]
-        .join(" ")
-        .toLowerCase();
+        .map(x => String(x || "").toLowerCase())
+        .join(" ");
 
-      const userStatus =
+      const matchesSearch =
+        !search ||
+        haystack.includes(search);
+
+      const matchesStatus =
+        !status ||
         String(
           user.status || ""
-        ).toLowerCase();
+        ).toLowerCase() === status;
 
       return (
-        (!q || text.includes(q)) &&
-        (!status ||
-          userStatus === status)
+        matchesSearch &&
+        matchesStatus
       );
 
-    })
+    });
 
-  );
+  renderCustomers(filtered);
 
 }
 
 
 /* =====================================================
-   CUSTOMER VIEW FIX
+   CUSTOMER VIEW
 ===================================================== */
 
 async function viewCustomer(id){
 
-  openModal(
-    "customerModal"
-  );
+  if(!id)
+    return;
+
+  const modal =
+    document.getElementById(
+      "customerModal"
+    );
 
   const body =
     document.getElementById(
@@ -3148,49 +3519,46 @@ async function viewCustomer(id){
   body.innerHTML =
     `<div class="loading">Loading customer...</div>`;
 
-  try{
+  modal.classList.add("show");
 
-    /*
-      FIXED ROUTE:
-      /api/admin/customers?id=USER_ID
-    */
+  try{
 
     const data =
       await apiRequest(
         `/api/admin/customers?id=${encodeURIComponent(id)}`
       );
 
-    const user =
+    const customer =
       data?.customer ||
-      data?.user ||
-      extractArray(
-        data,
-        ["customers"]
-      )[0] ||
-      data?.data;
+      data?.data?.customer ||
+      data?.data ||
+      data;
 
-    if(!user)
+    if(!customer)
       throw new Error(
-        "Customer not found."
+        "Customer details could not be loaded."
       );
 
-    const name =
-      customerName(user);
-
-    const status =
-      String(
-        user.status ||
-        "active"
-      ).toLowerCase();
-
     body.innerHTML = `
+
+      <div class="back-row">
+
+        <button
+          class="back-btn"
+          onclick="closeModal('customerModal')">
+          ← Back
+        </button>
+
+      </div>
 
       <div class="detail-grid">
 
         <div class="detail-item">
-          <label>Name</label>
+          <label>Full Name</label>
           <strong>
-            ${escapeHtml(name)}
+            ${escapeHtml(
+              customerName(customer)
+            )}
           </strong>
         </div>
 
@@ -3198,7 +3566,7 @@ async function viewCustomer(id){
           <label>Email</label>
           <strong>
             ${escapeHtml(
-              user.email || "—"
+              customer.email || "—"
             )}
           </strong>
         </div>
@@ -3207,16 +3575,7 @@ async function viewCustomer(id){
           <label>Username</label>
           <strong>
             ${escapeHtml(
-              user.username || "—"
-            )}
-          </strong>
-        </div>
-
-        <div class="detail-item">
-          <label>Phone</label>
-          <strong>
-            ${escapeHtml(
-              user.phone || "—"
+              customer.username || "—"
             )}
           </strong>
         </div>
@@ -3224,7 +3583,9 @@ async function viewCustomer(id){
         <div class="detail-item">
           <label>Account Status</label>
           <strong>
-            ${statusBadge(status)}
+            ${statusBadge(
+              customer.status || "active"
+            )}
           </strong>
         </div>
 
@@ -3232,18 +3593,19 @@ async function viewCustomer(id){
           <label>KYC Status</label>
           <strong>
             ${statusBadge(
-              user.kyc_status ||
-              "pending"
+              customer.kyc_status || "pending"
             )}
           </strong>
         </div>
 
         <div class="detail-item">
-          <label>User ID</label>
+          <label>Email Verified</label>
           <strong>
-            ${escapeHtml(
-              user.id || "—"
-            )}
+            ${
+              customer.email_verified_at
+                ? "Verified"
+                : "Not verified"
+            }
           </strong>
         </div>
 
@@ -3251,23 +3613,48 @@ async function viewCustomer(id){
           <label>Created</label>
           <strong>
             ${escapeHtml(
-              date(user.created_at)
+              date(customer.created_at)
+            )}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Customer ID</label>
+          <strong>
+            ${escapeHtml(
+              customer.id || id
             )}
           </strong>
         </div>
 
       </div>
 
-      <div class="action-grid">
+      <br>
+
+      <div class="row-actions">
+
+        <button
+          class="secondary-btn"
+          onclick="openCustomerWallet('${escapeAttr(customer.id || id)}')">
+          View Wallet
+        </button>
+
+        <button
+          class="primary-btn"
+          onclick="openWalletAdjustment('${escapeAttr(customer.id || id)}')">
+          Adjust Wallet
+        </button>
 
         ${
-          status === "suspended"
+          String(
+            customer.status || ""
+          ).toLowerCase() === "suspended"
 
           ? `
 
             <button
               class="success-btn"
-              onclick="changeCustomerStatus('${escapeAttr(id)}','active')">
+              onclick="changeCustomerStatus('${escapeAttr(customer.id || id)}','active')">
               Activate Account
             </button>
 
@@ -3277,34 +3664,12 @@ async function viewCustomer(id){
 
             <button
               class="danger-btn"
-              onclick="changeCustomerStatus('${escapeAttr(id)}','suspended')">
+              onclick="changeCustomerStatus('${escapeAttr(customer.id || id)}','suspended')">
               Suspend Account
             </button>
 
           `
         }
-
-        ${
-          status !== "active"
-
-          ? `
-
-            <button
-              class="success-btn"
-              onclick="changeCustomerStatus('${escapeAttr(id)}','active')">
-              Approve / Activate
-            </button>
-
-          `
-
-          : ""
-        }
-
-        <button
-          class="primary-btn"
-          onclick="openWalletForCustomer('${escapeAttr(id)}')">
-          Manage Wallet
-        </button>
 
       </div>
 
@@ -3313,9 +3678,19 @@ async function viewCustomer(id){
   }catch(error){
 
     body.innerHTML = `
+
       <div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('customerModal')">
+        Cancel
+      </button>
+
     `;
 
   }
@@ -3323,39 +3698,27 @@ async function viewCustomer(id){
 }
 
 
-/* =====================================================
-   ACCOUNT STATUS FIX
-===================================================== */
-
 async function changeCustomerStatus(
   id,
   status
 ){
 
-  const labels = {
-    active:"activate",
-    suspended:"suspend",
-    pending:"set as pending",
-    inactive:"deactivate"
-  };
+  if(!id)
+    return;
 
   const action =
-    labels[status] ||
-    status;
+    status === "suspended"
+      ? "suspend"
+      : "activate";
 
   if(
     !confirm(
-      `Are you sure you want to ${action} this account?`
+      `Are you sure you want to ${action} this customer account?`
     )
   )
     return;
 
   try{
-
-    /*
-      Backend supports:
-      PUT/PATCH /api/admin/customers/:id
-    */
 
     await apiRequest(
       `/api/admin/customers/${encodeURIComponent(id)}`,
@@ -3368,7 +3731,6 @@ async function changeCustomerStatus(
     );
 
     await loadCustomers();
-    await loadDashboard();
 
     closeModal(
       "customerModal"
@@ -3377,597 +3739,8 @@ async function changeCustomerStatus(
   }catch(error){
 
     alert(
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   KYC
-===================================================== */
-
-async function loadKyc(){
-
-  const box =
-    document.getElementById(
-      "kycContainer"
-    );
-
-  box.innerHTML =
-    `<div class="loading">Loading KYC records...</div>`;
-
-  const selected =
-    document.getElementById(
-      "kycFilter"
-    ).value;
-
-  try{
-
-    /*
-      First use the real KYC endpoint.
-    */
-
-    let records = [];
-
-    try{
-
-      const query =
-        selected
-          ? `?status=${encodeURIComponent(selected)}`
-          : "";
-
-      const data =
-        await apiRequest(
-          `/api/admin/kyc${query}`
-        );
-
-      records =
-        extractArray(
-          data,
-          [
-            "kyc",
-            "submissions",
-            "customers"
-          ]
-        );
-
-    }catch(error){
-
-      console.warn(
-        "KYC submission endpoint unavailable:",
-        error
-      );
-
-    }
-
-    /*
-      IMPORTANT FALLBACK:
-      profiles can already show kyc_status=pending
-      even when there is no kyc_submissions row.
-    */
-
-    if(
-      !records.length
-    ){
-
-      const customers =
-        await fetchAllCustomers();
-
-      records =
-        customers
-          .filter(user => {
-
-            const status =
-              String(
-                user.kyc_status ||
-                "pending"
-              ).toLowerCase();
-
-            return (
-              !selected ||
-              status === selected
-            );
-
-          })
-          .map(user => ({
-
-            id:
-              user.id,
-
-            user_id:
-              user.id,
-
-            first_name:
-              user.first_name,
-
-            last_name:
-              user.last_name,
-
-            name:
-              customerName(user),
-
-            username:
-              user.username,
-
-            email:
-              user.email,
-
-            phone:
-              user.phone,
-
-            status:
-              user.kyc_status ||
-              "pending",
-
-            kyc_status:
-              user.kyc_status ||
-              "pending",
-
-            created_at:
-              user.created_at,
-
-            _profileFallback:
-              true
-
-          }));
-
-    }
-
-    kycData =
-      records;
-
-    renderKyc(
-      records
-    );
-
-  }catch(error){
-
-    box.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(error.message)}
-      </div>
-    `;
-
-  }
-
-}
-
-
-function renderKyc(list){
-
-  const box =
-    document.getElementById(
-      "kycContainer"
-    );
-
-  if(!list.length){
-
-    box.innerHTML =
-      `<div class="empty">
-        No KYC records found.
-      </div>`;
-
-    return;
-
-  }
-
-  box.innerHTML = `
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>Customer</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Submitted</th>
-            <th>Action</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          ${
-            list.map(item => {
-
-              const id =
-                item.id ||
-                item.user_id;
-
-              const status =
-                item.kyc_status ||
-                item.status ||
-                "pending";
-
-              return `
-
-                <tr>
-
-                  <td class="customer-name">
-                    ${escapeHtml(
-                      customerName(item)
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      item.email || "—"
-                    )}
-                  </td>
-
-                  <td>
-                    ${statusBadge(status)}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      date(
-                        item.submitted_at ||
-                        item.created_at
-                      )
-                    )}
-                  </td>
-
-                  <td>
-
-                    <div class="row-actions">
-
-                      <button
-                        class="small-btn"
-                        onclick="reviewKyc('${escapeAttr(id)}')">
-                        View
-                      </button>
-
-                      ${
-                        String(status).toLowerCase()
-                        === "pending"
-
-                        ? `
-
-                          <button
-                            class="success-btn"
-                            style="padding:6px 9px;font-size:9px"
-                            onclick="processKyc('${escapeAttr(id)}','approved',${item._profileFallback ? "true" : "false"})">
-                            Approve
-                          </button>
-
-                          <button
-                            class="danger-btn"
-                            style="padding:6px 9px;font-size:9px"
-                            onclick="processKyc('${escapeAttr(id)}','rejected',${item._profileFallback ? "true" : "false"})">
-                            Reject
-                          </button>
-
-                        `
-
-                        : ""
-                      }
-
-                    </div>
-
-                  </td>
-
-                </tr>
-
-              `;
-
-            }).join("")
-          }
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   KYC VIEW FIX
-===================================================== */
-
-async function reviewKyc(id){
-
-  openModal(
-    "kycModal"
-  );
-
-  const body =
-    document.getElementById(
-      "kycModalBody"
-    );
-
-  body.innerHTML =
-    `<div class="loading">Loading KYC information...</div>`;
-
-  try{
-
-    /*
-      DO NOT call:
-      GET /api/admin/kyc/:id
-
-      That route does not exist in the supplied API.
-
-      Instead use the KYC data already loaded,
-      or retrieve the customer by:
-      GET /api/admin/customers?id=...
-    */
-
-    let item =
-      kycData.find(
-        x =>
-          String(x.id) ===
-            String(id) ||
-          String(x.user_id) ===
-            String(id)
-      );
-
-    if(!item){
-
-      const customerData =
-        await apiRequest(
-          `/api/admin/customers?id=${encodeURIComponent(id)}`
-        );
-
-      item =
-        customerData?.customer ||
-        extractArray(
-          customerData,
-          ["customers"]
-        )[0] ||
-        customerData?.data;
-
-    }
-
-    if(!item)
-      throw new Error(
-        "KYC/customer record not found."
-      );
-
-    const status =
-      item.kyc_status ||
-      item.status ||
-      "pending";
-
-    const profileFallback =
-      !!item._profileFallback ||
-      !item.submitted_at;
-
-    body.innerHTML = `
-
-      <div class="detail-grid">
-
-        <div class="detail-item">
-          <label>Customer</label>
-          <strong>
-            ${escapeHtml(
-              customerName(item)
-            )}
-          </strong>
-        </div>
-
-        <div class="detail-item">
-          <label>Email</label>
-          <strong>
-            ${escapeHtml(
-              item.email || "—"
-            )}
-          </strong>
-        </div>
-
-        <div class="detail-item">
-          <label>Username</label>
-          <strong>
-            ${escapeHtml(
-              item.username || "—"
-            )}
-          </strong>
-        </div>
-
-        <div class="detail-item">
-          <label>Phone</label>
-          <strong>
-            ${escapeHtml(
-              item.phone || "—"
-            )}
-          </strong>
-        </div>
-
-        <div class="detail-item">
-          <label>KYC Status</label>
-          <strong>
-            ${statusBadge(status)}
-          </strong>
-        </div>
-
-        <div class="detail-item">
-          <label>Submitted</label>
-          <strong>
-            ${escapeHtml(
-              date(
-                item.submitted_at ||
-                item.created_at
-              )
-            )}
-          </strong>
-        </div>
-
-      </div>
-
-      <br>
-
-      <div class="detail-grid">
-
-        ${renderKycFields(item)}
-
-      </div>
-
-      <br>
-
-      ${
-        String(status).toLowerCase()
-        === "pending"
-
-        ? `
-
-          <div class="row-actions">
-
-            <button
-              class="success-btn"
-              onclick="processKyc('${escapeAttr(id)}','approved',${profileFallback})">
-              Approve KYC
-            </button>
-
-            <button
-              class="danger-btn"
-              onclick="processKyc('${escapeAttr(id)}','rejected',${profileFallback})">
-              Reject KYC
-            </button>
-
-          </div>
-
-        `
-
-        : `
-
-          <div class="muted">
-            This KYC record has already been processed.
-          </div>
-
-        `
-      }
-
-    `;
-
-  }catch(error){
-
-    body.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(error.message)}
-      </div>
-    `;
-
-  }
-
-}
-
-
-function renderKycFields(item){
-
-  const keys = [
-
-    ["Document Type","document_type"],
-    ["Document Number","document_number"],
-    ["Date of Birth","date_of_birth"],
-    ["Address","address"],
-    ["Country","country"],
-    ["Phone","phone"]
-
-  ];
-
-  return keys
-    .map(
-      ([label,key]) => `
-
-        <div class="detail-item">
-
-          <label>
-            ${escapeHtml(label)}
-          </label>
-
-          <strong>
-            ${escapeHtml(
-              item[key] || "—"
-            )}
-          </strong>
-
-        </div>
-
-      `
-    )
-    .join("");
-
-}
-
-
-/* =====================================================
-   KYC PROCESS FIX
-===================================================== */
-
-async function processKyc(
-  id,
-  status,
-  profileFallback=false
-){
-
-  if(
-    !confirm(
-      `Are you sure you want to mark this KYC as ${status}?`
-    )
-  )
-    return;
-
-  try{
-
-    if(profileFallback){
-
-      /*
-        No kyc_submissions row exists.
-        The profile itself carries the KYC status.
-        Use the working customer update endpoint.
-      */
-
-      await apiRequest(
-        `/api/admin/customers/${encodeURIComponent(id)}`,
-        {
-          method:"PATCH",
-          body:JSON.stringify({
-            kyc_status:status
-          })
-        }
-      );
-
-    }else{
-
-      /*
-        Real KYC submission:
-        PATCH /api/admin/kyc/:id
-      */
-
-      await apiRequest(
-        `/api/admin/kyc/${encodeURIComponent(id)}`,
-        {
-          method:"PATCH",
-          body:JSON.stringify({
-            status
-          })
-        }
-      );
-
-    }
-
-    closeModal(
-      "kycModal"
-    );
-
-    await loadKyc();
-    await loadCustomers();
-    await loadDashboard();
-
-  }catch(error){
-
-    alert(
-      error.message
+      error.message ||
+      "Unable to update customer status."
     );
 
   }
@@ -4010,7 +3783,9 @@ async function loadWallets(){
 
     box.innerHTML = `
       <div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>
     `;
 
@@ -4019,38 +3794,22 @@ async function loadWallets(){
 }
 
 
-function walletMain(item){
+function walletBalance(wallet,type){
+
+  if(
+    type === "profit"
+  )
+    return Number(
+      wallet?.profit_balance ??
+      wallet?.profitBalance ??
+      0
+    );
 
   return Number(
-    item.main_balance ??
-    item.main_wallet ??
-    item.mainWallet ??
-    item.balance ??
+    wallet?.main_balance ??
+    wallet?.mainBalance ??
+    wallet?.balance ??
     0
-  );
-
-}
-
-
-function walletProfit(item){
-
-  return Number(
-    item.profit_balance ??
-    item.profit_wallet ??
-    item.profitWallet ??
-    item.profit ??
-    0
-  );
-
-}
-
-
-function walletUserId(item){
-
-  return (
-    item.user_id ||
-    item.profile_id ||
-    item.customer_id
   );
 
 }
@@ -4066,9 +3825,7 @@ function renderWallets(list){
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">
-        No wallet records found.
-      </div>`;
+      `<div class="empty">No wallets found.</div>`;
 
     return;
 
@@ -4084,10 +3841,11 @@ function renderWallets(list){
 
           <tr>
             <th>Customer</th>
+            <th>Email</th>
             <th>Main Wallet</th>
             <th>Profit Wallet</th>
-            <th>Total</th>
-            <th>Action</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
 
         </thead>
@@ -4095,16 +3853,11 @@ function renderWallets(list){
         <tbody>
 
           ${
-            list.map(item => {
+            list.map(wallet => {
 
-              const main =
-                walletMain(item);
-
-              const profit =
-                walletProfit(item);
-
-              const userId =
-                walletUserId(item);
+              const id =
+                wallet.user_id ||
+                wallet.userId;
 
               return `
 
@@ -4114,41 +3867,65 @@ function renderWallets(list){
 
                     <div class="customer-name">
                       ${escapeHtml(
-                        customerName(item)
+                        customerName(wallet)
                       )}
                     </div>
 
                     <div class="muted">
                       ${escapeHtml(
-                        item.email ||
-                        userId ||
-                        ""
+                        id || ""
                       )}
                     </div>
 
                   </td>
 
-                  <td class="amount">
-                    ${money(main)}
-                  </td>
-
-                  <td class="amount">
-                    ${money(profit)}
+                  <td>
+                    ${escapeHtml(
+                      wallet.email || "—"
+                    )}
                   </td>
 
                   <td class="amount">
                     ${money(
-                      main + profit
+                      walletBalance(
+                        wallet,
+                        "main"
+                      )
+                    )}
+                  </td>
+
+                  <td class="amount">
+                    ${money(
+                      walletBalance(
+                        wallet,
+                        "profit"
+                      )
+                    )}
+                  </td>
+
+                  <td>
+                    ${statusBadge(
+                      wallet.status || "active"
                     )}
                   </td>
 
                   <td>
 
-                    <button
-                      class="small-btn"
-                      onclick="openWalletAdjustment('${escapeAttr(userId)}')">
-                      Adjust
-                    </button>
+                    <div class="row-actions">
+
+                      <button
+                        class="small-btn"
+                        onclick="openCustomerWallet('${escapeAttr(id)}')">
+                        View
+                      </button>
+
+                      <button
+                        class="small-btn"
+                        onclick="openWalletAdjustment('${escapeAttr(id)}')">
+                        Adjust
+                      </button>
+
+                    </div>
 
                   </td>
 
@@ -4172,58 +3949,393 @@ function renderWallets(list){
 
 function filterWallets(){
 
-  const q =
+  const search =
     String(
       document.getElementById(
         "walletSearch"
-      ).value || ""
-    ).toLowerCase();
+      )?.value || ""
+    ).toLowerCase().trim();
+
+  const filtered =
+    walletsData.filter(wallet => {
+
+      const haystack =
+        [
+          wallet.first_name,
+          wallet.last_name,
+          wallet.username,
+          wallet.email,
+          wallet.user_id,
+          wallet.id
+        ]
+        .map(x =>
+          String(
+            x || ""
+          ).toLowerCase()
+        )
+        .join(" ");
+
+      return (
+        !search ||
+        haystack.includes(search)
+      );
+
+    });
 
   renderWallets(
-
-    walletsData.filter(item => {
-
-      const text =
-        [
-          item.id,
-          item.user_id,
-          item.email,
-          item.username,
-          item.name,
-          item.first_name,
-          item.last_name
-        ]
-        .join(" ")
-        .toLowerCase();
-
-      return text.includes(q);
-
-    })
-
+    filtered
   );
 
 }
 
 
-/* =====================================================
-   CUSTOMER → WALLET FIX
-===================================================== */
-
-async function openWalletForCustomer(
+async function openCustomerWallet(
   userId
 ){
 
-  showSection(
-    "wallets"
-  );
+  if(!userId)
+    return;
+
+  const modal =
+    document.getElementById(
+      "customerModal"
+    );
+
+  const body =
+    document.getElementById(
+      "customerModalBody"
+    );
+
+  body.innerHTML =
+    `<div class="loading">Loading wallet...</div>`;
+
+  modal.classList.add("show");
 
   try{
 
-    /*
-      Directly retrieve the customer's wallet.
-      Backend route:
-      GET /api/admin/wallets?user_id=...
-    */
+    const data =
+      await apiRequest(
+        `/api/admin/wallets?user_id=${encodeURIComponent(userId)}`
+      );
+
+    const wallets =
+      extractArray(
+        data,
+        ["wallets"]
+      );
+
+    const ledger =
+      extractArray(
+        data,
+        ["ledger"]
+      );
+
+    if(!wallets.length){
+
+      body.innerHTML = `
+
+        <div class="error-box">
+          Customer wallet could not be found.
+        </div>
+
+        <button
+          class="secondary-btn"
+          onclick="closeModal('customerModal')">
+          Cancel
+        </button>
+
+      `;
+
+      return;
+
+    }
+
+    const customer =
+      wallets[0];
+
+    body.innerHTML = `
+
+      <div class="back-row">
+
+        <button
+          class="back-btn"
+          onclick="closeModal('customerModal')">
+          ← Back
+        </button>
+
+      </div>
+
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <label>Customer</label>
+          <strong>
+            ${escapeHtml(
+              customerName(customer)
+            )}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <label>Email</label>
+          <strong>
+            ${escapeHtml(
+              customer.email || "—"
+            )}
+          </strong>
+        </div>
+
+      </div>
+
+      <br>
+
+      <div class="wallet-cards">
+
+        <div class="wallet-card">
+
+          <div class="wallet-label">
+            Main Wallet
+          </div>
+
+          <div class="wallet-balance">
+            ${money(
+              walletBalance(
+                customer,
+                "main"
+              )
+            )}
+          </div>
+
+          <div class="wallet-status">
+            ${statusBadge(
+              customer.status || "active"
+            )}
+          </div>
+
+        </div>
+
+
+        <div class="wallet-card">
+
+          <div class="wallet-label">
+            Profit Wallet
+          </div>
+
+          <div class="wallet-balance">
+            ${money(
+              walletBalance(
+                customer,
+                "profit"
+              )
+            )}
+          </div>
+
+          <div class="wallet-status">
+            ${statusBadge(
+              customer.status || "active"
+            )}
+          </div>
+
+        </div>
+
+      </div>
+
+      <br>
+
+      <div class="row-actions">
+
+        <button
+          class="primary-btn"
+          onclick="closeModal('customerModal');openWalletAdjustment('${escapeAttr(userId)}')">
+          Adjust Wallet
+        </button>
+
+      </div>
+
+      <br>
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div>
+            <h2>Wallet Ledger</h2>
+            <span>
+              Recent wallet adjustments
+            </span>
+          </div>
+
+        </div>
+
+        <div class="panel-body">
+
+          ${
+            ledger.length
+
+            ? `
+
+              <div class="table-wrap">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Before</th>
+                      <th>After</th>
+                      <th>Description</th>
+                      <th>Date</th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    ${
+                      ledger.map(entry => `
+
+                        <tr>
+
+                          <td>
+                            ${escapeHtml(
+                              entry.entry_type ||
+                              entry.type ||
+                              "—"
+                            )}
+                          </td>
+
+                          <td class="amount">
+                            ${money(
+                              entry.amount
+                            )}
+                          </td>
+
+                          <td>
+                            ${money(
+                              entry.balance_before
+                            )}
+                          </td>
+
+                          <td>
+                            ${money(
+                              entry.balance_after
+                            )}
+                          </td>
+
+                          <td>
+                            ${escapeHtml(
+                              entry.description ||
+                              "—"
+                            )}
+                          </td>
+
+                          <td>
+                            ${escapeHtml(
+                              date(
+                                entry.created_at
+                              )
+                            )}
+                          </td>
+
+                        </tr>
+
+                      `).join("")
+                    }
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            `
+
+            : `
+
+              <div class="empty">
+                No wallet ledger entries found.
+              </div>
+
+            `
+          }
+
+        </div>
+
+      </div>
+
+    `;
+
+  }catch(error){
+
+    body.innerHTML = `
+
+      <div class="error-box">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('customerModal')">
+        Cancel
+      </button>
+
+    `;
+
+  }
+
+}
+
+
+/* =====================================================
+   WALLET ADJUSTMENT
+===================================================== */
+
+let adjustmentUserId = null;
+
+async function openWalletAdjustment(
+  userId
+){
+
+  adjustmentUserId =
+    userId;
+
+  const box =
+    document.getElementById(
+      "walletAdjustmentCustomer"
+    );
+
+  box.innerHTML =
+    `<div class="loading">Loading customer wallet...</div>`;
+
+  document.getElementById(
+    "adjustAmount"
+  ).value = "";
+
+  document.getElementById(
+    "adjustReference"
+  ).value = "";
+
+  document.getElementById(
+    "adjustReason"
+  ).value = "";
+
+  document.getElementById(
+    "adjustAction"
+  ).value = "add";
+
+  document.getElementById(
+    "adjustWalletType"
+  ).value = "main";
+
+  document.getElementById(
+    "walletModal"
+  ).classList.add("show");
+
+  try{
 
     const data =
       await apiRequest(
@@ -4238,268 +4350,81 @@ async function openWalletForCustomer(
 
     if(!wallets.length){
 
-      /*
-        The customer may not have a wallet row.
-        Do not falsely say the API route failed.
-      */
+      box.innerHTML = `
+        <div class="error-box">
+          Customer wallet could not be found.
+        </div>
+      `;
 
-      const customer =
-        customersData.find(
-          x =>
-            String(x.id) ===
-            String(userId)
-        );
-
-      if(customer){
-
-        walletsData.push({
-          id:
-            `virtual-${userId}`,
-          user_id:
-            userId,
-          first_name:
-            customer.first_name,
-          last_name:
-            customer.last_name,
-          username:
-            customer.username,
-          email:
-            customer.email,
-          main_balance:0,
-          profit_balance:0
-        });
-
-        openWalletAdjustment(
-          userId
-        );
-
-        return;
-
-      }
-
-      throw new Error(
-        "Customer wallet could not be found."
-      );
+      return;
 
     }
 
     const wallet =
       wallets[0];
 
-    const existingIndex =
-      walletsData.findIndex(
-        x =>
-          String(
-            walletUserId(x)
-          ) ===
-          String(userId)
-      );
+    box.innerHTML = `
 
-    if(existingIndex >= 0)
-      walletsData[
-        existingIndex
-      ] = wallet;
-    else
-      walletsData.push(wallet);
+      <div class="notice">
 
-    openWalletAdjustment(
-      userId
-    );
+        <strong>
+          ${escapeHtml(
+            customerName(wallet)
+          )}
+        </strong>
+
+        <br>
+
+        Main:
+        ${money(
+          walletBalance(
+            wallet,
+            "main"
+          )
+        )}
+
+        &nbsp; • &nbsp;
+
+        Profit:
+        ${money(
+          walletBalance(
+            wallet,
+            "profit"
+          )
+        )}
+
+      </div>
+
+    `;
 
   }catch(error){
 
-    alert(
-      error.message
-    );
+    box.innerHTML = `
+      <div class="error-box">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+    `;
 
   }
 
 }
 
 
-/* =====================================================
-   WALLET ADJUSTMENT
-===================================================== */
+async function submitWalletAdjustment(){
 
-function openWalletAdjustment(
-  userId
-){
-
-  const user =
-    walletsData.find(
-      x =>
-        String(
-          walletUserId(x)
-        ) ===
-        String(userId)
-    );
-
-  if(!user){
-
-    /*
-      Try customer data as fallback.
-    */
-
-    const customer =
-      customersData.find(
-        x =>
-          String(x.id) ===
-          String(userId)
-      );
-
-    if(customer){
-
-      walletsData.push({
-
-        id:
-          `virtual-${userId}`,
-
-        user_id:
-          userId,
-
-        first_name:
-          customer.first_name,
-
-        last_name:
-          customer.last_name,
-
-        username:
-          customer.username,
-
-        email:
-          customer.email,
-
-        main_balance:0,
-
-        profit_balance:0
-
-      });
-
-      return openWalletAdjustment(
-        userId
-      );
-
-    }
+  if(!adjustmentUserId){
 
     alert(
-      "Customer wallet could not be found."
+      "Customer wallet is not selected."
     );
 
     return;
 
   }
 
-  const name =
-    customerName(user);
-
-  document.getElementById(
-    "walletAdjustmentCustomer"
-  ).innerHTML = `
-
-    <div class="wallet-cards">
-
-      <div class="wallet-card">
-
-        <span>Main Wallet</span>
-
-        <strong>
-          ${money(
-            walletMain(user)
-          )}
-        </strong>
-
-      </div>
-
-      <div class="wallet-card">
-
-        <span>Profit Wallet</span>
-
-        <strong>
-          ${money(
-            walletProfit(user)
-          )}
-        </strong>
-
-      </div>
-
-    </div>
-
-    <br>
-
-    <div class="customer-name">
-      ${escapeHtml(name)}
-    </div>
-
-    <div class="muted">
-      ${escapeHtml(
-        user.email ||
-        userId ||
-        ""
-      )}
-    </div>
-
-  `;
-
-  const modal =
-    document.getElementById(
-      "walletModal"
-    );
-
-  modal.dataset.customerId =
-    userId;
-
-  document.getElementById(
-    "adjustAmount"
-  ).value = "";
-
-  document.getElementById(
-    "adjustReference"
-  ).value = "";
-
-  document.getElementById(
-    "adjustReason"
-  ).value = "";
-
-  openModal(
-    "walletModal"
-  );
-
-}
-
-
-/*
-  IMPORTANT FIX:
-  The supplied backend expects:
-
-  POST /api/admin/wallets/adjust
-
-  with:
-
-  {
-    user_id,
-    wallet_type,
-    amount,
-    reason
-  }
-
-  The old Admin HTML was incorrectly sending:
-
-  /api/admin/wallets/:id/adjust
-
-  and wallet/main_wallet naming.
-*/
-
-async function submitWalletAdjustment(){
-
-  const modal =
-    document.getElementById(
-      "walletModal"
-    );
-
-  const customerId =
-    modal.dataset.customerId;
-
-  const selectedWallet =
+  const walletType =
     document.getElementById(
       "adjustWalletType"
     ).value;
@@ -4517,24 +4442,18 @@ async function submitWalletAdjustment(){
     );
 
   const reference =
-    document.getElementById(
-      "adjustReference"
-    ).value.trim();
+    String(
+      document.getElementById(
+        "adjustReference"
+      ).value || ""
+    ).trim();
 
   const reason =
-    document.getElementById(
-      "adjustReason"
-    ).value.trim();
-
-  if(!customerId){
-
-    alert(
-      "Customer is missing."
-    );
-
-    return;
-
-  }
+    String(
+      document.getElementById(
+        "adjustReason"
+      ).value || ""
+    ).trim();
 
   if(
     !Number.isFinite(amount) ||
@@ -4542,7 +4461,7 @@ async function submitWalletAdjustment(){
   ){
 
     alert(
-      "Enter a valid amount greater than zero."
+      "Enter a valid amount."
     );
 
     return;
@@ -4552,7 +4471,7 @@ async function submitWalletAdjustment(){
   if(!reason){
 
     alert(
-      "Please provide a reason."
+      "Please enter a reason for the adjustment."
     );
 
     return;
@@ -4566,72 +4485,29 @@ async function submitWalletAdjustment(){
     signedAmount =
       -amount;
 
-  if(action === "set"){
-
-    /*
-      The supplied backend supports
-      an adjustment amount rather than
-      a separate SET operation.
-
-      Calculate the delta from the
-      currently loaded wallet.
-    */
-
-    const wallet =
-      walletsData.find(
-        x =>
-          String(
-            walletUserId(x)
-          ) ===
-          String(customerId)
-      );
-
-    const current =
-      selectedWallet === "profit"
-        ? walletProfit(wallet || {})
-        : walletMain(wallet || {});
-
-    signedAmount =
-      amount - current;
-
-    if(signedAmount === 0){
-
-      alert(
-        "The wallet already has that balance."
-      );
-
-      return;
-
-    }
-
-  }
-
   try{
 
     await apiRequest(
       "/api/admin/wallets/adjust",
       {
         method:"POST",
-
         body:JSON.stringify({
-
           user_id:
-            customerId,
-
+            adjustmentUserId,
           wallet_type:
-            selectedWallet,
-
+            walletType,
           amount:
             signedAmount,
-
           reason:
+            reason,
+          reference:
             reference
-              ? `${reason} | Reference: ${reference}`
-              : reason
-
         })
-
       }
+    );
+
+    alert(
+      "Wallet balance updated successfully."
     );
 
     closeModal(
@@ -4639,16 +4515,438 @@ async function submitWalletAdjustment(){
     );
 
     await loadWallets();
-    await loadDashboard();
 
-    alert(
-      "Wallet adjustment saved successfully."
-    );
+    if(
+      currentSection ===
+      "customers"
+    )
+      await loadCustomers();
+
+    await loadDashboard();
 
   }catch(error){
 
     alert(
-      error.message
+      error.message ||
+      "Unable to adjust wallet."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   KYC
+===================================================== */
+
+async function loadKyc(){
+
+  const box =
+    document.getElementById(
+      "kycContainer"
+    );
+
+  box.innerHTML =
+    `<div class="loading">Loading KYC submissions...</div>`;
+
+  const status =
+    String(
+      document.getElementById(
+        "kycStatusFilter"
+      )?.value || ""
+    ).trim();
+
+  try{
+
+    const path =
+      status
+        ? `/api/admin/kyc?status=${encodeURIComponent(status)}&limit=500`
+        : "/api/admin/kyc?limit=500";
+
+    const data =
+      await apiRequest(
+        path
+      );
+
+    kycData =
+      extractArray(
+        data,
+        [
+          "submissions",
+          "kyc"
+        ]
+      );
+
+    renderKyc(
+      kycData
+    );
+
+  }catch(error){
+
+    box.innerHTML = `
+      <div class="error-box">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function renderKyc(list){
+
+  const box =
+    document.getElementById(
+      "kycContainer"
+    );
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="empty">No KYC submissions found.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${
+            list.map(item => {
+
+              const id =
+                item.id;
+
+              return `
+
+                <tr>
+
+                  <td>
+
+                    <div class="customer-name">
+                      ${escapeHtml(
+                        customerName(item)
+                      )}
+                    </div>
+
+                    <div class="muted">
+                      ${escapeHtml(
+                        item.user_id || ""
+                      )}
+                    </div>
+
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      item.email || "—"
+                    )}
+                  </td>
+
+                  <td>
+                    ${statusBadge(
+                      item.status ||
+                      item.kyc_status ||
+                      "pending"
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      date(
+                        item.created_at
+                      )
+                    )}
+                  </td>
+
+                  <td>
+
+                    <div class="row-actions">
+
+                      <button
+                        class="small-btn"
+                        onclick="viewKyc('${escapeAttr(id)}')">
+                        View
+                      </button>
+
+                      ${
+                        String(
+                          item.status ||
+                          ""
+                        ).toLowerCase() ===
+                        "pending"
+
+                        ? `
+
+                          <button
+                            class="small-btn"
+                            onclick="reviewKyc('${escapeAttr(id)}','approved')">
+                            Approve
+                          </button>
+
+                          <button
+                            class="small-btn"
+                            onclick="reviewKyc('${escapeAttr(id)}','rejected')">
+                            Decline
+                          </button>
+
+                        `
+
+                        : ""
+                      }
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              `;
+
+            }).join("")
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+async function viewKyc(id){
+
+  if(!id)
+    return;
+
+  const modal =
+    document.getElementById(
+      "kycModal"
+    );
+
+  const body =
+    document.getElementById(
+      "kycModalBody"
+    );
+
+  body.innerHTML =
+    `<div class="loading">Loading KYC...</div>`;
+
+  modal.classList.add("show");
+
+  const item =
+    kycData.find(
+      x =>
+        String(x.id) ===
+        String(id)
+    );
+
+  if(!item){
+
+    body.innerHTML = `
+      <div class="error-box">
+        KYC record could not be found in the current list.
+      </div>
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('kycModal')">
+        Cancel
+      </button>
+    `;
+
+    return;
+
+  }
+
+  body.innerHTML = `
+
+    <div class="back-row">
+
+      <button
+        class="back-btn"
+        onclick="closeModal('kycModal')">
+        ← Back
+      </button>
+
+    </div>
+
+    <div class="detail-grid">
+
+      <div class="detail-item">
+        <label>Customer</label>
+        <strong>
+          ${escapeHtml(
+            customerName(item)
+          )}
+        </strong>
+      </div>
+
+      <div class="detail-item">
+        <label>Email</label>
+        <strong>
+          ${escapeHtml(
+            item.email || "—"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail-item">
+        <label>KYC Status</label>
+        <strong>
+          ${statusBadge(
+            item.status ||
+            item.kyc_status ||
+            "pending"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail-item">
+        <label>Submitted</label>
+        <strong>
+          ${escapeHtml(
+            date(item.created_at)
+          )}
+        </strong>
+      </div>
+
+      <div class="detail-item">
+        <label>Submission ID</label>
+        <strong>
+          ${escapeHtml(
+            item.id
+          )}
+        </strong>
+      </div>
+
+      <div class="detail-item">
+        <label>User ID</label>
+        <strong>
+          ${escapeHtml(
+            item.user_id
+          )}
+        </strong>
+      </div>
+
+    </div>
+
+    <br>
+
+    ${
+      String(
+        item.status || ""
+      ).toLowerCase() ===
+      "pending"
+
+      ? `
+
+        <div class="row-actions">
+
+          <button
+            class="success-btn"
+            onclick="reviewKyc('${escapeAttr(id)}','approved')">
+            Approve KYC
+          </button>
+
+          <button
+            class="danger-btn"
+            onclick="reviewKyc('${escapeAttr(id)}','rejected')">
+            Decline KYC
+          </button>
+
+        </div>
+
+      `
+
+      : `
+
+        <div class="notice">
+          This KYC submission has already been reviewed.
+        </div>
+
+      `
+    }
+
+  `;
+
+}
+
+
+async function reviewKyc(
+  id,
+  decision
+){
+
+  if(!id)
+    return;
+
+  const label =
+    decision === "approved"
+      ? "approve"
+      : "decline";
+
+  if(
+    !confirm(
+      `Are you sure you want to ${label} this KYC submission?`
+    )
+  )
+    return;
+
+  try{
+
+    await apiRequest(
+      `/api/admin/kyc/${encodeURIComponent(id)}`,
+      {
+        method:"PATCH",
+        body:JSON.stringify({
+          status:
+            decision
+        })
+      }
+    );
+
+    alert(
+      `KYC ${decision} successfully.`
+    );
+
+    closeModal(
+      "kycModal"
+    );
+
+    await loadKyc();
+    await loadDashboard();
+
+  }catch(error){
+
+    alert(
+      error.message ||
+      "Unable to update KYC."
     );
 
   }
@@ -4674,7 +4972,7 @@ async function loadInvestments(){
 
     const data =
       await apiRequest(
-        "/api/admin/investments"
+        "/api/admin/investments?limit=500"
       );
 
     investmentsData =
@@ -4691,7 +4989,9 @@ async function loadInvestments(){
 
     box.innerHTML = `
       <div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>
     `;
 
@@ -4710,9 +5010,7 @@ function renderInvestments(list){
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">
-        No investments found.
-      </div>`;
+      `<div class="empty">No investments found.</div>`;
 
     return;
 
@@ -4730,10 +5028,8 @@ function renderInvestments(list){
             <th>Customer</th>
             <th>Plan</th>
             <th>Amount</th>
-            <th>Profit</th>
             <th>Status</th>
-            <th>Start</th>
-            <th>End</th>
+            <th>Created</th>
           </tr>
 
         </thead>
@@ -4745,37 +5041,30 @@ function renderInvestments(list){
 
               <tr>
 
-                <td class="customer-name">
-                  ${escapeHtml(
-                    item.customer_name ||
-                    item.name ||
-                    item.email ||
-                    item.user_id ||
-                    "Customer"
-                  )}
+                <td>
+                  <div class="customer-name">
+                    ${escapeHtml(
+                      customerName(item)
+                    )}
+                  </div>
+                  <div class="muted">
+                    ${escapeHtml(
+                      item.email || ""
+                    )}
+                  </div>
                 </td>
 
                 <td>
                   ${escapeHtml(
                     item.plan_name ||
                     item.plan ||
-                    item.investment_plan ||
                     "—"
                   )}
                 </td>
 
                 <td class="amount">
                   ${money(
-                    item.amount ||
-                    item.invested_amount
-                  )}
-                </td>
-
-                <td class="amount">
-                  ${money(
-                    item.profit ||
-                    item.expected_profit ||
-                    0
+                    item.amount
                   )}
                 </td>
 
@@ -4788,17 +5077,7 @@ function renderInvestments(list){
                 <td>
                   ${escapeHtml(
                     date(
-                      item.start_date ||
-                      item.started_at
-                    )
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    date(
-                      item.end_date ||
-                      item.ends_at
+                      item.created_at
                     )
                   )}
                 </td>
@@ -4815,53 +5094,6 @@ function renderInvestments(list){
     </div>
 
   `;
-
-}
-
-
-function filterInvestments(){
-
-  const q =
-    document.getElementById(
-      "investmentSearch"
-    ).value.toLowerCase();
-
-  const status =
-    document.getElementById(
-      "investmentStatusFilter"
-    ).value.toLowerCase();
-
-  renderInvestments(
-
-    investmentsData.filter(item => {
-
-      const text =
-        [
-          item.customer_name,
-          item.name,
-          item.email,
-          item.plan_name,
-          item.plan,
-          item.user_id
-        ]
-        .join(" ")
-        .toLowerCase();
-
-      const itemStatus =
-        String(
-          item.status || ""
-        ).toLowerCase();
-
-      return (
-        (!q ||
-          text.includes(q)) &&
-        (!status ||
-          itemStatus === status)
-      );
-
-    })
-
-  );
 
 }
 
@@ -4884,7 +5116,7 @@ async function loadTransactions(){
 
     const data =
       await apiRequest(
-        "/api/admin/transactions"
+        "/api/admin/transactions?limit=500"
       );
 
     transactionsData =
@@ -4901,7 +5133,9 @@ async function loadTransactions(){
 
     box.innerHTML = `
       <div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>
     `;
 
@@ -4920,9 +5154,7 @@ function renderTransactions(list){
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">
-        No transactions found.
-      </div>`;
+      `<div class="empty">No transactions found.</div>`;
 
     return;
 
@@ -4940,6 +5172,7 @@ function renderTransactions(list){
             <th>Reference</th>
             <th>Customer</th>
             <th>Type</th>
+            <th>Direction</th>
             <th>Amount</th>
             <th>Status</th>
             <th>Date</th>
@@ -4956,27 +5189,40 @@ function renderTransactions(list){
 
                 <td>
                   ${escapeHtml(
+                    item.transaction_ref ||
                     item.reference ||
-                    item.transaction_id ||
                     item.id ||
                     "—"
                   )}
                 </td>
 
-                <td class="customer-name">
-                  ${escapeHtml(
-                    item.customer_name ||
-                    item.name ||
-                    item.email ||
-                    item.user_id ||
-                    "Customer"
-                  )}
+                <td>
+
+                  <div class="customer-name">
+                    ${escapeHtml(
+                      customerName(item)
+                    )}
+                  </div>
+
+                  <div class="muted">
+                    ${escapeHtml(
+                      item.email || ""
+                    )}
+                  </div>
+
                 </td>
 
                 <td>
                   ${escapeHtml(
                     item.type ||
                     item.transaction_type ||
+                    "—"
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    item.direction ||
                     "—"
                   )}
                 </td>
@@ -4996,8 +5242,7 @@ function renderTransactions(list){
                 <td>
                   ${escapeHtml(
                     date(
-                      item.created_at ||
-                      item.transaction_date
+                      item.created_at
                     )
                   )}
                 </td>
@@ -5014,58 +5259,6 @@ function renderTransactions(list){
     </div>
 
   `;
-
-}
-
-
-function filterTransactions(){
-
-  const q =
-    document.getElementById(
-      "transactionSearch"
-    ).value.toLowerCase();
-
-  const type =
-    document.getElementById(
-      "transactionTypeFilter"
-    ).value.toLowerCase();
-
-  renderTransactions(
-
-    transactionsData.filter(item => {
-
-      const text =
-        [
-          item.reference,
-          item.transaction_id,
-          item.id,
-          item.customer_name,
-          item.name,
-          item.email,
-          item.user_id,
-          item.type,
-          item.transaction_type
-        ]
-        .join(" ")
-        .toLowerCase();
-
-      const itemType =
-        String(
-          item.type ||
-          item.transaction_type ||
-          ""
-        ).toLowerCase();
-
-      return (
-        (!q ||
-          text.includes(q)) &&
-        (!type ||
-          itemType === type)
-      );
-
-    })
-
-  );
 
 }
 
@@ -5088,7 +5281,7 @@ async function loadRequests(){
 
     const data =
       await apiRequest(
-        "/api/admin/requests?status=pending"
+        "/api/admin/requests?status=pending&limit=500"
       );
 
     requestsData =
@@ -5105,7 +5298,9 @@ async function loadRequests(){
 
     box.innerHTML = `
       <div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>
     `;
 
@@ -5124,9 +5319,7 @@ function renderRequests(list){
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">
-        No pending requests.
-      </div>`;
+      `<div class="empty">No pending requests found.</div>`;
 
     return;
 
@@ -5144,9 +5337,9 @@ function renderRequests(list){
             <th>Customer</th>
             <th>Type</th>
             <th>Amount</th>
-            <th>Reference</th>
-            <th>Date</th>
-            <th>Action</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
           </tr>
 
         </thead>
@@ -5158,14 +5351,20 @@ function renderRequests(list){
 
               <tr>
 
-                <td class="customer-name">
-                  ${escapeHtml(
-                    item.customer_name ||
-                    item.name ||
-                    item.email ||
-                    item.user_id ||
-                    "Customer"
-                  )}
+                <td>
+
+                  <div class="customer-name">
+                    ${escapeHtml(
+                      customerName(item)
+                    )}
+                  </div>
+
+                  <div class="muted">
+                    ${escapeHtml(
+                      item.email || ""
+                    )}
+                  </div>
+
                 </td>
 
                 <td>
@@ -5183,10 +5382,9 @@ function renderRequests(list){
                 </td>
 
                 <td>
-                  ${escapeHtml(
-                    item.reference ||
-                    item.id ||
-                    "—"
+                  ${statusBadge(
+                    item.status ||
+                    "pending"
                   )}
                 </td>
 
@@ -5203,17 +5401,15 @@ function renderRequests(list){
                   <div class="row-actions">
 
                     <button
-                      class="success-btn"
-                      style="padding:6px 9px;font-size:9px"
+                      class="small-btn"
                       onclick="processRequest('${escapeAttr(item.id)}','approved')">
                       Approve
                     </button>
 
                     <button
-                      class="danger-btn"
-                      style="padding:6px 9px;font-size:9px"
+                      class="small-btn"
                       onclick="processRequest('${escapeAttr(item.id)}','rejected')">
-                      Reject
+                      Decline
                     </button>
 
                   </div>
@@ -5236,49 +5432,17 @@ function renderRequests(list){
 }
 
 
-function filterRequests(){
-
-  const type =
-    document.getElementById(
-      "requestTypeFilter"
-    ).value.toLowerCase();
-
-  renderRequests(
-
-    requestsData.filter(item => {
-
-      const itemType =
-        String(
-          item.type ||
-          item.request_type ||
-          ""
-        ).toLowerCase();
-
-      return (
-        !type ||
-        itemType === type
-      );
-
-    })
-
-  );
-
-}
-
-
 async function processRequest(
   id,
-  status
+  decision
 ){
 
-  const action =
-    status === "approved"
-      ? "approve"
-      : "reject";
+  if(!id)
+    return;
 
   if(
     !confirm(
-      `Are you sure you want to ${action} this request?`
+      `Are you sure you want to ${decision} this request?`
     )
   )
     return;
@@ -5290,22 +5454,24 @@ async function processRequest(
       {
         method:"PATCH",
         body:JSON.stringify({
-          status
+          status:
+            decision
         })
       }
+    );
+
+    alert(
+      `Request ${decision} successfully.`
     );
 
     await loadRequests();
     await loadDashboard();
 
-    alert(
-      `Request ${status} successfully.`
-    );
-
   }catch(error){
 
     alert(
-      error.message
+      error.message ||
+      "Unable to process request."
     );
 
   }
@@ -5314,29 +5480,8 @@ async function processRequest(
 
 
 /* =====================================================
-   CHAT FIX
+   CHAT
 ===================================================== */
-
-/*
-  Supplied backend routes:
-
-  GET
-  /api/admin/chat
-  /api/admin/conversations
-
-  GET messages:
-  /api/admin/chat/:conversationId
-
-  POST message:
-  /api/admin/chat/:conversationId
-
-  The old Admin HTML was incorrectly using:
-
-  /api/admin/chat/conversations/:id/messages
-
-  which caused:
-  API route not found.
-*/
 
 async function loadConversations(){
 
@@ -5372,7 +5517,9 @@ async function loadConversations(){
 
     box.innerHTML = `
       <div class="error-box">
-        ${escapeHtml(error.message)}
+        ${escapeHtml(
+          error.message
+        )}
       </div>
     `;
 
@@ -5391,53 +5538,56 @@ function renderConversations(list){
   if(!list.length){
 
     box.innerHTML =
-      `<div class="empty">
-        No conversations.
-      </div>`;
+      `<div class="empty">No customer conversations found.</div>`;
 
     return;
 
   }
 
   box.innerHTML =
-    list.map(item => `
+    list
+      .map(item => {
 
-      <div
-        class="conversation ${
-          String(item.id) ===
-          String(selectedConversationId)
-            ? "active"
-            : ""
-        }"
-        onclick="openConversation('${escapeAttr(item.id)}')">
+        const id =
+          item.id;
 
-        <strong>
-          ${escapeHtml(
-            item.customer_name ||
-            item.name ||
-            item.email ||
-            item.user_id ||
-            "Customer"
-          )}
-        </strong>
+        return `
 
-        <span>
-          ${escapeHtml(
-            item.last_message ||
-            item.preview ||
-            "Open conversation"
-          )}
-        </span>
+          <div
+            class="chat-list-item ${
+              String(
+                selectedConversationId
+              ) === String(id)
+                ? "active"
+                : ""
+            }"
+            onclick="selectConversation('${escapeAttr(id)}')">
 
-      </div>
+            <strong>
+              ${escapeHtml(
+                customerName(item)
+              )}
+            </strong>
 
-    `)
-    .join("");
+            <span>
+              ${escapeHtml(
+                item.email || ""
+              )}
+            </span>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
 
 }
 
 
-async function openConversation(id){
+async function selectConversation(
+  id
+){
 
   selectedConversationId =
     id;
@@ -5446,144 +5596,42 @@ async function openConversation(id){
     conversationsData
   );
 
-  const messages =
+  const conversation =
+    conversationsData.find(
+      x =>
+        String(x.id) ===
+        String(id)
+    );
+
+  setText(
+    "chatHeader",
+    ""
+  );
+
+  const header =
     document.getElementById(
-      "messages"
+      "chatHeader"
     );
 
-  messages.innerHTML =
-    `<div class="loading">Loading messages...</div>`;
+  if(header){
 
-  try{
+    header.innerHTML = `
 
-    /*
-      FIXED:
-      GET /api/admin/chat/:conversationId
-    */
+      <strong>
+        ${escapeHtml(
+          customerName(
+            conversation || {}
+          )
+        )}
+      </strong>
 
-    const data =
-      await apiRequest(
-        `/api/admin/chat/${encodeURIComponent(id)}`
-      );
+      <span>
+        ${escapeHtml(
+          conversation?.email || ""
+        )}
+      </span>
 
-    const list =
-      extractArray(
-        data,
-        ["messages"]
-      );
-
-    renderMessages(
-      list
-    );
-
-  }catch(error){
-
-    messages.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(error.message)}
-      </div>
     `;
-
-  }
-
-}
-
-
-function renderMessages(list){
-
-  const box =
-    document.getElementById(
-      "messages"
-    );
-
-  if(!list.length){
-
-    box.innerHTML =
-      `<div class="empty">
-        No messages yet.
-      </div>`;
-
-    return;
-
-  }
-
-  box.innerHTML =
-    list.map(item => {
-
-      const sender =
-        String(
-          item.sender_role ||
-          item.role ||
-          item.sender_type ||
-          ""
-        ).toLowerCase();
-
-      const admin =
-        sender === "admin" ||
-        sender === "administrator";
-
-      return `
-
-        <div class="message ${
-          admin
-            ? "admin"
-            : "customer"
-        }">
-
-          ${escapeHtml(
-            item.message ||
-            item.content ||
-            item.text ||
-            ""
-          )}
-
-          <small>
-            ${escapeHtml(
-              date(
-                item.created_at ||
-                item.sent_at
-              )
-            )}
-          </small>
-
-        </div>
-
-      `;
-
-    })
-    .join("");
-
-  box.scrollTop =
-    box.scrollHeight;
-
-}
-
-
-function handleChatKey(event){
-
-  if(
-    event.key === "Enter" &&
-    !event.shiftKey
-  ){
-
-    event.preventDefault();
-
-    sendChatMessage();
-
-  }
-
-}
-
-
-async function sendChatMessage(){
-
-  if(!selectedConversationId){
-
-    alert(
-      "Select a conversation first."
-    );
-
-    return;
 
   }
 
@@ -5592,18 +5640,156 @@ async function sendChatMessage(){
       "chatInput"
     );
 
+  const send =
+    document.getElementById(
+      "chatSendButton"
+    );
+
+  if(input)
+    input.disabled = false;
+
+  if(send)
+    send.disabled = false;
+
+  await loadConversationMessages(
+    id
+  );
+
+}
+
+
+async function loadConversationMessages(
+  id
+){
+
+  const box =
+    document.getElementById(
+      "chatMessages"
+    );
+
+  box.innerHTML =
+    `<div class="loading">Loading messages...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        `/api/admin/chat?conversation_id=${encodeURIComponent(id)}`
+      );
+
+    const messages =
+      extractArray(
+        data,
+        [
+          "messages"
+        ]
+      );
+
+    renderMessages(
+      messages
+    );
+
+  }catch(error){
+
+    box.innerHTML = `
+      <div class="error-box">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function renderMessages(messages){
+
+  const box =
+    document.getElementById(
+      "chatMessages"
+    );
+
+  if(!messages.length){
+
+    box.innerHTML =
+      `<div class="empty">No messages yet.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    messages
+      .map(message => {
+
+        const type =
+          String(
+            message.sender_type ||
+            message.senderType ||
+            ""
+          ).toLowerCase();
+
+        const isAdmin =
+          type === "admin" ||
+          type === "administrator";
+
+        return `
+
+          <div
+            class="message ${
+              isAdmin
+                ? "admin"
+                : "customer"
+            }">
+
+            ${escapeHtml(
+              message.message ||
+              message.content ||
+              ""
+            )}
+
+            <span class="message-time">
+              ${escapeHtml(
+                date(
+                  message.created_at
+                )
+              )}
+            </span>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+async function sendChatMessage(){
+
+  if(!selectedConversationId)
+    return;
+
+  const input =
+    document.getElementById(
+      "chatInput"
+    );
+
   const message =
-    input.value.trim();
+    String(
+      input?.value || ""
+    ).trim();
 
   if(!message)
     return;
 
   try{
-
-    /*
-      FIXED:
-      POST /api/admin/chat/:conversationId
-    */
 
     await apiRequest(
       `/api/admin/chat/${encodeURIComponent(selectedConversationId)}`,
@@ -5617,19 +5803,145 @@ async function sendChatMessage(){
 
     input.value = "";
 
-    await openConversation(
+    await loadConversationMessages(
       selectedConversationId
     );
-
-    await loadConversations();
 
   }catch(error){
 
     alert(
-      error.message
+      error.message ||
+      "Unable to send message."
     );
 
   }
+
+}
+
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+async function loadActivity(){
+
+  const box =
+    document.getElementById(
+      "activityContainer"
+    );
+
+  box.innerHTML =
+    `<div class="loading">Loading activity...</div>`;
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/api/admin/activity"
+      );
+
+    const items =
+      extractArray(
+        data,
+        [
+          "activity",
+          "activities"
+        ]
+      );
+
+    renderActivityPage(
+      items
+    );
+
+  }catch(error){
+
+    box.innerHTML = `
+      <div class="error-box">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function renderActivityPage(items){
+
+  const box =
+    document.getElementById(
+      "activityContainer"
+    );
+
+  if(!items.length){
+
+    box.innerHTML =
+      `<div class="empty">No recent activity available.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    items
+      .slice(0,50)
+      .map(item => `
+
+        <div class="activity">
+
+          <div class="activity-icon">
+            •
+          </div>
+
+          <div class="activity-info">
+
+            <strong>
+              ${escapeHtml(
+                item.action ||
+                item.type ||
+                item.activity_type ||
+                "Activity"
+              )}
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                item.description ||
+                ""
+              )}
+
+              ${
+                item.amount !== undefined
+                  ? " • " +
+                    escapeHtml(
+                      money(
+                        item.amount
+                      )
+                    )
+                  : ""
+              }
+
+              ${
+                item.created_at
+                  ? " • " +
+                    escapeHtml(
+                      date(
+                        item.created_at
+                      )
+                    )
+                  : ""
+              }
+
+            </span>
+
+          </div>
+
+        </div>
+
+      `)
+      .join("");
 
 }
 
@@ -5638,184 +5950,244 @@ async function sendChatMessage(){
    NAVIGATION
 ===================================================== */
 
-const titles = {
+const sectionMeta = {
 
-  dashboard:
-    "Dashboard",
+  dashboard:{
+    title:"Dashboard",
+    subtitle:
+      "CoinForest administration center"
+  },
 
-  customers:
-    "Customers",
+  customers:{
+    title:"Customers",
+    subtitle:
+      "Manage customer accounts"
+  },
 
-  kyc:
-    "KYC Review",
+  wallets:{
+    title:"Wallets",
+    subtitle:
+      "Manage customer wallet balances"
+  },
 
-  chat:
-    "Customer Chat",
+  kyc:{
+    title:"KYC",
+    subtitle:
+      "Review customer verification"
+  },
 
-  wallets:
-    "Wallet Management",
+  investments:{
+    title:"Investments",
+    subtitle:
+      "Customer investment records"
+  },
 
-  investments:
-    "Investments",
+  transactions:{
+    title:"Transactions",
+    subtitle:
+      "Transaction ledger"
+  },
 
-  transactions:
-    "Transactions",
+  requests:{
+    title:"Requests",
+    subtitle:
+      "Pending operational requests"
+  },
 
-  requests:
-    "Pending Requests",
+  chat:{
+    title:"Customer Chat",
+    subtitle:
+      "Customer support conversations"
+  },
 
-  settings:
-    "Settings"
+  activity:{
+    title:"Activity",
+    subtitle:
+      "Recent platform activity"
+  },
+
+  settings:{
+    title:"Settings",
+    subtitle:
+      "Administrator settings"
+  }
 
 };
 
 
-function showSection(
-  id,
-  clickedButton=null
+function navigateTo(
+  section,
+  pushHistory=true
 ){
 
-  if(!adminAuthenticated){
-
-    showAdminAccessMessage(
-      "Administrator session required",
-      "Please sign in with an administrator account before using the administration panel."
-    );
-
-    return;
-
-  }
+  if(
+    !sectionMeta[section]
+  )
+    section =
+      "dashboard";
 
   currentSection =
-    id;
+    section;
 
   document
     .querySelectorAll(
       ".section"
     )
-    .forEach(
-      section =>
-        section.style.display =
-          "none"
-    );
+    .forEach(el => {
 
-  const target =
-    document.getElementById(
-      id
-    );
+      el.style.display =
+        el.id ===
+        `section-${section}`
+          ? ""
+          : "none";
 
-  if(target)
-    target.style.display =
-      "block";
+    });
+
 
   document
     .querySelectorAll(
       ".nav-item"
     )
-    .forEach(
-      item =>
-        item.classList.remove(
-          "active"
-        )
-    );
+    .forEach(btn => {
 
-  if(clickedButton){
-
-    clickedButton.classList.add(
-      "active"
-    );
-
-  }else{
-
-    const matching =
-      [
-        ...document.querySelectorAll(
-          ".nav-item"
-        )
-      ].find(
-        item =>
-          item
-            .getAttribute(
-              "onclick"
-            )
-            ?.includes(
-              `'${id}'`
-            )
+      btn.classList.toggle(
+        "active",
+        btn.dataset.section ===
+        section
       );
 
-    if(matching)
-      matching.classList.add(
-        "active"
-      );
+    });
 
-  }
+
+  const meta =
+    sectionMeta[section];
 
   setText(
     "pageTitle",
-    titles[id] ||
-    "CoinForest Admin"
+    meta.title
   );
 
-  closeSidebar();
-
-  loadSectionData(
-    id
+  setText(
+    "pageSubtitle",
+    meta.subtitle
   );
 
-}
 
+  if(pushHistory){
 
-async function loadSectionData(id){
-
-  switch(id){
-
-    case "dashboard":
-      await loadDashboard();
-      break;
-
-    case "customers":
-      await loadCustomers();
-      break;
-
-    case "kyc":
-      await loadKyc();
-      break;
-
-    case "wallets":
-      await loadWallets();
-      break;
-
-    case "investments":
-      await loadInvestments();
-      break;
-
-    case "transactions":
-      await loadTransactions();
-      break;
-
-    case "requests":
-      await loadRequests();
-      break;
-
-    case "chat":
-      await loadConversations();
-      break;
+    history.pushState(
+      {
+        coinforestAdmin:true,
+        section
+      },
+      "",
+      `#${section}`
+    );
 
   }
 
+
+  closeSidebar();
+
+
+  if(section === "dashboard")
+    loadDashboard();
+
+  else if(section === "customers")
+    loadCustomers();
+
+  else if(section === "wallets")
+    loadWallets();
+
+  else if(section === "kyc")
+    loadKyc();
+
+  else if(section === "investments")
+    loadInvestments();
+
+  else if(section === "transactions")
+    loadTransactions();
+
+  else if(section === "requests")
+    loadRequests();
+
+  else if(section === "chat")
+    loadConversations();
+
+  else if(section === "activity")
+    loadActivity();
+
 }
 
 
-async function refreshCurrentSection(){
+function restoreNavigation(){
 
-  if(!adminAuthenticated)
+  const hash =
+    String(
+      location.hash || ""
+    ).replace(
+      /^#/,
+      ""
+    );
+
+  if(
+    hash &&
+    sectionMeta[hash]
+  ){
+
+    currentSection =
+      hash;
+
+    navigateTo(
+      hash,
+      false
+    );
+
     return;
 
-  await loadSectionData(
-    currentSection
+  }
+
+  navigateTo(
+    "dashboard",
+    false
   );
 
 }
+
+
+window.addEventListener(
+  "popstate",
+  () => {
+
+    const hash =
+      String(
+        location.hash || ""
+      ).replace(
+        /^#/,
+        ""
+      );
+
+    if(
+      hash &&
+      sectionMeta[hash]
+    ){
+
+      navigateTo(
+        hash,
+        false
+      );
+
+    }else{
+
+      navigateTo(
+        "dashboard",
+        false
+      );
+
+    }
+
+  }
+);
 
 
 /* =====================================================
@@ -5824,124 +6196,138 @@ async function refreshCurrentSection(){
 
 function toggleSidebar(){
 
-  document
-    .getElementById(
+  const sidebar =
+    document.getElementById(
       "sidebar"
-    )
-    .classList.toggle(
-      "open"
     );
 
-  document
-    .getElementById(
-      "overlay"
-    )
-    .classList.toggle(
-      "open"
-    );
+  sidebar.classList.toggle(
+    "open"
+  );
 
 }
 
 
 function closeSidebar(){
 
-  document
-    .getElementById(
+  const sidebar =
+    document.getElementById(
       "sidebar"
-    )
-    .classList.remove(
-      "open"
     );
 
-  document
-    .getElementById(
-      "overlay"
-    )
-    .classList.remove(
+  if(sidebar)
+    sidebar.classList.remove(
       "open"
     );
 
 }
-
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    if(
-      window.innerWidth > 760
-    )
-      closeSidebar();
-
-  }
-);
 
 
 /* =====================================================
    MODALS
 ===================================================== */
 
-function openModal(id){
-
-  const modal =
-    document.getElementById(
-      id
-    );
-
-  if(modal)
-    modal.classList.add(
-      "open"
-    );
-
-}
-
-
 function closeModal(id){
 
   const modal =
-    document.getElementById(
-      id
-    );
+    document.getElementById(id);
 
   if(modal)
     modal.classList.remove(
-      "open"
+      "show"
     );
 
 }
 
 
-document
-  .querySelectorAll(
-    ".modal"
-  )
-  .forEach(
-    modal => {
+document.addEventListener(
+  "click",
+  event => {
 
-      modal.addEventListener(
-        "click",
-        event => {
+    if(
+      event.target.classList.contains(
+        "modal"
+      )
+    ){
 
-          if(
-            event.target ===
-            modal
-          )
-            modal.classList.remove(
-              "open"
-            );
-
-        }
+      event.target.classList.remove(
+        "show"
       );
 
     }
-  );
+
+  }
+);
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+function refreshCurrentSection(){
+
+  if(
+    currentSection ===
+    "dashboard"
+  )
+    loadDashboard();
+
+  else if(
+    currentSection ===
+    "customers"
+  )
+    loadCustomers();
+
+  else if(
+    currentSection ===
+    "wallets"
+  )
+    loadWallets();
+
+  else if(
+    currentSection ===
+    "kyc"
+  )
+    loadKyc();
+
+  else if(
+    currentSection ===
+    "investments"
+  )
+    loadInvestments();
+
+  else if(
+    currentSection ===
+    "transactions"
+  )
+    loadTransactions();
+
+  else if(
+    currentSection ===
+    "requests"
+  )
+    loadRequests();
+
+  else if(
+    currentSection ===
+    "chat"
+  )
+    loadConversations();
+
+  else if(
+    currentSection ===
+    "activity"
+  )
+    loadActivity();
+
+}
 
 
 /* =====================================================
    LOGOUT
 ===================================================== */
 
-function logoutAdmin(){
+async function logoutAdmin(){
 
   if(
     !confirm(
@@ -5950,8 +6336,37 @@ function logoutAdmin(){
   )
     return;
 
-  adminAuthenticated =
-    false;
+  try{
+
+    const token =
+      getStoredToken();
+
+    if(token){
+
+      await fetch(
+        `${API_BASE}/api/auth/logout`,
+        {
+          method:"POST",
+          headers:{
+            Authorization:
+              `Bearer ${token}`,
+            Accept:
+              "application/json"
+          },
+          cache:"no-store"
+        }
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Logout request failed:",
+      error
+    );
+
+  }
 
   localStorage.removeItem(
     "coinforest_token"
@@ -5965,48 +6380,30 @@ function logoutAdmin(){
     "coinforest_role"
   );
 
+  adminAuthenticated =
+    false;
+
   window.location.href =
-    "login.html";
+    "index.html";
 
 }
 
 
 /* =====================================================
-   BROWSER BACK
-===================================================== */
-
-window.addEventListener(
-  "popstate",
-  () => {
-
-    if(!adminAuthenticated)
-      return;
-
-    showSection(
-      "dashboard"
-    );
-
-  }
-);
-
-
-/* =====================================================
-   START
+   INIT
 ===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
+    restoreNavigation();
+
     const ok =
       await requireAdmin();
 
     if(!ok)
       return;
-
-    updateAdminIdentity(
-      getStoredUser() || {}
-    );
 
   }
 );
