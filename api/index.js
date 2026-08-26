@@ -1493,7 +1493,8 @@ async function adjustWallet(
   if (walletRows.length) {
     const wallet =
       walletRows[0];
-
+const transactionReference =
+  `ADJ-${crypto.randomUUID()}`;
     const current =
       numberValue(
         wallet.balance,
