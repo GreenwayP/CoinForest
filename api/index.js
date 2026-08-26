@@ -1,6 +1,6 @@
 /* =====================================================
    COINFOREST API — COMPLETE INDEX.JS
-   TARGETED WALLET / ADMIN FIX
+   ADMIN CHAT / TRANSACTIONS / ACTIVITIES FIX
    Existing authentication, KYC, chat, requests,
    investments and customer functions preserved.
 ===================================================== */
@@ -481,14 +481,6 @@ async function register(request, body) {
     )
   `;
 
-  /*
-   * FIX:
-   * Create both real wallet records immediately.
-   *
-   * The canonical wallet design uses one wallet row
-   * per wallet type, rather than expecting every
-   * customer to already have a combined wallet row.
-   */
   await ensureUserWallets(id);
 
   const user = {
@@ -535,9 +527,6 @@ async function register(request, body) {
 async function ensureUserWallets(userId) {
   if (!userId) return;
 
-  /*
-   * Create Main Wallet.
-   */
   try {
     await sql`
       INSERT INTO wallets (
@@ -563,10 +552,6 @@ async function ensureUserWallets(userId) {
       ON CONFLICT DO NOTHING
     `;
   } catch (error) {
-    /*
-     * Compatibility with an older wallet table that
-     * may already contain main_balance/profit_balance.
-     */
     try {
       await sql`
         INSERT INTO wallets (
@@ -600,9 +585,6 @@ async function ensureUserWallets(userId) {
     }
   }
 
-  /*
-   * Create Profit Wallet.
-   */
   try {
     await sql`
       INSERT INTO wallets (
@@ -628,11 +610,6 @@ async function ensureUserWallets(userId) {
       ON CONFLICT DO NOTHING
     `;
   } catch (error) {
-    /*
-     * If the legacy combined-wallet structure is
-     * being used, the first wallet already represents
-     * both balances.
-     */
     console.warn(
       "Profit wallet creation compatibility warning:",
       error?.message
@@ -640,12 +617,6 @@ async function ensureUserWallets(userId) {
   }
 }
 
-/*
- * Ensure wallets for every current customer.
- *
- * This is the important repair for existing accounts
- * created before wallet creation was wired into signup.
- */
 async function ensureAllCustomerWallets() {
   const customers = await sql`
     SELECT
@@ -1175,17 +1146,8 @@ async function adminCustomer(id) {
 }
 
 /* =====================================================
-   ADMIN WALLETS — FIXED
+   ADMIN WALLETS
 ===================================================== */
-
-/*
- * Reads the canonical wallet structure:
- *
- * one row per user + wallet_type + currency
- *
- * and converts it into the combined structure expected
- * by the existing Admin HTML.
- */
 
 async function adminWallets(url) {
   const search =
@@ -1199,10 +1161,6 @@ async function adminWallets(url) {
       100
     );
 
-  /*
-   * First make sure every existing customer has
-   * wallet records.
-   */
   await ensureAllCustomerWallets();
 
   const customers = await sql`
@@ -1273,9 +1231,6 @@ async function adminWallets(url) {
       }
     }
 
-    /*
-     * Legacy combined wallet support.
-     */
     if (!main && walletRows.length) {
       const legacy = walletRows[0];
 
@@ -1327,9 +1282,6 @@ async function adminWallets(url) {
       profit_wallet_id:
         profit?.id || null,
 
-      /*
-       * Canonical schema.
-       */
       main_balance:
         main?.balance !== undefined
           ? numberValue(main.balance)
@@ -1364,7 +1316,7 @@ async function adminWallets(url) {
 }
 
 /* =====================================================
-   ADMIN SINGLE CUSTOMER WALLET — FIXED
+   ADMIN SINGLE CUSTOMER WALLET
 ===================================================== */
 
 async function adminWallet(userId) {
@@ -1375,9 +1327,6 @@ async function adminWallet(userId) {
     );
   }
 
-  /*
-   * Make sure this customer has real wallet rows.
-   */
   await ensureUserWallets(userId);
 
   const profile = await sql`
@@ -1445,7 +1394,7 @@ async function adminWallet(userId) {
 }
 
 /* =====================================================
-   ADMIN WALLET ADJUSTMENT — FIXED
+   ADMIN WALLET ADJUSTMENT
 ===================================================== */
 
 async function adjustWallet(
@@ -1526,15 +1475,8 @@ async function adjustWallet(
     );
   }
 
-  /*
-   * FIX:
-   * Never depend on an old test wallet existing.
-   */
   await ensureUserWallets(userId);
 
-  /*
-   * Try canonical wallet row first.
-   */
   let walletRows = [];
 
   try {
@@ -1549,9 +1491,6 @@ async function adjustWallet(
     walletRows = [];
   }
 
-  /*
-   * Canonical wallet.
-   */
   if (walletRows.length) {
     const wallet =
       walletRows[0];
@@ -1582,9 +1521,6 @@ async function adjustWallet(
         RETURNING *
       `;
 
-    /*
-     * Record wallet ledger.
-     */
     try {
       await sql`
         INSERT INTO wallet_ledger (
@@ -1619,12 +1555,6 @@ async function adjustWallet(
       );
     }
 
-    /*
-     * FIX:
-     * Also record the adjustment in the main
-     * transactions table so Activity and Transactions
-     * immediately show the operation.
-     */
     try {
       await sql`
         INSERT INTO transactions (
@@ -1666,10 +1596,6 @@ async function adjustWallet(
         )
       `;
     } catch (error) {
-      /*
-       * Compatibility for transaction schemas where
-       * some optional fields differ.
-       */
       try {
         await sql`
           INSERT INTO transactions (
@@ -1710,9 +1636,6 @@ async function adjustWallet(
     });
   }
 
-  /*
-   * Legacy combined wallet fallback.
-   */
   const legacyRows = await sql`
     SELECT *
     FROM wallets
@@ -1952,13 +1875,6 @@ async function adminKyc(url) {
       `;
     }
   } catch (error) {
-    /*
-     * Important:
-     * KYC status is also stored on profiles.
-     *
-     * Therefore a customer who has not submitted a
-     * kyc_submissions row must NOT disappear from Admin.
-     */
     const profileRows =
       await sql`
         SELECT
@@ -1997,10 +1913,6 @@ async function adminKyc(url) {
     rows = profileRows;
   }
 
-  /*
-   * If the submissions table exists but has no rows,
-   * still expose the profile KYC statuses.
-   */
   if (!rows.length) {
     rows = await sql`
       SELECT
@@ -2090,11 +2002,6 @@ async function reviewKyc(
     submission = [];
   }
 
-  /*
-   * Profile fallback:
-   * Admin can approve/reject a customer even if
-   * they have not created a kyc_submissions row.
-   */
   if (!submission.length) {
     const profile =
       await sql`
@@ -2192,8 +2099,26 @@ async function adminInvestments(url) {
 }
 
 /* =====================================================
-   ADMIN TRANSACTIONS
+   ADMIN TRANSACTIONS — FIXED
 ===================================================== */
+
+/*
+ * The old version used INNER JOIN profiles.
+ *
+ * That could make valid transactions disappear when
+ * the corresponding profile relationship was missing,
+ * malformed, or when an old transaction referenced a
+ * customer record that was later changed.
+ *
+ * This version:
+ *
+ * 1. Uses LEFT JOIN.
+ * 2. Keeps the transaction even if profile information
+ *    cannot be joined.
+ * 3. Includes wallet ledger activity as a fallback.
+ * 4. Never turns the whole endpoint into a 500 simply
+ *    because an optional legacy column/table differs.
+ */
 
 async function adminTransactions(url) {
   const limit =
@@ -2207,38 +2132,177 @@ async function adminTransactions(url) {
       url.searchParams.get("type") || ""
     ).trim();
 
-  let rows;
+  let rows = [];
 
-  if (type) {
-    rows = await sql`
-      SELECT
-        t.*,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email
-      FROM transactions t
-      INNER JOIN profiles p
-        ON p.id = t.user_id
-      WHERE LOWER(COALESCE(t.type, ''))
-        = LOWER(${type})
-      ORDER BY t.created_at DESC
-      LIMIT ${limit}
-    `;
-  } else {
-    rows = await sql`
-      SELECT
-        t.*,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email
-      FROM transactions t
-      INNER JOIN profiles p
-        ON p.id = t.user_id
-      ORDER BY t.created_at DESC
-      LIMIT ${limit}
-    `;
+  try {
+    if (type) {
+      rows = await sql`
+        SELECT
+          t.*,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM transactions t
+        LEFT JOIN profiles p
+          ON p.id = t.user_id
+        WHERE LOWER(COALESCE(t.type, ''))
+          = LOWER(${type})
+        ORDER BY t.created_at DESC
+        LIMIT ${limit}
+      `;
+    } else {
+      rows = await sql`
+        SELECT
+          t.*,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM transactions t
+        LEFT JOIN profiles p
+          ON p.id = t.user_id
+        ORDER BY t.created_at DESC
+        LIMIT ${limit}
+      `;
+    }
+  } catch (error) {
+    console.error(
+      "Primary admin transaction query failed:",
+      error?.message
+    );
+
+    /*
+     * Compatibility fallback for transaction schemas
+     * where selecting t.* with profile fields may fail.
+     */
+    try {
+      rows = await sql`
+        SELECT
+          t.id,
+          t.user_id,
+          t.type,
+          t.direction,
+          t.amount,
+          t.fee,
+          t.currency,
+          t.status,
+          t.description,
+          t.created_at,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM transactions t
+        LEFT JOIN profiles p
+          ON p.id = t.user_id
+        ORDER BY t.created_at DESC
+        LIMIT ${limit}
+      `;
+    } catch (fallbackError) {
+      console.error(
+        "Transaction fallback failed:",
+        fallbackError?.message
+      );
+
+      return bad(
+        500,
+        "Unable to load transactions.",
+        {
+          detail:
+            fallbackError?.message ||
+            error?.message
+        }
+      );
+    }
+  }
+
+  /*
+   * If transactions exist, return them normally.
+   * If there are no transaction records but wallet
+   * activity exists, expose the wallet ledger instead
+   * so Admin is not falsely shown an empty transaction
+   * history.
+   */
+  if (!rows.length) {
+    try {
+      const ledgerRows =
+        await sql`
+          SELECT
+            wl.id,
+            wl.user_id,
+            wl.wallet_type,
+            wl.amount,
+            wl.balance_before,
+            wl.balance_after,
+            wl.entry_type,
+            wl.description,
+            wl.created_at,
+            p.first_name,
+            p.last_name,
+            p.username,
+            p.email
+          FROM wallet_ledger wl
+          LEFT JOIN profiles p
+            ON p.id = wl.user_id
+          ORDER BY wl.created_at DESC
+          LIMIT ${limit}
+        `;
+
+      rows =
+        ledgerRows.map(
+          (item) => ({
+            id: item.id,
+            user_id: item.user_id,
+            type:
+              item.entry_type ||
+              "wallet_activity",
+            direction:
+              numberValue(
+                item.amount,
+                0
+              ) >= 0
+                ? "credit"
+                : "debit",
+            amount:
+              Math.abs(
+                numberValue(
+                  item.amount,
+                  0
+                )
+              ),
+            fee: 0,
+            currency: "USD",
+            status: "completed",
+            description:
+              item.description ||
+              "Wallet activity",
+            wallet_type:
+              item.wallet_type,
+            balance_before:
+              item.balance_before,
+            balance_after:
+              item.balance_after,
+            created_at:
+              item.created_at,
+            first_name:
+              item.first_name,
+            last_name:
+              item.last_name,
+            username:
+              item.username,
+            email:
+              item.email,
+            source:
+              "wallet_ledger"
+          })
+        );
+    } catch (error) {
+      console.warn(
+        "Transaction ledger fallback unavailable:",
+        error?.message
+      );
+    }
   }
 
   return ok({
@@ -2273,7 +2337,7 @@ async function adminRequests(url) {
       p.username,
       p.email
     FROM pending_requests r
-    INNER JOIN profiles p
+    LEFT JOIN profiles p
       ON p.id = r.user_id
     WHERE LOWER(COALESCE(r.status, 'pending'))
       = ${status}
@@ -2407,6 +2471,56 @@ async function processRequest(
             WHERE id =
               ${wallet.id}
           `;
+
+          /*
+           * Record approved request in transaction
+           * history so the Admin Transactions panel
+           * sees the wallet funding.
+           */
+          try {
+            await sql`
+              INSERT INTO transactions (
+                id,
+                user_id,
+                type,
+                direction,
+                amount,
+                fee,
+                currency,
+                status,
+                description,
+                metadata,
+                created_at,
+                updated_at
+              )
+              VALUES (
+                ${crypto.randomUUID()},
+                ${item.user_id},
+                ${type},
+                'credit',
+                ${amount},
+                0,
+                'USD',
+                'completed',
+                ${`Approved ${type}`},
+                ${JSON.stringify({
+                  source:
+                    "approved_request",
+                  request_id:
+                    item.id,
+                  admin_id:
+                    admin.user.id
+                })},
+                NOW(),
+                NOW()
+              )
+            `;
+          } catch (error) {
+            console.warn(
+              "Approved request transaction log warning:",
+              error?.message
+            );
+          }
         }
       } catch (error) {
         console.warn(
@@ -2426,32 +2540,215 @@ async function processRequest(
 }
 
 /* =====================================================
-   ADMIN CHAT CONVERSATIONS
+   CHAT TABLE REPAIR / FOUNDATION
+===================================================== */
+
+/*
+ * The Admin Chat was previously returning:
+ *
+ * relation "chat_messages" does not exist
+ *
+ * This helper makes the API resilient by ensuring the
+ * expected chat tables exist before Admin Chat reads
+ * or writes them.
+ *
+ * Existing tables are NOT replaced.
+ * CREATE TABLE IF NOT EXISTS only creates missing
+ * tables.
+ */
+
+let chatFoundationReady = false;
+let chatFoundationPromise = null;
+
+async function ensureChatFoundation() {
+  if (chatFoundationReady) {
+    return true;
+  }
+
+  if (chatFoundationPromise) {
+    return chatFoundationPromise;
+  }
+
+  chatFoundationPromise =
+    (async () => {
+      try {
+        await sql`
+          CREATE TABLE IF NOT EXISTS chat_conversations (
+            id UUID PRIMARY KEY,
+            user_id UUID NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+          )
+        `;
+
+        await sql`
+          CREATE TABLE IF NOT EXISTS chat_messages (
+            id UUID PRIMARY KEY,
+            conversation_id UUID NOT NULL,
+            sender_id UUID,
+            sender_type TEXT NOT NULL DEFAULT 'customer',
+            message TEXT NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+          )
+        `;
+
+        /*
+         * Add compatibility columns when an older
+         * chat table already exists.
+         */
+        await sql`
+          ALTER TABLE chat_conversations
+          ADD COLUMN IF NOT EXISTS
+            user_id UUID
+        `;
+
+        await sql`
+          ALTER TABLE chat_conversations
+          ADD COLUMN IF NOT EXISTS
+            created_at TIMESTAMPTZ
+            DEFAULT NOW()
+        `;
+
+        await sql`
+          ALTER TABLE chat_conversations
+          ADD COLUMN IF NOT EXISTS
+            updated_at TIMESTAMPTZ
+            DEFAULT NOW()
+        `;
+
+        await sql`
+          ALTER TABLE chat_messages
+          ADD COLUMN IF NOT EXISTS
+            conversation_id UUID
+        `;
+
+        await sql`
+          ALTER TABLE chat_messages
+          ADD COLUMN IF NOT EXISTS
+            sender_id UUID
+        `;
+
+        await sql`
+          ALTER TABLE chat_messages
+          ADD COLUMN IF NOT EXISTS
+            sender_type TEXT
+            DEFAULT 'customer'
+        `;
+
+        await sql`
+          ALTER TABLE chat_messages
+          ADD COLUMN IF NOT EXISTS
+            message TEXT
+        `;
+
+        await sql`
+          ALTER TABLE chat_messages
+          ADD COLUMN IF NOT EXISTS
+            created_at TIMESTAMPTZ
+            DEFAULT NOW()
+        `;
+
+        chatFoundationReady = true;
+
+        return true;
+      } catch (error) {
+        console.error(
+          "Chat foundation error:",
+          error
+        );
+
+        /*
+         * Reset so another request can try again
+         * if the database was temporarily unavailable.
+         */
+        chatFoundationPromise = null;
+
+        return false;
+      }
+    })();
+
+  return chatFoundationPromise;
+}
+
+/* =====================================================
+   ADMIN CHAT CONVERSATIONS — FIXED
 ===================================================== */
 
 async function adminConversations() {
-  const rows =
-    await sql`
-      SELECT
-        c.*,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email
-      FROM chat_conversations c
-      INNER JOIN profiles p
-        ON p.id = c.user_id
-      ORDER BY
-        COALESCE(
-          c.updated_at,
-          c.created_at
-        ) DESC
-    `;
+  const ready =
+    await ensureChatFoundation();
 
-  return ok({
-    conversations: rows
-  });
+  if (!ready) {
+    return bad(
+      500,
+      "Unable to initialize Admin Chat."
+    );
+  }
+
+  try {
+    const rows =
+      await sql`
+        SELECT
+          c.*,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM chat_conversations c
+        LEFT JOIN profiles p
+          ON p.id = c.user_id
+        ORDER BY
+          COALESCE(
+            c.updated_at,
+            c.created_at
+          ) DESC
+      `;
+
+    return ok({
+      conversations: rows
+    });
+  } catch (error) {
+    console.error(
+      "Admin conversations error:",
+      error
+    );
+
+    /*
+     * Minimal fallback without profile join.
+     */
+    try {
+      const rows =
+        await sql`
+          SELECT *
+          FROM chat_conversations
+          ORDER BY
+            COALESCE(
+              updated_at,
+              created_at
+            ) DESC
+        `;
+
+      return ok({
+        conversations:
+          rows
+      });
+    } catch (fallbackError) {
+      return bad(
+        500,
+        "Unable to load chat conversations.",
+        {
+          detail:
+            fallbackError?.message ||
+            error?.message
+        }
+      );
+    }
+  }
 }
+
+/* =====================================================
+   ADMIN CHAT MESSAGES — FIXED
+===================================================== */
 
 async function adminMessages(
   conversationId
@@ -2463,19 +2760,51 @@ async function adminMessages(
     );
   }
 
-  const rows =
-    await sql`
-      SELECT *
-      FROM chat_messages
-      WHERE conversation_id =
-        ${conversationId}
-      ORDER BY created_at ASC
-    `;
+  const ready =
+    await ensureChatFoundation();
 
-  return ok({
-    messages: rows
-  });
+  if (!ready) {
+    return bad(
+      500,
+      "Unable to initialize Admin Chat."
+    );
+  }
+
+  try {
+    const rows =
+      await sql`
+        SELECT
+          *
+        FROM chat_messages
+        WHERE conversation_id =
+          ${conversationId}
+        ORDER BY created_at ASC
+      `;
+
+    return ok({
+      messages:
+        rows
+    });
+  } catch (error) {
+    console.error(
+      "Admin messages error:",
+      error
+    );
+
+    return bad(
+      500,
+      "Unable to load chat messages.",
+      {
+        detail:
+          error?.message
+      }
+    );
+  }
 }
+
+/* =====================================================
+   ADMIN SEND MESSAGE — FIXED
+===================================================== */
 
 async function adminSendMessage(
   request,
@@ -2513,6 +2842,16 @@ async function adminSendMessage(
     );
   }
 
+  const ready =
+    await ensureChatFoundation();
+
+  if (!ready) {
+    return bad(
+      500,
+      "Unable to initialize Admin Chat."
+    );
+  }
+
   const conversation =
     await sql`
       SELECT id
@@ -2531,26 +2870,44 @@ async function adminSendMessage(
   const id =
     crypto.randomUUID();
 
-  const rows =
-    await sql`
-      INSERT INTO chat_messages (
-        id,
-        conversation_id,
-        sender_id,
-        sender_type,
-        message,
-        created_at
-      )
-      VALUES (
-        ${id},
-        ${conversationId},
-        ${admin.user.id},
-        'admin',
-        ${message},
-        NOW()
-      )
-      RETURNING *
-    `;
+  let rows;
+
+  try {
+    rows =
+      await sql`
+        INSERT INTO chat_messages (
+          id,
+          conversation_id,
+          sender_id,
+          sender_type,
+          message,
+          created_at
+        )
+        VALUES (
+          ${id},
+          ${conversationId},
+          ${admin.user.id},
+          'admin',
+          ${message},
+          NOW()
+        )
+        RETURNING *
+      `;
+  } catch (error) {
+    console.error(
+      "Admin message insert error:",
+      error
+    );
+
+    return bad(
+      500,
+      "Unable to send message.",
+      {
+        detail:
+          error?.message
+      }
+    );
+  }
 
   try {
     await sql`
@@ -2572,62 +2929,316 @@ async function adminSendMessage(
 }
 
 /* =====================================================
-   ADMIN ACTIVITY
+   ADMIN ACTIVITY — FIXED
 ===================================================== */
+
+/*
+ * Activity was previously built from only:
+ *
+ *   transactions
+ *   investments
+ *
+ * That means wallet adjustments, wallet ledger entries,
+ * requests and chat activity could never appear.
+ *
+ * The new version gathers every available source
+ * independently. A missing optional table does not
+ * break the whole Activity endpoint.
+ */
 
 async function adminActivity() {
   const activities = [];
 
+  /*
+   * TRANSACTIONS
+   */
   try {
     const rows =
       await sql`
         SELECT
-          id,
+          t.id,
           'transaction' AS activity_type,
-          type AS action,
-          amount,
-          user_id,
-          created_at
-        FROM transactions
-        ORDER BY created_at DESC
-        LIMIT 20
+          COALESCE(
+            t.type,
+            'transaction'
+          ) AS action,
+          t.amount,
+          t.direction,
+          t.status,
+          t.currency,
+          t.description,
+          t.user_id,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email,
+          t.created_at
+        FROM transactions t
+        LEFT JOIN profiles p
+          ON p.id = t.user_id
+        ORDER BY t.created_at DESC
+        LIMIT 50
       `;
 
     activities.push(
       ...rows
     );
-  } catch {}
+  } catch (error) {
+    console.warn(
+      "Activity transactions unavailable:",
+      error?.message
+    );
+  }
 
+  /*
+   * INVESTMENTS
+   */
   try {
     const rows =
       await sql`
         SELECT
-          id,
+          i.id,
           'investment' AS activity_type,
           'investment_created'
             AS action,
-          amount,
-          user_id,
-          created_at
-        FROM investments
-        ORDER BY created_at DESC
-        LIMIT 20
+          COALESCE(
+            i.principal_amount,
+            i.amount,
+            0
+          ) AS amount,
+          NULL AS direction,
+          i.status,
+          'USD' AS currency,
+          NULL AS description,
+          i.user_id,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email,
+          i.created_at
+        FROM investments i
+        LEFT JOIN profiles p
+          ON p.id = i.user_id
+        ORDER BY i.created_at DESC
+        LIMIT 50
       `;
 
     activities.push(
       ...rows
     );
-  } catch {}
+  } catch (error) {
+    console.warn(
+      "Activity investments unavailable:",
+      error?.message
+    );
 
+    /*
+     * Compatibility fallback if investments does not
+     * have principal_amount.
+     */
+    try {
+      const rows =
+        await sql`
+          SELECT
+            i.id,
+            'investment' AS activity_type,
+            'investment_created'
+              AS action,
+            i.amount,
+            NULL AS direction,
+            i.status,
+            'USD' AS currency,
+            NULL AS description,
+            i.user_id,
+            p.first_name,
+            p.last_name,
+            p.username,
+            p.email,
+            i.created_at
+          FROM investments i
+          LEFT JOIN profiles p
+            ON p.id = i.user_id
+          ORDER BY i.created_at DESC
+          LIMIT 50
+        `;
+
+      activities.push(
+        ...rows
+      );
+    } catch (fallbackError) {
+      console.warn(
+        "Activity investment fallback unavailable:",
+        fallbackError?.message
+      );
+    }
+  }
+
+  /*
+   * WALLET LEDGER
+   */
+  try {
+    const rows =
+      await sql`
+        SELECT
+          wl.id,
+          'wallet' AS activity_type,
+          COALESCE(
+            wl.entry_type,
+            'wallet_activity'
+          ) AS action,
+          wl.amount,
+          CASE
+            WHEN wl.amount >= 0
+              THEN 'credit'
+            ELSE 'debit'
+          END AS direction,
+          'completed' AS status,
+          'USD' AS currency,
+          wl.description,
+          wl.user_id,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email,
+          wl.created_at
+        FROM wallet_ledger wl
+        LEFT JOIN profiles p
+          ON p.id = wl.user_id
+        ORDER BY wl.created_at DESC
+        LIMIT 50
+      `;
+
+    activities.push(
+      ...rows
+    );
+  } catch (error) {
+    console.warn(
+      "Activity wallet ledger unavailable:",
+      error?.message
+    );
+  }
+
+  /*
+   * PENDING / PROCESSED REQUESTS
+   */
+  try {
+    const rows =
+      await sql`
+        SELECT
+          r.id,
+          'request' AS activity_type,
+          COALESCE(
+            r.type,
+            'request'
+          ) AS action,
+          r.amount,
+          NULL AS direction,
+          r.status,
+          'USD' AS currency,
+          NULL AS description,
+          r.user_id,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email,
+          r.created_at
+        FROM pending_requests r
+        LEFT JOIN profiles p
+          ON p.id = r.user_id
+        ORDER BY r.created_at DESC
+        LIMIT 50
+      `;
+
+    activities.push(
+      ...rows
+    );
+  } catch (error) {
+    console.warn(
+      "Activity requests unavailable:",
+      error?.message
+    );
+  }
+
+  /*
+   * CHAT
+   */
+  try {
+    const ready =
+      await ensureChatFoundation();
+
+    if (ready) {
+      const rows =
+        await sql`
+          SELECT
+            m.id,
+            'chat' AS activity_type,
+            CASE
+              WHEN LOWER(
+                COALESCE(
+                  m.sender_type,
+                  ''
+                )
+              ) = 'admin'
+                THEN 'admin_message'
+              ELSE 'customer_message'
+            END AS action,
+            NULL AS amount,
+            NULL AS direction,
+            'completed' AS status,
+            NULL AS currency,
+            m.message AS description,
+            c.user_id,
+            p.first_name,
+            p.last_name,
+            p.username,
+            p.email,
+            m.created_at
+          FROM chat_messages m
+          LEFT JOIN chat_conversations c
+            ON c.id =
+              m.conversation_id
+          LEFT JOIN profiles p
+            ON p.id =
+              c.user_id
+          ORDER BY m.created_at DESC
+          LIMIT 30
+        `;
+
+      activities.push(
+        ...rows
+      );
+    }
+  } catch (error) {
+    console.warn(
+      "Activity chat unavailable:",
+      error?.message
+    );
+  }
+
+  /*
+   * Sort everything together.
+   */
   activities.sort(
-    (a, b) =>
-      new Date(b.created_at) -
-      new Date(a.created_at)
+    (a, b) => {
+      const dateA =
+        new Date(
+          a.created_at || 0
+        ).getTime();
+
+      const dateB =
+        new Date(
+          b.created_at || 0
+        ).getTime();
+
+      return dateB - dateA;
+    }
   );
 
   return ok({
     activity:
-      activities.slice(0, 30)
+      activities.slice(0, 50),
+    activities:
+      activities.slice(0, 50)
   });
 }
 
@@ -2741,10 +3352,6 @@ async function updateCustomer(
       RETURNING *
     `;
 
-  /*
-   * If this customer was created before wallet
-   * creation was installed, repair it now.
-   */
   await ensureUserWallets(id);
 
   return ok({
@@ -3598,6 +4205,19 @@ export default async function handler(
         "/api/admin/chat/"
       )
     ) {
+      const auth =
+        await requireAdmin(request);
+
+      if (!auth.ok) {
+        return writeWebResponse(
+          res,
+          bad(
+            auth.status,
+            auth.error
+          )
+        );
+      }
+
       const conversationId =
         path.split("/").pop();
 
@@ -3673,4 +4293,4 @@ export default async function handler(
       })
     );
   }
-  }
+}
