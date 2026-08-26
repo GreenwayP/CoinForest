@@ -1576,12 +1576,12 @@ const transactionReference =
           ${crypto.randomUUID()},
           ${userId},
           ${transactionReference},
-          'system',
+          ${amount >= 0 ? "system_credit" : "system_debit"},
           ${amount >= 0 ? "credit" : "debit"},
           ${Math.abs(amount)},
           0,
           'USD',
-          'completed',
+          'success',
           ${reason},
           ${JSON.stringify({
             source:
@@ -1747,12 +1747,12 @@ const transactionReference =
   ${crypto.randomUUID()},
   ${userId},
   ${transactionReference},
-  'system',
+  ${amount >= 0 ? "system_credit" : "system_debit"},
         ${amount >= 0 ? "credit" : "debit"},
         ${Math.abs(amount)},
         0,
         'USD',
-        'completed',
+        'system'
         ${reason},
         ${JSON.stringify({
           source:
