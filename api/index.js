@@ -2329,25 +2329,104 @@ async function adminRequests(url) {
       100
     );
 
-  const rows = await sql`
-    SELECT
-      r.*,
-      p.first_name,
-      p.last_name,
-      p.username,
-      p.email
-    FROM pending_requests r
-    LEFT JOIN profiles p
-      ON p.id = r.user_id
-    WHERE LOWER(COALESCE(r.status, 'pending'))
-      = ${status}
-    ORDER BY r.created_at DESC
-    LIMIT ${limit}
-  `;
+  try {
+    /*
+     * Pending Requests are stored in two real tables:
+     * 1. deposit_requests
+     * 2. withdrawal_requests
+     *
+     * There is no pending_requests table.
+     */
 
-  return ok({
-    requests: rows
-  });
+    const deposits = await sql`
+      SELECT
+        d.id,
+        d.deposit_reference AS request_reference,
+        d.user_id,
+        d.wallet_id,
+        d.amount,
+        d.currency,
+        d.payment_method,
+        d.payment_reference,
+        d.proof_url,
+        d.status,
+        d.submitted_at AS created_at,
+        d.reviewed_at,
+        d.reviewed_by,
+        d.admin_notes,
+        'deposit' AS type,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email
+      FROM deposit_requests d
+      LEFT JOIN profiles p
+        ON p.id = d.user_id
+      WHERE LOWER(COALESCE(d.status, 'pending'))
+        = ${status}
+      ORDER BY d.submitted_at DESC
+      LIMIT ${limit}
+    `;
+
+    const withdrawals = await sql`
+      SELECT
+        w.id,
+        w.withdrawal_reference AS request_reference,
+        w.user_id,
+        w.wallet_id,
+        w.amount,
+        w.currency,
+        w.withdrawal_method AS payment_method,
+        NULL AS payment_reference,
+        NULL AS proof_url,
+        w.status,
+        w.requested_at AS created_at,
+        w.reviewed_at,
+        w.reviewed_by,
+        w.admin_notes,
+        'withdrawal' AS type,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email
+      FROM withdrawal_requests w
+      LEFT JOIN profiles p
+        ON p.id = w.user_id
+      WHERE LOWER(COALESCE(w.status, 'pending'))
+        = ${status}
+      ORDER BY w.requested_at DESC
+      LIMIT ${limit}
+    `;
+
+    const rows = [
+      ...deposits,
+      ...withdrawals
+    ].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() -
+        new Date(a.created_at).getTime()
+    );
+
+    return ok({
+      requests: rows.slice(0, limit)
+    });
+
+  } catch (error) {
+    console.error(
+      "Admin pending requests load error:",
+      error
+    );
+
+    return bad(
+      500,
+      "Unable to load pending requests.",
+      {
+        detail:
+          error?.message ||
+          "Pending request query failed."
+      }
+    );
+  }
 }
 
 async function processRequest(
