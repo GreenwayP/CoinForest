@@ -3299,7 +3299,7 @@ async function adminActivity() {
           t.id,
           'transaction' AS activity_type,
           COALESCE(
-            t.type,
+            t.transaction_type,
             'transaction'
           ) AS action,
           t.amount,
