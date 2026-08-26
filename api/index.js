@@ -1432,7 +1432,8 @@ async function adjustWallet(
       body.reason ||
         "Administrator balance adjustment"
     ).trim();
-
+const transactionReference =
+  `ADJ-${crypto.randomUUID()}`;
   if (!userId) {
     return bad(
       400,
@@ -1493,8 +1494,7 @@ async function adjustWallet(
   if (walletRows.length) {
     const wallet =
       walletRows[0];
-const transactionReference =
-  `ADJ-${crypto.randomUUID()}`;
+
     const current =
       numberValue(
         wallet.balance,
@@ -1560,6 +1560,7 @@ const transactionReference =
         INSERT INTO transactions (
           id,
           user_id,
+          transaction_reference,
           transaction_type,
           direction,
           amount,
@@ -1574,6 +1575,7 @@ const transactionReference =
         VALUES (
           ${crypto.randomUUID()},
           ${userId},
+          ${transactionReference},
           'system',
           ${amount >= 0 ? "credit" : "debit"},
           ${Math.abs(amount)},
@@ -1727,11 +1729,12 @@ const transactionReference =
   try {
     await sql`
       INSERT INTO transactions (
-        id,
-        user_id,
-        transaction_type,
-        direction,
-        amount,
+  id,
+  user_id,
+  transaction_reference,
+  transaction_type,
+  direction,
+  amount,
         fee,
         currency,
         status,
@@ -1741,9 +1744,10 @@ const transactionReference =
         updated_at
       )
       VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        'system',
+  ${crypto.randomUUID()},
+  ${userId},
+  ${transactionReference},
+  'system',
         ${amount >= 0 ? "credit" : "debit"},
         ${Math.abs(amount)},
         0,
