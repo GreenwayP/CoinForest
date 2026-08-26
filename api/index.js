@@ -1763,38 +1763,44 @@ async function adjustWallet(
         NOW()
       )
     `;
-  } catch (error) {
+   } catch (error) {
+    const detail =
+      error?.message ||
+      "Transaction insert failed.";
+
+    console.error(
+      "ADMIN WALLET TRANSACTION INSERT FAILED:",
+      detail
+    );
+
+    /*
+     * Roll the wallet back because the transaction
+     * could not be recorded.
+     */
     try {
       await sql`
-        INSERT INTO transactions (
-          id,
-          user_id,
-          transaction_type,
-          amount,
-          currency,
-          status,
-          description,
-          created_at
-        )
-        VALUES (
-          ${crypto.randomUUID()},
-          ${userId},
-          'system',
-          ${amount},
-          'USD',
-          'completed',
-          ${reason},
-          NOW()
-        )
+        UPDATE wallets
+        SET
+          balance = ${current},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
       `;
-    } catch (legacyError) {
-      console.warn(
-        "Legacy transaction warning:",
-        legacyError?.message ||
-          error?.message
+    } catch (rollbackError) {
+      console.error(
+        "WALLET ROLLBACK FAILED:",
+        rollbackError?.message ||
+          rollbackError
       );
     }
-  }
+
+    return bad(
+      500,
+      `Transaction insert failed: ${detail}`,
+      {
+        detail
+      }
+    );
+  } 
 
   return ok({
     message:
