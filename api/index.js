@@ -1049,8 +1049,7 @@ async function adminDashboard() {
   });
 }
 
-/* =====================================================
-   ADMIN CUSTOMERS
+/* ============================================type ADMIN CUSTOMERS
 ===================================================== */
 
 async function adminCustomers(url) {
@@ -1560,7 +1559,7 @@ async function adjustWallet(
         INSERT INTO transactions (
           id,
           user_id,
-          type,
+          transaction_type,
           direction,
           amount,
           fee,
@@ -1601,7 +1600,7 @@ async function adjustWallet(
           INSERT INTO transactions (
             id,
             user_id,
-            type,
+            transaction_type,
             amount,
             currency,
             status,
@@ -1744,7 +1743,7 @@ async function adjustWallet(
       INSERT INTO transactions (
         id,
         user_id,
-        type,
+        transaction_type,
         direction,
         amount,
         fee,
@@ -1785,7 +1784,7 @@ async function adjustWallet(
         INSERT INTO transactions (
           id,
           user_id,
-          type,
+          transaction_type,
           amount,
           currency,
           status,
