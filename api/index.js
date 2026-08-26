@@ -2278,7 +2278,7 @@ async function adminTransactions(url) {
               item.description ||
               "Wallet activity",
             wallet_type:
-              item.wallet_type,
+            chatFoundationPromiseFoundationPromiseem.wallet_type,
             balance_before:
               item.balance_before,
             balance_after:
@@ -2463,290 +2463,556 @@ async function processRequest(
     );
   }
 
-  const rows = await sql`
+  if (!id) {
+    return bad(
+      400,
+      "Request ID is required."
+    );
+  }
+
+  /*
+   * The CoinForest database does NOT have a
+   * pending_requests table.
+   *
+   * Requests are stored separately in:
+   *   deposit_requests
+   *   withdrawal_requests
+   *
+   * Find the request by ID in either table.
+   */
+
+  let requestType = null;
+  let item = null;
+
+  const depositRows = await sql`
     SELECT *
-    FROM pending_requests
+    FROM deposit_requests
     WHERE id = ${id}
     LIMIT 1
   `;
 
-  if (!rows.length) {
+  if (depositRows.length) {
+    requestType = "deposit";
+    item = depositRows[0];
+  } else {
+    const withdrawalRows = await sql`
+      SELECT *
+      FROM withdrawal_requests
+      WHERE id = ${id}
+      LIMIT 1
+    `;
+
+    if (withdrawalRows.length) {
+      requestType = "withdrawal";
+      item = withdrawalRows[0];
+    }
+  }
+
+  if (!item) {
     return bad(
       404,
       "Request not found."
     );
   }
 
-  const item = rows[0];
+  /*
+   * Prevent processing the same request twice.
+   */
+  const currentStatus =
+    String(
+      item.status || "pending"
+    )
+      .trim()
+      .toLowerCase();
 
-  const updated =
-    await sql`
-      UPDATE pending_requests
-      SET
-        status = ${decision},
-        reviewed_by = ${admin.user.id},
-        reviewed_at = NOW(),
-        updated_at = NOW()
-      WHERE id = ${id}
-      RETURNING *
-    `;
+  if (currentStatus !== "pending") {
+    return bad(
+      400,
+      `Request has already been ${currentStatus}.`
+    );
+  }
 
-  if (
-    decision === "approved" &&
-    item.type &&
-    item.user_id
-  ) {
-    const type =
-      String(item.type)
-        .toLowerCase();
+  const amount =
+    numberValue(
+      item.amount,
+      0
+    );
 
-    const amount =
+  if (amount <= 0) {
+    return bad(
+      400,
+      "Request amount must be greater than zero."
+    );
+  }
+
+  /*
+   * =====================================================
+   * REJECT REQUEST
+   * =====================================================
+   *
+   * Rejection changes only the request status.
+   * No wallet balance is changed.
+   */
+
+  if (decision === "rejected") {
+
+    if (requestType === "deposit") {
+
+      const updated =
+        await sql`
+          UPDATE deposit_requests
+          SET
+            status = 'rejected',
+            reviewed_by = ${admin.user.id},
+            reviewed_at = NOW(),
+            admin_notes =
+              COALESCE(
+                ${body.admin_notes || body.notes || null},
+                admin_notes
+              ),
+            updated_at = NOW()
+          WHERE id = ${id}
+            AND LOWER(COALESCE(status, 'pending'))
+              = 'pending'
+          RETURNING *
+        `;
+
+      if (!updated.length) {
+        return bad(
+          400,
+          "Request could not be rejected because it is no longer pending."
+        );
+      }
+
+      return ok({
+        message:
+          "Deposit request rejected successfully.",
+        request: {
+          ...updated[0],
+          type: "deposit"
+        }
+      });
+    }
+
+    const updated =
+      await sql`
+        UPDATE withdrawal_requests
+        SET
+          status = 'rejected',
+          reviewed_by = ${admin.user.id},
+          reviewed_at = NOW(),
+          admin_notes =
+            COALESCE(
+              ${body.admin_notes || body.notes || null},
+              admin_notes
+            ),
+          updated_at = NOW()
+        WHERE id = ${id}
+          AND LOWER(COALESCE(status, 'pending'))
+            = 'pending'
+        RETURNING *
+      `;
+
+    if (!updated.length) {
+      return bad(
+        400,
+        "Request could not be rejected because it is no longer pending."
+      );
+    }
+
+    return ok({
+      message:
+        "Withdrawal request rejected successfully.",
+      request: {
+        ...updated[0],
+        type: "withdrawal"
+      }
+    });
+  }
+
+  /*
+   * =====================================================
+   * APPROVE DEPOSIT
+   * =====================================================
+   *
+   * Deposit approval:
+   * 1. Find/create the customer's Main Wallet.
+   * 2. Credit the deposit amount.
+   * 3. Create a transaction ledger entry.
+   * 4. Mark the deposit approved.
+   */
+
+  if (requestType === "deposit") {
+
+    await ensureUserWallets(
+      item.user_id
+    );
+
+    const walletRows =
+      await sql`
+        SELECT *
+        FROM wallets
+        WHERE user_id = ${item.user_id}
+          AND wallet_type = 'main'
+          AND LOWER(COALESCE(currency, 'USD'))
+            = LOWER(${item.currency || "USD"})
+        LIMIT 1
+      `;
+
+    if (!walletRows.length) {
+      return bad(
+        500,
+        "Main wallet could not be found for this customer."
+      );
+    }
+
+    const wallet =
+      walletRows[0];
+
+    const oldBalance =
       numberValue(
-        item.amount,
+        wallet.balance,
         0
       );
 
-    if (
-      amount > 0 &&
-      (
-        type === "deposit" ||
-        type === "transfer"
-      )
-    ) {
-      try {
-        await ensureUserWallets(
-          item.user_id
-        );
+    const newBalance =
+      oldBalance + amount;
 
-        const walletRows =
-          await sql`
-            SELECT *
-            FROM wallets
-            WHERE user_id =
-              ${item.user_id}
-              AND wallet_type = 'main'
-            LIMIT 1
-          `;
+    /*
+     * Credit the customer's Main Wallet.
+     */
+    await sql`
+      UPDATE wallets
+      SET
+        balance = ${newBalance},
+        updated_at = NOW()
+      WHERE id = ${wallet.id}
+    `;
 
-        if (walletRows.length) {
-          const wallet =
-            walletRows[0];
+    /*
+     * Record the approved deposit in the
+     * transactions ledger.
+     */
+    const transactionReference =
+      `DEP-${String(item.deposit_reference || id)}-${crypto.randomUUID()}`;
 
-          const oldBalance =
-            numberValue(
-              wallet.balance,
-              0
-            );
+    try {
 
-          const newBalance =
-            oldBalance + amount;
+      await sql`
+        INSERT INTO transactions (
+          id,
+          user_id,
+          wallet_id,
+          transaction_reference,
+          transaction_type,
+          direction,
+          amount,
+          fee,
+          currency,
+          status,
+          description,
+          metadata,
+          created_at,
+          updated_at
+        )
+        VALUES (
+          ${crypto.randomUUID()},
+          ${item.user_id},
+          ${wallet.id},
+          ${transactionReference},
+          'deposit',
+          'credit',
+          ${amount},
+          0,
+          ${item.currency || "USD"},
+          'completed',
+          'Deposit approved by administrator',
+          ${JSON.stringify({
+            source: "deposit_request_approval",
+            request_id: item.id,
+            deposit_reference:
+              item.deposit_reference || null
+          })},
+          NOW(),
+          NOW()
+        )
+      `;
 
-          await sql`
-            UPDATE wallets
-            SET
-              balance =
-                ${newBalance},
-              updated_at = NOW()
-            WHERE id =
-              ${wallet.id}
-          `;
+    } catch (transactionError) {
 
-          /*
-           * Record approved request in transaction
-           * history so the Admin Transactions panel
-           * sees the wallet funding.
-           */
-          try {
-            await sql`
-              INSERT INTO transactions (
-                id,
-                user_id,
-                type,
-                direction,
-                amount,
-                fee,
-                currency,
-                status,
-                description,
-                metadata,
-                created_at,
-                updated_at
-              )
-              VALUES (
-                ${crypto.randomUUID()},
-                ${item.user_id},
-                ${type},
-                'credit',
-                ${amount},
-                0,
-                'USD',
-                'completed',
-                ${`Approved ${type}`},
-                ${JSON.stringify({
-                  source:
-                    "approved_request",
-                  request_id:
-                    item.id,
-                  admin_id:
-                    admin.user.id
-                })},
-                NOW(),
-                NOW()
-              )
-            `;
-          } catch (error) {
-            console.warn(
-              "Approved request transaction log warning:",
-              error?.message
-            );
-          }
+      /*
+       * Do not leave the customer with a credited
+       * wallet if the required ledger entry failed.
+       */
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${oldBalance},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
+      `;
+
+      console.error(
+        "Deposit transaction creation error:",
+        transactionError
+      );
+
+      return bad(
+        500,
+        "Deposit could not be approved because the transaction ledger could not be updated.",
+        {
+          detail:
+            transactionError?.message ||
+            "Transaction creation failed."
         }
-      } catch (error) {
-        console.warn(
-          "Request wallet processing warning:",
-          error?.message
-        );
-      }
+      );
     }
-  }
 
-  return ok({
-    message:
-      `Request ${decision} successfully.`,
-    request:
-      updated[0]
-  });
-}
+    /*
+     * Mark the deposit request approved only after
+     * the wallet and transaction have succeeded.
+     */
+    const updated =
+      await sql`
+        UPDATE deposit_requests
+        SET
+          status = 'approved',
+          reviewed_by = ${admin.user.id},
+          reviewed_at = NOW(),
+          updated_at = NOW()
+        WHERE id = ${id}
+          AND LOWER(COALESCE(status, 'pending'))
+            = 'pending'
+        RETURNING *
+      `;
 
-/* =====================================================
-   CHAT TABLE REPAIR / FOUNDATION
-===================================================== */
+    if (!updated.length) {
 
-/*
- * The Admin Chat was previously returning:
- *
- * relation "chat_messages" does not exist
- *
- * This helper makes the API resilient by ensuring the
- * expected chat tables exist before Admin Chat reads
- * or writes them.
- *
- * Existing tables are NOT replaced.
- * CREATE TABLE IF NOT EXISTS only creates missing
- * tables.
- */
+      /*
+       * Safety rollback if the request changed between
+       * the initial check and this update.
+       */
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${oldBalance},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
+      `;
 
-let chatFoundationReady = false;
-let chatFoundationPromise = null;
+      return bad(
+        400,
+        "Deposit could not be approved because the request is no longer pending."
+      );
+    }
 
-async function ensureChatFoundation() {
-  if (chatFoundationReady) {
-    return true;
-  }
-
-  if (chatFoundationPromise) {
-    return chatFoundationPromise;
-  }
-
-  chatFoundationPromise =
-    (async () => {
-      try {
-        await sql`
-          CREATE TABLE IF NOT EXISTS chat_conversations (
-            id UUID PRIMARY KEY,
-            user_id UUID NOT NULL,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-          )
-        `;
-
-        await sql`
-          CREATE TABLE IF NOT EXISTS chat_messages (
-            id UUID PRIMARY KEY,
-            conversation_id UUID NOT NULL,
-            sender_id UUID,
-            sender_type TEXT NOT NULL DEFAULT 'customer',
-            message TEXT NOT NULL,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-          )
-        `;
-
-        /*
-         * Add compatibility columns when an older
-         * chat table already exists.
-         */
-        await sql`
-          ALTER TABLE chat_conversations
-          ADD COLUMN IF NOT EXISTS
-            user_id UUID
-        `;
-
-        await sql`
-          ALTER TABLE chat_conversations
-          ADD COLUMN IF NOT EXISTS
-            created_at TIMESTAMPTZ
-            DEFAULT NOW()
-        `;
-
-        await sql`
-          ALTER TABLE chat_conversations
-          ADD COLUMN IF NOT EXISTS
-            updated_at TIMESTAMPTZ
-            DEFAULT NOW()
-        `;
-
-        await sql`
-          ALTER TABLE chat_messages
-          ADD COLUMN IF NOT EXISTS
-            conversation_id UUID
-        `;
-
-        await sql`
-          ALTER TABLE chat_messages
-          ADD COLUMN IF NOT EXISTS
-            sender_id UUID
-        `;
-
-        await sql`
-          ALTER TABLE chat_messages
-          ADD COLUMN IF NOT EXISTS
-            sender_type TEXT
-            DEFAULT 'customer'
-        `;
-
-        await sql`
-          ALTER TABLE chat_messages
-          ADD COLUMN IF NOT EXISTS
-            message TEXT
-        `;
-
-        await sql`
-          ALTER TABLE chat_messages
-          ADD COLUMN IF NOT EXISTS
-            created_at TIMESTAMPTZ
-            DEFAULT NOW()
-        `;
-
-        chatFoundationReady = true;
-
-        return true;
-      } catch (error) {
-        console.error(
-          "Chat foundation error:",
-          error
-        );
-
-        /*
-         * Reset so another request can try again
-         * if the database was temporarily unavailable.
-         */
-        chatFoundationPromise = null;
-
-        return false;
+    return ok({
+      message:
+        "Deposit request approved successfully.",
+      request: {
+        ...updated[0],
+        type: "deposit"
       }
-    })();
+    });
+  }
 
-  return chatFoundationPromise;
+  /*
+   * =====================================================
+   * APPROVE WITHDRAWAL
+   * =====================================================
+   *
+   * Withdrawal approval:
+   * 1. Check the customer's Main Wallet.
+   * 2. Make sure there is enough balance.
+   * 3. Debit the requested amount.
+   * 4. Create the transaction ledger entry.
+   * 5. Mark the withdrawal approved.
+   */
+
+  if (requestType === "withdrawal") {
+
+    await ensureUserWallets(
+      item.user_id
+    );
+
+    const walletRows =
+      await sql`
+        SELECT *
+        FROM wallets
+        WHERE user_id = ${item.user_id}
+          AND id = ${item.wallet_id}
+        LIMIT 1
+      `;
+
+    if (!walletRows.length) {
+      return bad(
+        500,
+        "Withdrawal wallet could not be found."
+      );
+    }
+
+    const wallet =
+      walletRows[0];
+
+    const oldBalance =
+      numberValue(
+        wallet.balance,
+        0
+      );
+
+    if (oldBalance < amount) {
+      return bad(
+        400,
+        "Insufficient Main Wallet balance for this withdrawal."
+      );
+    }
+
+    const newBalance =
+      oldBalance - amount;
+
+    /*
+     * Debit the customer's Main Wallet.
+     */
+    await sql`
+      UPDATE wallets
+      SET
+        balance = ${newBalance},
+        updated_at = NOW()
+      WHERE id = ${wallet.id}
+    `;
+
+    const transactionId =
+      crypto.randomUUID();
+
+    const transactionReference =
+      `WTH-${String(item.withdrawal_reference || id)}-${crypto.randomUUID()}`;
+
+    try {
+
+      await sql`
+        INSERT INTO transactions (
+          id,
+          user_id,
+          wallet_id,
+          transaction_reference,
+          transaction_type,
+          direction,
+          amount,
+          fee,
+          currency,
+          status,
+          description,
+          metadata,
+          created_at,
+          updated_at
+        )
+        VALUES (
+          ${transactionId},
+          ${item.user_id},
+          ${wallet.id},
+          ${transactionReference},
+          'withdrawal',
+          'debit',
+          ${amount},
+          ${numberValue(item.fee, 0)},
+          ${item.currency || "USD"},
+          'completed',
+          'Withdrawal approved by administrator',
+          ${JSON.stringify({
+            source: "withdrawal_request_approval",
+            request_id: item.id,
+            withdrawal_reference:
+              item.withdrawal_reference || null,
+            withdrawal_method:
+              item.withdrawal_method || null
+          })},
+          NOW(),
+          NOW()
+        )
+      `;
+
+    } catch (transactionError) {
+
+      /*
+       * Roll the wallet back if the ledger entry fails.
+       */
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${oldBalance},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
+      `;
+
+      console.error(
+        "Withdrawal transaction creation error:",
+        transactionError
+      );
+
+      return bad(
+        500,
+        "Withdrawal could not be approved because the transaction ledger could not be updated.",
+        {
+          detail:
+            transactionError?.message ||
+            "Transaction creation failed."
+        }
+      );
+    }
+
+    /*
+     * Mark the withdrawal approved and connect
+     * the resulting transaction.
+     */
+    const updated =
+      await sql`
+        UPDATE withdrawal_requests
+        SET
+          status = 'approved',
+          reviewed_by = ${admin.user.id},
+          reviewed_at = NOW(),
+          processed_at = NOW(),
+          transaction_id = ${transactionId},
+          updated_at = NOW()
+        WHERE id = ${id}
+          AND LOWER(COALESCE(status, 'pending'))
+            = 'pending'
+        RETURNING *
+      `;
+
+    if (!updated.length) {
+
+      /*
+       * Safety rollback.
+       */
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${oldBalance},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
+      `;
+
+      return bad(
+        400,
+        "Withdrawal could not be approved because the request is no longer pending."
+      );
+    }
+
+    return ok({
+      message:
+        "Withdrawal request approved successfully.",
+      request: {
+        ...updated[0],
+        type: "withdrawal"
+      }
+    });
+  }
+
+  return bad(
+    400,
+    "Unsupported request type."
+  );
 }
 
 /* =====================================================
