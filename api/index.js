@@ -1594,38 +1594,23 @@ async function adjustWallet(
           NOW()
         )
       `;
-    } catch (error) {
-      try {
-        await sql`
-          INSERT INTO transactions (
-            id,
-            user_id,
-            transaction_type,
-            amount,
-            currency,
-            status,
-            description,
-            created_at
-          )
-          VALUES (
-            ${crypto.randomUUID()},
-            ${userId},
-            'system',
-            ${amount},
-            'USD',
-            'completed',
-            ${reason},
-            NOW()
-          )
-        `;
-      } catch (legacyError) {
-        console.warn(
-          "Transaction record warning:",
-          legacyError?.message ||
-            error?.message
-        );
+    
+      } catch (error) {
+    console.error(
+      "ADMIN WALLET TRANSACTION INSERT FAILED:",
+      error?.message || error
+    );
+
+    return bad(
+      500,
+      "Wallet was not updated because the transaction record could not be created.",
+      {
+        detail:
+          error?.message ||
+          "Transaction insert failed."
       }
-    }
+    );
+  }
 
     return ok({
       message:
