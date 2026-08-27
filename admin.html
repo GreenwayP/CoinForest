@@ -5837,24 +5837,55 @@ async function loadActivity(){
       "activityContainer"
     );
 
+  if(!box)
+    return;
+
   box.innerHTML =
     `<div class="loading">Loading activity...</div>`;
 
   try{
 
+    /*
+      First try the dedicated activity endpoint.
+    */
     const data =
       await apiRequest(
         "/api/admin/activity"
       );
 
-    const items =
+    let items =
       extractArray(
         data,
         [
           "activity",
-          "activities"
+          "activities",
+          "recentActivity",
+          "recent_activity"
         ]
       );
+
+    /*
+      If the activity endpoint returns no records,
+      use the working transactions endpoint.
+    */
+    if(!items.length){
+
+      const txData =
+        await apiRequest(
+          "/api/admin/transactions?limit=50"
+        );
+
+      const transactions =
+        extractArray(
+          txData,
+          ["transactions"]
+        );
+
+      items =
+        transactionsToActivity(
+          transactions
+        );
+    }
 
     renderActivityPage(
       items
@@ -5862,18 +5893,155 @@ async function loadActivity(){
 
   }catch(error){
 
-    box.innerHTML = `
-      <div class="error-box">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>
-    `;
+    /*
+      If /api/admin/activity itself fails,
+      fall back to the working transaction endpoint.
+    */
+    try{
+
+      const txData =
+        await apiRequest(
+          "/api/admin/transactions?limit=50"
+        );
+
+      const transactions =
+        extractArray(
+          txData,
+          ["transactions"]
+        );
+
+      const items =
+        transactionsToActivity(
+          transactions
+        );
+
+      renderActivityPage(
+        items
+      );
+
+    }catch(fallbackError){
+
+      box.innerHTML = `
+        <div class="error-box">
+          ${escapeHtml(
+            fallbackError.message ||
+            error.message ||
+            "Unable to load recent activity."
+          )}
+        </div>
+      `;
+
+    }
 
   }
 
 }
+  function transactionsToActivity(items){
 
+  if(!Array.isArray(items))
+    return [];
+
+  return items
+    .slice()
+    .sort((a,b) => {
+
+      const dateA =
+        new Date(
+          a?.created_at ||
+          a?.createdAt ||
+          a?.timestamp ||
+          0
+        ).getTime();
+
+      const dateB =
+        new Date(
+          b?.created_at ||
+          b?.createdAt ||
+          b?.timestamp ||
+          0
+        ).getTime();
+
+      return dateB - dateA;
+
+    })
+    .slice(0,50)
+    .map(item => {
+
+      const type =
+        item?.type ||
+        item?.transaction_type ||
+        "Transaction";
+
+      const direction =
+        String(
+          item?.direction || ""
+        ).toLowerCase();
+
+      const customer =
+        typeof customerName === "function"
+          ? customerName(item)
+          : "";
+
+      const reference =
+        item?.transaction_ref ||
+        item?.reference ||
+        item?.id ||
+        "";
+
+      const status =
+        item?.status || "";
+
+      let description = "";
+
+      if(customer && customer !== "—")
+        description += customer;
+
+      if(direction)
+        description +=
+          (description ? " • " : "") +
+          direction;
+
+      if(reference)
+        description +=
+          (description ? " • " : "") +
+          "Ref " +
+          reference;
+
+      if(status)
+        description +=
+          (description ? " • " : "") +
+          status;
+
+      return {
+
+        icon:
+          direction === "credit"
+            ? "↓"
+            : direction === "debit"
+              ? "↑"
+              : "↔",
+
+        title:
+          String(type) +
+          " transaction",
+
+        description:
+          description,
+
+        amount:
+          item?.amount,
+
+        created_at:
+          item?.created_at ||
+          item?.createdAt ||
+          item?.timestamp ||
+          null
+
+      };
+
+    });
+
+  }
 
 function renderActivityPage(items){
 
