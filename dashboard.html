@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#061524">
 <title>CoinForest Dashboard</title>
 
 <style>
@@ -27,7 +28,9 @@
   --shadow:0 10px 30px rgba(7,21,37,.07);
 }
 
-html{scroll-behavior:smooth}
+html{
+  scroll-behavior:smooth;
+}
 
 body{
   font-family:Inter,Arial,sans-serif;
@@ -37,11 +40,22 @@ body{
   color:var(--text);
 }
 
-button,input,select{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
+button,input,select,textarea{
+  font:inherit;
+}
 
-/* ================= SIDEBAR ================= */
+button{
+  cursor:pointer;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* =====================================================
+SIDEBAR
+===================================================== */
 
 .sidebar{
   position:fixed;
@@ -52,8 +66,9 @@ a{text-decoration:none;color:inherit}
   background:linear-gradient(180deg,#061524,#091d31);
   color:#fff;
   padding:24px 15px;
-  z-index:1000;
+  z-index:5000;
   transition:.25s;
+  overflow-y:auto;
 }
 
 .logo{
@@ -63,7 +78,24 @@ a{text-decoration:none;color:inherit}
   letter-spacing:-.7px;
 }
 
-.logo span{color:var(--green)}
+.logo span{
+  color:var(--green);
+}
+
+.sidebar-close{
+  display:none;
+  position:absolute;
+  right:14px;
+  top:14px;
+  width:35px;
+  height:35px;
+  border:1px solid #294157;
+  border-radius:10px;
+  background:#102d47;
+  color:#fff;
+  font-size:20px;
+  line-height:1;
+}
 
 .menu-title{
   color:#71859a;
@@ -103,10 +135,8 @@ a{text-decoration:none;color:inherit}
 }
 
 .sidebar-bottom{
-  position:absolute;
-  bottom:20px;
-  left:15px;
-  right:15px;
+  margin-top:25px;
+  padding-bottom:10px;
 }
 
 .logout{
@@ -119,7 +149,17 @@ a{text-decoration:none;color:inherit}
   font-weight:700;
 }
 
-/* ================= MAIN ================= */
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(3,10,20,.55);
+  z-index:4900;
+}
+
+/* =====================================================
+MAIN
+===================================================== */
 
 .main{
   margin-left:245px;
@@ -221,7 +261,9 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-/* ================= CONTENT ================= */
+/* =====================================================
+CONTENT
+===================================================== */
 
 .content{
   padding:25px 32px 55px;
@@ -270,7 +312,46 @@ a{text-decoration:none;color:inherit}
   color:#fff;
 }
 
-/* ================= WELCOME HERO ================= */
+.btn-danger{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+/* =====================================================
+HIDDEN PANELS
+===================================================== */
+
+.dashboard-section{
+  display:block;
+}
+
+.dashboard-section.hidden{
+  display:none;
+}
+
+.section-panel{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+
+.section-panel h2{
+  font-size:17px;
+}
+
+.section-panel p{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+  margin-top:6px;
+}
+
+/* =====================================================
+WELCOME HERO
+===================================================== */
 
 .hero-board{
   display:grid;
@@ -352,7 +433,9 @@ a{text-decoration:none;color:inherit}
   font-size:16px;
 }
 
-.positive{color:#39dd91}
+.positive{
+  color:#39dd91;
+}
 
 .crypto-decoration{
   background:linear-gradient(145deg,#091c2e,#0d2943);
@@ -407,7 +490,9 @@ a{text-decoration:none;color:inherit}
   box-shadow:0 0 30px rgba(247,147,26,.25);
 }
 
-/* ================= STATS BOARD ================= */
+/* =====================================================
+STATS
+===================================================== */
 
 .stats-board{
   display:grid;
@@ -472,7 +557,9 @@ a{text-decoration:none;color:inherit}
   margin-top:5px;
 }
 
-/* ================= BOARD GRID ================= */
+/* =====================================================
+BOARD
+===================================================== */
 
 .board-grid{
   display:grid;
@@ -506,7 +593,9 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-/* ================= QUICK ACTIONS ================= */
+/* =====================================================
+ACTIONS
+===================================================== */
 
 .actions{
   display:grid;
@@ -556,7 +645,9 @@ a{text-decoration:none;color:inherit}
   margin-top:4px;
 }
 
-/* ================= WALLETS ================= */
+/* =====================================================
+WALLETS
+===================================================== */
 
 .wallet-list{
   display:grid;
@@ -605,7 +696,9 @@ a{text-decoration:none;color:inherit}
   margin-top:13px;
 }
 
-/* ================= MARKET ================= */
+/* =====================================================
+MARKET
+===================================================== */
 
 .market-board{
   background:
@@ -681,9 +774,18 @@ a{text-decoration:none;color:inherit}
   font-weight:900;
 }
 
-.btc-icon{background:linear-gradient(135deg,#f7931a,#ffd166)}
-.eth-icon{background:linear-gradient(135deg,#627eea,#aab9ff)}
-.usdt-icon{background:linear-gradient(135deg,#26a17b,#70d7b0)}
+.btc-icon{
+  background:linear-gradient(135deg,#f7931a,#ffd166);
+}
+
+.eth-icon{
+  background:linear-gradient(135deg,#627eea,#aab9ff);
+}
+
+.usdt-icon{
+  background:linear-gradient(135deg,#26a17b,#70d7b0);
+}
+
 .bnb-icon{
   background:linear-gradient(135deg,#f3ba2f,#ffe28a);
   color:#111;
@@ -701,12 +803,21 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-.coin-change.up{color:#36da8e}
-.coin-change.down{color:#ef5350}
+.coin-change.up{
+  color:#36da8e;
+}
 
-/* ================= INVESTMENT ================= */
+.coin-change.down{
+  color:#ef5350;
+}
 
-.investment-board{margin-bottom:18px}
+/* =====================================================
+INVESTMENTS
+===================================================== */
+
+.investment-board{
+  margin-bottom:18px;
+}
 
 .plans{
   display:grid;
@@ -748,7 +859,9 @@ a{text-decoration:none;color:inherit}
   font-weight:900;
 }
 
-.plan h3{font-size:14px}
+.plan h3{
+  font-size:14px;
+}
 
 .plan-rate{
   color:var(--green2);
@@ -805,7 +918,9 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-/* ================= TRANSACTIONS ================= */
+/* =====================================================
+TRANSACTIONS
+===================================================== */
 
 .transactions-board{
   display:grid;
@@ -841,11 +956,25 @@ a{text-decoration:none;color:inherit}
   font-weight:800;
 }
 
-.status.completed{background:#dcfce9;color:#15803d}
-.status.pending{background:#fff7d6;color:#a16207}
-.status.failed{background:#fee2e2;color:#b91c1c}
+.status.completed{
+  background:#dcfce9;
+  color:#15803d;
+}
 
-/* ================= BONUS / TIER ================= */
+.status.pending{
+  background:#fff7d6;
+  color:#a16207;
+}
+
+.status.failed,
+.status.rejected{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+/* =====================================================
+INFO
+===================================================== */
 
 .info-board{
   background:
@@ -856,7 +985,9 @@ a{text-decoration:none;color:inherit}
   padding:20px;
 }
 
-.info-board h2{font-size:15px}
+.info-board h2{
+  font-size:15px;
+}
 
 .info-board p{
   color:#a9bacb;
@@ -872,13 +1003,62 @@ a{text-decoration:none;color:inherit}
   margin-top:12px;
 }
 
-.bonus-note{
-  font-size:8px;
-  color:#7f95a9;
-  margin-top:5px;
+/* =====================================================
+FORMS
+===================================================== */
+
+.field{
+  margin-bottom:13px;
 }
 
-/* ================= MODALS ================= */
+.field label{
+  display:block;
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid #dce2e9;
+  border-radius:8px;
+  outline:none;
+  background:#fff;
+  color:var(--text);
+}
+
+.field textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--green);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.modal-submit{
+  width:100%;
+  padding:12px;
+  border:0;
+  background:var(--green);
+  border-radius:9px;
+  font-weight:900;
+}
+
+/* =====================================================
+MODALS
+===================================================== */
 
 .modal{
   display:none;
@@ -886,17 +1066,21 @@ a{text-decoration:none;color:inherit}
   inset:0;
   background:rgba(3,10,20,.75);
   backdrop-filter:blur(5px);
-  z-index:3000;
+  z-index:8000;
   align-items:center;
   justify-content:center;
   padding:18px;
 }
 
-.modal.active{display:flex}
+.modal.active{
+  display:flex;
+}
 
 .modal-box{
   width:100%;
-  max-width:440px;
+  max-width:470px;
+  max-height:92vh;
+  overflow-y:auto;
   background:#fff;
   border-radius:17px;
   padding:24px;
@@ -923,37 +1107,7 @@ a{text-decoration:none;color:inherit}
   border:0;
   background:none;
   font-size:25px;
-}
-
-.field{margin-bottom:13px}
-
-.field label{
-  display:block;
-  font-size:11px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.field input,
-.field select{
-  width:100%;
-  padding:11px;
-  border:1px solid #dce2e9;
-  border-radius:8px;
-  outline:none;
-  background:#fff;
-}
-
-.field input:focus,
-.field select:focus{border-color:var(--green)}
-
-.modal-submit{
-  width:100%;
-  padding:12px;
-  border:0;
-  background:var(--green);
-  border-radius:9px;
-  font-weight:900;
+  color:#344054;
 }
 
 .method-grid{
@@ -970,6 +1124,11 @@ a{text-decoration:none;color:inherit}
   text-align:left;
 }
 
+.method.selected{
+  border-color:var(--green);
+  background:#effcf6;
+}
+
 .method strong{
   display:block;
   font-size:11px;
@@ -982,7 +1141,134 @@ a{text-decoration:none;color:inherit}
   margin-top:3px;
 }
 
-/* ================= CHAT ================= */
+/* =====================================================
+NOTICES
+===================================================== */
+
+.notice{
+  display:none;
+  padding:11px 13px;
+  border-radius:9px;
+  margin-bottom:14px;
+  font-size:10px;
+  line-height:1.5;
+}
+
+.notice.show{
+  display:block;
+}
+
+.notice.success{
+  background:#dcfce9;
+  color:#166534;
+}
+
+.notice.error{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.notice.warning{
+  background:#fff7d6;
+  color:#92400e;
+}
+
+.loading{
+  opacity:.65;
+  pointer-events:none;
+}
+
+/* =====================================================
+PROFILE / SECURITY / SETTINGS
+===================================================== */
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.account-item{
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#fbfcfe;
+}
+
+.account-item span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.account-item strong{
+  display:block;
+  margin-top:5px;
+  font-size:12px;
+}
+
+.kyc-banner{
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:15px;
+  background:#fff7d6;
+  color:#8a5a00;
+}
+
+.kyc-banner.approved{
+  background:#dcfce9;
+  color:#166534;
+}
+
+.kyc-banner.rejected{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.kyc-banner strong{
+  display:block;
+  font-size:13px;
+}
+
+.kyc-banner span{
+  display:block;
+  font-size:10px;
+  margin-top:5px;
+  line-height:1.5;
+}
+
+.withdraw-account-box{
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:15px;
+}
+
+.withdraw-account-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.withdraw-account-row:last-child{
+  border-bottom:0;
+}
+
+.withdraw-account-row span{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.withdraw-account-row strong{
+  font-size:10px;
+  text-align:right;
+}
+
+/* =====================================================
+CHAT
+===================================================== */
 
 .chat-float{
   position:fixed;
@@ -999,7 +1285,9 @@ a{text-decoration:none;color:inherit}
   z-index:1500;
 }
 
-.chat-box{max-width:420px}
+.chat-box{
+  max-width:420px;
+}
 
 .chat-status{
   background:#eafaf3;
@@ -1010,23 +1298,46 @@ a{text-decoration:none;color:inherit}
   margin-bottom:13px;
 }
 
-/* ================= MOBILE ================= */
+/* =====================================================
+MOBILE
+===================================================== */
 
 @media(max-width:1200px){
-  .plans{grid-template-columns:repeat(3,1fr)}
-  .stats-board{grid-template-columns:repeat(2,1fr)}
+
+  .plans{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .stats-board{
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 
 @media(max-width:950px){
 
   .sidebar{
     transform:translateX(-100%);
-    z-index:1000;
   }
 
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .mobile-menu{display:block}
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .sidebar-close{
+    display:block;
+  }
+
+  .sidebar.open + .sidebar-overlay{
+    display:block;
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .mobile-menu{
+    display:block;
+  }
 
   .hero-board,
   .board-grid,
@@ -1034,17 +1345,28 @@ a{text-decoration:none;color:inherit}
     grid-template-columns:1fr;
   }
 
-  .market-grid{grid-template-columns:repeat(3,1fr)}
+  .market-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
 
-  .topbar{z-index:2000}
-  .back-button{z-index:2100}
+  .topbar{
+    z-index:2000;
+  }
+
+  .back-button{
+    z-index:2100;
+  }
 }
 
 @media(max-width:700px){
 
-  .topbar{padding:0 14px}
+  .topbar{
+    padding:0 14px;
+  }
 
-  .content{padding:19px 14px 45px}
+  .content{
+    padding:19px 14px 45px;
+  }
 
   .page-title{
     align-items:flex-start;
@@ -1052,48 +1374,99 @@ a{text-decoration:none;color:inherit}
     gap:13px;
   }
 
-  .action-buttons{width:100%}
+  .action-buttons{
+    width:100%;
+  }
 
-  .action-buttons .btn{flex:1}
+  .action-buttons .btn{
+    flex:1;
+  }
 
-  .balance-grid{grid-template-columns:1fr}
-  .market-grid{grid-template-columns:1fr 1fr}
-  .plans{grid-template-columns:1fr 1fr}
-  .actions{grid-template-columns:1fr 1fr}
-  .wallet-list{grid-template-columns:1fr}
-  .profile-info{display:none}
+  .balance-grid{
+    grid-template-columns:1fr;
+  }
+
+  .market-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .plans{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .actions{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .wallet-list{
+    grid-template-columns:1fr;
+  }
+
+  .profile-info{
+    display:none;
+  }
+
+  .profile-grid,
+  .form-grid{
+    grid-template-columns:1fr;
+  }
 }
 
 @media(max-width:480px){
 
-  .topbar{height:66px}
+  .topbar{
+    height:66px;
+  }
 
-  .welcome strong{font-size:13px}
+  .welcome strong{
+    font-size:13px;
+  }
 
   .back-button{
     width:34px;
     height:34px;
   }
 
-  .hero-board{gap:12px}
+  .hero-board{
+    gap:12px;
+  }
 
-  .balance-card{padding:20px}
+  .balance-card{
+    padding:20px;
+  }
 
-  .total-balance{font-size:31px}
+  .total-balance{
+    font-size:31px;
+  }
 
   .stats-board{
     grid-template-columns:1fr 1fr;
     gap:10px;
   }
 
-  .stat-card{padding:14px}
-  .stat-value{font-size:17px}
-  .plans{grid-template-columns:1fr}
-  .market-grid{grid-template-columns:1fr 1fr}
+  .stat-card{
+    padding:14px;
+  }
+
+  .stat-value{
+    font-size:17px;
+  }
+
+  .plans{
+    grid-template-columns:1fr;
+  }
+
+  .market-grid{
+    grid-template-columns:1fr 1fr;
+  }
 
   .transactions th:nth-child(2),
   .transactions td:nth-child(2){
     display:none;
+  }
+
+  .method-grid{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -1101,37 +1474,74 @@ a{text-decoration:none;color:inherit}
 
 <body>
 
+<!-- =====================================================
+SIDEBAR
+===================================================== -->
+
 <aside class="sidebar" id="sidebar">
 
-  <div class="logo">Coin<span>Forest</span></div>
+  <button
+    class="sidebar-close"
+    onclick="closeSidebar()"
+    aria-label="Close menu">
+    ❌
+  </button>
+
+  <div class="logo">
+    Coin<span>Forest</span>
+  </div>
 
   <div class="menu-title">Main Menu</div>
 
   <nav class="menu">
 
-    <a href="dashboard.html" class="active" onclick="closeSidebar()">
+    <a
+      href="#"
+      class="active"
+      data-section="dashboard"
+      onclick="navigateSection('dashboard');return false;">
       <span class="icon">⌂</span>
-      <span data-i18n="dashboard">Dashboard</span>
+      <span>Dashboard</span>
     </a>
 
-    <a href="wallet.html" onclick="closeSidebar()">
+    <a
+      href="#"
+      data-section="portfolio"
+      onclick="navigateSection('portfolio');return false;">
+      <span class="icon">◈</span>
+      <span>Portfolio</span>
+    </a>
+
+    <a
+      href="#"
+      data-section="wallets"
+      onclick="navigateSection('wallets');return false;">
       <span class="icon">◉</span>
-      <span data-i18n="wallets">Wallets</span>
+      <span>Wallets</span>
     </a>
 
-    <a href="investment.html" onclick="closeSidebar()">
+    <a
+      href="#"
+      data-section="investments"
+      onclick="navigateSection('investments');return false;">
       <span class="icon">▣</span>
-      <span data-i18n="investments">Investments</span>
+      <span>Investments</span>
     </a>
 
-    <a href="#transactions" onclick="closeSidebar()">
-      <span class="icon">↕</span>
-      <span data-i18n="transactions">Transactions</span>
+    <a
+      href="#"
+      data-section="transactions"
+      onclick="navigateSection('transactions');return false;">
+      <span class="icon">↔</span>
+      <span>Transactions</span>
     </a>
 
-    <a href="#">
-      <span class="icon">⇄</span>
-      <span data-i18n="transfers">Transfers</span>
+    <a
+      href="#"
+      data-section="markets"
+      onclick="navigateSection('markets');return false;">
+      <span class="icon">↗</span>
+      <span>Markets</span>
     </a>
 
   </nav>
@@ -1140,30 +1550,60 @@ a{text-decoration:none;color:inherit}
 
   <nav class="menu">
 
-    <a href="#">
-      <span class="icon">♙</span>
-      <span data-i18n="profile">Profile</span>
+    <a
+      href="#"
+      data-section="profile"
+      onclick="navigateSection('profile');return false;">
+      <span class="icon">●</span>
+      <span>Profile</span>
     </a>
 
-    <a href="#">
+    <a
+      href="#"
+      data-section="security"
+      onclick="navigateSection('security');return false;">
+      <span class="icon">⌾</span>
+      <span>Security</span>
+    </a>
+
+    <a
+      href="#"
+      data-section="settings"
+      onclick="navigateSection('settings');return false;">
       <span class="icon">⚙</span>
-      <span data-i18n="settings">Settings</span>
+      <span>Settings</span>
     </a>
 
-    <a href="#" onclick="openChat();return false">
+    <a
+      href="#"
+      onclick="openChat();return false;">
       <span class="icon">?</span>
-      <span data-i18n="support">Support</span>
+      <span>Support</span>
     </a>
 
   </nav>
 
   <div class="sidebar-bottom">
-    <button class="logout" onclick="logoutUser()" data-i18n="logout">
+
+    <button
+      class="logout"
+      onclick="logoutUser()">
       Log out
     </button>
+
   </div>
 
 </aside>
+
+<div
+  class="sidebar-overlay"
+  id="sidebarOverlay"
+  onclick="closeSidebar()">
+</div>
+
+<!-- =====================================================
+MAIN
+===================================================== -->
 
 <main class="main">
 
@@ -1171,7 +1611,11 @@ a{text-decoration:none;color:inherit}
 
   <div class="top-left">
 
-    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+    <button
+      class="mobile-menu"
+      onclick="toggleSidebar()">
+      ☰
+    </button>
 
     <button
       class="back-button"
@@ -1182,20 +1626,41 @@ a{text-decoration:none;color:inherit}
     </button>
 
     <div class="welcome">
-      <small data-i18n="welcomeBack">Welcome back</small>
-      <strong id="welcomeName">Loading...</strong>
-      <span class="current-tier" id="tierBadge">Tier 1</span>
+
+      <small>Welcome back</small>
+
+      <strong id="welcomeName">
+        Loading...
+      </strong>
+
+      <span
+        class="current-tier"
+        id="tierBadge">
+        Tier 1
+      </span>
+
     </div>
 
   </div>
 
   <div class="profile">
 
-    <div class="avatar" id="avatar">CF</div>
+    <div
+      class="avatar"
+      id="avatar">
+      CF
+    </div>
 
     <div class="profile-info">
-      <strong id="profileName">Loading...</strong>
-      <small id="profileEmail">Account</small>
+
+      <strong id="profileName">
+        Loading...
+      </strong>
+
+      <small id="profileEmail">
+        Account
+      </small>
+
     </div>
 
   </div>
@@ -1204,432 +1669,1201 @@ a{text-decoration:none;color:inherit}
 
 <div class="content">
 
-<div class="page-title">
-
-  <div>
-    <h1 data-i18n="dashboardTitle">Dashboard</h1>
-    <p data-i18n="dashboardSubtitle">
-      Manage your digital assets and monitor your portfolio.
-    </p>
-  </div>
-
-  <div class="action-buttons">
-
-    <button
-      class="btn btn-green"
-      onclick="openModal('depositModal')"
-      data-i18n="deposit">
-      + Deposit
-    </button>
-
-    <button
-      class="btn btn-dark"
-      onclick="openModal('sendModal')"
-      data-i18n="sendMoney">
-      Send Money
-    </button>
-
-  </div>
-
-</div>
-
-<section class="hero-board">
-
-  <div class="balance-card">
-
-    <div class="balance-label" data-i18n="totalPortfolio">
-      Total Portfolio Balance
-    </div>
-
-    <div class="total-balance" id="totalBalance">$0.00</div>
-
-    <div class="balance-grid">
-
-      <div class="balance-item">
-        <span data-i18n="mainWallet">Main Wallet</span>
-        <strong id="mainWallet">$0.00</strong>
-      </div>
-
-      <div class="balance-item">
-        <span data-i18n="profitWallet">Profit Wallet</span>
-        <strong id="profitWallet">$0.00</strong>
-      </div>
-
-      <div class="balance-item">
-        <span data-i18n="thisWeek">This Week</span>
-        <strong class="positive" id="weeklyProfit">+$0.00</strong>
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="crypto-decoration">
-
-    <h3 data-i18n="cryptoPortfolio">
-      Your Crypto Portfolio
-    </h3>
-
-    <p data-i18n="cryptoDescription">
-      Monitor your CoinForest wallet activity, market movement and available portfolio balance from one secure dashboard.
-    </p>
-
-    <div class="crypto-orbit"></div>
-
-  </div>
-
-</section>
-
-<section class="stats-board">
-
-  <div class="stat-card">
-    <div class="stat-top">
-      <span class="stat-label" data-i18n="totalDeposits">Total Deposits</span>
-      <div class="stat-icon">↓</div>
-    </div>
-    <div class="stat-value" id="totalDeposits">$0.00</div>
-    <div class="stat-change" data-i18n="accountDeposits">Account deposits</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-top">
-      <span class="stat-label" data-i18n="invested">Invested</span>
-      <div class="stat-icon">▣</div>
-    </div>
-    <div class="stat-value" id="totalInvested">$0.00</div>
-    <div class="stat-change" data-i18n="activeInvestments">Active investments</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-top">
-      <span class="stat-label" data-i18n="withdrawals">Withdrawals</span>
-      <div class="stat-icon">↑</div>
-    </div>
-    <div class="stat-value" id="withdrawals">$0.00</div>
-    <div class="stat-change" data-i18n="totalWithdrawn">Total withdrawn</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-top">
-      <span class="stat-label" data-i18n="accountStatus">Account Status</span>
-      <div class="stat-icon">✓</div>
-    </div>
-    <div class="stat-value" style="font-size:18px" data-i18n="active">Active</div>
-    <div class="stat-change" data-i18n="goodStanding">Account in good standing</div>
-  </div>
-
-</section>
-
-<section class="market-board">
-
-  <div class="market-head">
-    <h2 data-i18n="liveMarket">Live Crypto Market</h2>
-    <span class="market-live" data-i18n="marketSimulation">Market simulation</span>
-  </div>
-
-  <div class="market-grid">
-
-    <div class="coin">
-      <div class="coin-top">
-        <div class="coin-icon btc-icon">₿</div>
-        <strong>BTC</strong>
-        <span class="coin-name">Bitcoin</span>
-      </div>
-      <div class="coin-price" id="btcPrice">$104,820.00</div>
-      <div class="coin-change up" id="btcChange">+2.41%</div>
-    </div>
-
-    <div class="coin">
-      <div class="coin-top">
-        <div class="coin-icon eth-icon">Ξ</div>
-        <strong>ETH</strong>
-        <span class="coin-name">Ethereum</span>
-      </div>
-      <div class="coin-price" id="ethPrice">$3,842.12</div>
-      <div class="coin-change up" id="ethChange">+1.83%</div>
-    </div>
-
-    <div class="coin">
-      <div class="coin-top">
-        <div class="coin-icon usdt-icon">₮</div>
-        <strong>USDT</strong>
-        <span class="coin-name">Tether</span>
-      </div>
-      <div class="coin-price" id="usdtPrice">$1.00</div>
-      <div class="coin-change up" id="usdtChange">+0.02%</div>
-    </div>
-
-    <div class="coin">
-      <div class="coin-top">
-        <div class="coin-icon bnb-icon">◆</div>
-        <strong>BNB</strong>
-        <span class="coin-name">BNB</span>
-      </div>
-      <div class="coin-price" id="bnbPrice">$716.35</div>
-      <div class="coin-change up" id="bnbChange">+1.27%</div>
-    </div>
-
-  </div>
-
-</section>
-
-<section class="board-grid">
-
-  <div class="card">
-
-    <div class="card-head">
-      <h2 data-i18n="quickActions">Quick Actions</h2>
-    </div>
-
-    <div class="actions">
-
-      <button class="action" onclick="openModal('depositModal')">
-        <div class="action-icon">💳</div>
-        <strong data-i18n="deposit">Deposit</strong>
-        <span data-i18n="addFunds">Add funds to wallet</span>
-      </button>
-
-      <button class="action" onclick="window.location.href='investment.html'">
-        <div class="action-icon">📈</div>
-        <strong data-i18n="invest">Invest</strong>
-        <span data-i18n="startInvestment">Start an investment</span>
-      </button>
-
-      <button class="action" onclick="openModal('withdrawModal')">
-        <div class="action-icon">💸</div>
-        <strong data-i18n="withdraw">Withdraw</strong>
-        <span data-i18n="withdrawFunds">Withdraw your funds</span>
-      </button>
-
-      <button class="action" onclick="openModal('sendModal')">
-        <div class="action-icon">↗</div>
-        <strong data-i18n="sendMoney">Send Money</strong>
-        <span data-i18n="transferUser">Transfer to another user</span>
-      </button>
-
-      <button class="action" onclick="window.location.href='wallet.html'">
-        <div class="action-icon">👛</div>
-        <strong data-i18n="walletExchange">Wallet Exchange</strong>
-        <span data-i18n="manageWallets">Manage your wallets</span>
-      </button>
-
-      <button class="action" onclick="openChat()">
-        <div class="action-icon">💬</div>
-        <strong data-i18n="support">Support</strong>
-        <span data-i18n="contactSupport">Contact CoinForest</span>
-      </button>
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="card-head">
-      <h2 data-i18n="myWallets">My Wallets</h2>
-      <a href="wallet.html" data-i18n="viewAll">View all</a>
-    </div>
-
-    <div class="wallet-list">
-
-      <div class="wallet">
-
-        <div class="wallet-left">
-
-          <div class="wallet-icon">💼</div>
-
-          <div>
-            <div class="wallet-name" data-i18n="mainWallet">Main Wallet</div>
-            <div class="wallet-sub" data-i18n="availableBalance">Available balance</div>
-          </div>
-
-        </div>
-
-        <div class="wallet-value" id="walletMain">$0.00</div>
-
-      </div>
-
-      <div class="wallet">
-
-        <div class="wallet-left">
-
-          <div class="wallet-icon">📊</div>
-
-          <div>
-            <div class="wallet-name" data-i18n="profitWallet">Profit Wallet</div>
-            <div class="wallet-sub" data-i18n="investmentEarnings">Investment earnings</div>
-          </div>
-
-        </div>
-
-        <div class="wallet-value" id="walletProfit">$0.00</div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-<section class="card investment-board" id="investments">
-
-  <div class="card-head">
+<!-- =====================================================
+DASHBOARD SECTION
+===================================================== -->
+
+<section
+  id="section-dashboard"
+  class="dashboard-section">
+
+  <div class="page-title">
 
     <div>
-      <h2 data-i18n="investmentPlans">Investment Plans</h2>
+
+      <h1>Dashboard</h1>
+
+      <p>
+        Manage your digital assets and monitor your portfolio.
+      </p>
+
     </div>
 
-    <a href="investment.html" data-i18n="viewPlans">View plans</a>
+    <div class="action-buttons">
 
-  </div>
+      <button
+        class="btn btn-green"
+        onclick="openDeposit()">
+        + Deposit
+      </button>
 
-  <div class="plans">
+      <button
+        class="btn btn-dark"
+        onclick="openSend()">
+        Send Money
+      </button>
 
-    <div class="plan">
-      <h3>Starter</h3>
-      <div class="plan-rate">15%</div>
-      <div class="plan-period" data-i18n="return">Return</div>
-
-      <div class="plan-range">
-        <span data-i18n="investmentRange">Investment range</span>
-        <strong>$100 – $1,500</strong>
-      </div>
-
-      <div class="plan-description">
-        Entry-level investment option for customers beginning their CoinForest investment journey.
-      </div>
-
-      <div class="plan-line"></div>
-
-      <button onclick="goToInvestment('Starter')">Invest Now</button>
-    </div>
-
-    <div class="plan">
-      <h3>Growth</h3>
-      <div class="plan-rate">25%</div>
-      <div class="plan-period" data-i18n="return">Return</div>
-
-      <div class="plan-range">
-        <span data-i18n="investmentRange">Investment range</span>
-        <strong>$750 – $5,500</strong>
-      </div>
-
-      <div class="plan-description">
-        Designed for customers looking for a higher investment tier with a larger minimum allocation.
-      </div>
-
-      <div class="plan-line"></div>
-
-      <button onclick="goToInvestment('Growth')">Invest Now</button>
-    </div>
-
-    <div class="plan featured">
-
-      <span class="plan-badge">POPULAR</span>
-
-      <h3>Silver</h3>
-      <div class="plan-rate">35%</div>
-      <div class="plan-period" data-i18n="return">Return</div>
-
-      <div class="plan-range">
-        <span data-i18n="investmentRange">Investment range</span>
-        <strong>$5,500 – $25,000</strong>
-      </div>
-
-      <div class="plan-description">
-        A higher-tier test investment structure designed for customers with larger available balances.
-      </div>
-
-      <div class="plan-line"></div>
-
-      <button onclick="goToInvestment('Silver')">Invest Now</button>
-    </div>
-
-    <div class="plan">
-      <h3>Gold</h3>
-      <div class="plan-rate">45%</div>
-      <div class="plan-period" data-i18n="return">Return</div>
-
-      <div class="plan-range">
-        <span data-i18n="investmentRange">Investment range</span>
-        <strong>$25,000 – $75,000</strong>
-      </div>
-
-      <div class="plan-description">
-        Premium-tier test configuration for substantial portfolio allocations.
-      </div>
-
-      <div class="plan-line"></div>
-
-      <button onclick="goToInvestment('Gold')">Invest Now</button>
-    </div>
-
-    <div class="plan">
-      <h3>Platinum</h3>
-      <div class="plan-rate">50%</div>
-      <div class="plan-period" data-i18n="return">Return</div>
-
-      <div class="plan-range">
-        <span data-i18n="investmentRange">Investment range</span>
-        <strong>$75,000+</strong>
-      </div>
-
-      <div class="plan-description">
-        Highest CoinForest test tier for customers with substantial qualifying balances.
-      </div>
-
-      <div class="plan-line"></div>
-
-      <button onclick="goToInvestment('Platinum')">Invest Now</button>
     </div>
 
   </div>
 
-</section>
+  <div
+    id="globalNotice"
+    class="notice">
+  </div>
 
-<section class="transactions-board" id="transactions">
+  <section class="hero-board">
 
-  <div class="card">
+    <div class="balance-card">
+
+      <div class="balance-label">
+        Total Portfolio Balance
+      </div>
+
+      <div
+        class="total-balance"
+        id="totalBalance">
+        $0.00
+      </div>
+
+      <div class="balance-grid">
+
+        <div class="balance-item">
+
+          <span>Main Wallet</span>
+
+          <strong id="mainWallet">
+            $0.00
+          </strong>
+
+        </div>
+
+        <div class="balance-item">
+
+          <span>Profit Wallet</span>
+
+          <strong id="profitWallet">
+            $0.00
+          </strong>
+
+        </div>
+
+        <div class="balance-item">
+
+          <span>This Week</span>
+
+          <strong
+            class="positive"
+            id="weeklyProfit">
+            +$0.00
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="crypto-decoration">
+
+      <h3>
+        Your Crypto Portfolio
+      </h3>
+
+      <p>
+        Monitor your CoinForest wallet activity,
+        market movement and available portfolio
+        balance from one secure dashboard.
+      </p>
+
+      <div class="crypto-orbit"></div>
+
+    </div>
+
+  </section>
+
+  <section class="stats-board">
+
+    <div class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-label">
+          Total Deposits
+        </span>
+
+        <div class="stat-icon">
+          ↓
+        </div>
+
+      </div>
+
+      <div
+        class="stat-value"
+        id="totalDeposits">
+        $0.00
+      </div>
+
+      <div class="stat-change">
+        Account deposits
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-label">
+          Invested
+        </span>
+
+        <div class="stat-icon">
+          ▣
+        </div>
+
+      </div>
+
+      <div
+        class="stat-value"
+        id="totalInvested">
+        $0.00
+      </div>
+
+      <div class="stat-change">
+        Active investments
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-label">
+          Withdrawals
+        </span>
+
+        <div class="stat-icon">
+          ↑
+        </div>
+
+      </div>
+
+      <div
+        class="stat-value"
+        id="withdrawals">
+        $0.00
+      </div>
+
+      <div class="stat-change">
+        Total withdrawn
+      </div>
+
+    </div>
+
+    <div class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-label">
+          Account Status
+        </span>
+
+        <div class="stat-icon">
+          ✓
+        </div>
+
+      </div>
+
+      <div
+        class="stat-value"
+        id="accountStatus"
+        style="font-size:18px">
+        Active
+      </div>
+
+      <div
+        class="stat-change"
+        id="accountStatusText">
+        Account status
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="market-board">
+
+    <div class="market-head">
+
+      <h2>
+        Live Crypto Market
+      </h2>
+
+      <span class="market-live">
+        Market simulation
+      </span>
+
+    </div>
+
+    <div class="market-grid">
+
+      <div class="coin">
+
+        <div class="coin-top">
+
+          <div class="coin-icon btc-icon">
+            ₿
+          </div>
+
+          <strong>BTC</strong>
+
+          <span class="coin-name">
+            Bitcoin
+          </span>
+
+        </div>
+
+        <div
+          class="coin-price"
+          id="btcPrice">
+          $104,820.00
+        </div>
+
+        <div
+          class="coin-change up"
+          id="btcChange">
+          +2.41%
+        </div>
+
+      </div>
+
+      <div class="coin">
+
+        <div class="coin-top">
+
+          <div class="coin-icon eth-icon">
+            Ξ
+          </div>
+
+          <strong>ETH</strong>
+
+          <span class="coin-name">
+            Ethereum
+          </span>
+
+        </div>
+
+        <div
+          class="coin-price"
+          id="ethPrice">
+          $3,842.12
+        </div>
+
+        <div
+          class="coin-change up"
+          id="ethChange">
+          +1.83%
+        </div>
+
+      </div>
+
+      <div class="coin">
+
+        <div class="coin-top">
+
+          <div class="coin-icon usdt-icon">
+            ₮
+          </div>
+
+          <strong>USDT</strong>
+
+          <span class="coin-name">
+            Tether
+          </span>
+
+        </div>
+
+        <div
+          class="coin-price"
+          id="usdtPrice">
+          $1.00
+        </div>
+
+        <div
+          class="coin-change up"
+          id="usdtChange">
+          +0.02%
+        </div>
+
+      </div>
+
+      <div class="coin">
+
+        <div class="coin-top">
+
+          <div class="coin-icon bnb-icon">
+            ◆
+          </div>
+
+          <strong>BNB</strong>
+
+          <span class="coin-name">
+            BNB
+          </span>
+
+        </div>
+
+        <div
+          class="coin-price"
+          id="bnbPrice">
+          $716.35
+        </div>
+
+        <div
+          class="coin-change up"
+          id="bnbChange">
+          +1.27%
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="board-grid">
+
+    <div class="card">
+
+      <div class="card-head">
+
+        <h2>
+          Quick Actions
+        </h2>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="action"
+          onclick="openDeposit()">
+
+          <div class="action-icon">
+            💳
+          </div>
+
+          <strong>Deposit</strong>
+
+          <span>
+            Add funds to wallet
+          </span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="goToInvestment('Starter')">
+
+          <div class="action-icon">
+            📈
+          </div>
+
+          <strong>Invest</strong>
+
+          <span>
+            Start an investment
+          </span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="openWithdrawal()">
+
+          <div class="action-icon">
+            💸
+          </div>
+
+          <strong>Withdraw</strong>
+
+          <span>
+            Withdraw your funds
+          </span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="openSend()">
+
+          <div class="action-icon">
+            ↗
+          </div>
+
+          <strong>Send Money</strong>
+
+          <span>
+            Transfer to another user
+          </span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="navigateSection('wallets')">
+
+          <div class="action-icon">
+            👛
+          </div>
+
+          <strong>Wallet Exchange</strong>
+
+          <span>
+            Manage your wallets
+          </span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="openChat()">
+
+          <div class="action-icon">
+            💬
+          </div>
+
+          <strong>Support</strong>
+
+          <span>
+            Contact CoinForest
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="card-head">
+
+        <h2>
+          My Wallets
+        </h2>
+
+        <a
+          href="#"
+          onclick="navigateSection('wallets');return false;">
+          View all
+        </a>
+
+      </div>
+
+      <div class="wallet-list">
+
+        <div class="wallet">
+
+          <div class="wallet-left">
+
+            <div class="wallet-icon">
+              💼
+            </div>
+
+            <div>
+
+              <div class="wallet-name">
+                Main Wallet
+              </div>
+
+              <div class="wallet-sub">
+                Available balance
+              </div>
+
+            </div>
+
+          </div>
+
+          <div
+            class="wallet-value"
+            id="walletMain">
+            $0.00
+          </div>
+
+        </div>
+
+        <div class="wallet">
+
+          <div class="wallet-left">
+
+            <div class="wallet-icon">
+              📊
+            </div>
+
+            <div>
+
+              <div class="wallet-name">
+                Profit Wallet
+              </div>
+
+              <div class="wallet-sub">
+                Investment earnings
+              </div>
+
+            </div>
+
+          </div>
+
+          <div
+            class="wallet-value"
+            id="walletProfit">
+            $0.00
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section
+    class="card investment-board"
+    id="investmentCards">
 
     <div class="card-head">
 
-      <h2 data-i18n="recentTransactions">
-        Recent Transactions
-      </h2>
+      <div>
 
-      <a href="#transactions" data-i18n="viewAll">
-        View all
+        <h2>
+          Investment Plans
+        </h2>
+
+      </div>
+
+      <a
+        href="#"
+        onclick="navigateSection('investments');return false;">
+        View plans
       </a>
 
     </div>
+
+    <div class="plans">
+
+      <div class="plan">
+
+        <h3>Starter</h3>
+
+        <div class="plan-rate">
+          15%
+        </div>
+
+        <div class="plan-period">
+          Return
+        </div>
+
+        <div class="plan-range">
+
+          <span>
+            Investment range
+          </span>
+
+          <strong>
+            $100 – $1,500
+          </strong>
+
+        </div>
+
+        <div class="plan-description">
+          Entry-level investment option for customers beginning their CoinForest investment journey.
+        </div>
+
+        <div class="plan-line"></div>
+
+        <button onclick="goToInvestment('Starter')">
+          Invest Now
+        </button>
+
+      </div>
+
+      <div class="plan">
+
+        <h3>Growth</h3>
+
+        <div class="plan-rate">
+          25%
+        </div>
+
+        <div class="plan-period">
+          Return
+        </div>
+
+        <div class="plan-range">
+
+          <span>
+            Investment range
+          </span>
+
+          <strong>
+            $750 – $5,500
+          </strong>
+
+        </div>
+
+        <div class="plan-description">
+          Designed for customers looking for a higher investment tier.
+        </div>
+
+        <div class="plan-line"></div>
+
+        <button onclick="goToInvestment('Growth')">
+          Invest Now
+        </button>
+
+      </div>
+
+      <div class="plan featured">
+
+        <span class="plan-badge">
+          POPULAR
+        </span>
+
+        <h3>Silver</h3>
+
+        <div class="plan-rate">
+          35%
+        </div>
+
+        <div class="plan-period">
+          Return
+        </div>
+
+        <div class="plan-range">
+
+          <span>
+            Investment range
+          </span>
+
+          <strong>
+            $5,500 – $25,000
+          </strong>
+
+        </div>
+
+        <div class="plan-description">
+          A higher-tier investment structure for larger available balances.
+        </div>
+
+        <div class="plan-line"></div>
+
+        <button onclick="goToInvestment('Silver')">
+          Invest Now
+        </button>
+
+      </div>
+
+      <div class="plan">
+
+        <h3>Gold</h3>
+
+        <div class="plan-rate">
+          45%
+        </div>
+
+        <div class="plan-period">
+          Return
+        </div>
+
+        <div class="plan-range">
+
+          <span>
+            Investment range
+          </span>
+
+          <strong>
+            $25,000 – $75,000
+          </strong>
+
+        </div>
+
+        <div class="plan-description">
+          Premium-tier investment configuration.
+        </div>
+
+        <div class="plan-line"></div>
+
+        <button onclick="goToInvestment('Gold')">
+          Invest Now
+        </button>
+
+      </div>
+
+      <div class="plan">
+
+        <h3>Platinum</h3>
+
+        <div class="plan-rate">
+          50%
+        </div>
+
+        <div class="plan-period">
+          Return
+        </div>
+
+        <div class="plan-range">
+
+          <span>
+            Investment range
+          </span>
+
+          <strong>
+            $75,000+
+          </strong>
+
+        </div>
+
+        <div class="plan-description">
+          Highest CoinForest investment tier.
+        </div>
+
+        <div class="plan-line"></div>
+
+        <button onclick="goToInvestment('Platinum')">
+          Invest Now
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section
+    class="transactions-board"
+    id="transactionHome">
+
+    <div class="card">
+
+      <div class="card-head">
+
+        <h2>
+          Recent Transactions
+        </h2>
+
+        <a
+          href="#"
+          onclick="navigateSection('transactions');return false;">
+          View all
+        </a>
+
+      </div>
+
+      <div style="overflow-x:auto">
+
+        <table class="transactions">
+
+          <thead>
+
+            <tr>
+
+              <th>Transaction</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Amount</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="transactionBody">
+
+            <tr>
+
+              <td colspan="4">
+                Loading transactions...
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    <div class="info-board">
+
+      <h2>
+        Welcome Bonus
+      </h2>
+
+      <div class="bonus-amount">
+        $20
+      </div>
+
+      <p>
+        Your CoinForest welcome bonus is credited to the Profit Wallet by an authorized administrator.
+      </p>
+
+    </div>
+
+  </section>
+
+</section>
+
+<!-- =====================================================
+PORTFOLIO
+===================================================== -->
+
+<section
+  id="section-portfolio"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Portfolio</h1>
+
+      <p>
+        Overview of your CoinForest digital assets.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="hero-board">
+
+    <div class="balance-card">
+
+      <div class="balance-label">
+        Total Portfolio Balance
+      </div>
+
+      <div
+        class="total-balance"
+        id="portfolioTotal">
+        $0.00
+      </div>
+
+      <div class="balance-grid">
+
+        <div class="balance-item">
+
+          <span>
+            Main Wallet
+          </span>
+
+          <strong id="portfolioMain">
+            $0.00
+          </strong>
+
+        </div>
+
+        <div class="balance-item">
+
+          <span>
+            Profit Wallet
+          </span>
+
+          <strong id="portfolioProfit">
+            $0.00
+          </strong>
+
+        </div>
+
+        <div class="balance-item">
+
+          <span>
+            Invested
+          </span>
+
+          <strong id="portfolioInvested">
+            $0.00
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="crypto-decoration">
+
+      <h3>
+        Portfolio Overview
+      </h3>
+
+      <p>
+        Your balances are retrieved from the CoinForest account system.
+      </p>
+
+      <div class="crypto-orbit"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- =====================================================
+WALLETS
+===================================================== -->
+
+<section
+  id="section-wallets"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Wallets</h1>
+
+      <p>
+        View and manage your CoinForest wallets.
+      </p>
+
+    </div>
+
+    <button
+      class="btn btn-green"
+      onclick="refreshDashboard()">
+      ↻ Refresh
+    </button>
+
+  </div>
+
+  <div class="wallet-list">
+
+    <div class="wallet">
+
+      <div class="wallet-left">
+
+        <div class="wallet-icon">
+          💼
+        </div>
+
+        <div>
+
+          <div class="wallet-name">
+            Main Wallet
+          </div>
+
+          <div class="wallet-sub">
+            Available balance
+          </div>
+
+        </div>
+
+      </div>
+
+      <div
+        class="wallet-value"
+        id="walletPageMain">
+        $0.00
+      </div>
+
+    </div>
+
+    <div class="wallet">
+
+      <div class="wallet-left">
+
+        <div class="wallet-icon">
+          📊
+        </div>
+
+        <div>
+
+          <div class="wallet-name">
+            Profit Wallet
+          </div>
+
+          <div class="wallet-sub">
+            Investment earnings
+          </div>
+
+        </div>
+
+      </div>
+
+      <div
+        class="wallet-value"
+        id="walletPageProfit">
+        $0.00
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- =====================================================
+INVESTMENTS
+===================================================== -->
+
+<section
+  id="section-investments"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Investments</h1>
+
+      <p>
+        Choose an investment plan.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="plans">
+
+      <div class="plan">
+        <h3>Starter</h3>
+        <div class="plan-rate">15%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-range">
+          <span>Investment range</span>
+          <strong>$100 – $1,500</strong>
+        </div>
+        <div class="plan-line"></div>
+        <button onclick="goToInvestment('Starter')">
+          Invest Now
+        </button>
+      </div>
+
+      <div class="plan">
+        <h3>Growth</h3>
+        <div class="plan-rate">25%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-range">
+          <span>Investment range</span>
+          <strong>$750 – $5,500</strong>
+        </div>
+        <div class="plan-line"></div>
+        <button onclick="goToInvestment('Growth')">
+          Invest Now
+        </button>
+      </div>
+
+      <div class="plan featured">
+        <span class="plan-badge">POPULAR</span>
+        <h3>Silver</h3>
+        <div class="plan-rate">35%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-range">
+          <span>Investment range</span>
+          <strong>$5,500 – $25,000</strong>
+        </div>
+        <div class="plan-line"></div>
+        <button onclick="goToInvestment('Silver')">
+          Invest Now
+        </button>
+      </div>
+
+      <div class="plan">
+        <h3>Gold</h3>
+        <div class="plan-rate">45%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-range">
+          <span>Investment range</span>
+          <strong>$25,000 – $75,000</strong>
+        </div>
+        <div class="plan-line"></div>
+        <button onclick="goToInvestment('Gold')">
+          Invest Now
+        </button>
+      </div>
+
+      <div class="plan">
+        <h3>Platinum</h3>
+        <div class="plan-rate">50%</div>
+        <div class="plan-period">Return</div>
+        <div class="plan-range">
+          <span>Investment range</span>
+          <strong>$75,000+</strong>
+        </div>
+        <div class="plan-line"></div>
+        <button onclick="goToInvestment('Platinum')">
+          Invest Now
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- =====================================================
+TRANSACTIONS
+===================================================== -->
+
+<section
+  id="section-transactions"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Transactions</h1>
+
+      <p>
+        Your complete recent account activity.
+      </p>
+
+    </div>
+
+    <button
+      class="btn btn-green"
+      onclick="loadTransactions()">
+      ↻ Refresh
+    </button>
+
+  </div>
+
+  <div class="card">
 
     <div style="overflow-x:auto">
 
       <table class="transactions">
 
         <thead>
+
           <tr>
-            <th data-i18n="transaction">Transaction</th>
-            <th data-i18n="date">Date</th>
-            <th data-i18n="status">Status</th>
-            <th data-i18n="amount">Amount</th>
+
+            <th>Transaction</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Amount</th>
+
           </tr>
+
         </thead>
 
-        <tbody id="transactionBody">
+        <tbody id="transactionPageBody">
 
           <tr>
-            <td data-i18n="noTransactions">
-              No transactions yet
+            <td colspan="4">
+              Loading transactions...
             </td>
-            <td>—</td>
-            <td>
-              <span class="status pending" data-i18n="pending">
-                Pending
-              </span>
-            </td>
-            <td>$0.00</td>
           </tr>
 
         </tbody>
@@ -1640,20 +2874,420 @@ a{text-decoration:none;color:inherit}
 
   </div>
 
-  <div class="info-board">
+</section>
 
-    <h2 data-i18n="welcomeBonus">
-      Welcome Bonus
-    </h2>
+<!-- =====================================================
+MARKETS
+===================================================== -->
 
-    <div class="bonus-amount">$20</div>
+<section
+  id="section-markets"
+  class="dashboard-section hidden">
 
-    <p data-i18n="welcomeBonusDescription">
-      Your CoinForest welcome bonus is credited to the Profit Wallet by an authorized administrator. The bonus is separate from your Main Wallet and cannot be used as investment payment.
-    </p>
+  <div class="page-title">
 
-    <div class="bonus-note" data-i18n="manualCredit">
-      Welcome bonus is manually credited by administration.
+    <div>
+
+      <h1>Markets</h1>
+
+      <p>
+        Monitor the available market information.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="market-board">
+
+    <div class="market-head">
+
+      <h2>
+        Live Crypto Market
+      </h2>
+
+      <span class="market-live">
+        Market simulation
+      </span>
+
+    </div>
+
+    <div class="market-grid">
+
+      <div class="coin">
+
+        <div class="coin-top">
+          <div class="coin-icon btc-icon">₿</div>
+          <strong>BTC</strong>
+          <span class="coin-name">Bitcoin</span>
+        </div>
+
+        <div class="coin-price" id="btcPrice2">
+          $104,820.00
+        </div>
+
+        <div class="coin-change up" id="btcChange2">
+          +2.41%
+        </div>
+
+      </div>
+
+      <div class="coin">
+
+        <div class="coin-top">
+          <div class="coin-icon eth-icon">Ξ</div>
+          <strong>ETH</strong>
+          <span class="coin-name">Ethereum</span>
+        </div>
+
+        <div class="coin-price" id="ethPrice2">
+          $3,842.12
+        </div>
+
+        <div class="coin-change up" id="ethChange2">
+          +1.83%
+        </div>
+
+      </div>
+
+      <div class="coin">
+
+        <div class="coin-top">
+          <div class="coin-icon usdt-icon">₮</div>
+          <strong>USDT</strong>
+          <span class="coin-name">Tether</span>
+        </div>
+
+        <div class="coin-price" id="usdtPrice2">
+          $1.00
+        </div>
+
+        <div class="coin-change up" id="usdtChange2">
+          +0.02%
+        </div>
+
+      </div>
+
+      <div class="coin">
+
+        <div class="coin-top">
+          <div class="coin-icon bnb-icon">◆</div>
+          <strong>BNB</strong>
+          <span class="coin-name">BNB</span>
+        </div>
+
+        <div class="coin-price" id="bnbPrice2">
+          $716.35
+        </div>
+
+        <div class="coin-change up" id="bnbChange2">
+          +1.27%
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- =====================================================
+PROFILE
+===================================================== -->
+
+<section
+  id="section-profile"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Profile</h1>
+
+      <p>
+        View your CoinForest account information.
+      </p>
+
+    </div>
+
+    <button
+      class="btn btn-green"
+      onclick="openKyc()">
+      KYC
+    </button>
+
+  </div>
+
+  <div
+    id="profileKycBanner"
+    class="kyc-banner">
+
+    <strong>
+      KYC Status
+    </strong>
+
+    <span id="profileKycText">
+      Checking your KYC status...
+    </span>
+
+  </div>
+
+  <div class="card">
+
+    <div class="profile-grid">
+
+      <div class="account-item">
+
+        <span>
+          First Name
+        </span>
+
+        <strong id="profileFirstName">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Last Name
+        </span>
+
+        <strong id="profileLastName">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Username
+        </span>
+
+        <strong id="profileUsername">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Email
+        </span>
+
+        <strong id="profileEmailPage">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Account Status
+        </span>
+
+        <strong id="profileAccountStatus">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          KYC Status
+        </span>
+
+        <strong id="profileKycStatus">
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:18px">
+
+    <div class="card-head">
+
+      <h2>
+        Withdrawal Account
+      </h2>
+
+      <button
+        class="btn btn-dark"
+        onclick="openWithdrawalAccount(true)">
+        Edit
+      </button>
+
+    </div>
+
+    <div
+      id="withdrawAccountDisplay"
+      class="withdraw-account-box">
+
+      Loading withdrawal account...
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- =====================================================
+SECURITY
+===================================================== -->
+
+<section
+  id="section-security"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Security</h1>
+
+      <p>
+        Manage your account security information.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="profile-grid">
+
+      <div class="account-item">
+
+        <span>
+          Email
+        </span>
+
+        <strong id="securityEmail">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Email Verification
+        </span>
+
+        <strong id="securityEmailStatus">
+          —
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Two-Factor Authentication
+        </span>
+
+        <strong id="security2FA">
+          Not enabled
+        </strong>
+
+      </div>
+
+      <div class="account-item">
+
+        <span>
+          Session
+        </span>
+
+        <strong>
+          Active
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- =====================================================
+SETTINGS
+===================================================== -->
+
+<section
+  id="section-settings"
+  class="dashboard-section hidden">
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Settings</h1>
+
+      <p>
+        Manage your dashboard preferences.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="field">
+
+      <label>
+        Dashboard Language
+      </label>
+
+      <select
+        id="languageSelect"
+        onchange="saveLanguage(this.value)">
+
+        <option value="en">
+          English
+        </option>
+
+        <option value="es">
+          Español
+        </option>
+
+        <option value="fr">
+          Français
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Currency
+      </label>
+
+      <select
+        id="currencySelect"
+        disabled>
+
+        <option>
+          USD
+        </option>
+
+      </select>
+
     </div>
 
   </div>
@@ -1661,6 +3295,7 @@ a{text-decoration:none;color:inherit}
 </section>
 
 </div>
+
 </main>
 
 <button
@@ -1670,32 +3305,73 @@ a{text-decoration:none;color:inherit}
   💬
 </button>
 
-<div class="modal" id="depositModal">
+<!-- =====================================================
+DEPOSIT MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="depositModal">
 
   <div class="modal-box">
 
-    <button class="close" onclick="closeModal('depositModal')">×</button>
+    <button
+      class="close"
+      onclick="closeModal('depositModal')">
+      ×
+    </button>
 
-    <h2 data-i18n="depositFunds">Deposit Funds</h2>
+    <h2>
+      Deposit Funds
+    </h2>
 
-    <p data-i18n="depositDescription">
-      Select where the development deposit should be recorded.
+    <p>
+      Submit a deposit request. Your wallet will only be credited after administrator approval.
     </p>
+
+    <div
+      id="depositNotice"
+      class="notice">
+    </div>
 
     <div class="field">
 
-      <label data-i18n="paymentMethod">Payment Method</label>
+      <label>
+        Payment Method
+      </label>
 
       <div class="method-grid">
 
-        <button class="method" type="button">
-          <strong>💼 Wallet</strong>
-          <span data-i18n="walletMethod">Wallet-based deposit</span>
+        <button
+          class="method selected"
+          id="depositBankMethod"
+          type="button"
+          onclick="selectDepositMethod('bank_transfer')">
+
+          <strong>
+            🏦 Bank Transfer
+          </strong>
+
+          <span>
+            Manual bank transfer
+          </span>
+
         </button>
 
-        <button class="method" type="button">
-          <strong>🏦 Bank Transfer</strong>
-          <span data-i18n="bankMethod">Bank transfer deposit</span>
+        <button
+          class="method"
+          id="depositWalletMethod"
+          type="button"
+          onclick="selectDepositMethod('wallet')">
+
+          <strong>
+            💼 Wallet
+          </strong>
+
+          <span>
+            Wallet-based deposit
+          </span>
+
         </button>
 
       </div>
@@ -1704,76 +3380,211 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="amount">Amount</label>
+      <label>
+        Amount
+      </label>
 
       <input
         type="number"
         id="depositAmount"
         min="1"
+        step="0.01"
         placeholder="Enter amount">
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Payment Reference
+      </label>
+
+      <input
+        type="text"
+        id="depositReference"
+        placeholder="Optional payment reference">
 
     </div>
 
     <button
       class="modal-submit"
-      onclick="submitDemoAction('depositAmount','Deposit')"
-      data-i18n="continue">
-      Continue
+      id="depositSubmit"
+      onclick="submitDeposit()">
+      Submit Deposit Request
     </button>
 
   </div>
 
 </div>
 
-<div class="modal" id="withdrawModal">
+<!-- =====================================================
+WITHDRAWAL ACCOUNT MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="withdrawAccountModal">
 
   <div class="modal-box">
 
-    <button class="close" onclick="closeModal('withdrawModal')">×</button>
+    <button
+      class="close"
+      onclick="closeModal('withdrawAccountModal')">
+      ×
+    </button>
 
-    <h2 data-i18n="withdrawFundsTitle">Withdraw Funds</h2>
+    <h2>
+      Withdrawal Account
+    </h2>
 
-    <p data-i18n="withdrawDescription">
-      Select the wallet source and bank destination for this development withdrawal request.
+    <p>
+      Save the bank account you want CoinForest to use for withdrawals.
     </p>
 
+    <div
+      id="withdrawAccountNotice"
+      class="notice">
+    </div>
+
     <div class="field">
 
-      <label data-i18n="withdrawFrom">Withdraw From</label>
+      <label>
+        Account Name
+      </label>
+
+      <input
+        type="text"
+        id="withdrawAccountName"
+        placeholder="Name on bank account">
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Account Number
+      </label>
+
+      <input
+        type="text"
+        id="withdrawAccountNumber"
+        placeholder="Bank account number"
+        inputmode="numeric">
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Bank Name
+      </label>
+
+      <input
+        type="text"
+        id="withdrawBankName"
+        placeholder="Bank name">
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Swift / Other Code
+      </label>
+
+      <input
+        type="text"
+        id="withdrawSwift"
+        placeholder="Optional">
+
+    </div>
+
+    <button
+      class="modal-submit"
+      id="withdrawAccountSubmit"
+      onclick="saveWithdrawalAccount()">
+      Save Withdrawal Account
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =====================================================
+WITHDRAWAL MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="withdrawModal">
+
+  <div class="modal-box">
+
+    <button
+      class="close"
+      onclick="closeModal('withdrawModal')">
+      ×
+    </button>
+
+    <h2>
+      Withdraw Funds
+    </h2>
+
+    <p id="withdrawDescription">
+      Your saved withdrawal account will be used for this request.
+    </p>
+
+    <div
+      id="withdrawNotice"
+      class="notice">
+    </div>
+
+    <div
+      id="withdrawAccountSummary"
+      class="withdraw-account-box"
+      style="margin-bottom:15px">
+      Checking withdrawal account...
+    </div>
+
+    <div class="field">
+
+      <label>
+        Withdraw From
+      </label>
 
       <select id="withdrawFrom">
-        <option value="main">Main Wallet</option>
-        <option value="profit">Profit Wallet</option>
+
+        <option value="main">
+          Main Wallet
+        </option>
+
+        <option value="profit">
+          Profit Wallet
+        </option>
+
       </select>
 
     </div>
 
     <div class="field">
 
-      <label data-i18n="withdrawTo">Withdraw To</label>
-
-      <select id="withdrawTo">
-        <option value="bank">Bank Account</option>
-      </select>
-
-    </div>
-
-    <div class="field">
-
-      <label data-i18n="amount">Amount</label>
+      <label>
+        Amount
+      </label>
 
       <input
         type="number"
         id="withdrawAmount"
         min="1"
+        step="0.01"
         placeholder="Enter amount">
 
     </div>
 
     <button
       class="modal-submit"
-      onclick="submitDemoAction('withdrawAmount','Withdrawal')"
-      data-i18n="requestWithdrawal">
+      id="withdrawSubmit"
+      onclick="submitWithdrawal()">
       Request Withdrawal
     </button>
 
@@ -1781,21 +3592,40 @@ a{text-decoration:none;color:inherit}
 
 </div>
 
-<div class="modal" id="sendModal">
+<!-- =====================================================
+SEND MODAL
+===================================================== -->
+
+<div
+  class="modal"
+  id="sendModal">
 
   <div class="modal-box">
 
-    <button class="close" onclick="closeModal('sendModal')">×</button>
+    <button
+      class="close"
+      onclick="closeModal('sendModal')">
+      ×
+    </button>
 
-    <h2 data-i18n="sendMoneyTitle">Send Money</h2>
+    <h2>
+      Send Money
+    </h2>
 
-    <p data-i18n="sendDescription">
-      Transfer funds from your Main Wallet to another CoinForest account.
+    <p>
+      Transfer funds from your Main Wallet to another CoinForest customer.
     </p>
+
+    <div
+      id="sendNotice"
+      class="notice">
+    </div>
 
     <div class="field">
 
-      <label data-i18n="recipient">Recipient Username</label>
+      <label>
+        Recipient Username
+      </label>
 
       <input
         type="text"
@@ -1806,30 +3636,23 @@ a{text-decoration:none;color:inherit}
 
     <div class="field">
 
-      <label data-i18n="paymentSource">Payment Source</label>
-
-      <select id="sendSource">
-        <option value="main">Main Wallet</option>
-      </select>
-
-    </div>
-
-    <div class="field">
-
-      <label data-i18n="amount">Amount</label>
+      <label>
+        Amount
+      </label>
 
       <input
         type="number"
         id="sendAmount"
         min="1"
+        step="0.01"
         placeholder="Enter amount">
 
     </div>
 
     <button
       class="modal-submit"
-      onclick="submitDemoAction('sendAmount','Transfer')"
-      data-i18n="sendMoney">
+      id="sendSubmit"
+      onclick="submitSend()">
       Send Money
     </button>
 
@@ -1837,37 +3660,151 @@ a{text-decoration:none;color:inherit}
 
 </div>
 
-<div class="modal" id="chatModal">
+<!-- =====================================================
+KYC MODAL
+===================================================== -->
 
-  <div class="modal-box chat-box">
+<div
+  class="modal"
+  id="kycModal">
 
-    <button class="close" onclick="closeModal('chatModal')">×</button>
+  <div class="modal-box">
 
-    <h2 data-i18n="customerSupport">Customer Support</h2>
+    <button
+      class="close"
+      onclick="closeModal('kycModal')">
+      ×
+    </button>
 
-    <p data-i18n="chatDescription">
-      Contact CoinForest support. Your conversation will be associated with your customer account.
+    <h2>
+      KYC Verification
+    </h2>
+
+    <p>
+      Submit your identification information for administrator review.
     </p>
 
-    <div class="chat-status" data-i18n="chatStatus">
-      Support chat is ready. Messages will be connected to the CoinForest customer/admin chat system.
+    <div
+      id="kycNotice"
+      class="notice">
+    </div>
+
+    <div
+      id="kycCurrentStatus"
+      class="kyc-banner">
+      Checking current KYC status...
     </div>
 
     <div class="field">
 
-      <label data-i18n="message">Message</label>
+      <label>
+        Document Type
+      </label>
+
+      <select id="kycDocumentType">
+
+        <option value="national_id">
+          National ID
+        </option>
+
+        <option value="passport">
+          Passport
+        </option>
+
+        <option value="drivers_license">
+          Driver's License
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Document Number
+      </label>
 
       <input
         type="text"
-        id="chatMessage"
-        placeholder="Write your message...">
+        id="kycDocumentNumber"
+        placeholder="Enter document number">
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Additional Information
+      </label>
+
+      <textarea
+        id="kycNotes"
+        placeholder="Optional information for the administrator">
+      </textarea>
 
     </div>
 
     <button
       class="modal-submit"
-      onclick="sendSupportMessage()"
-      data-i18n="sendMessage">
+      id="kycSubmit"
+      onclick="submitKyc()">
+      Submit KYC Application
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =====================================================
+CHAT
+===================================================== -->
+
+<div
+  class="modal"
+  id="chatModal">
+
+  <div class="modal-box chat-box">
+
+    <button
+      class="close"
+      onclick="closeModal('chatModal')">
+      ×
+    </button>
+
+    <h2>
+      Customer Support
+    </h2>
+
+    <p>
+      Contact CoinForest support. Your conversation will be associated with your customer account.
+    </p>
+
+    <div class="chat-status">
+      Support chat is ready.
+    </div>
+
+    <div
+      id="chatNotice"
+      class="notice">
+    </div>
+
+    <div class="field">
+
+      <label>
+        Message
+      </label>
+
+      <textarea
+        id="chatMessage"
+        placeholder="Write your message...">
+      </textarea>
+
+    </div>
+
+    <button
+      class="modal-submit"
+      onclick="sendSupportMessage()">
       Send Message
     </button>
 
@@ -1877,33 +3814,137 @@ a{text-decoration:none;color:inherit}
 
 <script>
 
-/* =========================================================
-   AUTHENTICATION
-   ========================================================= */
+/* =====================================================
+AUTH
+===================================================== */
 
-const token = localStorage.getItem("coinforest_token");
+const token =
+  localStorage.getItem("coinforest_token");
 
 if(!token){
+
   window.location.href="/";
+
 }
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+/* =====================================================
+STATE
+===================================================== */
+
+let currentUser = null;
+
+let dashboardData = {
+  wallets: [],
+  transactions: [],
+  withdrawalAccount: null
+};
+
+let depositMethod = "bank_transfer";
+
+/* =====================================================
+API
+===================================================== */
+
+async function api(
+  path,
+  options={}
+){
+
+  const headers = {
+    "Accept":"application/json",
+    ...(options.body
+      ? {"Content-Type":"application/json"}
+      : {}),
+    ...(token
+      ? {"Authorization":"Bearer "+token}
+      : {}),
+    ...(options.headers || {})
+  };
+
+  const response =
+    await fetch(
+      path,
+      {
+        ...options,
+        headers
+      }
+    );
+
+  let data = {};
+
+  try{
+    data = await response.json();
+  }catch{
+    data = {};
+  }
+
+  if(
+    response.status===401 ||
+    response.status===403
+  ){
+
+    /*
+     * Do not logout because of a normal
+     * navigation action. Only the API's
+     * authentication response can trigger
+     * session recovery.
+     */
+
+    if(
+      response.status===401 &&
+      path.includes("/api/auth/")
+    ){
+
+      localStorage.removeItem(
+        "coinforest_token"
+      );
+
+      localStorage.removeItem(
+        "coinforest_user"
+      );
+
+      window.location.href="/";
+
+      return {
+        success:false,
+        error:"Session expired."
+      };
+
+    }
+
+  }
+
+  return {
+    ...data,
+    _status:response.status
+  };
+
+}
+
+/* =====================================================
+NAVIGATION
+===================================================== */
 
 function goBack(){
 
-  if(window.history.length > 1){
+  /*
+   * Phone/browser back must NEVER log the
+   * customer out.
+   */
+
+  if(
+    window.history.length>1
+  ){
+
     window.history.back();
+
   }else{
-    window.location.href="/";
+
+    window.location.href="dashboard.html";
+
   }
 
 }
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
 
 function toggleSidebar(){
 
@@ -1923,71 +3964,150 @@ function closeSidebar(){
 
 }
 
-/* =========================================================
-   MODALS
-   ========================================================= */
+function navigateSection(section){
+
+  closeSidebar();
+
+  document
+    .querySelectorAll(".dashboard-section")
+    .forEach(element=>{
+      element.classList.add("hidden");
+    });
+
+  const target =
+    document.getElementById(
+      "section-"+section
+    );
+
+  if(target){
+
+    target.classList.remove("hidden");
+
+  }
+
+  document
+    .querySelectorAll(".menu a[data-section]")
+    .forEach(link=>{
+      link.classList.toggle(
+        "active",
+        link.dataset.section===section
+      );
+    });
+
+  /*
+   * Keep navigation inside this dashboard.
+   * This eliminates the previous random 404
+   * problem caused by missing HTML routes.
+   */
+
+  if(
+    section==="transactions"
+  ){
+
+    loadTransactions();
+
+  }
+
+  if(
+    section==="profile"
+  ){
+
+    loadWithdrawalAccount();
+
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+/* =====================================================
+MODALS
+===================================================== */
 
 function openModal(id){
 
-  document
-    .getElementById(id)
-    .classList
-    .add("active");
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+
+    modal.classList.add("active");
+
+  }
 
 }
 
 function closeModal(id){
 
-  document
-    .getElementById(id)
-    .classList
-    .remove("active");
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+
+    modal.classList.remove("active");
+
+  }
 
 }
 
-document.querySelectorAll(".modal").forEach(modal=>{
+document
+  .querySelectorAll(".modal")
+  .forEach(modal=>{
 
-  modal.addEventListener("click",function(e){
+    modal.addEventListener(
+      "click",
+      event=>{
 
-    if(e.target===modal){
-      modal.classList.remove("active");
-    }
+        if(
+          event.target===modal
+        ){
+
+          modal.classList.remove(
+            "active"
+          );
+
+        }
+
+      }
+    );
 
   });
 
-});
-
-/* =========================================================
-   USER
-   FIXED: LOAD NAME FROM LOGIN SESSION FIRST
-   ========================================================= */
+/* =====================================================
+USER
+===================================================== */
 
 function getSavedUser(){
 
   try{
 
-    const saved=
-      localStorage.getItem("coinforest_user");
+    const saved =
+      localStorage.getItem(
+        "coinforest_user"
+      );
 
     if(!saved){
       return null;
     }
 
-    const parsed=
+    const parsed =
       JSON.parse(saved);
 
-    if(parsed && parsed.user){
+    if(
+      parsed &&
+      parsed.user
+    ){
+
       return parsed.user;
+
     }
 
     return parsed;
 
-  }catch(error){
-
-    console.error(
-      "Unable to read saved CoinForest user:",
-      error
-    );
+  }catch{
 
     return null;
 
@@ -2001,21 +4121,21 @@ function getUserDisplayName(user){
     return "";
   }
 
-  const first=
+  const first =
     String(
       user.first_name ||
       user.firstName ||
       ""
     ).trim();
 
-  const last=
+  const last =
     String(
       user.last_name ||
       user.lastName ||
       ""
     ).trim();
 
-  const full=
+  const full =
     String(
       user.full_name ||
       user.fullName ||
@@ -2023,7 +4143,7 @@ function getUserDisplayName(user){
       ""
     ).trim();
 
-  const username=
+  const username =
     String(
       user.username ||
       user.user_name ||
@@ -2055,336 +4175,1796 @@ function displayUser(user){
     return;
   }
 
-  const displayName=
+  currentUser = user;
+
+  const name =
     getUserDisplayName(user);
 
-  const email=
+  const email =
     user.email ||
     user.email_address ||
     "";
 
-  /*
-    Do NOT overwrite a valid account name
-    with "CoinForest Member".
-  */
+  document.getElementById(
+    "welcomeName"
+  ).textContent =
+    name
+      ? "Hello, "+name
+      : "Hello, CoinForest Member";
 
-  if(displayName){
+  document.getElementById(
+    "profileName"
+  ).textContent =
+    name ||
+    "CoinForest Member";
 
-    document.getElementById(
-      "welcomeName"
-    ).textContent=
-      "Hello, "+displayName;
+  document.getElementById(
+    "profileEmail"
+  ).textContent =
+    email ||
+    "Account";
 
-    document.getElementById(
-      "profileName"
-    ).textContent=
-      displayName;
+  document.getElementById(
+    "profileFirstName"
+  ).textContent =
+    user.first_name || "—";
 
-    const nameParts=
-      displayName
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
+  document.getElementById(
+    "profileLastName"
+  ).textContent =
+    user.last_name || "—";
 
-    let initials="CF";
+  document.getElementById(
+    "profileUsername"
+  ).textContent =
+    user.username || "—";
 
-    if(nameParts.length>=2){
+  document.getElementById(
+    "profileEmailPage"
+  ).textContent =
+    email || "—";
 
-      initials=
-        (
-          nameParts[0].charAt(0)+
-          nameParts[nameParts.length-1].charAt(0)
-        ).toUpperCase();
+  document.getElementById(
+    "securityEmail"
+  ).textContent =
+    email || "—";
 
-    }else if(nameParts.length===1){
+  document.getElementById(
+    "securityEmailStatus"
+  ).textContent =
+    user.email_verified_at
+      ? "Verified"
+      : "Not verified";
 
-      initials=
-        nameParts[0]
-          .substring(0,2)
-          .toUpperCase();
+  document.getElementById(
+    "security2FA"
+  ).textContent =
+    user.two_factor_enabled
+      ? "Enabled"
+      : "Not enabled";
 
-    }
+  const nameParts =
+    name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
 
-    document.getElementById(
-      "avatar"
-    ).textContent=
-      initials;
+  let initials = "CF";
+
+  if(nameParts.length>=2){
+
+    initials =
+      (
+        nameParts[0][0]+
+        nameParts[nameParts.length-1][0]
+      ).toUpperCase();
+
+  }else if(nameParts.length===1){
+
+    initials =
+      nameParts[0]
+        .substring(0,2)
+        .toUpperCase();
 
   }
 
-  if(email){
+  document.getElementById(
+    "avatar"
+  ).textContent =
+    initials;
 
-    document.getElementById(
-      "profileEmail"
-    ).textContent=
-      email;
-
-  }
-
-  const tier=
+  const tier =
     user.tier ||
     user.account_tier ||
-    user.accountTier;
+    user.accountTier ||
+    "Tier 1";
 
-  if(tier){
+  document.getElementById(
+    "tierBadge"
+  ).textContent =
+    String(tier)
+      .replace(/^tier\s*/i,"Tier ");
 
-    document.getElementById(
-      "tierBadge"
-    ).textContent=
-      String(tier)
-        .replace(/^tier\s*/i,"Tier ");
+  const status =
+    String(
+      user.status ||
+      "active"
+    ).toLowerCase();
+
+  document.getElementById(
+    "accountStatus"
+  ).textContent =
+    status.charAt(0).toUpperCase()+
+    status.slice(1);
+
+  document.getElementById(
+    "profileAccountStatus"
+  ).textContent =
+    status.charAt(0).toUpperCase()+
+    status.slice(1);
+
+  updateKycUI(
+    user.kyc_status
+  );
+
+}
+
+/* =====================================================
+CURRENT USER
+===================================================== */
+
+async function loadUser(){
+
+  const saved =
+    getSavedUser();
+
+  if(saved){
+
+    displayUser(saved);
+
+  }
+
+  const result =
+    await api(
+      "/api/auth/me",
+      {
+        method:"GET"
+      }
+    );
+
+  if(
+    result.success &&
+    result.user
+  ){
+
+    localStorage.setItem(
+      "coinforest_user",
+      JSON.stringify(result.user)
+    );
+
+    displayUser(
+      result.user
+    );
 
   }
 
 }
 
-async function loadUser(){
+/* =====================================================
+DASHBOARD DATA
+===================================================== */
 
-  /*
-    STEP 1:
-    Immediately use the user object saved by login.html.
-    This is important because login already stores:
-    coinforest_user
-  */
+async function refreshDashboard(){
 
-  const savedUser=
-    getSavedUser();
+  const result =
+    await api(
+      "/api/customer/dashboard",
+      {
+        method:"GET"
+      }
+    );
 
-  if(savedUser){
+  if(!result.success){
 
-    displayUser(savedUser);
+    showNotice(
+      "globalNotice",
+      result.error ||
+      "Unable to load your wallet.",
+      "error"
+    );
+
+    return;
 
   }
 
-  /*
-    STEP 2:
-    Ask the server for the authoritative user.
-    If it succeeds, update the dashboard with that
-    information. If it fails, keep the saved login user.
-  */
+  dashboardData =
+    result;
 
-  try{
+  const main =
+    Number(
+      result.main_balance || 0
+    );
 
-    const response=
-      await fetch(
-        "/api/auth/me",
+  const profit =
+    Number(
+      result.profit_balance || 0
+    );
+
+  const total =
+    main+profit;
+
+  const weekly =
+    Number(
+      result.weekly_profit || 0
+    );
+
+  setMoney(
+    "mainWallet",
+    main
+  );
+
+  setMoney(
+    "profitWallet",
+    profit
+  );
+
+  setMoney(
+    "walletMain",
+    main
+  );
+
+  setMoney(
+    "walletProfit",
+    profit
+  );
+
+  setMoney(
+    "totalBalance",
+    total
+  );
+
+  setMoney(
+    "weeklyProfit",
+    weekly,
+    true
+  );
+
+  setMoney(
+    "walletPageMain",
+    main
+  );
+
+  setMoney(
+    "walletPageProfit",
+    profit
+  );
+
+  setMoney(
+    "portfolioMain",
+    main
+  );
+
+  setMoney(
+    "portfolioProfit",
+    profit
+  );
+
+  setMoney(
+    "portfolioTotal",
+    total
+  );
+
+  setMoney(
+    "totalDeposits",
+    Number(
+      result.total_deposits || 0
+    )
+  );
+
+  setMoney(
+    "totalInvested",
+    Number(
+      result.total_invested || 0
+    )
+  );
+
+  setMoney(
+    "portfolioInvested",
+    Number(
+      result.total_invested || 0
+    )
+  );
+
+  setMoney(
+    "withdrawals",
+    Number(
+      result.total_withdrawals || 0
+    )
+  );
+
+  if(result.user){
+
+    displayUser(
+      result.user
+    );
+
+  }
+
+  renderTransactions(
+    result.transactions || []
+  );
+
+}
+
+/* =====================================================
+MONEY
+===================================================== */
+
+function setMoney(
+  id,
+  value,
+  plus=false
+){
+
+  const element =
+    document.getElementById(id);
+
+  if(!element){
+    return;
+  }
+
+  const amount =
+    Number(value || 0);
+
+  const formatted =
+    formatMoney(amount);
+
+  element.textContent =
+    plus && amount>=0
+      ? "+"+formatted
+      : formatted;
+
+}
+
+function formatMoney(value){
+
+  return "$"+
+    Number(value || 0)
+      .toLocaleString(
+        "en-US",
         {
-          method:"GET",
-          headers:{
-            "Authorization":
-              "Bearer "+token,
-            "Accept":
-              "application/json"
-          }
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
         }
       );
 
-    const data=
-      await response.json();
+}
 
-    if(
-      response.ok &&
-      data &&
-      data.success &&
-      data.user
-    ){
+/* =====================================================
+TRANSACTIONS
+===================================================== */
 
-      const serverUser=
-        data.user;
+async function loadTransactions(){
 
-      /*
-        Save the authoritative user back to
-        localStorage so the next page load can
-        immediately display the correct name.
-      */
+  const result =
+    await api(
+      "/api/customer/transactions?limit=100",
+      {
+        method:"GET"
+      }
+    );
 
-      localStorage.setItem(
-        "coinforest_user",
-        JSON.stringify(serverUser)
-      );
+  if(!result.success){
 
-      displayUser(serverUser);
+    renderTransactions(
+      []
+    );
+
+    return;
+
+  }
+
+  renderTransactions(
+    result.transactions || []
+  );
+
+}
+
+function renderTransactions(
+  rows
+){
+
+  dashboardData.transactions =
+    rows || [];
+
+  const targets = [
+    "transactionBody",
+    "transactionPageBody"
+  ];
+
+  targets.forEach(id=>{
+
+    const body =
+      document.getElementById(id);
+
+    if(!body){
+      return;
+    }
+
+    body.innerHTML="";
+
+    if(!rows.length){
+
+      const row =
+        document.createElement("tr");
+
+      row.innerHTML =
+        `
+        <td colspan="4">
+          No transactions yet
+        </td>
+        `;
+
+      body.appendChild(row);
 
       return;
 
     }
 
-    /*
-      Server did not return a usable user.
-      The saved login user remains on screen.
-    */
+    rows
+      .slice(0,100)
+      .forEach(transaction=>{
 
-    console.warn(
-      "CoinForest /api/auth/me did not return a user:",
-      response.status,
-      data
-    );
+        const row =
+          document.createElement("tr");
 
-  }catch(error){
+        const description =
+          transaction.description ||
+          transaction.transaction_type ||
+          transaction.type ||
+          "Transaction";
 
-    console.warn(
-      "CoinForest authentication check failed; using saved login user:",
-      error
-    );
+        const status =
+          String(
+            transaction.status ||
+            "pending"
+          ).toLowerCase();
 
-  }
+        const amount =
+          Number(
+            transaction.amount || 0
+          );
 
-  /*
-    Final fallback:
-    Only use CoinForest Member if absolutely no
-    usable account information exists anywhere.
-  */
+        const direction =
+          String(
+            transaction.direction ||
+            ""
+          ).toLowerCase();
 
-  const currentName=
-    document.getElementById(
-      "profileName"
-    ).textContent.trim();
+        const sign =
+          direction==="debit"
+            ? "-"
+            : "+";
 
-  if(
-    !currentName ||
-    currentName==="Loading..." ||
-    currentName==="CoinForest Member"
-  ){
+        const date =
+          transaction.created_at
+            ? new Date(
+                transaction.created_at
+              ).toLocaleString()
+            : "—";
 
-    document.getElementById(
-      "profileName"
-    ).textContent=
-      "CoinForest Member";
+        row.innerHTML =
+          `
+          <td>${escapeHtml(description)}</td>
+          <td>${escapeHtml(date)}</td>
+          <td>
+            <span class="status ${escapeHtml(status)}">
+              ${escapeHtml(
+                status.charAt(0).toUpperCase()+
+                status.slice(1)
+              )}
+            </span>
+          </td>
+          <td>
+            ${sign}${formatMoney(amount)}
+          </td>
+          `;
 
-    document.getElementById(
-      "welcomeName"
-    ).textContent=
-      "Hello, CoinForest Member";
+        body.appendChild(row);
 
-  }
+      });
+
+  });
 
 }
 
-/* =========================================================
-   INVESTMENT PAGE NAVIGATION
-   ========================================================= */
+/* =====================================================
+DEPOSIT
+===================================================== */
 
-function goToInvestment(plan){
+function openDeposit(){
 
-  window.location.href=
-    "investment.html?plan="+
-    encodeURIComponent(plan);
+  if(!isKycApproved()){
 
-}
+    showNotice(
+      "globalNotice",
+      "KYC approval is required before you can submit a deposit request.",
+      "warning"
+    );
 
-/* =========================================================
-   DEVELOPMENT ACTIONS
-   ========================================================= */
-
-function submitDemoAction(
-  inputId,
-  type
-){
-
-  const input=
-    document.getElementById(inputId);
-
-  const amount=
-    Number(input.value);
-
-  if(!amount || amount<=0){
-
-    alert("Please enter a valid amount.");
+    openKyc();
 
     return;
 
   }
 
-  if(type==="Withdrawal"){
+  clearNotice(
+    "depositNotice"
+  );
 
-    const source=
+  document.getElementById(
+    "depositAmount"
+  ).value="";
+
+  document.getElementById(
+    "depositReference"
+  ).value="";
+
+  openModal(
+    "depositModal"
+  );
+
+}
+
+function selectDepositMethod(
+  method
+){
+
+  depositMethod =
+    method;
+
+  document
+    .getElementById(
+      "depositBankMethod"
+    )
+    .classList.toggle(
+      "selected",
+      method==="bank_transfer"
+    );
+
+  document
+    .getElementById(
+      "depositWalletMethod"
+    )
+    .classList.toggle(
+      "selected",
+      method==="wallet"
+    );
+
+}
+
+async function submitDeposit(){
+
+  if(!isKycApproved()){
+
+    showNotice(
+      "depositNotice",
+      "KYC approval is required before submitting a deposit request.",
+      "warning"
+    );
+
+    return;
+
+  }
+
+  const amount =
+    Number(
       document.getElementById(
-        "withdrawFrom"
-      ).value;
+        "depositAmount"
+      ).value
+    );
 
-    if(source==="profit"){
+  const reference =
+    document.getElementById(
+      "depositReference"
+    ).value.trim();
 
-      alert(
-        "Profit Wallet withdrawal is available as a separate withdrawal source. The final server-side withdrawal workflow will validate the available balance."
+  if(
+    !Number.isFinite(amount) ||
+    amount<=0
+  ){
+
+    showNotice(
+      "depositNotice",
+      "Please enter a valid deposit amount.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  setButtonLoading(
+    "depositSubmit",
+    true,
+    "Submitting..."
+  );
+
+  const result =
+    await api(
+      "/api/customer/deposits",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          amount,
+          payment_method:
+            depositMethod,
+          payment_reference:
+            reference
+        })
+      }
+    );
+
+  setButtonLoading(
+    "depositSubmit",
+    false,
+    "Submit Deposit Request"
+  );
+
+  if(!result.success){
+
+    showNotice(
+      "depositNotice",
+      result.error ||
+      "Deposit request could not be submitted.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  showNotice(
+    "globalNotice",
+    result.message ||
+    "Deposit request submitted successfully.",
+    "success"
+  );
+
+  closeModal(
+    "depositModal"
+  );
+
+  await refreshDashboard();
+
+}
+
+/* =====================================================
+SEND MONEY
+===================================================== */
+
+function openSend(){
+
+  if(!isKycApproved()){
+
+    showNotice(
+      "globalNotice",
+      "KYC approval is required before you can send money.",
+      "warning"
+    );
+
+    openKyc();
+
+    return;
+
+  }
+
+  clearNotice(
+    "sendNotice"
+  );
+
+  document.getElementById(
+    "recipient"
+  ).value="";
+
+  document.getElementById(
+    "sendAmount"
+  ).value="";
+
+  openModal(
+    "sendModal"
+  );
+
+}
+
+async function submitSend(){
+
+  if(!isKycApproved()){
+
+    showNotice(
+      "sendNotice",
+      "KYC approval is required before sending money.",
+      "warning"
+    );
+
+    return;
+
+  }
+
+  const recipient =
+    document.getElementById(
+      "recipient"
+    ).value.trim();
+
+  const amount =
+    Number(
+      document.getElementById(
+        "sendAmount"
+      ).value
+    );
+
+  if(!recipient){
+
+    showNotice(
+      "sendNotice",
+      "Please enter the recipient username.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  if(
+    !Number.isFinite(amount) ||
+    amount<=0
+  ){
+
+    showNotice(
+      "sendNotice",
+      "Please enter a valid amount.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  const mainBalance =
+    Number(
+      dashboardData.main_balance || 0
+    );
+
+  if(
+    amount>mainBalance
+  ){
+
+    showNotice(
+      "sendNotice",
+      "Insufficient Main Wallet balance.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  setButtonLoading(
+    "sendSubmit",
+    true,
+    "Sending..."
+  );
+
+  const result =
+    await api(
+      "/api/customer/transfers",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          recipient_username:
+            recipient.replace(/^@/,""),
+          amount
+        })
+      }
+    );
+
+  setButtonLoading(
+    "sendSubmit",
+    false,
+    "Send Money"
+  );
+
+  if(!result.success){
+
+    showNotice(
+      "sendNotice",
+      result.error ||
+      "Transfer could not be completed.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  showNotice(
+    "globalNotice",
+    result.message ||
+    "Money sent successfully.",
+    "success"
+  );
+
+  closeModal(
+    "sendModal"
+  );
+
+  await refreshDashboard();
+
+}
+
+/* =====================================================
+WITHDRAWAL ACCOUNT
+===================================================== */
+
+async function loadWithdrawalAccount(){
+
+  const result =
+    await api(
+      "/api/customer/withdrawal-account",
+      {
+        method:"GET"
+      }
+    );
+
+  if(
+    !result.success
+  ){
+
+    document.getElementById(
+      "withdrawAccountDisplay"
+    ).textContent =
+      "Unable to load withdrawal account.";
+
+    return;
+
+  }
+
+  dashboardData.withdrawalAccount =
+    result.account || null;
+
+  renderWithdrawalAccount(
+    result.account || null
+  );
+
+}
+
+function renderWithdrawalAccount(
+  account
+){
+
+  const display =
+    document.getElementById(
+      "withdrawAccountDisplay"
+    );
+
+  if(!display){
+    return;
+  }
+
+  if(!account){
+
+    display.innerHTML =
+      `
+      <div>
+        <strong>No withdrawal account saved.</strong>
+        <p>
+          Add your bank account once before making your first withdrawal.
+        </p>
+        <button
+          class="btn btn-green"
+          style="margin-top:10px"
+          onclick="openWithdrawalAccount(true)">
+          Add Withdrawal Account
+        </button>
+      </div>
+      `;
+
+    return;
+
+  }
+
+  display.innerHTML =
+    `
+    <div class="withdraw-account-row">
+      <span>Account Name</span>
+      <strong>${escapeHtml(account.account_name || "—")}</strong>
+    </div>
+
+    <div class="withdraw-account-row">
+      <span>Account Number</span>
+      <strong>${escapeHtml(maskAccount(account.account_number || ""))}</strong>
+    </div>
+
+    <div class="withdraw-account-row">
+      <span>Bank Name</span>
+      <strong>${escapeHtml(account.bank_name || "—")}</strong>
+    </div>
+
+    <div class="withdraw-account-row">
+      <span>Swift / Other Code</span>
+      <strong>${escapeHtml(account.swift_code || "—")}</strong>
+    </div>
+    `;
+
+}
+
+function maskAccount(
+  value
+){
+
+  const text =
+    String(value || "");
+
+  if(text.length<=4){
+    return text;
+  }
+
+  return "••••"+text.slice(-4);
+
+}
+
+async function openWithdrawalAccount(
+  editable=false
+){
+
+  clearNotice(
+    "withdrawAccountNotice"
+  );
+
+  const result =
+    await api(
+      "/api/customer/withdrawal-account",
+      {
+        method:"GET"
+      }
+    );
+
+  if(
+    result.success &&
+    result.account
+  ){
+
+    dashboardData.withdrawalAccount =
+      result.account;
+
+    document.getElementById(
+      "withdrawAccountName"
+    ).value =
+      result.account.account_name || "";
+
+    document.getElementById(
+      "withdrawAccountNumber"
+    ).value =
+      result.account.account_number || "";
+
+    document.getElementById(
+      "withdrawBankName"
+    ).value =
+      result.account.bank_name || "";
+
+    document.getElementById(
+      "withdrawSwift"
+    ).value =
+      result.account.swift_code || "";
+
+  }else{
+
+    document.getElementById(
+      "withdrawAccountName"
+    ).value="";
+
+    document.getElementById(
+      "withdrawAccountNumber"
+    ).value="";
+
+    document.getElementById(
+      "withdrawBankName"
+    ).value="";
+
+    document.getElementById(
+      "withdrawSwift"
+    ).value="";
+
+  }
+
+  openModal(
+    "withdrawAccountModal"
+  );
+
+}
+
+async function saveWithdrawalAccount(){
+
+  const accountName =
+    document.getElementById(
+      "withdrawAccountName"
+    ).value.trim();
+
+  const accountNumber =
+    document.getElementById(
+      "withdrawAccountNumber"
+    ).value.trim();
+
+  const bankName =
+    document.getElementById(
+      "withdrawBankName"
+    ).value.trim();
+
+  const swift =
+    document.getElementById(
+      "withdrawSwift"
+    ).value.trim();
+
+  if(
+    !accountName ||
+    !accountNumber ||
+    !bankName
+  ){
+
+    showNotice(
+      "withdrawAccountNotice",
+      "Account name, account number and bank name are required.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  setButtonLoading(
+    "withdrawAccountSubmit",
+    true,
+    "Saving..."
+  );
+
+  const result =
+    await api(
+      "/api/customer/withdrawal-account",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          account_name:
+            accountName,
+          account_number:
+            accountNumber,
+          bank_name:
+            bankName,
+          swift_code:
+            swift
+        })
+      }
+    );
+
+  setButtonLoading(
+    "withdrawAccountSubmit",
+    false,
+    "Save Withdrawal Account"
+  );
+
+  if(!result.success){
+
+    showNotice(
+      "withdrawAccountNotice",
+      result.error ||
+      "Unable to save withdrawal account.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  dashboardData.withdrawalAccount =
+    result.account;
+
+  renderWithdrawalAccount(
+    result.account
+  );
+
+  closeModal(
+    "withdrawAccountModal"
+  );
+
+  showNotice(
+    "globalNotice",
+    "Withdrawal account saved successfully.",
+    "success"
+  );
+
+}
+
+/* =====================================================
+WITHDRAWAL
+===================================================== */
+
+async function openWithdrawal(){
+
+  if(!isKycApproved()){
+
+    showNotice(
+      "globalNotice",
+      "KYC approval is required before you can submit a withdrawal.",
+      "warning"
+    );
+
+    openKyc();
+
+    return;
+
+  }
+
+  clearNotice(
+    "withdrawNotice"
+  );
+
+  const result =
+    await api(
+      "/api/customer/withdrawal-account",
+      {
+        method:"GET"
+      }
+    );
+
+  if(
+    !result.success
+  ){
+
+    showNotice(
+      "globalNotice",
+      result.error ||
+      "Unable to check your withdrawal account.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  if(!result.account){
+
+    /*
+     * FIRST withdrawal:
+     * send customer to the account form.
+     */
+
+    await openWithdrawalAccount(
+      true
+    );
+
+    showNotice(
+      "globalNotice",
+      "Please save your withdrawal account first. You will not need to enter it again for future withdrawals.",
+      "warning"
+    );
+
+    return;
+
+  }
+
+  dashboardData.withdrawalAccount =
+    result.account;
+
+  renderWithdrawalSummary(
+    result.account
+  );
+
+  openModal(
+    "withdrawModal"
+  );
+
+}
+
+function renderWithdrawalSummary(
+  account
+){
+
+  const element =
+    document.getElementById(
+      "withdrawAccountSummary"
+    );
+
+  if(!element){
+    return;
+  }
+
+  element.innerHTML =
+    `
+    <div class="withdraw-account-row">
+      <span>Account Name</span>
+      <strong>${escapeHtml(account.account_name || "—")}</strong>
+    </div>
+
+    <div class="withdraw-account-row">
+      <span>Account Number</span>
+      <strong>${escapeHtml(maskAccount(account.account_number || ""))}</strong>
+    </div>
+
+    <div class="withdraw-account-row">
+      <span>Bank</span>
+      <strong>${escapeHtml(account.bank_name || "—")}</strong>
+    </div>
+
+    <button
+      class="btn btn-dark"
+      style="margin-top:12px;width:100%"
+      onclick="editWithdrawalFromModal()">
+      Edit Withdrawal Account
+    </button>
+    `;
+
+}
+
+async function editWithdrawalFromModal(){
+
+  closeModal(
+    "withdrawModal"
+  );
+
+  await openWithdrawalAccount(
+    true
+  );
+
+}
+
+async function submitWithdrawal(){
+
+  if(!isKycApproved()){
+
+    showNotice(
+      "withdrawNotice",
+      "KYC approval is required before submitting a withdrawal.",
+      "warning"
+    );
+
+    return;
+
+  }
+
+  if(
+    !dashboardData.withdrawalAccount
+  ){
+
+    closeModal(
+      "withdrawModal"
+    );
+
+    await openWithdrawalAccount(
+      true
+    );
+
+    return;
+
+  }
+
+  const source =
+    document.getElementById(
+      "withdrawFrom"
+    ).value;
+
+  const amount =
+    Number(
+      document.getElementById(
+        "withdrawAmount"
+      ).value
+    );
+
+  if(
+    !Number.isFinite(amount) ||
+    amount<=0
+  ){
+
+    showNotice(
+      "withdrawNotice",
+      "Please enter a valid withdrawal amount.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  const available =
+    source==="profit"
+      ? Number(
+          dashboardData.profit_balance || 0
+        )
+      : Number(
+          dashboardData.main_balance || 0
+        );
+
+  if(amount>available){
+
+    showNotice(
+      "withdrawNotice",
+      "Insufficient "+
+      (
+        source==="profit"
+          ? "Profit"
+          : "Main"
+      )+
+      " Wallet balance.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  setButtonLoading(
+    "withdrawSubmit",
+    true,
+    "Submitting..."
+  );
+
+  const result =
+    await api(
+      "/api/customer/withdrawals",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          wallet_type:
+            source,
+          amount
+        })
+      }
+    );
+
+  setButtonLoading(
+    "withdrawSubmit",
+    false,
+    "Request Withdrawal"
+  );
+
+  if(!result.success){
+
+    showNotice(
+      "withdrawNotice",
+      result.error ||
+      "Withdrawal request could not be submitted.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  document.getElementById(
+    "withdrawAmount"
+  ).value="";
+
+  closeModal(
+    "withdrawModal"
+  );
+
+  showNotice(
+    "globalNotice",
+    result.message ||
+    "Withdrawal request submitted successfully.",
+    "success"
+  );
+
+  await refreshDashboard();
+
+}
+
+/* =====================================================
+KYC
+===================================================== */
+
+function normalizeKycStatus(
+  value
+){
+
+  const status =
+    String(
+      value || "pending"
+    )
+      .trim()
+      .toLowerCase();
+
+  if(
+    status==="approved" ||
+    status==="verified" ||
+    status==="complete" ||
+    status==="completed"
+  ){
+
+    return "approved";
+
+  }
+
+  if(
+    status==="rejected" ||
+    status==="declined"
+  ){
+
+    return "rejected";
+
+  }
+
+  return "pending";
+
+}
+
+function isKycApproved(){
+
+  return normalizeKycStatus(
+    currentUser?.kyc_status
+  )==="approved";
+
+}
+
+function updateKycUI(
+  rawStatus
+){
+
+  const status =
+    normalizeKycStatus(
+      rawStatus
+    );
+
+  const banner =
+    document.getElementById(
+      "profileKycBanner"
+    );
+
+  const statusElement =
+    document.getElementById(
+      "profileKycStatus"
+    );
+
+  const text =
+    document.getElementById(
+      "profileKycText"
+    );
+
+  if(statusElement){
+
+    statusElement.textContent =
+      status.charAt(0).toUpperCase()+
+      status.slice(1);
+
+  }
+
+  if(!banner || !text){
+    return;
+  }
+
+  banner.className =
+    "kyc-banner";
+
+  if(status==="approved"){
+
+    banner.classList.add(
+      "approved"
+    );
+
+    text.textContent =
+      "Your KYC has been approved by CoinForest administration.";
+
+  }else if(status==="rejected"){
+
+    banner.classList.add(
+      "rejected"
+    );
+
+    text.textContent =
+      "Your KYC application was rejected. You may submit a new application.";
+
+  }else{
+
+    text.textContent =
+      "Your KYC is pending. Submit your verification information for administrator review.";
+
+  }
+
+}
+
+async function openKyc(){
+
+  clearNotice(
+    "kycNotice"
+  );
+
+  const result =
+    await api(
+      "/api/customer/kyc",
+      {
+        method:"GET"
+      }
+    );
+
+  if(
+    result.success
+  ){
+
+    if(result.user){
+
+      currentUser =
+        result.user;
+
+      displayUser(
+        result.user
       );
+
+    }
+
+    const status =
+      normalizeKycStatus(
+        result.kyc_status ||
+        result.user?.kyc_status
+      );
+
+    const box =
+      document.getElementById(
+        "kycCurrentStatus"
+      );
+
+    box.className =
+      "kyc-banner";
+
+    if(status==="approved"){
+
+      box.classList.add(
+        "approved"
+      );
+
+      box.innerHTML =
+        `
+        <strong>KYC Approved</strong>
+        <span>
+          Your account has already been approved by administration. No new submission is required.
+        </span>
+        `;
+
+      document.getElementById(
+        "kycSubmit"
+      ).style.display="none";
+
+    }else{
+
+      if(status==="rejected"){
+
+        box.classList.add(
+          "rejected"
+        );
+
+        box.innerHTML =
+          `
+          <strong>KYC Rejected</strong>
+          <span>
+            You may submit a new verification application.
+          </span>
+          `;
+
+      }else{
+
+        box.innerHTML =
+          `
+          <strong>KYC Pending</strong>
+          <span>
+            Submit your verification information for administrator review.
+          </span>
+          `;
+
+      }
+
+      document.getElementById(
+        "kycSubmit"
+      ).style.display="block";
 
     }
 
   }
 
-  alert(
-    type+
-    " request received. The CoinForest development transaction workflow will process this request through the account system."
+  openModal(
+    "kycModal"
   );
 
-  input.value="";
-
-  document
-    .querySelectorAll(".modal")
-    .forEach(m=>{
-      m.classList.remove("active");
-    });
-
 }
 
-/* =========================================================
-   SUPPORT
-   ========================================================= */
+async function submitKyc(){
 
-function openChat(){
-
-  openModal("chatModal");
-
-}
-
-function sendSupportMessage(){
-
-  const input=
+  const documentType =
     document.getElementById(
-      "chatMessage"
+      "kycDocumentType"
+    ).value;
+
+  const documentNumber =
+    document.getElementById(
+      "kycDocumentNumber"
+    ).value.trim();
+
+  const notes =
+    document.getElementById(
+      "kycNotes"
+    ).value.trim();
+
+  if(!documentNumber){
+
+    showNotice(
+      "kycNotice",
+      "Please enter your document number.",
+      "error"
     );
-
-  const message=
-    input.value.trim();
-
-  if(!message){
-
-    alert("Please enter a message.");
 
     return;
 
   }
 
-  alert(
-    "Your support message is ready to be connected to the CoinForest customer/admin chat service."
+  setButtonLoading(
+    "kycSubmit",
+    true,
+    "Submitting..."
   );
 
-  input.value="";
+  const result =
+    await api(
+      "/api/customer/kyc",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          document_type:
+            documentType,
+          document_number:
+            documentNumber,
+          notes
+        })
+      }
+    );
+
+  setButtonLoading(
+    "kycSubmit",
+    false,
+    "Submit KYC Application"
+  );
+
+  if(!result.success){
+
+    showNotice(
+      "kycNotice",
+      result.error ||
+      "KYC application could not be submitted.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  if(result.user){
+
+    currentUser =
+      result.user;
+
+    displayUser(
+      result.user
+    );
+
+  }
+
+  showNotice(
+    "globalNotice",
+    result.message ||
+    "KYC application submitted successfully.",
+    "success"
+  );
+
+  closeModal(
+    "kycModal"
+  );
 
 }
 
-/* =========================================================
-   LOGOUT
-   ========================================================= */
+/* =====================================================
+SUPPORT
+===================================================== */
+
+function openChat(){
+
+  clearNotice(
+    "chatNotice"
+  );
+
+  openModal(
+    "chatModal"
+  );
+
+}
+
+async function sendSupportMessage(){
+
+  const input =
+    document.getElementById(
+      "chatMessage"
+    );
+
+  const message =
+    input.value.trim();
+
+  if(!message){
+
+    showNotice(
+      "chatNotice",
+      "Please enter a message.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  const result =
+    await api(
+      "/api/customer/chat",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          message
+        })
+      }
+    );
+
+  if(!result.success){
+
+    showNotice(
+      "chatNotice",
+      result.error ||
+      "Unable to send your message.",
+      "error"
+    );
+
+    return;
+
+  }
+
+  input.value="";
+
+  showNotice(
+    "chatNotice",
+    result.message ||
+    "Message sent successfully.",
+    "success"
+  );
+
+}
+
+/* =====================================================
+LOGOUT
+===================================================== */
 
 async function logoutUser(){
 
+  /*
+   * Logout is ONLY called from the explicit
+   * Logout button.
+   */
+
   try{
 
-    await fetch(
+    await api(
       "/api/auth/logout",
       {
-        method:"POST",
-        headers:{
-          "Authorization":
-            "Bearer "+token
-        }
+        method:"POST"
       }
     );
 
   }catch(error){
 
-    console.error(error);
+    console.warn(
+      "Logout request failed:",
+      error
+    );
 
   }
 
@@ -2400,148 +5980,184 @@ async function logoutUser(){
 
 }
 
-/* =========================================================
-   MARKET SIMULATION
-   ========================================================= */
+/* =====================================================
+INVESTMENT
+===================================================== */
 
-const markets={
+function goToInvestment(
+  plan
+){
+
+  /*
+   * Preserve the existing investment page.
+   * Navigation here is explicit and does not
+   * destroy the authenticated session.
+   */
+
+  window.location.href =
+    "investment.html?plan="+
+    encodeURIComponent(plan);
+
+}
+
+/* =====================================================
+MARKET SIMULATION
+===================================================== */
+
+const markets = {
 
   BTC:{
     price:104820,
-    decimals:2,
     priceId:"btcPrice",
-    changeId:"btcChange"
+    changeId:"btcChange",
+    priceId2:"btcPrice2",
+    changeId2:"btcChange2"
   },
 
   ETH:{
     price:3842.12,
-    decimals:2,
     priceId:"ethPrice",
-    changeId:"ethChange"
+    changeId:"ethChange",
+    priceId2:"ethPrice2",
+    changeId2:"ethChange2"
   },
 
   USDT:{
     price:1,
-    decimals:2,
     priceId:"usdtPrice",
-    changeId:"usdtChange"
+    changeId:"usdtChange",
+    priceId2:"usdtPrice2",
+    changeId2:"usdtChange2"
   },
 
   BNB:{
     price:716.35,
-    decimals:2,
     priceId:"bnbPrice",
-    changeId:"bnbChange"
+    changeId:"bnbChange",
+    priceId2:"bnbPrice2",
+    changeId2:"bnbChange2"
   }
 
 };
 
-function formatMoney(
-  value,
-  decimals=2
+function updateMarketCoin(
+  symbol
 ){
 
-  return "$"+
-    Number(value).toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:decimals,
-        maximumFractionDigits:decimals
-      }
-    );
-
-}
-
-function updateMarketCoin(symbol){
-
-  const coin=
+  const coin =
     markets[symbol];
+
+  if(!coin){
+    return;
+  }
 
   let movement;
 
   if(symbol==="USDT"){
 
-    movement=
-      (Math.random()-.5)*0.0015;
+    movement =
+      (Math.random()-.5)*.0015;
 
   }else if(symbol==="BTC"){
 
-    movement=
-      (Math.random()-.5)*0.0022;
+    movement =
+      (Math.random()-.5)*.0022;
 
   }else if(symbol==="ETH"){
 
-    movement=
-      (Math.random()-.5)*0.0028;
+    movement =
+      (Math.random()-.5)*.0028;
 
   }else{
 
-    movement=
-      (Math.random()-.5)*0.003;
+    movement =
+      (Math.random()-.5)*.003;
 
   }
 
-  coin.price=
+  coin.price =
     coin.price*(1+movement);
 
   let change;
 
   if(symbol==="USDT"){
 
-    change=
-      ((coin.price-1)*100);
+    change =
+      (coin.price-1)*100;
 
   }else{
 
-    change=
+    change =
       movement*100;
 
   }
 
-  const priceElement=
-    document.getElementById(
-      coin.priceId
-    );
-
-  const changeElement=
-    document.getElementById(
+  const ids = [
+    [
+      coin.priceId,
       coin.changeId
+    ],
+    [
+      coin.priceId2,
+      coin.changeId2
+    ]
+  ];
+
+  ids.forEach(pair=>{
+
+    const priceElement =
+      document.getElementById(
+        pair[0]
+      );
+
+    const changeElement =
+      document.getElementById(
+        pair[1]
+      );
+
+    if(
+      !priceElement ||
+      !changeElement
+    ){
+
+      return;
+
+    }
+
+    priceElement.textContent =
+      formatMoney(
+        coin.price
+      );
+
+    const positive =
+      change>=0;
+
+    changeElement.textContent =
+      (positive?"+":"")+
+      change.toFixed(2)+
+      "%";
+
+    changeElement.classList.toggle(
+      "up",
+      positive
     );
 
-  if(!priceElement || !changeElement){
-    return;
-  }
-
-  priceElement.textContent=
-    formatMoney(
-      coin.price,
-      coin.decimals
+    changeElement.classList.toggle(
+      "down",
+      !positive
     );
 
-  const positive=
-    change>=0;
-
-  changeElement.textContent=
-    (positive?"+":"")+
-    change.toFixed(2)+
-    "%";
-
-  changeElement.classList.toggle(
-    "up",
-    positive
-  );
-
-  changeElement.classList.toggle(
-    "down",
-    !positive
-  );
+  });
 
 }
 
 function updateMarkets(){
 
-  Object.keys(markets)
-    .forEach(updateMarketCoin);
+  Object.keys(
+    markets
+  ).forEach(
+    updateMarketCoin
+  );
 
 }
 
@@ -2550,305 +6166,130 @@ setInterval(
   2500
 );
 
-/* =========================================================
-   LANGUAGE SYSTEM
-   ========================================================= */
+/* =====================================================
+LANGUAGE
+===================================================== */
 
-const translations={
-
-  en:{
-    dashboard:"Dashboard",
-    wallets:"Wallets",
-    investments:"Investments",
-    transactions:"Transactions",
-    transfers:"Transfers",
-    profile:"Profile",
-    settings:"Settings",
-    support:"Support",
-    logout:"Log out",
-    welcomeBack:"Welcome back",
-    dashboardTitle:"Dashboard",
-    dashboardSubtitle:"Manage your digital assets and monitor your portfolio.",
-    deposit:"+ Deposit",
-    sendMoney:"Send Money",
-    totalPortfolio:"Total Portfolio Balance",
-    mainWallet:"Main Wallet",
-    profitWallet:"Profit Wallet",
-    thisWeek:"This Week",
-    cryptoPortfolio:"Your Crypto Portfolio",
-    cryptoDescription:"Monitor your CoinForest wallet activity, market movement and available portfolio balance from one secure dashboard.",
-    totalDeposits:"Total Deposits",
-    accountDeposits:"Account deposits",
-    invested:"Invested",
-    activeInvestments:"Active investments",
-    withdrawals:"Withdrawals",
-    totalWithdrawn:"Total withdrawn",
-    accountStatus:"Account Status",
-    active:"Active",
-    goodStanding:"Account in good standing",
-    liveMarket:"Live Crypto Market",
-    marketSimulation:"Market simulation",
-    quickActions:"Quick Actions",
-    addFunds:"Add funds to wallet",
-    invest:"Invest",
-    startInvestment:"Start an investment",
-    withdraw:"Withdraw",
-    withdrawFunds:"Withdraw your funds",
-    transferUser:"Transfer to another user",
-    walletExchange:"Wallet Exchange",
-    manageWallets:"Manage your wallets",
-    contactSupport:"Contact CoinForest",
-    myWallets:"My Wallets",
-    viewAll:"View all",
-    availableBalance:"Available balance",
-    investmentEarnings:"Investment earnings",
-    investmentPlans:"Investment Plans",
-    viewPlans:"View plans",
-    return:"Return",
-    investmentRange:"Investment range",
-    recentTransactions:"Recent Transactions",
-    transaction:"Transaction",
-    date:"Date",
-    status:"Status",
-    amount:"Amount",
-    noTransactions:"No transactions yet",
-    pending:"Pending",
-    welcomeBonus:"Welcome Bonus",
-    welcomeBonusDescription:"Your CoinForest welcome bonus is credited to the Profit Wallet by an authorized administrator. The bonus is separate from your Main Wallet and cannot be used as investment payment.",
-    manualCredit:"Welcome bonus is manually credited by administration.",
-    depositFunds:"Deposit Funds",
-    depositDescription:"Select where the development deposit should be recorded.",
-    paymentMethod:"Payment Method",
-    walletMethod:"Wallet-based deposit",
-    bankMethod:"Bank transfer deposit",
-    continue:"Continue",
-    withdrawFundsTitle:"Withdraw Funds",
-    withdrawDescription:"Select the wallet source and bank destination for this development withdrawal request.",
-    withdrawFrom:"Withdraw From",
-    withdrawTo:"Withdraw To",
-    requestWithdrawal:"Request Withdrawal",
-    sendMoneyTitle:"Send Money",
-    sendDescription:"Transfer funds from your Main Wallet to another CoinForest account.",
-    recipient:"Recipient Username",
-    paymentSource:"Payment Source",
-    customerSupport:"Customer Support",
-    chatDescription:"Contact CoinForest support. Your conversation will be associated with your customer account.",
-    chatStatus:"Support chat is ready. Messages will be connected to the CoinForest customer/admin chat system.",
-    message:"Message",
-    sendMessage:"Send Message",
-    plan:"Plan",
-    paymentWallet:"Payment Wallet"
-  },
-
-  es:{
-    dashboard:"Panel",
-    wallets:"Billeteras",
-    investments:"Inversiones",
-    transactions:"Transacciones",
-    transfers:"Transferencias",
-    profile:"Perfil",
-    settings:"Configuración",
-    support:"Soporte",
-    logout:"Cerrar sesión",
-    welcomeBack:"Bienvenido",
-    dashboardTitle:"Panel",
-    dashboardSubtitle:"Administra tus activos digitales y supervisa tu cartera.",
-    deposit:"+ Depositar",
-    sendMoney:"Enviar dinero",
-    totalPortfolio:"Saldo total de cartera",
-    mainWallet:"Billetera principal",
-    profitWallet:"Billetera de ganancias",
-    thisWeek:"Esta semana",
-    cryptoPortfolio:"Tu cartera cripto",
-    cryptoDescription:"Supervisa la actividad de tu billetera, el mercado y el saldo disponible desde un solo panel.",
-    totalDeposits:"Depósitos totales",
-    accountDeposits:"Depósitos de cuenta",
-    invested:"Invertido",
-    activeInvestments:"Inversiones activas",
-    withdrawals:"Retiros",
-    totalWithdrawn:"Total retirado",
-    accountStatus:"Estado de cuenta",
-    active:"Activo",
-    goodStanding:"Cuenta en buen estado",
-    liveMarket:"Mercado cripto",
-    marketSimulation:"Simulación de mercado",
-    quickActions:"Acciones rápidas",
-    addFunds:"Agregar fondos",
-    invest:"Invertir",
-    startInvestment:"Iniciar inversión",
-    withdraw:"Retirar",
-    withdrawFunds:"Retirar fondos",
-    transferUser:"Transferir a otro usuario",
-    walletExchange:"Intercambio de billetera",
-    manageWallets:"Administrar billeteras",
-    contactSupport:"Contactar soporte",
-    myWallets:"Mis billeteras",
-    viewAll:"Ver todo",
-    availableBalance:"Saldo disponible",
-    investmentEarnings:"Ganancias de inversión",
-    investmentPlans:"Planes de inversión",
-    viewPlans:"Ver planes",
-    return:"Rendimiento",
-    investmentRange:"Rango de inversión",
-    recentTransactions:"Transacciones recientes",
-    transaction:"Transacción",
-    date:"Fecha",
-    status:"Estado",
-    amount:"Cantidad",
-    noTransactions:"Aún no hay transacciones",
-    pending:"Pendiente",
-    welcomeBonus:"Bono de bienvenida",
-    welcomeBonusDescription:"Tu bono de bienvenida se acredita en la Billetera de ganancias por un administrador autorizado y no puede utilizarse para inversiones.",
-    manualCredit:"El bono de bienvenida se acredita manualmente.",
-    depositFunds:"Depositar fondos",
-    depositDescription:"Selecciona el método para este depósito de desarrollo.",
-    paymentMethod:"Método de pago",
-    walletMethod:"Depósito mediante billetera",
-    bankMethod:"Transferencia bancaria",
-    continue:"Continuar",
-    withdrawFundsTitle:"Retirar fondos",
-    withdrawDescription:"Selecciona la billetera de origen y la cuenta bancaria de destino.",
-    withdrawFrom:"Retirar desde",
-    withdrawTo:"Retirar a",
-    requestWithdrawal:"Solicitar retiro",
-    sendMoneyTitle:"Enviar dinero",
-    sendDescription:"Transfiere fondos desde tu Billetera principal a otra cuenta CoinForest.",
-    recipient:"Usuario receptor",
-    paymentSource:"Fuente de pago",
-    customerSupport:"Soporte al cliente",
-    chatDescription:"Contacta con el soporte de CoinForest.",
-    chatStatus:"El chat de soporte está listo.",
-    message:"Mensaje",
-    sendMessage:"Enviar mensaje",
-    plan:"Plan",
-    paymentWallet:"Billetera de pago"
-  },
-
-  fr:{
-    dashboard:"Tableau de bord",
-    wallets:"Portefeuilles",
-    investments:"Investissements",
-    transactions:"Transactions",
-    transfers:"Transferts",
-    profile:"Profil",
-    settings:"Paramètres",
-    support:"Assistance",
-    logout:"Déconnexion",
-    welcomeBack:"Bienvenue",
-    dashboardTitle:"Tableau de bord",
-    dashboardSubtitle:"Gérez vos actifs numériques et surveillez votre portefeuille.",
-    deposit:"+ Dépôt",
-    sendMoney:"Envoyer de l'argent",
-    totalPortfolio:"Solde total du portefeuille",
-    mainWallet:"Portefeuille principal",
-    profitWallet:"Portefeuille de profits",
-    thisWeek:"Cette semaine",
-    cryptoPortfolio:"Votre portefeuille crypto",
-    cryptoDescription:"Surveillez votre portefeuille et les mouvements du marché depuis un seul tableau de bord.",
-    totalDeposits:"Dépôts totaux",
-    accountDeposits:"Dépôts du compte",
-    invested:"Investi",
-    activeInvestments:"Investissements actifs",
-    withdrawals:"Retraits",
-    totalWithdrawn:"Total retiré",
-    accountStatus:"État du compte",
-    active:"Actif",
-    goodStanding:"Compte en règle",
-    liveMarket:"Marché crypto",
-    marketSimulation:"Simulation du marché",
-    quickActions:"Actions rapides",
-    addFunds:"Ajouter des fonds",
-    invest:"Investir",
-    startInvestment:"Commencer l'investissement",
-    withdraw:"Retirer",
-    withdrawFunds:"Retirer vos fonds",
-    transferUser:"Transférer à un autre utilisateur",
-    walletExchange:"Échange de portefeuille",
-    manageWallets:"Gérer les portefeuilles",
-    contactSupport:"Contacter l'assistance",
-    myWallets:"Mes portefeuilles",
-    viewAll:"Voir tout",
-    availableBalance:"Solde disponible",
-    investmentEarnings:"Gains d'investissement",
-    investmentPlans:"Plans d'investissement",
-    viewPlans:"Voir les plans",
-    return:"Rendement",
-    investmentRange:"Plage d'investissement",
-    recentTransactions:"Transactions récentes",
-    transaction:"Transaction",
-    date:"Date",
-    status:"Statut",
-    amount:"Montant",
-    noTransactions:"Aucune transaction",
-    pending:"En attente",
-    welcomeBonus:"Bonus de bienvenue",
-    welcomeBonusDescription:"Votre bonus de bienvenue est crédité dans le portefeuille de profits par un administrateur autorisé et ne peut pas servir à financer un investissement.",
-    manualCredit:"Le bonus de bienvenue est crédité manuellement.",
-    depositFunds:"Déposer des fonds",
-    depositDescription:"Sélectionnez la méthode de dépôt.",
-    paymentMethod:"Méthode de paiement",
-    walletMethod:"Dépôt via portefeuille",
-    bankMethod:"Virement bancaire",
-    continue:"Continuer",
-    withdrawFundsTitle:"Retirer des fonds",
-    withdrawDescription:"Sélectionnez le portefeuille source et le compte bancaire de destination.",
-    withdrawFrom:"Retirer depuis",
-    withdrawTo:"Retirer vers",
-    requestWithdrawal:"Demander un retrait",
-    sendMoneyTitle:"Envoyer de l'argent",
-    sendDescription:"Transférez des fonds depuis votre portefeuille principal vers un autre compte CoinForest.",
-    recipient:"Utilisateur destinataire",
-    paymentSource:"Source du paiement",
-    customerSupport:"Assistance client",
-    chatDescription:"Contactez l'assistance CoinForest.",
-    chatStatus:"Le chat d'assistance est prêt.",
-    message:"Message",
-    sendMessage:"Envoyer le message",
-    plan:"Plan",
-    paymentWallet:"Portefeuille de paiement"
-  }
-
-};
-
-function applyLanguage(lang){
-
-  const dictionary=
-    translations[lang] ||
-    translations.en;
-
-  document
-    .querySelectorAll("[data-i18n]")
-    .forEach(element=>{
-
-      const key=
-        element.getAttribute("data-i18n");
-
-      if(dictionary[key]){
-        element.textContent=
-          dictionary[key];
-      }
-
-    });
+function saveLanguage(
+  language
+){
 
   localStorage.setItem(
     "coinforest_language",
-    lang
+    language
   );
 
 }
 
-const savedLanguage=
-  localStorage.getItem(
-    "coinforest_language"
-  ) || "en";
+/* =====================================================
+UI HELPERS
+===================================================== */
 
-applyLanguage(savedLanguage);
+function showNotice(
+  id,
+  message,
+  type="success"
+){
 
-/* =========================================================
-   START
-   ========================================================= */
+  const element =
+    document.getElementById(id);
 
-loadUser();
+  if(!element){
+    return;
+  }
+
+  element.textContent =
+    message;
+
+  element.className =
+    "notice show "+type;
+
+}
+
+function clearNotice(
+  id
+){
+
+  const element =
+    document.getElementById(id);
+
+  if(!element){
+    return;
+  }
+
+  element.textContent="";
+
+  element.className =
+    "notice";
+
+}
+
+function setButtonLoading(
+  id,
+  loading,
+  text
+){
+
+  const button =
+    document.getElementById(id);
+
+  if(!button){
+    return;
+  }
+
+  if(
+    loading
+  ){
+
+    button.dataset.originalText =
+      button.textContent;
+
+    button.disabled=true;
+
+    button.textContent =
+      text;
+
+  }else{
+
+    button.disabled=false;
+
+    button.textContent =
+      text ||
+      button.dataset.originalText ||
+      "Submit";
+
+  }
+
+}
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+/* =====================================================
+START
+===================================================== */
+
+(async function(){
+
+  await loadUser();
+
+  await refreshDashboard();
+
+  await loadWithdrawalAccount();
+
+})();
 
 </script>
 
