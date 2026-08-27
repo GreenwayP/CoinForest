@@ -1555,13 +1555,12 @@ const transactionReference =
       );
 
       return bad(
-        500,
-        "Wallet balance changed, but the wallet ledger could not be created.",
-        {
-          detail:
-            error?.message ||
-            "Wallet ledger insert failed."
-        }
+  500,
+  error?.message ||
+  "Wallet ledger insert failed."
+);
+    }
+        
       );
     }
 
