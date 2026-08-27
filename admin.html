@@ -2993,16 +2993,77 @@ async function loadDashboard(){
       0
     );
 
+    
+        /*
+      Load Recent Activities from the dedicated
+      admin activity endpoint.
+    */
+
+    let recentItems = [];
+
+    try {
+
+      const activityData =
+        await apiRequest(
+          "/api/admin/activity"
+        );
+
+      recentItems =
+        extractArray(
+          activityData,
+          [
+            "activity",
+            "activities"
+          ]
+        );
+
+    } catch(activityError) {
+
+      console.warn(
+        "Recent activity endpoint failed:",
+        activityError
+      );
+
+    }
+
+    /*
+      Fallback to transactions if the
+      activity endpoint returns nothing.
+    */
+
+    if(!recentItems.length) {
+
+      try {
+
+        const txData =
+          await apiRequest(
+            "/api/admin/transactions?limit=50"
+          );
+
+        const txItems =
+          extractArray(
+            txData,
+            ["transactions"]
+          );
+
+        recentItems =
+          transactionsToActivity(
+            txItems
+          );
+
+      } catch(activityFallbackError) {
+
+        console.warn(
+          "Recent activity fallback failed:",
+          activityFallbackError
+        );
+
+      }
+
+    }
+
     renderActivity(
-      extractArray(
-        data,
-        [
-          "recentActivity",
-          "recent_activity",
-          "activities",
-          "activity"
-        ]
-      )
+      recentItems
     );
 
     if(
