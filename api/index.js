@@ -159,7106 +159,4057 @@ function cleanLimit(value, fallback = 100) {
   );
 }
 
-/* =====================================================
-   EMAIL
-===================================================== */
+/* =========================================================
+   DATABASE HELPERS
+   ========================================================= */
 
-async function sendEmail({ to, subject, html }) {
-  const apiKey = process.env.RESEND_API_KEY;
-
-  if (!apiKey) {
-    throw new Error(
-      "RESEND_API_KEY is not configured."
-    );
-  }
-
-  const result = await fetch(
-    "https://api.resend.com/emails",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from:
-          process.env.EMAIL_FROM ||
-          "CoinForest <onboarding@resend.dev>",
-        to: [to],
-        subject,
-        html
-      })
-    }
-  );
-
-  const data = await result.json();
-
-  if (!result.ok) {
-    throw new Error(
-      data?.message ||
-        data?.error ||
-        "Unable to send email."
-    );
-  }
-
-  return data;
-}
-
-async function createEmailToken(
-  userId,
-  tokenType,
-  expiresMinutes
-) {
-  const rawToken = createToken();
-  const tokenHash = hashToken(rawToken);
-
-  await sql`
-    UPDATE auth_email_tokens
-    SET used_at = NOW()
-    WHERE user_id = ${userId}
-      AND token_type = ${tokenType}
-      AND used_at IS NULL
-  `;
-
-  await sql`
-    INSERT INTO auth_email_tokens (
-      id,
-      user_id,
-      token_hash,
-      token_type,
-      expires_at,
-      created_at
-    )
-    VALUES (
-      ${crypto.randomUUID()},
-      ${userId},
-      ${tokenHash},
-      ${tokenType},
-      NOW() +
-        (${expiresMinutes} * INTERVAL '1 minute'),
-      NOW()
-    )
-  `;
-
-  return rawToken;
-}
-
-async function sendVerificationEmail(
-  request,
-  user
-) {
-  const token = await createEmailToken(
-    user.id,
-    "email_verification",
-    60 * 24
-  );
-
-  const verificationUrl =
-    `${getSiteUrl(request)}` +
-    `/verify-email.html?token=` +
-    encodeURIComponent(token);
-
-  const firstName =
-    String(
-      user.first_name || "Customer"
-    ).trim();
-
-  return sendEmail({
-    to: user.email,
-    subject:
-      "Confirm your CoinForest account",
-    html: `
-      <div style="
-        max-width:600px;
-        margin:40px auto;
-        background:#ffffff;
-        border-radius:18px;
-        overflow:hidden;
-        font-family:Arial,Helvetica,sans-serif;
-        color:#172033;
-        box-shadow:0 10px 35px rgba(0,0,0,.08);
-      ">
-        <div style="
-          background:#0b2037;
-          padding:28px;
-          text-align:center;
-        ">
-          <div style="
-            color:#ffffff;
-            font-size:28px;
-            font-weight:800;
-          ">
-            Coin<span style="color:#2ecc71;">
-              Forest
-            </span>
-          </div>
-        </div>
-
-        <div style="padding:35px;">
-          <h2>Confirm your account</h2>
-
-          <p>
-            Hello ${escapeHtml(firstName)},
-          </p>
-
-          <p style="line-height:1.7;">
-            Thank you for creating your
-            CoinForest account.
-            Please confirm your email address
-            to activate your account.
-          </p>
-
-          <div style="
-            text-align:center;
-            margin:30px 0;
-          ">
-            <a
-              href="${verificationUrl}"
-              style="
-                display:inline-block;
-                background:#2ecc71;
-                color:#06140c;
-                text-decoration:none;
-                font-weight:800;
-                padding:14px 24px;
-                border-radius:10px;
-              "
-            >
-              Confirm My Account
-            </a>
-          </div>
-
-          <p style="
-            font-size:13px;
-            color:#7a8795;
-          ">
-            This confirmation link expires in 24 hours.
-          </p>
-        </div>
-      </div>
-    `
-  });
-}
-
-/* =====================================================
-   REGISTER
-===================================================== */
-
-async function register(request, body) {
-  const email =
-    normalizeEmail(body.email);
-
-  const password =
-    String(body.password || "");
-
-  const firstName =
-    String(body.first_name || "").trim();
-
-  const lastName =
-    String(body.last_name || "").trim();
-
-  const username =
-    String(body.username || "").trim();
-
-  if (!email || !password) {
-    return bad(
-      400,
-      "Email and password are required."
-    );
-  }
-
-  if (!firstName) {
-    return bad(
-      400,
-      "First name is required."
-    );
-  }
-
-  if (!lastName) {
-    return bad(
-      400,
-      "Last name is required."
-    );
-  }
-
-  if (!username) {
-    return bad(
-      400,
-      "Username is required."
-    );
-  }
-
-  if (password.length < 6) {
-    return bad(
-      400,
-      "Password must contain at least 6 characters."
-    );
-  }
-
-  const existingEmail = await sql`
-    SELECT id
-    FROM profiles
-    WHERE LOWER(email) = ${email}
-    LIMIT 1
-  `;
-
-  if (existingEmail.length) {
-    return bad(
-      409,
-      "An account with this email already exists."
-    );
-  }
-
-  const existingUsername = await sql`
-    SELECT id
-    FROM profiles
-    WHERE LOWER(username) =
-      LOWER(${username})
-    LIMIT 1
-  `;
-
-  if (existingUsername.length) {
-    return bad(
-      409,
-      "That username is already in use."
-    );
-  }
-
-  const id = crypto.randomUUID();
-
-  const passwordHash =
-    hashPassword(password);
-
-  await sql`
-    INSERT INTO profiles (
-      id,
-      role_id,
-      first_name,
-      last_name,
-      username,
-      email,
-      status,
-      kyc_status,
-      two_factor_enabled,
-      email_verified_at,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${id},
-      '9dbe97ec-7b11-4789-b31b-bff00bc2483e',
-      ${firstName},
-      ${lastName},
-      ${username},
-      ${email},
-      'pending',
-      'pending',
-      false,
-      NULL,
-      NOW(),
-      NOW()
-    )
-  `;
-
-  await sql`
-    INSERT INTO auth_credentials (
-      user_id,
-      password_hash,
-      password_updated_at,
-      failed_login_attempts,
-      locked_until,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${id},
-      ${passwordHash},
-      NOW(),
-      0,
-      NULL,
-      NOW(),
-      NOW()
-    )
-  `;
-
-  await ensureUserWallets(id);
-
-  const user = {
-    id,
-    email,
-    first_name: firstName,
-    last_name: lastName,
-    username
-  };
-
-  /*
-   * Email verification is intentionally NOT a barrier.
-   * Administrator approval is the current verification
-   * mechanism until the official Resend domain is ready.
-   */
+async function tableExists(tableName) {
   try {
-    await sendVerificationEmail(
-      request,
-      user
-    );
-  } catch (error) {
-    console.error(
-      "Verification email error:",
-      error
-    );
-  }
-
-  return response(201, {
-    success: true,
-    email_sent: false,
-    message:
-      "Account created. Your account is awaiting administrator approval. Administrator approval will verify the account.",
-    user
-  });
-}
-
-/* =====================================================
-   WALLET FOUNDATION
-===================================================== */
-
-async function ensureUserWallets(userId) {
-  if (!userId) return;
-
-  try {
-    await sql`
-      INSERT INTO wallets (
-        id,
-        user_id,
-        wallet_type,
-        currency,
-        balance,
-        status,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        'main',
-        'USD',
-        0,
-        'active',
-        NOW(),
-        NOW()
-      )
-      ON CONFLICT DO NOTHING
-    `;
-  } catch (error) {
-    try {
-      await sql`
-        INSERT INTO wallets (
-          id,
-          user_id,
-          main_balance,
-          profit_balance,
-          currency,
-          status,
-          created_at,
-          updated_at
-        )
-        VALUES (
-          ${crypto.randomUUID()},
-          ${userId},
-          0,
-          0,
-          'USD',
-          'active',
-          NOW(),
-          NOW()
-        )
-        ON CONFLICT DO NOTHING
-      `;
-    } catch (legacyError) {
-      console.warn(
-        "Main wallet creation warning:",
-        legacyError?.message ||
-          error?.message
-      );
-    }
-  }
-
-  try {
-    await sql`
-      INSERT INTO wallets (
-        id,
-        user_id,
-        wallet_type,
-        currency,
-        balance,
-        status,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        'profit',
-        'USD',
-        0,
-        'active',
-        NOW(),
-        NOW()
-      )
-      ON CONFLICT DO NOTHING
-    `;
-  } catch (error) {
-    console.warn(
-      "Profit wallet creation compatibility warning:",
-      error?.message
-    );
-  }
-}
-
-async function ensureAllCustomerWallets() {
-  const customers = await sql`
-    SELECT p.id
-    FROM profiles p
-    LEFT JOIN roles r
-      ON r.id = p.role_id
-    WHERE LOWER(COALESCE(r.name, 'user'))
-      NOT IN ('admin', 'administrator')
-  `;
-
-  for (const customer of customers) {
-    try {
-      await ensureUserWallets(
-        customer.id
-      );
-    } catch (error) {
-      console.warn(
-        "Unable to ensure wallet for:",
-        customer.id,
-        error?.message
-      );
-    }
-  }
-
-  return customers.length;
-}
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function login(body) {
-  const email =
-    normalizeEmail(body.email);
-
-  const password =
-    String(body.password || "");
-
-  if (!email || !password) {
-    return bad(
-      400,
-      "Email and password are required."
-    );
-  }
-
-  const result = await sql`
-    SELECT
-      p.id,
-      p.email,
-      p.first_name,
-      p.last_name,
-      p.username,
-      p.role_id,
-      p.email_verified_at,
-      p.status,
-      p.kyc_status,
-      a.password_hash,
-      a.failed_login_attempts,
-      a.locked_until,
-      r.name AS role_name
-    FROM profiles p
-    INNER JOIN auth_credentials a
-      ON a.user_id = p.id
-    LEFT JOIN roles r
-      ON r.id = p.role_id
-    WHERE LOWER(p.email) = ${email}
-    LIMIT 1
-  `;
-
-  if (!result.length) {
-    return bad(
-      401,
-      "Invalid email or password."
-    );
-  }
-
-  const user = result[0];
-
-  if (
-    user.locked_until &&
-    new Date(user.locked_until) >
-      new Date()
-  ) {
-    return response(423, {
-      success: false,
-      error:
-        "Account temporarily locked. Please try again later."
-    });
-  }
-
-  if (
-    !verifyPassword(
-      password,
-      user.password_hash
-    )
-  ) {
-    const attempts =
-      Number(
-        user.failed_login_attempts || 0
-      ) + 1;
-
-    if (attempts >= 5) {
-      await sql`
-        UPDATE auth_credentials
-        SET
-          failed_login_attempts = 0,
-          locked_until =
-            NOW() +
-            INTERVAL '15 minutes',
-          updated_at = NOW()
-        WHERE user_id = ${user.id}
-      `;
-
-      return response(423, {
-        success: false,
-        error:
-          "Too many failed login attempts. Account temporarily locked."
-      });
-    }
-
-    await sql`
-      UPDATE auth_credentials
-      SET
-        failed_login_attempts = ${attempts},
-        updated_at = NOW()
-      WHERE user_id = ${user.id}
-    `;
-
-    return bad(
-      401,
-      "Invalid email or password."
-    );
-  }
-
-  await sql`
-    UPDATE auth_credentials
-    SET
-      failed_login_attempts = 0,
-      locked_until = NULL,
-      updated_at = NOW()
-    WHERE user_id = ${user.id}
-  `;
-
-  const token = createToken();
-
-  await sql`
-    INSERT INTO user_sessions (
-      id,
-      user_id,
-      session_token_hash,
-      status,
-      last_activity_at,
-      expires_at,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      ${crypto.randomUUID()},
-      ${user.id},
-      ${hashToken(token)},
-      'active',
-      NOW(),
-      NOW() + INTERVAL '30 days',
-      NOW(),
-      NOW()
-    )
-  `;
-
-  /*
-   * Administrator approval is the temporary email
-   * verification mechanism.
-   */
-  const approved =
-    ["active", "approved"].includes(
-      String(user.status || "")
-        .trim()
-        .toLowerCase()
-    );
-
-  return ok({
-    message: "Login successful.",
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      username: user.username,
-      role: user.role_name,
-      status: user.status,
-      kyc_status: user.kyc_status,
-      email_verified:
-        !!user.email_verified_at ||
-        approved
-    }
-  });
-}
-
-/* =====================================================
-   AUTHENTICATE SESSION
-===================================================== */
-
-async function authenticate(request) {
-  const token = bearer(request);
-
-  if (!token) {
-    return {
-      ok: false,
-      status: 401,
-      error: "Authentication required."
-    };
-  }
-
-  const tokenHash =
-    hashToken(token);
-
-  const result = await sql`
-    SELECT
-      p.id,
-      p.email,
-      p.first_name,
-      p.last_name,
-      p.username,
-      p.role_id,
-      p.email_verified_at,
-      p.status,
-      p.kyc_status,
-      r.name AS role_name
-    FROM user_sessions s
-    INNER JOIN profiles p
-      ON p.id = s.user_id
-    LEFT JOIN roles r
-      ON r.id = p.role_id
-    WHERE
-      s.session_token_hash =
-        ${tokenHash}
-      AND s.status = 'active'
-      AND s.expires_at > NOW()
-    LIMIT 1
-  `;
-
-  if (!result.length) {
-    return {
-      ok: false,
-      status: 401,
-      error:
-        "Invalid or expired session."
-    };
-  }
-
-  await sql`
-    UPDATE user_sessions
-    SET
-      last_activity_at = NOW(),
-      updated_at = NOW()
-    WHERE
-      session_token_hash =
-        ${tokenHash}
-      AND status = 'active'
-  `;
-
-  return {
-    ok: true,
-    user: result[0],
-    token
-  };
-}
-
-async function requireAdmin(request) {
-  const auth =
-    await authenticate(request);
-
-  if (!auth.ok) {
-    return auth;
-  }
-
-  const role =
-    String(
-      auth.user.role_name || ""
-    ).toLowerCase();
-
-  if (
-    role !== "admin" &&
-    role !== "administrator"
-  ) {
-    return {
-      ok: false,
-      status: 403,
-      error:
-        "Administrator access required."
-    };
-  }
-
-  return auth;
-}
-
-async function requireCustomer(request) {
-  const auth =
-    await authenticate(request);
-
-  if (!auth.ok) return auth;
-
-  const role =
-    String(
-      auth.user.role_name || ""
-    ).toLowerCase();
-
-  if (
-    role === "admin" ||
-    role === "administrator"
-  ) {
-    return {
-      ok: false,
-      status: 403,
-      error:
-        "Customer access required."
-    };
-  }
-
-  return auth;
-}
-
-function customerIsApproved(user) {
-  return [
-    "active",
-    "approved"
-  ].includes(
-    String(user?.status || "")
-      .trim()
-      .toLowerCase()
-  );
-}
-
-async function requireApprovedCustomer(request) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) return auth;
-
-  if (!customerIsApproved(auth.user)) {
-    return {
-      ok: false,
-      status: 403,
-      error:
-        "Your account is awaiting administrator approval. Please wait until your account is approved before performing this action.",
-      code:
-        "ACCOUNT_NOT_APPROVED",
-      account_approved: false
-    };
-  }
-
-  return auth;
-}
-
-/* =====================================================
-   CURRENT USER
-===================================================== */
-
-async function me(request) {
-  const auth =
-    await authenticate(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  const user = auth.user;
-
-  const approved =
-    customerIsApproved(user);
-
-  return ok({
-    user: {
-      id: user.id,
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      username: user.username,
-      role: user.role_name,
-      status: user.status,
-      kyc_status:
-        user.kyc_status,
-      email_verified:
-        !!user.email_verified_at ||
-        approved,
-      email_verified_at:
-        user.email_verified_at ||
-        (
-          approved
-            ? new Date().toISOString()
-            : null
-        )
-    }
-  });
-}
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logout(request) {
-  const token = bearer(request);
-
-  if (token) {
-    await sql`
-      UPDATE user_sessions
-      SET
-        status = 'revoked',
-        revoked_at = NOW(),
-        updated_at = NOW()
-      WHERE
-        session_token_hash =
-          ${hashToken(token)}
-        AND status = 'active'
-    `;
-  }
-
-  return ok({
-    message:
-      "Logged out successfully."
-  });
-}
-
-/* =====================================================
-   HEALTH
-===================================================== */
-
-async function health() {
-  try {
-    await sql`SELECT 1`;
-
-    return ok({
-      message:
-        "CoinForest API is running.",
-      database: true
-    });
-  } catch (error) {
-    console.error(
-      "Health database error:",
-      error
-    );
-
-    return response(503, {
-      success: false,
-      message:
-        "CoinForest API is running, but database connection failed.",
-      database: false
-    });
-  }
-}
-
-/* =====================================================
-   CUSTOMER WALLET STATE
-===================================================== */
-
-async function loadCustomerWalletState(userId) {
-  await ensureUserWallets(userId);
-
-  const rows = await sql`
-    SELECT *
-    FROM wallets
-    WHERE user_id = ${userId}
-    ORDER BY created_at ASC
-  `;
-
-  let main = null;
-  let profit = null;
-  let legacy = null;
-
-  for (const wallet of rows) {
-    const type =
-      String(
-        wallet.wallet_type || ""
-      )
-        .trim()
-        .toLowerCase();
-
-    if (
-      type === "main" &&
-      !main
-    ) {
-      main = wallet;
-    }
-
-    if (
-      type === "profit" &&
-      !profit
-    ) {
-      profit = wallet;
-    }
-
-    if (
-      wallet.main_balance !==
-        undefined ||
-      wallet.profit_balance !==
-        undefined
-    ) {
-      legacy = wallet;
-    }
-  }
-
-  const typedMainBalance =
-    main
-      ? numberValue(
-          main.balance,
-          0
-        )
-      : 0;
-
-  const typedProfitBalance =
-    profit
-      ? numberValue(
-          profit.balance,
-          0
-        )
-      : 0;
-
-  const legacyMainBalance =
-    legacy
-      ? numberValue(
-          legacy.main_balance,
-          0
-        )
-      : 0;
-
-  const legacyProfitBalance =
-    legacy
-      ? numberValue(
-          legacy.profit_balance,
-          0
-        )
-      : 0;
-
-  const mainBalance =
-    (
-      typedMainBalance !== 0 ||
-      !legacy
-    )
-      ? typedMainBalance
-      : legacyMainBalance;
-
-  const profitBalance =
-    (
-      typedProfitBalance !== 0 ||
-      !legacy
-    )
-      ? typedProfitBalance
-      : legacyProfitBalance;
-
-  if (!main && legacy) {
-    main = legacy;
-  }
-
-  if (
-    !profit &&
-    legacy &&
-    legacyProfitBalance !== 0
-  ) {
-    profit = legacy;
-  }
-
-  return {
-    rows,
-    main,
-    profit,
-    legacy,
-    mainBalance,
-    profitBalance,
-    totalBalance:
-      mainBalance +
-      profitBalance
-  };
-}
-
-async function getCustomerMainWallet(userId) {
-  const state =
-    await loadCustomerWalletState(
-      userId
-    );
-
-  if (state.main) {
-    const typedBalance =
-      state.main.balance !==
-      undefined
-        ? numberValue(
-            state.main.balance,
-            0
-          )
-        : null;
-
-    const isLegacy =
-      state.main.main_balance !==
-        undefined &&
-      state.main.wallet_type ===
-        undefined;
-
-    if (
-      !isLegacy &&
-      typedBalance !== null
-    ) {
-      if (
-        typedBalance !== 0 ||
-        !state.legacy ||
-        numberValue(
-          state.legacy.main_balance,
-          0
-        ) === 0
-      ) {
-        return {
-          wallet: state.main,
-          balance: typedBalance,
-          legacy: false,
-          state
-        };
-      }
-    }
-  }
-
-  if (
-    state.legacy &&
-    state.legacy.main_balance !==
-      undefined
-  ) {
-    return {
-      wallet: state.legacy,
-      balance:
-        numberValue(
-          state.legacy.main_balance,
-          0
-        ),
-      legacy: true,
-      state
-    };
-  }
-
-  if (state.main) {
-    return {
-      wallet: state.main,
-      balance:
-        numberValue(
-          state.main.balance,
-          0
-        ),
-      legacy: false,
-      state
-    };
-  }
-
-  return {
-    wallet: null,
-    balance: 0,
-    legacy: false,
-    state
-  };
-}
-
-async function setCustomerMainWalletBalance(
-  wallet,
-  nextBalance,
-  legacy = false
-) {
-  if (!wallet) {
-    throw new Error(
-      "Main wallet could not be found."
-    );
-  }
-
-  if (
-    legacy ||
-    (
-      wallet.main_balance !==
-        undefined &&
-      wallet.wallet_type ===
-        undefined
-    )
-  ) {
     const rows = await sql`
-      UPDATE wallets
-      SET
-        main_balance =
-          ${nextBalance},
-        updated_at = NOW()
-      WHERE id = ${wallet.id}
-      RETURNING *
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = ${tableName}
+      ) AS exists
     `;
 
-    return rows[0];
-  }
-
-  const rows = await sql`
-    UPDATE wallets
-    SET
-      balance = ${nextBalance},
-      updated_at = NOW()
-    WHERE id = ${wallet.id}
-    RETURNING *
-  `;
-
-  return rows[0];
-}
-
-/* =====================================================
-   CUSTOMER WALLETS
-===================================================== */
-
-async function customerWallets(request) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error,
-      auth
-    );
-  }
-
-  try {
-    const state =
-      await loadCustomerWalletState(
-        auth.user.id
-      );
-
-    return ok({
-      wallets: state.rows,
-      main_wallet: state.main,
-      profit_wallet:
-        state.profit,
-      main_balance:
-        state.mainBalance,
-      profit_balance:
-        state.profitBalance,
-      total_balance:
-        state.totalBalance,
-      account_approved:
-        customerIsApproved(
-          auth.user
-        )
-    });
-  } catch (error) {
-    console.error(
-      "Customer wallets error:",
-      error
-    );
-
-    return bad(
-      500,
-      "Unable to load customer wallets.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-}
-
-/* =====================================================
-   CUSTOMER TRANSACTIONS
-===================================================== */
-
-async function loadCustomerTransactions(
-  userId,
-  limit
-) {
-  let rows = [];
-
-  try {
-    rows = await sql`
-      SELECT *
-      FROM transactions
-      WHERE user_id = ${userId}
-      ORDER BY created_at DESC
-      LIMIT ${limit}
-    `;
-  } catch (error) {
-    console.warn(
-      "Customer transactions query warning:",
-      error?.message
-    );
-  }
-
-  try {
-    const ledger =
-      await sql`
-        SELECT *
-        FROM wallet_ledger
-        WHERE user_id = ${userId}
-        ORDER BY created_at DESC
-        LIMIT ${limit}
-      `;
-
-    const existingIds =
-      new Set(
-        rows.map(
-          item =>
-            String(
-              item.id || ""
-            )
-        )
-      );
-
-    for (const item of ledger) {
-      if (
-        existingIds.has(
-          String(item.id || "")
-        )
-      ) {
-        continue;
-      }
-
-      rows.push({
-        ...item,
-        id: item.id,
-        transaction_reference:
-          item.transaction_reference ||
-          `LEDGER-${item.id}`,
-        transaction_type:
-          item.entry_type ||
-          "wallet_adjustment",
-        direction:
-          numberValue(
-            item.amount,
-            0
-          ) >= 0
-            ? "credit"
-            : "debit",
-        amount:
-          Math.abs(
-            numberValue(
-              item.amount,
-              0
-            )
-          ),
-        currency:
-          item.currency ||
-          "USD",
-        status:
-          item.status ||
-          "completed",
-        description:
-          item.description ||
-          "Wallet activity",
-        metadata:
-          item.metadata || {
-            source:
-              "wallet_ledger"
-          }
-      });
-    }
-  } catch (error) {
-    console.warn(
-      "Wallet ledger unavailable:",
-      error?.message
-    );
-  }
-
-  rows.sort(
-    (a, b) =>
-      new Date(
-        b.created_at || 0
-      ).getTime() -
-      new Date(
-        a.created_at || 0
-      ).getTime()
-  );
-
-  return rows.slice(
-    0,
-    limit
-  );
-}
-
-async function customerDashboard(request) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error,
-      auth
-    );
-  }
-
-  try {
-    const walletState =
-      await loadCustomerWalletState(
-        auth.user.id
-      );
-
-    const transactions =
-      await loadCustomerTransactions(
-        auth.user.id,
-        100
-      );
-
-    let investments = [];
-
-    try {
-      investments =
-        await sql`
-          SELECT *
-          FROM investments
-          WHERE user_id =
-            ${auth.user.id}
-          ORDER BY created_at DESC
-          LIMIT 100
-        `;
-    } catch (error) {
-      console.warn(
-        "Customer investments query warning:",
-        error?.message
-      );
-    }
-
-    const profileRows =
-      await sql`
-        SELECT *
-        FROM profiles
-        WHERE id =
-          ${auth.user.id}
-        LIMIT 1
-      `;
-
-    const profile =
-      profileRows[0] ||
-      auth.user;
-
-    const approved =
-      customerIsApproved(
-        profile
-      );
-
-    return ok({
-      user: profile,
-      profile,
-      wallets:
-        walletState.rows,
-      main_wallet:
-        walletState.main,
-      profit_wallet:
-        walletState.profit,
-      main_balance:
-        walletState.mainBalance,
-      profit_balance:
-        walletState.profitBalance,
-      total_balance:
-        walletState.totalBalance,
-      transactions,
-      investments,
-      portfolio:
-        investments,
-      account_approved:
-        approved,
-      email_verified:
-        !!profile.email_verified_at ||
-        approved,
-      email_verified_at:
-        profile.email_verified_at ||
-        (
-          approved
-            ? new Date().toISOString()
-            : null
-        ),
-      kyc_status:
-        String(
-          profile.kyc_status ||
-            "pending"
-        ).toLowerCase()
-    });
-  } catch (error) {
-    console.error(
-      "Customer dashboard error:",
-      error
-    );
-
-    return bad(
-      500,
-      "Unable to load customer dashboard.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-}
-
-async function customerTransactions(
-  request,
-  url
-) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error,
-      auth
-    );
-  }
-
-  try {
-    const limit =
-      cleanLimit(
-        url.searchParams.get(
-          "limit"
-        ),
-        100
-      );
-
-    const rows =
-      await loadCustomerTransactions(
-        auth.user.id,
-        limit
-      );
-
-    return ok({
-      transactions: rows,
-      count: rows.length
-    });
-  } catch (error) {
-    return bad(
-      500,
-      "Unable to load customer transactions.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-}
-
-/* =====================================================
-   CUSTOMER PROFILE
-===================================================== */
-
-async function customerProfile(
-  request,
-  body = null
-) {
-  const auth =
-    await requireApprovedCustomer(
-      request
-    );
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  if (!body) {
-    const rows =
-      await sql`
-        SELECT *
-        FROM profiles
-        WHERE id =
-          ${auth.user.id}
-        LIMIT 1
-      `;
-
-    return ok({
-      profile:
-        rows[0] ||
-        auth.user,
-      user:
-        rows[0] ||
-        auth.user
-    });
-  }
-
-  const firstName =
-    body.first_name !==
-    undefined
-      ? String(
-          body.first_name
-        ).trim()
-      : null;
-
-  const lastName =
-    body.last_name !==
-    undefined
-      ? String(
-          body.last_name
-        ).trim()
-      : null;
-
-  const username =
-    body.username !==
-    undefined
-      ? String(
-          body.username
-        ).trim()
-      : null;
-
-  const updated =
-    await sql`
-      UPDATE profiles
-      SET
-        first_name =
-          COALESCE(
-            ${firstName},
-            first_name
-          ),
-        last_name =
-          COALESCE(
-            ${lastName},
-            last_name
-          ),
-        username =
-          COALESCE(
-            ${username},
-            username
-          ),
-        updated_at = NOW()
-      WHERE id =
-        ${auth.user.id}
-      RETURNING *
-    `;
-
-  return ok({
-    message:
-      "Profile updated successfully.",
-    profile:
-      updated[0]
-  });
-}
-
-/* =====================================================
-   CUSTOMER KYC
-===================================================== */
-
-async function customerKyc(
-  request,
-  body = null
-) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  const profileRows =
-    await sql`
-      SELECT *
-      FROM profiles
-      WHERE id =
-        ${auth.user.id}
-      LIMIT 1
-    `;
-
-  const profile =
-    profileRows[0];
-
-  if (!body) {
-    let submissions = [];
-
-    try {
-      submissions =
-        await sql`
-          SELECT *
-          FROM kyc_submissions
-          WHERE user_id =
-            ${auth.user.id}
-          ORDER BY created_at DESC
-          LIMIT 20
-        `;
-    } catch (error) {
-      console.warn(
-        "KYC submissions unavailable:",
-        error?.message
-      );
-    }
-
-    return ok({
-      kyc_status:
-        String(
-          profile?.kyc_status ||
-            "pending"
-        ).toLowerCase(),
-      profile,
-      submissions
-    });
-  }
-
-  if (
-    !customerIsApproved(
-      auth.user
-    )
-  ) {
-    return bad(
-      403,
-      "Your account is awaiting administrator approval.",
-      {
-        code:
-          "ACCOUNT_NOT_APPROVED",
-        account_approved:
-          false
-      }
-    );
-  }
-
-  const current =
-    String(
-      profile?.kyc_status ||
-        "pending"
-    ).toLowerCase();
-
-  if (
-    current === "approved"
-  ) {
-    return ok({
-      message:
-        "KYC is already approved.",
-      kyc_status:
-        "approved"
-    });
-  }
-
-  let existing = [];
-
-  try {
-    existing =
-      await sql`
-        SELECT id
-        FROM kyc_submissions
-        WHERE user_id =
-          ${auth.user.id}
-          AND LOWER(
-            COALESCE(
-              status,
-              'pending'
-            )
-          ) = 'pending'
-        ORDER BY created_at DESC
-        LIMIT 1
-      `;
-  } catch (error) {
-    console.warn(
-      "KYC pending lookup warning:",
-      error?.message
-    );
-  }
-
-  if (existing.length) {
-    return bad(
-      409,
-      "A KYC application is already pending."
-    );
-  }
-
-  const id =
-    crypto.randomUUID();
-
-  try {
-    await sql`
-      INSERT INTO kyc_submissions (
-        id,
-        user_id,
-        status,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${id},
-        ${auth.user.id},
-        'pending',
-        NOW(),
-        NOW()
-      )
-    `;
-  } catch (error) {
-    return bad(
-      500,
-      "Unable to submit KYC application.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  await sql`
-    UPDATE profiles
-    SET
-      kyc_status = 'pending',
-      updated_at = NOW()
-    WHERE id =
-      ${auth.user.id}
-  `;
-
-  return ok({
-    message:
-      "KYC application submitted successfully.",
-    kyc_status:
-      "pending",
-    submission_id:
-      id
-  });
-}
-
-function kycRequired(user) {
-  return String(
-    user?.kyc_status ||
-      "pending"
-  ).toLowerCase() !==
-    "approved";
-}
-
-/* =====================================================
-   CUSTOMER DEPOSIT
-===================================================== */
-
-async function customerDeposit(
-  request,
-  body
-) {
-  const auth =
-    await requireApprovedCustomer(
-      request
-    );
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error,
-      auth
-    );
-  }
-
-  const amount =
-    numberValue(
-      body.amount,
-      NaN
-    );
-
-  if (
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
-    return bad(
-      400,
-      "Deposit amount must be greater than zero."
-    );
-  }
-
-  const walletInfo =
-    await getCustomerMainWallet(
-      auth.user.id
-    );
-
-  if (!walletInfo.wallet) {
-    return bad(
-      500,
-      "Main wallet could not be found."
-    );
-  }
-
-  const reference =
-    String(
-      body.deposit_reference ||
-        body.payment_reference ||
-        `DEP-${crypto.randomUUID()}`
-    ).trim();
-
-  const paymentMethod =
-    String(
-      body.payment_method ||
-        body.method ||
-        "Bank Transfer"
-    ).trim();
-
-  const proofUrl =
-    body.proof_url
-      ? String(
-          body.proof_url
-        )
-      : null;
-
-  const currency =
-    String(
-      body.currency ||
-        "USD"
-    )
-      .trim()
-      .toUpperCase();
-
-  const id =
-    crypto.randomUUID();
-
-  try {
-    const rows =
-      await sql`
-        INSERT INTO deposit_requests (
-          id,
-          user_id,
-          wallet_id,
-          deposit_reference,
-          amount,
-          currency,
-          payment_method,
-          proof_url,
-          status,
-          submitted_at,
-          created_at,
-          updated_at
-        )
-        VALUES (
-          ${id},
-          ${auth.user.id},
-          ${walletInfo.wallet.id},
-          ${reference},
-          ${amount},
-          ${currency},
-          ${paymentMethod},
-          ${proofUrl},
-          'pending',
-          NOW(),
-          NOW(),
-          NOW()
-        )
-        RETURNING *
-      `;
-
-    return ok({
-      message:
-        "Deposit request submitted successfully.",
-      request:
-        rows[0],
-      deposit:
-        rows[0]
-    });
-  } catch (error) {
-    console.error(
-      "Customer deposit error:",
-      error
-    );
-
-    return bad(
-      500,
-      "Deposit request could not be submitted.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-}
-
-/* =====================================================
-   CUSTOMER SEND
-===================================================== */
-
-async function customerSend(
-  request,
-  body
-) {
-  const auth =
-    await requireApprovedCustomer(
-      request
-    );
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  if (
-    kycRequired(
-      auth.user
-    )
-  ) {
-    return bad(
-      403,
-      "KYC verification is required before sending money.",
-      {
-        code:
-          "KYC_REQUIRED",
-        kyc_required:
-          true
-      }
-    );
-  }
-
-  const amount =
-    numberValue(
-      body.amount,
-      NaN
-    );
-
-  if (
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
-    return bad(
-      400,
-      "Send amount must be greater than zero."
-    );
-  }
-
-  const recipientEmail =
-    normalizeEmail(
-      body.recipient_email ||
-        body.email ||
-        body.recipient
-    );
-
-  const recipientUsername =
-    String(
-      body.recipient_username ||
-        body.username ||
-        ""
-    ).trim();
-
-  if (
-    !recipientEmail &&
-    !recipientUsername
-  ) {
-    return bad(
-      400,
-      "Recipient email or username is required."
-    );
-  }
-
-  const recipientRows =
-    await sql`
-      SELECT
-        p.id,
-        p.email,
-        p.username,
-        p.first_name,
-        p.last_name
-      FROM profiles p
-      WHERE
-        (
-          ${recipientEmail || null}
-            IS NOT NULL
-          AND LOWER(p.email) =
-            ${recipientEmail}
-        )
-        OR
-        (
-          ${recipientUsername || null}
-            IS NOT NULL
-          AND LOWER(p.username) =
-            LOWER(${recipientUsername})
-        )
-      LIMIT 1
-    `;
-
-  if (!recipientRows.length) {
-    return bad(
-      404,
-      "Recipient account not found."
-    );
-  }
-
-  const recipient =
-    recipientRows[0];
-
-  if (
-    recipient.id ===
-    auth.user.id
-  ) {
-    return bad(
-      400,
-      "You cannot send money to yourself."
-    );
-  }
-
-  const senderInfo =
-    await getCustomerMainWallet(
-      auth.user.id
-    );
-
-  const receiverInfo =
-    await getCustomerMainWallet(
-      recipient.id
-    );
-
-  if (
-    !senderInfo.wallet ||
-    !receiverInfo.wallet
-  ) {
-    return bad(
-      500,
-      "Main wallet could not be found."
-    );
-  }
-
-  const sender =
-    senderInfo.wallet;
-
-  const receiver =
-    receiverInfo.wallet;
-
-  const senderBalance =
-    senderInfo.balance;
-
-  const receiverBalance =
-    receiverInfo.balance;
-
-  if (
-    senderBalance < amount
-  ) {
-    return bad(
-      400,
-      "Insufficient Main Wallet balance."
-    );
-  }
-
-  const senderNext =
-    senderBalance -
-    amount;
-
-  const receiverNext =
-    receiverBalance +
-    amount;
-
-  const reference =
-    `SND-${crypto.randomUUID()}`;
-
-  await setCustomerMainWalletBalance(
-    sender,
-    senderNext,
-    senderInfo.legacy
-  );
-
-  try {
-    await setCustomerMainWalletBalance(
-      receiver,
-      receiverNext,
-      receiverInfo.legacy
-    );
-
-    await sql`
-      INSERT INTO transactions (
-        id,
-        user_id,
-        wallet_id,
-        transaction_reference,
-        transaction_type,
-        direction,
-        amount,
-        fee,
-        currency,
-        status,
-        description,
-        metadata,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${auth.user.id},
-        ${sender.id},
-        ${reference},
-        'transfer',
-        'debit',
-        ${amount},
-        0,
-        'USD',
-        'completed',
-        'Money sent',
-        ${JSON.stringify({
-          recipient_id:
-            recipient.id,
-          recipient_email:
-            recipient.email
-        })},
-        NOW(),
-        NOW()
-      )
-    `;
-
-    await sql`
-      INSERT INTO transactions (
-        id,
-        user_id,
-        wallet_id,
-        transaction_reference,
-        transaction_type,
-        direction,
-        amount,
-        fee,
-        currency,
-        status,
-        description,
-        metadata,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${recipient.id},
-        ${receiver.id},
-        ${reference}-R,
-        'transfer',
-        'credit',
-        ${amount},
-        0,
-        'USD',
-        'completed',
-        'Money received',
-        ${JSON.stringify({
-          sender_id:
-            auth.user.id,
-          sender_email:
-            auth.user.email
-        })},
-        NOW(),
-        NOW()
-      )
-    `;
-  } catch (error) {
-    await setCustomerMainWalletBalance(
-      sender,
-      senderBalance,
-      senderInfo.legacy
-    );
-
-    await setCustomerMainWalletBalance(
-      receiver,
-      receiverBalance,
-      receiverInfo.legacy
-    );
-
-    return bad(
-      500,
-      "Send failed and the wallet balances were restored.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  return ok({
-    message:
-      "Money sent successfully.",
-    reference,
-    amount,
-    recipient
-  });
-}
-
-/* =====================================================
-   WITHDRAWAL ACCOUNT
-===================================================== */
-
-async function ensureWithdrawalAccountSchema() {
-  await sql`
-    CREATE TABLE IF NOT EXISTS withdrawal_accounts (
-      id UUID PRIMARY KEY,
-      user_id UUID NOT NULL UNIQUE
-        REFERENCES profiles(id)
-        ON DELETE CASCADE,
-      method_name TEXT NOT NULL
-        DEFAULT 'Bank Transfer',
-      account_name TEXT NOT NULL,
-      account_number TEXT NOT NULL,
-      bank_name TEXT NOT NULL,
-      swift_code TEXT,
-      created_at TIMESTAMPTZ
-        NOT NULL DEFAULT NOW(),
-      updated_at TIMESTAMPTZ
-        NOT NULL DEFAULT NOW()
-    )
-  `;
-
-  await sql`
-    ALTER TABLE withdrawal_requests
-    ADD COLUMN IF NOT EXISTS
-      withdrawal_account_id UUID
-  `;
-}
-
-async function customerWithdrawalAccount(
-  request,
-  body = null
-) {
-  const auth =
-    await requireApprovedCustomer(
-      request
-    );
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  try {
-    await ensureWithdrawalAccountSchema();
-  } catch (error) {
-    return bad(
-      500,
-      "Unable to prepare withdrawal account storage.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  if (!body) {
-    const rows =
-      await sql`
-        SELECT *
-        FROM withdrawal_accounts
-        WHERE user_id =
-          ${auth.user.id}
-        LIMIT 1
-      `;
-
-    return ok({
-      account:
-        rows[0] || null,
-      has_account:
-        !!rows.length
-    });
-  }
-
-  const accountName =
-    String(
-      body.account_name ||
-        body.accountName ||
-        ""
-    ).trim();
-
-  const accountNumber =
-    String(
-      body.account_number ||
-        body.accountNumber ||
-        ""
-    ).trim();
-
-  const bankName =
-    String(
-      body.bank_name ||
-        body.bankName ||
-        ""
-    ).trim();
-
-  const swiftCode =
-    String(
-      body.swift_code ||
-        body.swift ||
-        body.other_code ||
-        ""
-    ).trim() || null;
-
-  if (
-    !accountName ||
-    !accountNumber ||
-    !bankName
-  ) {
-    return bad(
-      400,
-      "Account name, account number and bank name are required."
-    );
-  }
-
-  const existing =
-    await sql`
-      SELECT id
-      FROM withdrawal_accounts
-      WHERE user_id =
-        ${auth.user.id}
-      LIMIT 1
-    `;
-
-  if (existing.length) {
-    const updated =
-      await sql`
-        UPDATE withdrawal_accounts
-        SET
-          method_name =
-            'Bank Transfer',
-          account_name =
-            ${accountName},
-          account_number =
-            ${accountNumber},
-          bank_name =
-            ${bankName},
-          swift_code =
-            ${swiftCode},
-          updated_at = NOW()
-        WHERE user_id =
-          ${auth.user.id}
-        RETURNING *
-      `;
-
-    return ok({
-      message:
-        "Withdrawal account updated successfully.",
-      account:
-        updated[0]
-    });
-  }
-
-  const created =
-    await sql`
-      INSERT INTO withdrawal_accounts (
-        id,
-        user_id,
-        method_name,
-        account_name,
-        account_number,
-        bank_name,
-        swift_code,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${auth.user.id},
-        'Bank Transfer',
-        ${accountName},
-        ${accountNumber},
-        ${bankName},
-        ${swiftCode},
-        NOW(),
-        NOW()
-      )
-      RETURNING *
-    `;
-
-  return ok({
-    message:
-      "Withdrawal account saved successfully.",
-    account:
-      created[0]
-  });
-}
-
-/* =====================================================
-   CUSTOMER WITHDRAWAL
-===================================================== */
-
-async function customerWithdraw(
-  request,
-  body
-) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  if (
-    !customerIsApproved(
-      auth.user
-    )
-  ) {
-    return bad(
-      403,
-      "Your account is awaiting administrator approval.",
-      {
-        code:
-          "ACCOUNT_NOT_APPROVED"
-      }
-    );
-  }
-
-  if (
-    kycRequired(
-      auth.user
-    )
-  ) {
-    return bad(
-      403,
-      "KYC verification is required before making a withdrawal.",
-      {
-        code:
-          "KYC_REQUIRED",
-        kyc_required:
-          true
-      }
-    );
-  }
-
-  const amount =
-    numberValue(
-      body.amount,
-      NaN
-    );
-
-  if (
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
-    return bad(
-      400,
-      "Withdrawal amount must be greater than zero."
-    );
-  }
-
-  await ensureWithdrawalAccountSchema();
-
-  const accountRows =
-    await sql`
-      SELECT *
-      FROM withdrawal_accounts
-      WHERE user_id =
-        ${auth.user.id}
-      LIMIT 1
-    `;
-
-  if (!accountRows.length) {
-    return bad(
-      409,
-      "Please add your withdrawal bank account details before making a withdrawal.",
-      {
-        requires_withdrawal_account:
-          true
-      }
-    );
-  }
-
-  const walletInfo =
-    await getCustomerMainWallet(
-      auth.user.id
-    );
-
-  if (!walletInfo.wallet) {
-    return bad(
-      500,
-      "Main wallet could not be found."
-    );
-  }
-
-  const balance =
-    walletInfo.balance;
-
-  if (
-    balance < amount
-  ) {
-    return bad(
-      400,
-      "Insufficient Main Wallet balance."
-    );
-  }
-
-  const reference =
-    `WTH-${crypto.randomUUID()}`;
-
-  try {
-    const rows =
-      await sql`
-        INSERT INTO withdrawal_requests (
-          id,
-          withdrawal_reference,
-          user_id,
-          wallet_id,
-          amount,
-          fee,
-          net_amount,
-          currency,
-          withdrawal_method,
-          status,
-          requested_at,
-          updated_at,
-          withdrawal_account_id
-        )
-        VALUES (
-          ${crypto.randomUUID()},
-          ${reference},
-          ${auth.user.id},
-          ${walletInfo.wallet.id},
-          ${amount},
-          0,
-          ${amount},
-          'USD',
-          'Bank Transfer',
-          'pending',
-          NOW(),
-          NOW(),
-          ${accountRows[0].id}
-        )
-        RETURNING *
-      `;
-
-    return ok({
-      message:
-        "Withdrawal request submitted successfully.",
-      request:
-        rows[0],
-      account:
-        accountRows[0]
-    });
-  } catch (error) {
-    return bad(
-      500,
-      "Withdrawal request could not be submitted.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-}
-
-/* =====================================================
-   CUSTOMER INVESTMENTS
-===================================================== */
-
-async function customerInvestments(
-  request,
-  url
-) {
-  const auth =
-    await requireCustomer(request);
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error
-    );
-  }
-
-  const limit =
-    cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
-      100
-    );
-
-  let rows = [];
-
-  try {
-    rows =
-      await sql`
-        SELECT *
-        FROM investments
-        WHERE user_id =
-          ${auth.user.id}
-        ORDER BY created_at DESC
-        LIMIT ${limit}
-      `;
-  } catch (error) {
-    return bad(
-      500,
-      "Unable to load investments.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  return ok({
-    investments: rows,
-    portfolio: rows,
-    kyc_status:
-      String(
-        auth.user.kyc_status ||
-          "pending"
-      ).toLowerCase(),
-    kyc_required:
-      kycRequired(
-        auth.user
-      )
-  });
-}
-
-/* =====================================================
-   CHAT FOUNDATION
-===================================================== */
-
-async function ensureChatFoundation() {
-  try {
-    await sql`
-      CREATE TABLE IF NOT EXISTS chat_conversations (
-        id UUID PRIMARY KEY,
-        user_id UUID NOT NULL
-          REFERENCES profiles(id)
-          ON DELETE CASCADE,
-        created_at TIMESTAMPTZ
-          NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ
-          NOT NULL DEFAULT NOW()
-      )
-    `;
-
-    await sql`
-      CREATE TABLE IF NOT EXISTS chat_messages (
-        id UUID PRIMARY KEY,
-        conversation_id UUID NOT NULL
-          REFERENCES chat_conversations(id)
-          ON DELETE CASCADE,
-        sender_id UUID NOT NULL
-          REFERENCES profiles(id)
-          ON DELETE CASCADE,
-        sender_type TEXT NOT NULL,
-        message TEXT NOT NULL,
-        created_at TIMESTAMPTZ
-          NOT NULL DEFAULT NOW()
-      )
-    `;
-
-    return true;
-  } catch (error) {
-    console.error(
-      "Chat foundation error:",
-      error
-    );
-
+    return Boolean(rows[0]?.exists);
+  } catch {
     return false;
   }
 }
 
-async function getOrCreateCustomerConversation(
-  userId
-) {
-  const existing =
-    await sql`
-      SELECT *
-      FROM chat_conversations
-      WHERE user_id =
-        ${userId}
-      ORDER BY
-        updated_at DESC NULLS LAST,
-        created_at DESC
-      LIMIT 1
-    `;
-
-  if (existing.length) {
-    return existing[0];
-  }
-
-  const id =
-    crypto.randomUUID();
-
-  const rows =
-    await sql`
-      INSERT INTO chat_conversations (
-        id,
-        user_id,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${id},
-        ${userId},
-        NOW(),
-        NOW()
-      )
-      RETURNING *
-    `;
-
-  return rows[0];
-}
-
-async function customerChat(
-  request,
-  body = null
-) {
-  const auth =
-    await requireApprovedCustomer(
-      request
-    );
-
-  if (!auth.ok) {
-    return bad(
-      auth.status,
-      auth.error,
-      auth
-    );
-  }
-
-  const ready =
-    await ensureChatFoundation();
-
-  if (!ready) {
-    return bad(
-      500,
-      "Unable to initialize customer support chat."
-    );
-  }
-
-  const conversation =
-    await getOrCreateCustomerConversation(
-      auth.user.id
-    );
-
-  if (!body) {
-    const messages =
-      await sql`
-        SELECT *
-        FROM chat_messages
-        WHERE conversation_id =
-          ${conversation.id}
-        ORDER BY created_at ASC
-      `;
-
-    return ok({
-      conversation,
-      messages
-    });
-  }
-
-  const message =
-    String(
-      body.message ||
-        body.content ||
-        ""
-    ).trim();
-
-  if (!message) {
-    return bad(
-      400,
-      "Message cannot be empty."
-    );
-  }
-
-  const rows =
-    await sql`
-      INSERT INTO chat_messages (
-        id,
-        conversation_id,
-        sender_id,
-        sender_type,
-        message,
-        created_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${conversation.id},
-        ${auth.user.id},
-        'customer',
-        ${message},
-        NOW()
-      )
-      RETURNING *
-    `;
-
-  await sql`
-    UPDATE chat_conversations
-    SET
-      updated_at = NOW()
-    WHERE id =
-      ${conversation.id}
-  `;
-
-  return ok({
-    message:
-      "Message sent.",
-    conversation,
-    data:
-      rows[0]
-  });
-}
-
-async function adminConversations() {
-  const ready =
-    await ensureChatFoundation();
-
-  if (!ready) {
-    return bad(
-      500,
-      "Unable to initialize Admin Chat."
-    );
-  }
-
+async function columnExists(tableName, columnName) {
   try {
-    const rows =
-      await sql`
-        SELECT
-          c.*,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email
-        FROM chat_conversations c
-        LEFT JOIN profiles p
-          ON p.id =
-            c.user_id
-        ORDER BY
-          COALESCE(
-            c.updated_at,
-            c.created_at
-          ) DESC
-      `;
+    const rows = await sql`
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = ${tableName}
+          AND column_name = ${columnName}
+      ) AS exists
+    `;
 
-    return ok({
-      conversations:
-        rows
-    });
-  } catch (error) {
-    console.error(
-      "Admin conversations error:",
-      error
-    );
+    return Boolean(rows[0]?.exists);
+  } catch {
+    return false;
+  }
+}
 
-    try {
-      const rows =
-        await sql`
-          SELECT *
-          FROM chat_conversations
-          ORDER BY
-            COALESCE(
-              updated_at,
-              created_at
-            ) DESC
-        `;
-
-      return ok({
-        conversations:
-          rows
-      });
-    } catch (fallbackError) {
-      return bad(
-        500,
-        "Unable to load chat conversations.",
-        {
-          detail:
-            fallbackError?.message ||
-            error?.message
-        }
-      );
+async function firstExistingTable(names) {
+  for (const name of names) {
+    if (await tableExists(name)) {
+      return name;
     }
   }
+
+  return null;
 }
 
-async function adminMessages(
-  conversationId
-) {
-  if (!conversationId) {
-    return bad(
-      400,
-      "Conversation ID is required."
-    );
-  }
-
-  const ready =
-    await ensureChatFoundation();
-
-  if (!ready) {
-    return bad(
-      500,
-      "Unable to initialize Admin Chat."
-    );
-  }
+async function getUserById(userId) {
+  if (!userId) return null;
 
   try {
-    const rows =
-      await sql`
-        SELECT *
-        FROM chat_messages
-        WHERE conversation_id =
-          ${conversationId}
-        ORDER BY created_at ASC
-      `;
-
-    return ok({
-      messages:
-        rows
-    });
-  } catch (error) {
-    console.error(
-      "Admin messages error:",
-      error
-    );
-
-    return bad(
-      500,
-      "Unable to load chat messages.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-}
-
-async function adminSendMessage(
-  request,
-  conversationId,
-  body
-) {
-  const admin =
-    await requireAdmin(request);
-
-  if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
-  }
-
-  if (!conversationId) {
-    return bad(
-      400,
-      "Conversation ID is required."
-    );
-  }
-
-  const message =
-    String(
-      body.message ||
-        body.content ||
-        ""
-    ).trim();
-
-  if (!message) {
-    return bad(
-      400,
-      "Message cannot be empty."
-    );
-  }
-
-  const ready =
-    await ensureChatFoundation();
-
-  if (!ready) {
-    return bad(
-      500,
-      "Unable to initialize Admin Chat."
-    );
-  }
-
-  const conversation =
-    await sql`
-      SELECT id
-      FROM chat_conversations
-      WHERE id =
-        ${conversationId}
+    const rows = await sql`
+      SELECT *
+      FROM users
+      WHERE id = ${userId}
       LIMIT 1
     `;
 
-  if (!conversation.length) {
-    return bad(
-      404,
-      "Conversation not found."
-    );
+    return rows[0] || null;
+  } catch {
+    return null;
   }
+}
+
+async function getUserByEmail(email) {
+  const normalized = normalizeEmail(email);
+
+  if (!normalized) return null;
 
   try {
-    const rows =
+    const rows = await sql`
+      SELECT *
+      FROM users
+      WHERE LOWER(email) = ${normalized}
+      LIMIT 1
+    `;
+
+    return rows[0] || null;
+  } catch {
+    return null;
+  }
+}
+
+/* =========================================================
+   ACCOUNT APPROVAL / EMAIL VERIFICATION
+   ========================================================= */
+
+function accountApproved(user) {
+  if (!user) return false;
+
+  return Boolean(
+    user.account_approved === true ||
+    user.accountApproved === true ||
+    user.approved === true ||
+    user.is_approved === true ||
+    user.status === "approved" ||
+    user.status === "active" ||
+    user.account_status === "approved" ||
+    user.account_status === "active"
+  );
+}
+
+function emailVerified(user) {
+  if (!user) return false;
+
+  /*
+    Temporary CoinForest rule:
+
+    Admin account approval is the source of truth for
+    email verification until Resend / official-domain
+    verification is available.
+
+    An approved account therefore behaves as email verified.
+  */
+
+  if (accountApproved(user)) {
+    return true;
+  }
+
+  return Boolean(
+    user.email_verified === true ||
+    user.emailVerified === true ||
+    user.is_email_verified === true ||
+    user.verified === true
+  );
+}
+
+function customerCanAct(user) {
+  if (!user) return false;
+
+  /*
+    Unapproved customers may log in, but they may not
+    perform customer actions.
+
+    Once admin approves the account, approval also means
+    email verification under the temporary system.
+  */
+
+  return accountApproved(user) && emailVerified(user);
+}
+
+/* =========================================================
+   KYC HELPERS
+   ========================================================= */
+
+function normalizeKycStatus(user) {
+  if (!user) return "pending";
+
+  const raw =
+    user.kyc_status ??
+    user.kycStatus ??
+    user.kyc_state ??
+    user.kycState ??
+    "";
+
+  const status = String(raw).trim().toLowerCase();
+
+  if (
+    user.kyc_verified === true ||
+    user.kycVerified === true ||
+    user.kyc_approved === true ||
+    user.kycApproved === true ||
+    status === "approved" ||
+    status === "verified" ||
+    status === "complete" ||
+    status === "completed"
+  ) {
+    return "approved";
+  }
+
+  if (
+    status === "rejected" ||
+    status === "declined"
+  ) {
+    return "rejected";
+  }
+
+  if (
+    status === "submitted" ||
+    status === "under_review" ||
+    status === "review"
+  ) {
+    return "submitted";
+  }
+
+  return "pending";
+}
+
+function kycApproved(user) {
+  return normalizeKycStatus(user) === "approved";
+}
+
+/* =========================================================
+   WALLET HELPERS
+   ========================================================= */
+
+const MAIN_WALLET_NAMES = [
+  "main",
+  "main_wallet",
+  "Main Wallet",
+  "MAIN",
+  "usd",
+  "USD"
+];
+
+const PROFIT_WALLET_NAMES = [
+  "profit",
+  "profit_wallet",
+  "Profit Wallet",
+  "PROFIT"
+];
+
+function walletAmount(row) {
+  if (!row) return 0;
+
+  return numberValue(
+    row.balance ??
+    row.amount ??
+    row.available_balance ??
+    row.available ??
+    row.current_balance ??
+    0
+  );
+}
+
+function walletCurrency(row) {
+  return String(
+    row?.currency ??
+    row?.asset ??
+    row?.symbol ??
+    "USD"
+  ).toUpperCase();
+}
+
+function walletType(row) {
+  return String(
+    row?.wallet_type ??
+    row?.walletType ??
+    row?.type ??
+    row?.name ??
+    "main"
+  ).trim().toLowerCase();
+}
+
+function isMainWallet(row) {
+  if (!row) return false;
+
+  const type = walletType(row);
+
+  return (
+    MAIN_WALLET_NAMES
+      .map(v => v.toLowerCase())
+      .includes(type) ||
+    type.includes("main") ||
+    type.includes("cash")
+  );
+}
+
+function isProfitWallet(row) {
+  if (!row) return false;
+
+  const type = walletType(row);
+
+  return (
+    PROFIT_WALLET_NAMES
+      .map(v => v.toLowerCase())
+      .includes(type) ||
+    type.includes("profit")
+  );
+}
+
+async function getWalletRows(userId) {
+  if (!userId) return [];
+
+  const candidates = [
+    "wallets",
+    "user_wallets",
+    "wallet"
+  ];
+
+  const table = await firstExistingTable(candidates);
+
+  if (!table) return [];
+
+  try {
+    if (table === "wallets") {
+      return await sql`
+        SELECT *
+        FROM wallets
+        WHERE user_id = ${userId}
+        ORDER BY created_at ASC NULLS FIRST
+      `;
+    }
+
+    if (table === "user_wallets") {
+      return await sql`
+        SELECT *
+        FROM user_wallets
+        WHERE user_id = ${userId}
+        ORDER BY created_at ASC NULLS FIRST
+      `;
+    }
+
+    return await sql`
+      SELECT *
+      FROM wallet
+      WHERE user_id = ${userId}
+      ORDER BY created_at ASC NULLS FIRST
+    `;
+  } catch {
+    return [];
+  }
+}
+
+function summarizeWallets(rows) {
+  let main = 0;
+  let profit = 0;
+
+  for (const row of rows) {
+    const amount = walletAmount(row);
+
+    if (isProfitWallet(row)) {
+      profit += amount;
+      continue;
+    }
+
+    if (isMainWallet(row)) {
+      main += amount;
+      continue;
+    }
+
+    /*
+      Legacy / unnamed wallet records are treated as Main Wallet.
+      This prevents an old funded wallet from appearing as zero
+      merely because a newer typed wallet exists.
+    */
+    main += amount;
+  }
+
+  return {
+    main,
+    profit,
+    total: main + profit
+  };
+}
+
+async function getCustomerWallet(userId) {
+  const rows = await getWalletRows(userId);
+  const summary = summarizeWallets(rows);
+
+  return {
+    rows,
+    main: summary.main,
+    profit: summary.profit,
+    total: summary.total
+  };
+}
+
+async function updateWalletRow(row, amount) {
+  if (!row?.id) return false;
+
+  const table =
+    row.__table ||
+    "wallets";
+
+  const hasBalance =
+    await columnExists(table, "balance");
+
+  const hasAmount =
+    await columnExists(table, "amount");
+
+  try {
+    if (hasBalance) {
       await sql`
-        INSERT INTO chat_messages (
-          id,
-          conversation_id,
-          sender_id,
-          sender_type,
-          message,
-          created_at
-        )
-        VALUES (
-          ${crypto.randomUUID()},
-          ${conversationId},
-          ${admin.user.id},
-          'admin',
-          ${message},
-          NOW()
-        )
+        UPDATE ${sql(table)}
+        SET balance = ${amount}
+        WHERE id = ${row.id}
+      `;
+      return true;
+    }
+
+    if (hasAmount) {
+      await sql`
+        UPDATE ${sql(table)}
+        SET amount = ${amount}
+        WHERE id = ${row.id}
+      `;
+      return true;
+    }
+  } catch {
+    return false;
+  }
+
+  return false;
+}
+
+async function ensureWallet(userId, type = "main") {
+  const table = await firstExistingTable([
+    "wallets",
+    "user_wallets",
+    "wallet"
+  ]);
+
+  if (!table) return null;
+
+  const existingRows = await getWalletRows(userId);
+
+  let existing = null;
+
+  if (type === "profit") {
+    existing =
+      existingRows.find(isProfitWallet) || null;
+  } else {
+    existing =
+      existingRows.find(isMainWallet) ||
+      existingRows.find(
+        row => !isProfitWallet(row)
+      ) ||
+      null;
+  }
+
+  if (existing) return existing;
+
+  try {
+    const balanceColumn =
+      await columnExists(table, "balance");
+
+    const amountColumn =
+      await columnExists(table, "amount");
+
+    const typeColumn =
+      await columnExists(table, "wallet_type");
+
+    const nameColumn =
+      await columnExists(table, "name");
+
+    if (typeColumn && balanceColumn) {
+      const rows = await sql`
+        INSERT INTO ${sql(table)}
+          (user_id, wallet_type, balance)
+        VALUES
+          (
+            ${userId},
+            ${type},
+            0
+          )
         RETURNING *
       `;
 
+      return rows[0] || null;
+    }
+
+    if (typeColumn && amountColumn) {
+      const rows = await sql`
+        INSERT INTO ${sql(table)}
+          (user_id, wallet_type, amount)
+        VALUES
+          (
+            ${userId},
+            ${type},
+            0
+          )
+        RETURNING *
+      `;
+
+      return rows[0] || null;
+    }
+
+    if (nameColumn && balanceColumn) {
+      const rows = await sql`
+        INSERT INTO ${sql(table)}
+          (user_id, name, balance)
+        VALUES
+          (
+            ${userId},
+            ${type === "profit"
+              ? "Profit Wallet"
+              : "Main Wallet"},
+            0
+          )
+        RETURNING *
+      `;
+
+      return rows[0] || null;
+    }
+
+    if (balanceColumn) {
+      const rows = await sql`
+        INSERT INTO ${sql(table)}
+          (user_id, balance)
+        VALUES
+          (
+            ${userId},
+            0
+          )
+        RETURNING *
+      `;
+
+      return rows[0] || null;
+    }
+
+    if (amountColumn) {
+      const rows = await sql`
+        INSERT INTO ${sql(table)}
+          (user_id, amount)
+        VALUES
+          (
+            ${userId},
+            0
+          )
+        RETURNING *
+      `;
+
+      return rows[0] || null;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+/* =========================================================
+   WALLET COMPATIBILITY / SYNCHRONIZATION
+   ========================================================= */
+
+async function synchronizeWalletRepresentations(
+  userId,
+  preferredMainBalance = null,
+  preferredProfitBalance = null
+) {
+  const walletData = await getCustomerWallet(userId);
+
+  let mainBalance =
+    preferredMainBalance === null
+      ? walletData.main
+      : numberValue(preferredMainBalance);
+
+  let profitBalance =
+    preferredProfitBalance === null
+      ? walletData.profit
+      : numberValue(preferredProfitBalance);
+
+  /*
+    If a typed Main Wallet is zero but a legacy wallet contains
+    funds, preserve the funded legacy balance.
+  */
+  if (
+    preferredMainBalance === null &&
+    mainBalance === 0 &&
+    walletData.rows.length > 0
+  ) {
+    const legacyRows =
+      walletData.rows.filter(
+        row =>
+          !isProfitWallet(row) &&
+          !isMainWallet(row)
+      );
+
+    const legacyBalance = legacyRows.reduce(
+      (sum, row) => sum + walletAmount(row),
+      0
+    );
+
+    if (legacyBalance > 0) {
+      mainBalance = legacyBalance;
+    }
+  }
+
+  return {
+    main: mainBalance,
+    profit: profitBalance,
+    total: mainBalance + profitBalance
+  };
+}
+
+/* =========================================================
+   TRANSACTION HELPERS
+   ========================================================= */
+
+async function transactionTable() {
+  return firstExistingTable([
+    "transactions",
+    "transaction_history",
+    "wallet_transactions",
+    "transactions_history"
+  ]);
+}
+
+function transactionAmount(row) {
+  return numberValue(
+    row?.amount ??
+    row?.value ??
+    row?.quantity ??
+    0
+  );
+}
+
+function transactionType(row) {
+  return String(
+    row?.type ??
+    row?.transaction_type ??
+    row?.action ??
+    ""
+  ).toLowerCase();
+}
+
+function normalizeTransaction(row) {
+  return {
+    id: row?.id ?? null,
+    user_id: row?.user_id ?? null,
+    type:
+      row?.type ??
+      row?.transaction_type ??
+      row?.action ??
+      "transaction",
+    amount: transactionAmount(row),
+    currency:
+      row?.currency ??
+      row?.asset ??
+      "USD",
+    status:
+      row?.status ??
+      "completed",
+    description:
+      row?.description ??
+      row?.note ??
+      row?.details ??
+      "",
+    created_at:
+      row?.created_at ??
+      row?.timestamp ??
+      new Date().toISOString(),
+    updated_at:
+      row?.updated_at ??
+      null
+  };
+}
+
+/* =========================================================
+   AUTHENTICATION
+   ========================================================= */
+
+async function createSession(userId) {
+  const rawToken = createToken();
+  const tokenHash = hashToken(rawToken);
+
+  const sessionsExist =
+    await tableExists("sessions");
+
+  if (!sessionsExist) {
+    return rawToken;
+  }
+
+  try {
     await sql`
-      UPDATE chat_conversations
-      SET
-        updated_at = NOW()
-      WHERE id =
-        ${conversationId}
+      INSERT INTO sessions
+        (user_id, token, created_at)
+      VALUES
+        (
+          ${userId},
+          ${tokenHash},
+          NOW()
+        )
     `;
 
-    return ok({
-      message:
-        "Message sent.",
-      data:
-        rows[0]
-    });
-  } catch (error) {
-    console.error(
-      "Admin message insert error:",
-      error
-    );
-
-    return bad(
-      500,
-      "Unable to send message.",
-      {
-        detail:
-          error?.message
-      }
-    );
+    return rawToken;
+  } catch {
+    return rawToken;
   }
 }
 
-/* =====================================================
-   ADMIN CUSTOMER UPDATE
-   APPROVAL ALSO VERIFIES EMAIL
-===================================================== */
+async function getUserFromToken(token) {
+  if (!token) return null;
 
-async function updateCustomer(
-  request,
-  id,
-  body
-) {
-  const admin =
-    await requireAdmin(request);
+  const tokenHash = hashToken(token);
 
-  if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+  try {
+    const sessionExists =
+      await tableExists("sessions");
+
+    if (sessionExists) {
+      const rows = await sql`
+        SELECT u.*
+        FROM sessions s
+        JOIN users u
+          ON u.id = s.user_id
+        WHERE s.token = ${tokenHash}
+        ORDER BY s.created_at DESC
+        LIMIT 1
+      `;
+
+      if (rows[0]) {
+        return rows[0];
+      }
+    }
+  } catch {
+    /* continue */
   }
 
-  if (!id) {
-    return bad(
-      400,
-      "Customer ID is required."
-    );
-  }
-
-  const current =
-    await sql`
+  /*
+    Compatibility:
+    Some older deployments stored the raw token.
+  */
+  try {
+    const rows = await sql`
       SELECT *
-      FROM profiles
-      WHERE id =
-        ${id}
+      FROM users
+      WHERE session_token = ${token}
       LIMIT 1
     `;
 
-  if (!current.length) {
+    return rows[0] || null;
+  } catch {
+    return null;
+  }
+}
+
+async function requireUser(request) {
+  const token = bearer(request);
+
+  if (!token) {
+    return {
+      user: null,
+      error: bad(401, "Authentication required")
+    };
+  }
+
+  const user = await getUserFromToken(token);
+
+  if (!user) {
+    return {
+      user: null,
+      error: bad(401, "Invalid or expired session")
+    };
+  }
+
+  return {
+    user,
+    error: null
+  };
+}
+
+async function requireApprovedUser(request) {
+  const auth = await requireUser(request);
+
+  if (auth.error) {
+    return auth;
+  }
+
+  if (!accountApproved(auth.user)) {
+    return {
+      user: auth.user,
+      error: bad(
+        403,
+        "Account approval is required before performing this action",
+        {
+          code: "ACCOUNT_NOT_APPROVED",
+          account_approved: false,
+          email_verified: false
+        }
+      )
+    };
+  }
+
+  return auth;
+}
+
+/* =========================================================
+   PROFILE / CUSTOMER DATA
+   ========================================================= */
+
+function publicUser(user) {
+  if (!user) return null;
+
+  const kycStatus =
+    normalizeKycStatus(user);
+
+  const approved =
+    accountApproved(user);
+
+  const verified =
+    emailVerified(user);
+
+  return {
+    id: user.id,
+    email: user.email ?? "",
+    full_name:
+      user.full_name ??
+      user.fullName ??
+      user.name ??
+      "",
+    first_name:
+      user.first_name ??
+      user.firstName ??
+      "",
+    last_name:
+      user.last_name ??
+      user.lastName ??
+      "",
+    phone:
+      user.phone ??
+      user.phone_number ??
+      "",
+    country:
+      user.country ??
+      "",
+    account_approved: approved,
+    accountApproved: approved,
+    email_verified: verified,
+    emailVerified: verified,
+    kyc_status: kycStatus,
+    kycStatus,
+    kyc_approved: kycApproved(user),
+    kycApproved: kycApproved(user),
+    status:
+      user.status ??
+      user.account_status ??
+      "pending",
+    created_at:
+      user.created_at ??
+      null,
+    updated_at:
+      user.updated_at ??
+      null
+  };
+}
+
+/* =========================================================
+   WITHDRAWAL ACCOUNT HELPERS
+   ========================================================= */
+
+async function withdrawalTable() {
+  return firstExistingTable([
+    "withdrawal_accounts",
+    "withdraw_accounts",
+    "bank_accounts",
+    "customer_withdrawal_accounts"
+  ]);
+}
+
+async function getWithdrawalAccount(userId) {
+  const table = await withdrawalTable();
+
+  if (!table) return null;
+
+  try {
+    const rows = await sql`
+      SELECT *
+      FROM ${sql(table)}
+      WHERE user_id = ${userId}
+      ORDER BY updated_at DESC NULLS LAST,
+               created_at DESC NULLS LAST
+      LIMIT 1
+    `;
+
+    return rows[0] || null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeWithdrawalAccount(row) {
+  if (!row) return null;
+
+  return {
+    id: row.id ?? null,
+    user_id: row.user_id ?? null,
+    bank_name:
+      row.bank_name ??
+      row.bank ??
+      "",
+    account_name:
+      row.account_name ??
+      row.account_holder_name ??
+      row.holder_name ??
+      "",
+    account_number:
+      row.account_number ??
+      row.account_no ??
+      "",
+    routing_number:
+      row.routing_number ??
+      row.routing_no ??
+      "",
+    sort_code:
+      row.sort_code ??
+      "",
+    country:
+      row.country ??
+      "",
+    currency:
+      row.currency ??
+      "USD",
+    created_at:
+      row.created_at ??
+      null,
+    updated_at:
+      row.updated_at ??
+      null
+  };
+}
+
+/* =========================================================
+   KYC APPLICATION
+   ========================================================= */
+
+async function submitKyc(user, body) {
+  const table =
+    await firstExistingTable([
+      "kyc_submissions",
+      "kyc_requests",
+      "customer_kyc",
+      "kyc"
+    ]);
+
+  if (!table) {
     return bad(
-      404,
-      "Customer not found."
+      500,
+      "KYC storage is not configured"
     );
   }
 
-  const firstName =
-    body.first_name !==
-    undefined
-      ? String(
-          body.first_name
-        ).trim()
-      : null;
+  const documentType =
+    body.document_type ??
+    body.documentType ??
+    "";
 
-  const lastName =
-    body.last_name !==
-    undefined
-      ? String(
-          body.last_name
-        ).trim()
-      : null;
+  const documentNumber =
+    body.document_number ??
+    body.documentNumber ??
+    "";
 
-  const username =
-    body.username !==
-    undefined
-      ? String(
-          body.username
-        ).trim()
-      : null;
+  const country =
+    body.country ??
+    user.country ??
+    "";
 
-  const status =
-    body.status !==
-    undefined
-      ? String(
-          body.status
-        ).trim()
-      : null;
+  const fullName =
+    body.full_name ??
+    body.fullName ??
+    user.full_name ??
+    "";
 
-  const kycStatus =
-    body.kyc_status !==
-    undefined
-      ? String(
-          body.kyc_status
-        ).trim()
-        .toLowerCase()
-      : null;
+  try {
+    const hasStatus =
+      await columnExists(table, "status");
 
-  const approvalRequested =
-    (
-      status !== null &&
-      [
-        "active",
-        "approved"
-      ].includes(
-        status.toLowerCase()
-      )
-    );
+    const hasKycStatus =
+      await columnExists(table, "kyc_status");
 
-  const updated =
-    await sql`
-      UPDATE profiles
-      SET
-        first_name =
-          COALESCE(
-            ${firstName},
-            first_name
-          ),
-        last_name =
-          COALESCE(
-            ${lastName},
-            last_name
-          ),
-        username =
-          COALESCE(
-            ${username},
-            username
-          ),
-        status =
-          COALESCE(
-            ${status},
-            status
-          ),
+    const statusColumn =
+      hasKycStatus
+        ? "kyc_status"
+        : hasStatus
+          ? "status"
+          : null;
 
-        /*
-         * Temporary verification rule:
-         * administrator approval immediately
-         * verifies the customer's email.
-         */
-        email_verified_at =
-          CASE
-            WHEN
-              LOWER(
-                COALESCE(
-                  ${status},
-                  status,
-                  ''
-                )
-              )
-              IN (
-                'active',
-                'approved'
-              )
-            THEN
-              COALESCE(
-                email_verified_at,
-                NOW()
-              )
-            ELSE
-              email_verified_at
-          END,
-
-        kyc_status =
-          COALESCE(
-            ${kycStatus},
-            kyc_status
-          ),
-
-        updated_at = NOW()
-
-      WHERE id =
-        ${id}
-
-      RETURNING *
-    `;
-
-  /*
-   * If admin approved KYC while no customer
-   * submission existed, synchronize the profile
-   * directly and do not require a submission.
-   */
-  if (
-    kycStatus ===
-    "approved"
-  ) {
-    try {
-      const existing =
-        await sql`
-          SELECT id
-          FROM kyc_submissions
-          WHERE user_id =
-            ${id}
-          ORDER BY created_at DESC
-          LIMIT 1
-        `;
-
-      if (!existing.length) {
-        await sql`
-          INSERT INTO kyc_submissions (
-            id,
+    if (statusColumn) {
+      const rows = await sql`
+        INSERT INTO ${sql(table)}
+          (
             user_id,
-            status,
-            reviewed_by,
-            reviewed_at,
+            ${sql(statusColumn)},
+            document_type,
+            document_number,
+            country,
+            full_name,
             created_at,
             updated_at
           )
-          VALUES (
-            ${crypto.randomUUID()},
-            ${id},
-            'approved',
-            ${admin.user.id},
-            NOW(),
+        VALUES
+          (
+            ${user.id},
+            'submitted',
+            ${documentType},
+            ${documentNumber},
+            ${country},
+            ${fullName},
             NOW(),
             NOW()
           )
-        `;
-      } else {
-        await sql`
-          UPDATE kyc_submissions
-          SET
-            status = 'approved',
-            reviewed_by =
-              ${admin.user.id},
-            reviewed_at = NOW(),
-            updated_at = NOW()
-          WHERE id =
-            ${existing[0].id}
-        `;
-      }
-    } catch (error) {
-      console.warn(
-        "KYC synchronization warning:",
-        error?.message
-      );
-    }
-  }
-
-  await ensureUserWallets(id);
-
-  return ok({
-    message:
-      approvalRequested
-        ? "Customer approved successfully. Email verification has also been completed."
-        : "Customer updated successfully.",
-    customer:
-      updated[0],
-    account_approved:
-      customerIsApproved(
-        updated[0]
-      ),
-    email_verified:
-      !!updated[0]
-        .email_verified_at ||
-      customerIsApproved(
-        updated[0]
-      ),
-    kyc_status:
-      String(
-        updated[0]
-          .kyc_status ||
-          "pending"
-      ).toLowerCase()
-  });
-}
-
-/* =====================================================
-   ADMIN KYC
-===================================================== */
-
-async function adminKyc(url) {
-  const status =
-    String(
-      url.searchParams.get(
-        "status"
-      ) || ""
-    )
-      .trim()
-      .toLowerCase();
-
-  const limit =
-    cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
-      100
-    );
-
-  let rows = [];
-
-  try {
-    if (status) {
-      rows =
-        await sql`
-          SELECT
-            k.*,
-            p.first_name,
-            p.last_name,
-            p.username,
-            p.email,
-            p.status AS account_status,
-            p.kyc_status
-          FROM kyc_submissions k
-          INNER JOIN profiles p
-            ON p.id =
-              k.user_id
-          WHERE LOWER(
-            COALESCE(
-              k.status,
-              'pending'
-            )
-          ) = ${status}
-          ORDER BY
-            k.created_at DESC
-          LIMIT ${limit}
-        `;
-    } else {
-      rows =
-        await sql`
-          SELECT
-            k.*,
-            p.first_name,
-            p.last_name,
-            p.username,
-            p.email,
-            p.status AS account_status,
-            p.kyc_status
-          FROM kyc_submissions k
-          INNER JOIN profiles p
-            ON p.id =
-              k.user_id
-          ORDER BY
-            k.created_at DESC
-          LIMIT ${limit}
-        `;
-    }
-  } catch (error) {
-    console.warn(
-      "KYC submissions query fallback:",
-      error?.message
-    );
-  }
-
-  /*
-   * Always include profile KYC state so an admin can
-   * approve customers even when they never submitted
-   * a KYC record.
-   */
-  const profileRows =
-    await sql`
-      SELECT
-        p.id,
-        p.id AS user_id,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email,
-        p.status AS account_status,
-        COALESCE(
-          p.kyc_status,
-          'pending'
-        ) AS status,
-        p.kyc_status,
-        p.created_at,
-        p.updated_at
-      FROM profiles p
-      LEFT JOIN roles r
-        ON r.id =
-          p.role_id
-      WHERE LOWER(
-        COALESCE(
-          r.name,
-          'user'
-        )
-      )
-      NOT IN (
-        'admin',
-        'administrator'
-      )
-      AND (
-        ${status} = ''
-        OR LOWER(
-          COALESCE(
-            p.kyc_status,
-            'pending'
-          )
-        ) = ${status}
-      )
-      ORDER BY
-        p.created_at DESC
-      LIMIT ${limit}
-    `;
-
-  const merged = [
-    ...rows
-  ];
-
-  const seen =
-    new Set(
-      merged.map(
-        item =>
-          String(
-            item.user_id ||
-              item.id ||
-              ""
-          )
-      )
-    );
-
-  for (
-    const item of profileRows
-  ) {
-    const key =
-      String(
-        item.user_id ||
-          item.id ||
-          ""
-      );
-
-    if (!seen.has(key)) {
-      merged.push(item);
-    }
-  }
-
-  return ok({
-    submissions:
-      merged.slice(
-        0,
-        limit
-      )
-  });
-}
-
-async function reviewKyc(
-  request,
-  id,
-  body
-) {
-  const admin =
-    await requireAdmin(request);
-
-  if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
-  }
-
-  const decision =
-    String(
-      body.status ||
-        body.decision ||
-        ""
-    )
-      .trim()
-      .toLowerCase();
-
-  if (
-    decision !==
-      "approved" &&
-    decision !==
-      "rejected"
-  ) {
-    return bad(
-      400,
-      "KYC decision must be approved or rejected."
-    );
-  }
-
-  let submission = [];
-
-  try {
-    submission =
-      await sql`
-        SELECT *
-        FROM kyc_submissions
-        WHERE id =
-          ${id}
-        LIMIT 1
-      `;
-  } catch {
-    submission = [];
-  }
-
-  let userId = id;
-
-  if (submission.length) {
-    userId =
-      submission[0]
-        .user_id;
-
-    await sql`
-      UPDATE kyc_submissions
-      SET
-        status =
-          ${decision},
-        reviewed_by =
-          ${admin.user.id},
-        reviewed_at = NOW(),
-        updated_at = NOW()
-      WHERE id =
-        ${id}
-    `;
-  } else {
-    const profile =
-      await sql`
-        SELECT id
-        FROM profiles
-        WHERE id =
-          ${id}
-        LIMIT 1
+        RETURNING *
       `;
 
-    if (!profile.length) {
-      return bad(
-        404,
-        "KYC/customer record not found."
-      );
+      return ok({
+        submission: rows[0] || null,
+        kyc_status: "submitted"
+      });
     }
-  }
 
-  /*
-   * This is the critical synchronization:
-   * Admin approval updates profiles.kyc_status,
-   * which is what the customer dashboard reads.
-   */
-  const updated =
-    await sql`
-      UPDATE profiles
-      SET
-        kyc_status =
-          ${decision},
-        updated_at = NOW()
-      WHERE id =
-        ${userId}
-      RETURNING *
-    `;
-
-  /*
-   * If admin approved KYC without a submission,
-   * create a record for audit consistency.
-   */
-  if (
-    decision ===
-      "approved" &&
-    !submission.length
-  ) {
-    try {
-      await sql`
-        INSERT INTO kyc_submissions (
-          id,
+    const rows = await sql`
+      INSERT INTO ${sql(table)}
+        (
           user_id,
-          status,
-          reviewed_by,
-          reviewed_at,
+          document_type,
+          document_number,
+          country,
+          full_name,
           created_at,
           updated_at
         )
-        VALUES (
-          ${crypto.randomUUID()},
-          ${userId},
-          'approved',
-          ${admin.user.id},
-          NOW(),
+      VALUES
+        (
+          ${user.id},
+          ${documentType},
+          ${documentNumber},
+          ${country},
+          ${fullName},
           NOW(),
           NOW()
         )
-      `;
-    } catch (error) {
-      console.warn(
-        "KYC audit record warning:",
-        error?.message
-      );
+      RETURNING *
+    `;
+
+    return ok({
+      submission: rows[0] || null,
+      kyc_status: "submitted"
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to submit KYC"
+    );
+  }
+}
+
+/* =========================================================
+   ACCOUNT / USER KYC REFRESH
+   ========================================================= */
+
+async function refreshUserFromDatabase(user) {
+  if (!user?.id) return user;
+
+  const fresh =
+    await getUserById(user.id);
+
+  if (!fresh) {
+    return user;
+  }
+
+  return fresh;
+}
+
+async function resolveKycFromAllSources(user) {
+  const fresh =
+    await refreshUserFromDatabase(user);
+
+  let status =
+    normalizeKycStatus(fresh);
+
+  /*
+    Check dedicated KYC records too.
+
+    This is important because the admin page may approve
+    KYC in a dedicated table rather than the users table.
+  */
+
+  const table =
+    await firstExistingTable([
+      "kyc_submissions",
+      "kyc_requests",
+      "customer_kyc",
+      "kyc"
+    ]);
+
+  if (table) {
+    try {
+      const hasKycStatus =
+        await columnExists(
+          table,
+          "kyc_status"
+        );
+
+      const hasStatus =
+        await columnExists(
+          table,
+          "status"
+        );
+
+      let rows = [];
+
+      if (hasKycStatus) {
+        rows = await sql`
+          SELECT *
+          FROM ${sql(table)}
+          WHERE user_id = ${fresh.id}
+          ORDER BY updated_at DESC NULLS LAST,
+                   created_at DESC NULLS LAST
+          LIMIT 1
+        `;
+      } else if (hasStatus) {
+        rows = await sql`
+          SELECT *
+          FROM ${sql(table)}
+          WHERE user_id = ${fresh.id}
+          ORDER BY updated_at DESC NULLS LAST,
+                   created_at DESC NULLS LAST
+          LIMIT 1
+        `;
+      }
+
+      const kyc = rows[0];
+
+      if (kyc) {
+        const dedicated =
+          String(
+            kyc.kyc_status ??
+            kyc.status ??
+            ""
+          )
+            .trim()
+            .toLowerCase();
+
+        if (
+          dedicated === "approved" ||
+          dedicated === "verified" ||
+          dedicated === "complete" ||
+          dedicated === "completed"
+        ) {
+          status = "approved";
+        } else if (
+          status !== "approved" &&
+          (
+            dedicated === "rejected" ||
+            dedicated === "declined"
+          )
+        ) {
+          status = "rejected";
+        } else if (
+          status === "pending" &&
+          dedicated === "submitted"
+        ) {
+          status = "submitted";
+        }
+      }
+    } catch {
+      /* users table remains authoritative fallback */
     }
   }
 
+  return {
+    user: fresh,
+    status
+  };
+}
+
+/* =========================================================
+   REQUEST ROUTES
+   ========================================================= */
+
+async function routeMe(request) {
+  const auth =
+    await requireUser(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const user =
+    await refreshUserFromDatabase(
+      auth.user
+    );
+
+  const kyc =
+    await resolveKycFromAllSources(
+      user
+    );
+
+  const wallets =
+    await synchronizeWalletRepresentations(
+      user.id
+    );
+
+  const withdrawal =
+    await getWithdrawalAccount(
+      user.id
+    );
+
   return ok({
-    message:
-      `KYC ${decision} successfully.`,
-    kyc_status:
-      decision,
-    customer:
-      updated[0]
+    user: {
+      ...publicUser(user),
+      kyc_status: kyc.status,
+      kycStatus: kyc.status,
+      kyc_approved:
+        kyc.status === "approved",
+      kycApproved:
+        kyc.status === "approved"
+    },
+    wallets: {
+      main: wallets.main,
+      mainWallet: wallets.main,
+      profit: wallets.profit,
+      profitWallet: wallets.profit,
+      total: wallets.total,
+      balance: wallets.main
+    },
+    withdrawal_account:
+      normalizeWithdrawalAccount(
+        withdrawal
+      )
   });
 }
 
-/* =====================================================
-   ADMIN WALLETS
-===================================================== */
+async function routeWallets(request) {
+  const auth =
+    await requireUser(request);
 
-async function adminWallets(url) {
-  const search =
-    String(
-      url.searchParams.get(
-        "search"
-      ) || ""
-    ).trim();
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const user =
+    await refreshUserFromDatabase(
+      auth.user
+    );
+
+  const wallets =
+    await synchronizeWalletRepresentations(
+      user.id
+    );
+
+  const rows =
+    await getWalletRows(user.id);
+
+  return ok({
+    wallets: rows,
+    mainWallet: wallets.main,
+    main_wallet: wallets.main,
+    profitWallet: wallets.profit,
+    profit_wallet: wallets.profit,
+    totalBalance: wallets.total,
+    total_balance: wallets.total,
+    balance: wallets.main
+  });
+}
+
+async function routeTransactions(request) {
+  const auth =
+    await requireUser(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const user =
+    await refreshUserFromDatabase(
+      auth.user
+    );
+
+  const table =
+    await transactionTable();
+
+  if (!table) {
+    return ok({
+      transactions: []
+    });
+  }
 
   const limit =
     cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
+      new URL(request.url)
+        .searchParams
+        .get("limit"),
       100
     );
 
-  await ensureAllCustomerWallets();
-
-  const customers =
-    await sql`
-      SELECT
-        p.id AS user_id,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email
-      FROM profiles p
-      LEFT JOIN roles r
-        ON r.id =
-          p.role_id
-      WHERE LOWER(
-        COALESCE(
-          r.name,
-          'user'
-        )
-      )
-      NOT IN (
-        'admin',
-        'administrator'
-      )
-      AND (
-        ${search} = ''
-        OR LOWER(
-          COALESCE(
-            p.username,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-        OR LOWER(
-          COALESCE(
-            p.email,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-        OR LOWER(
-          COALESCE(
-            p.first_name ||
-              ' ' ||
-              p.last_name,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-      )
-      ORDER BY
-        p.created_at DESC
+  try {
+    const rows = await sql`
+      SELECT *
+      FROM ${sql(table)}
+      WHERE user_id = ${user.id}
+      ORDER BY created_at DESC NULLS LAST
       LIMIT ${limit}
     `;
 
-  const result = [];
-
-  for (
-    const customer of customers
-  ) {
-    const state =
-      await loadCustomerWalletState(
-        customer.user_id
-      );
-
-    result.push({
-      id:
-        state.main?.id ||
-        state.profit?.id ||
-        customer.user_id,
-
-      user_id:
-        customer.user_id,
-
-      first_name:
-        customer.first_name,
-
-      last_name:
-        customer.last_name,
-
-      username:
-        customer.username,
-
-      email:
-        customer.email,
-
-      wallet_type:
-        "combined",
-
-      currency:
-        state.main?.currency ||
-        state.profit?.currency ||
-        "USD",
-
-      status:
-        state.main?.status ||
-        state.profit?.status ||
-        "active",
-
-      main_wallet_id:
-        state.main?.id ||
-        null,
-
-      profit_wallet_id:
-        state.profit?.id ||
-        null,
-
-      main_balance:
-        state.mainBalance,
-
-      profit_balance:
-        state.profitBalance,
-
-      total_balance:
-        state.totalBalance,
-
-      created_at:
-        state.main?.created_at ||
-        state.profit?.created_at ||
-        null,
-
-      updated_at:
-        state.main?.updated_at ||
-        state.profit?.updated_at ||
-        null
-    });
-  }
-
-  return ok({
-    wallets:
-      result
-  });
-}
-
-async function adminWallet(userId) {
-  if (!userId) {
-    return bad(
-      400,
-      "User ID is required."
-    );
-  }
-
-  await ensureUserWallets(
-    userId
-  );
-
-  const profile =
-    await sql`
-      SELECT
-        p.id,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email
-      FROM profiles p
-      WHERE p.id =
-        ${userId}
-      LIMIT 1
-    `;
-
-  if (!profile.length) {
-    return bad(
-      404,
-      "Customer not found."
-    );
-  }
-
-  const state =
-    await loadCustomerWalletState(
-      userId
-    );
-
-  let ledger = [];
-
-  try {
-    ledger =
-      await sql`
-        SELECT *
-        FROM wallet_ledger
-        WHERE user_id =
-          ${userId}
-        ORDER BY
-          created_at DESC
-        LIMIT 200
-      `;
-  } catch (error) {
-    console.warn(
-      "wallet_ledger unavailable:",
-      error?.message
-    );
-  }
-
-  return ok({
-    customer:
-      profile[0],
-
-    wallets:
-      state.rows,
-
-    main_wallet:
-      state.main,
-
-    profit_wallet:
-      state.profit,
-
-    main_balance:
-      state.mainBalance,
-
-    profit_balance:
-      state.profitBalance,
-
-    total_balance:
-      state.totalBalance,
-
-    ledger
-  });
-}
-
-/* =====================================================
-   ADMIN WALLET ADJUSTMENT
-===================================================== */
-
-async function adjustWallet(
-  request,
-  body
-) {
-  const admin =
-    await requireAdmin(request);
-
-  if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
-  }
-
-  const userId =
-    String(
-      body.user_id ||
-        ""
-    ).trim();
-
-  const walletType =
-    String(
-      body.wallet_type ||
-        body.wallet ||
-        "main"
-    )
-      .trim()
-      .toLowerCase();
-
-  const amount =
-    numberValue(
-      body.amount,
-      NaN
-    );
-
-  const reason =
-    String(
-      body.reason ||
-        "Administrator balance adjustment"
-    ).trim();
-
-  if (!userId) {
-    return bad(
-      400,
-      "User ID is required."
-    );
-  }
-
-  if (
-    !Number.isFinite(amount) ||
-    amount === 0
-  ) {
-    return bad(
-      400,
-      "A non-zero adjustment amount is required."
-    );
-  }
-
-  if (
-    walletType !== "main" &&
-    walletType !== "profit"
-  ) {
-    return bad(
-      400,
-      "Wallet must be main or profit."
-    );
-  }
-
-  const customer =
-    await sql`
-      SELECT id
-      FROM profiles
-      WHERE id =
-        ${userId}
-      LIMIT 1
-    `;
-
-  if (!customer.length) {
-    return bad(
-      404,
-      "Customer not found."
-    );
-  }
-
-  await ensureUserWallets(
-    userId
-  );
-
-  const state =
-    await loadCustomerWalletState(
-      userId
-    );
-
-  let wallet =
-    walletType ===
-    "profit"
-      ? state.profit
-      : state.main;
-
-  let legacy =
-    false;
-
-  if (
-    walletType ===
-      "main" &&
-    state.legacy &&
-    state.main &&
-    state.main.id ===
-      state.legacy.id
-  ) {
-    const typed =
-      state.main.wallet_type;
-
-    if (
-      !typed &&
-      state.legacy.main_balance !==
-        undefined
-    ) {
-      legacy = true;
-      wallet =
-        state.legacy;
-    }
-  }
-
-  if (
-    !wallet &&
-    state.legacy
-  ) {
-    wallet =
-      state.legacy;
-
-    legacy = true;
-  }
-
-  if (!wallet) {
-    return bad(
-      404,
-      "Customer wallet not found."
-    );
-  }
-
-  const current =
-    walletType ===
-      "profit"
-      ? (
-          legacy
-            ? numberValue(
-                wallet.profit_balance,
-                0
-              )
-            : numberValue(
-                wallet.balance,
-                0
-              )
-        )
-      : (
-          legacy
-            ? numberValue(
-                wallet.main_balance,
-                0
-              )
-            : numberValue(
-                wallet.balance,
-                0
-              )
-        );
-
-  const next =
-    current + amount;
-
-  if (next < 0) {
-    return bad(
-      400,
-      "Insufficient wallet balance."
-    );
-  }
-
-  let updated;
-
-  if (legacy) {
-    if (
-      walletType ===
-      "profit"
-    ) {
-      updated =
-        await sql`
-          UPDATE wallets
-          SET
-            profit_balance =
-              ${next},
-            updated_at = NOW()
-          WHERE id =
-            ${wallet.id}
-          RETURNING *
-        `;
-    } else {
-      updated =
-        await sql`
-          UPDATE wallets
-          SET
-            main_balance =
-              ${next},
-            updated_at = NOW()
-          WHERE id =
-            ${wallet.id}
-          RETURNING *
-        `;
-    }
-  } else {
-    updated =
-      await sql`
-        UPDATE wallets
-        SET
-          balance =
-            ${next},
-          updated_at = NOW()
-        WHERE id =
-          ${wallet.id}
-        RETURNING *
-      `;
-  }
-
-  const transactionReference =
-    `ADJ-${crypto.randomUUID()}`;
-
-  try {
-    await sql`
-      INSERT INTO wallet_ledger (
-        id,
-        user_id,
-        wallet_type,
-        amount,
-        balance_before,
-        balance_after,
-        entry_type,
-        description,
-        created_by,
-        created_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        ${walletType},
-        ${amount},
-        ${current},
-        ${next},
-        'admin_adjustment',
-        ${reason},
-        ${admin.user.id},
-        NOW()
-      )
-    `;
-  } catch (error) {
-    console.error(
-      "Wallet ledger insert failed:",
-      error
-    );
-
-    /*
-     * Roll back wallet update if the ledger
-     * cannot be recorded.
-     */
-    if (legacy) {
-      if (
-        walletType ===
-        "profit"
-      ) {
-        await sql`
-          UPDATE wallets
-          SET
-            profit_balance =
-              ${current},
-            updated_at = NOW()
-          WHERE id =
-            ${wallet.id}
-        `;
-      } else {
-        await sql`
-          UPDATE wallets
-          SET
-            main_balance =
-              ${current},
-            updated_at = NOW()
-          WHERE id =
-            ${wallet.id}
-        `;
-      }
-    } else {
-      await sql`
-        UPDATE wallets
-        SET
-          balance =
-            ${current},
-          updated_at = NOW()
-        WHERE id =
-          ${wallet.id}
-      `;
-    }
-
-    return bad(
-      500,
-      "Wallet was not updated because the wallet ledger could not be created.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  try {
-    await sql`
-      INSERT INTO transactions (
-        id,
-        user_id,
-        wallet_id,
-        transaction_reference,
-        transaction_type,
-        direction,
-        amount,
-        fee,
-        currency,
-        status,
-        description,
-        metadata,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        ${wallet.id},
-        ${transactionReference},
-        ${
-          amount >= 0
-            ? "system_credit"
-            : "system_debit"
-        },
-        ${
-          amount >= 0
-            ? "credit"
-            : "debit"
-        },
-        ${Math.abs(amount)},
-        0,
-        'USD',
-        'completed',
-        ${reason},
-        ${JSON.stringify({
-          source:
-            "admin_wallet_adjustment",
-          wallet_type:
-            walletType,
-          admin_id:
-            admin.user.id,
-          adjustment:
-            amount
-        })},
-        NOW(),
-        NOW()
-      )
-    `;
-  } catch (error) {
-    console.error(
-      "Admin wallet transaction insert failed:",
-      error
-    );
-
-    /*
-     * Roll back both the wallet and the
-     * ledger entry.
-     */
-    if (legacy) {
-      if (
-        walletType ===
-        "profit"
-      ) {
-        await sql`
-          UPDATE wallets
-          SET
-            profit_balance =
-              ${current},
-            updated_at = NOW()
-          WHERE id =
-            ${wallet.id}
-        `;
-      } else {
-        await sql`
-          UPDATE wallets
-          SET
-            main_balance =
-              ${current},
-            updated_at = NOW()
-          WHERE id =
-            ${wallet.id}
-        `;
-      }
-    } else {
-      await sql`
-        UPDATE wallets
-        SET
-          balance =
-            ${current},
-          updated_at = NOW()
-        WHERE id =
-          ${wallet.id}
-      `;
-    }
-
-    try {
-      await sql`
-        DELETE FROM wallet_ledger
-        WHERE user_id =
-          ${userId}
-          AND wallet_type =
-            ${walletType}
-          AND amount =
-            ${amount}
-          AND balance_before =
-            ${current}
-          AND balance_after =
-            ${next}
-          AND created_by =
-            ${admin.user.id}
-          AND entry_type =
-            'admin_adjustment'
-        ORDER BY created_at DESC
-        LIMIT 1
-      `;
-    } catch {}
-
-    return bad(
-      500,
-      "Wallet was not updated because the transaction record could not be created.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  return ok({
-    message:
-      "Wallet balance updated successfully.",
-    wallet:
-      updated[0],
-    main_balance:
-      walletType ===
-      "main"
-        ? next
-        : state.mainBalance,
-    profit_balance:
-      walletType ===
-      "profit"
-        ? next
-        : state.profitBalance,
-    transaction_reference:
-      transactionReference
-  });
-}
-
-/* =====================================================
-   ADMIN TRANSACTIONS
-===================================================== */
-
-async function adminTransactions(url) {
-  const limit =
-    cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
-      100
-    );
-
-  let rows = [];
-
-  try {
-    rows =
-      await sql`
-        SELECT
-          t.*,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email
-        FROM transactions t
-        LEFT JOIN profiles p
-          ON p.id =
-            t.user_id
-        ORDER BY
-          t.created_at DESC
-        LIMIT ${limit}
-      `;
-  } catch (error) {
-    console.error(
-      "Admin transaction query failed:",
-      error
-    );
-
-    return bad(
-      500,
-      "Unable to load transactions.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  if (!rows.length) {
-    try {
-      const ledgerRows =
-        await sql`
-          SELECT
-            wl.id,
-            wl.user_id,
-            wl.wallet_type,
-            wl.amount,
-            wl.balance_before,
-            wl.balance_after,
-            wl.entry_type,
-            wl.description,
-            wl.created_at,
-            p.first_name,
-            p.last_name,
-            p.username,
-            p.email
-          FROM wallet_ledger wl
-          LEFT JOIN profiles p
-            ON p.id =
-              wl.user_id
-          ORDER BY
-            wl.created_at DESC
-          LIMIT ${limit}
-        `;
-
-      rows =
-        ledgerRows.map(
-          item => ({
-            id:
-              item.id,
-            user_id:
-              item.user_id,
-            type:
-              item.entry_type ||
-              "wallet_activity",
-            direction:
-              numberValue(
-                item.amount,
-                0
-              ) >= 0
-                ? "credit"
-                : "debit",
-            amount:
-              Math.abs(
-                numberValue(
-                  item.amount,
-                  0
-                )
-              ),
-            fee: 0,
-            currency:
-              "USD",
-            status:
-              "completed",
-            description:
-              item.description ||
-              "Wallet activity",
-            wallet_type:
-              item.wallet_type,
-            balance_before:
-              item.balance_before,
-            balance_after:
-              item.balance_after,
-            created_at:
-              item.created_at,
-            first_name:
-              item.first_name,
-            last_name:
-              item.last_name,
-            username:
-              item.username,
-            email:
-              item.email,
-            source:
-              "wallet_ledger"
-          })
-        );
-    } catch (error) {
-      console.warn(
-        "Transaction ledger fallback unavailable:",
-        error?.message
-      );
-    }
-  }
-
-  return ok({
-    transactions:
-      rows
-  });
-}
-
-/* =====================================================
-   ADMIN INVESTMENTS
-===================================================== */
-
-async function adminInvestments(url) {
-  const limit =
-    cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
-      100
-    );
-
-  let rows = [];
-
-  try {
-    rows =
-      await sql`
-        SELECT
-          i.*,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email
-        FROM investments i
-        LEFT JOIN profiles p
-          ON p.id =
-            i.user_id
-        ORDER BY
-          i.created_at DESC
-        LIMIT ${limit}
-      `;
-  } catch (error) {
-    return bad(
-      500,
-      "Unable to load investments.",
-      {
-        detail:
-          error?.message
-      }
-    );
-  }
-
-  return ok({
-    investments:
-      rows
-  });
-}
-
-/* =====================================================
-   ADMIN REQUESTS
-===================================================== */
-
-async function adminRequests(url) {
-  const status =
-    String(
-      url.searchParams.get(
-        "status"
-      ) ||
-        "pending"
-    )
-      .trim()
-      .toLowerCase();
-
-  const limit =
-    cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
-      100
-    );
-
-  try {
-    const deposits =
-      await sql`
-        SELECT
-          d.id,
-          d.deposit_reference
-            AS request_reference,
-          d.user_id,
-          d.wallet_id,
-          d.amount,
-          d.currency,
-          d.payment_method,
-          d.payment_reference,
-          d.proof_url,
-          d.status,
-          d.submitted_at
-            AS created_at,
-          d.reviewed_at,
-          d.reviewed_by,
-          d.admin_notes,
-          'deposit'
-            AS type,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email
-        FROM deposit_requests d
-        LEFT JOIN profiles p
-          ON p.id =
-            d.user_id
-        WHERE LOWER(
-          COALESCE(
-            d.status,
-            'pending'
-          )
-        ) = ${status}
-        ORDER BY
-          d.submitted_at DESC
-        LIMIT ${limit}
-      `;
-
-    const withdrawals =
-      await sql`
-        SELECT
-          w.id,
-          w.withdrawal_reference
-            AS request_reference,
-          w.user_id,
-          w.wallet_id,
-          w.amount,
-          w.currency,
-          w.withdrawal_method
-            AS payment_method,
-          NULL
-            AS payment_reference,
-          NULL
-            AS proof_url,
-          w.status,
-          w.requested_at
-            AS created_at,
-          w.reviewed_at,
-          w.reviewed_by,
-          w.admin_notes,
-          'withdrawal'
-            AS type,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email
-        FROM withdrawal_requests w
-        LEFT JOIN profiles p
-          ON p.id =
-            w.user_id
-        WHERE LOWER(
-          COALESCE(
-            w.status,
-            'pending'
-          )
-        ) = ${status}
-        ORDER BY
-          w.requested_at DESC
-        LIMIT ${limit}
-      `;
-
-    const rows = [
-      ...deposits,
-      ...withdrawals
-    ].sort(
-      (a, b) =>
-        new Date(
-          b.created_at
-        ).getTime() -
-        new Date(
-          a.created_at
-        ).getTime()
-    );
-
     return ok({
-      requests:
-        rows.slice(
-          0,
-          limit
-        )
+      transactions:
+        rows.map(normalizeTransaction)
     });
   } catch (error) {
     return bad(
       500,
-      "Unable to load pending requests.",
-      {
-        detail:
-          error?.message
-      }
+      error?.message ||
+        "Unable to load transactions"
     );
   }
 }
 
-async function processRequest(
-  request,
-  id,
-  body
-) {
-  const admin =
-    await requireAdmin(request);
+/* =========================================================
+   DEPOSIT
+   ========================================================= */
 
-  if (!admin.ok) {
-    return bad(
-      admin.status,
-      admin.error
-    );
+async function routeDeposit(request) {
+  const auth =
+    await requireApprovedUser(request);
+
+  if (auth.error) {
+    return auth.error;
   }
 
-  const decision =
-    String(
-      body.status ||
-        body.decision ||
-        ""
-    )
-      .trim()
-      .toLowerCase();
-
-  if (
-    decision !==
-      "approved" &&
-    decision !==
-      "rejected"
-  ) {
-    return bad(
-      400,
-      "Decision must be approved or rejected."
-    );
-  }
-
-  if (!id) {
-    return bad(
-      400,
-      "Request ID is required."
-    );
-  }
-
-  let requestType = null;
-  let item = null;
-
-  const depositRows =
-    await sql`
-      SELECT *
-      FROM deposit_requests
-      WHERE id =
-        ${id}
-      LIMIT 1
-    `;
-
-  if (depositRows.length) {
-    requestType =
-      "deposit";
-    item =
-      depositRows[0];
-  } else {
-    const withdrawalRows =
-      await sql`
-        SELECT *
-        FROM withdrawal_requests
-        WHERE id =
-          ${id}
-        LIMIT 1
-      `;
-
-    if (
-      withdrawalRows.length
-    ) {
-      requestType =
-        "withdrawal";
-      item =
-        withdrawalRows[0];
-    }
-  }
-
-  if (!item) {
-    return bad(
-      404,
-      "Request not found."
-    );
-  }
-
-  const currentStatus =
-    String(
-      item.status ||
-        "pending"
-    )
-      .trim()
-      .toLowerCase();
-
-  if (
-    currentStatus !==
-    "pending"
-  ) {
-    return bad(
-      400,
-      `Request has already been ${currentStatus}.`
-    );
-  }
+  const body =
+    await jsonBody(request);
 
   const amount =
     numberValue(
-      item.amount,
-      0
+      body.amount ??
+      body.value
     );
 
   if (amount <= 0) {
     return bad(
       400,
-      "Request amount must be greater than zero."
+      "Enter a valid deposit amount"
     );
   }
 
-  if (
-    decision ===
-    "rejected"
-  ) {
+  const reference =
+    String(
+      body.reference ??
+      body.reference_number ??
+      ""
+    ).trim();
+
+  const description =
+    String(
+      body.description ??
+      body.note ??
+      "Deposit request"
+    ).trim();
+
+  const requestsTable =
+    await firstExistingTable([
+      "deposit_requests",
+      "deposit_request",
+      "funding_requests",
+      "transactions"
+    ]);
+
+  if (!requestsTable) {
+    return bad(
+      500,
+      "Deposit request storage is not configured"
+    );
+  }
+
+  try {
+    const columns = {
+      user_id:
+        await columnExists(
+          requestsTable,
+          "user_id"
+        ),
+      amount:
+        await columnExists(
+          requestsTable,
+          "amount"
+        ),
+      type:
+        await columnExists(
+          requestsTable,
+          "type"
+        ),
+      status:
+        await columnExists(
+          requestsTable,
+          "status"
+        ),
+      description:
+        await columnExists(
+          requestsTable,
+          "description"
+        ),
+      reference:
+        await columnExists(
+          requestsTable,
+          "reference"
+        ),
+      created:
+        await columnExists(
+          requestsTable,
+          "created_at"
+        )
+    };
+
     if (
-      requestType ===
-      "deposit"
+      requestsTable ===
+      "transactions"
     ) {
-      const updated =
+      const rows =
         await sql`
-          UPDATE deposit_requests
-          SET
-            status =
-              'rejected',
-            reviewed_by =
-              ${admin.user.id},
-            reviewed_at =
-              NOW(),
-            admin_notes =
-              COALESCE(
-                ${
-                  body.admin_notes ||
-                  body.notes ||
-                  null
-                },
-                admin_notes
-              ),
-            updated_at =
+          INSERT INTO transactions
+            (
+              user_id,
+              type,
+              amount,
+              status,
+              description,
+              reference,
+              created_at
+            )
+          VALUES
+            (
+              ${auth.user.id},
+              'deposit',
+              ${amount},
+              'pending',
+              ${description},
+              ${reference},
               NOW()
-          WHERE id =
-            ${id}
-            AND LOWER(
-              COALESCE(
-                status,
-                'pending'
-              )
-            ) = 'pending'
+            )
           RETURNING *
         `;
 
       return ok({
-        message:
-          "Deposit request rejected successfully.",
-        request: {
-          ...updated[0],
-          type:
-            "deposit"
-        }
+        request: rows[0] || null,
+        status: "pending"
       });
     }
 
-    const updated =
+    const rows =
       await sql`
-        UPDATE withdrawal_requests
-        SET
-          status =
-            'rejected',
-          reviewed_by =
-            ${admin.user.id},
-          reviewed_at =
-            NOW(),
-          admin_notes =
-            COALESCE(
-              ${
-                body.admin_notes ||
-                body.notes ||
-                null
-              },
-              admin_notes
-            ),
-          updated_at =
+        INSERT INTO ${sql(requestsTable)}
+          (
+            user_id,
+            amount,
+            type,
+            status,
+            description,
+            reference,
+            created_at
+          )
+        VALUES
+          (
+            ${auth.user.id},
+            ${amount},
+            'deposit',
+            'pending',
+            ${description},
+            ${reference},
             NOW()
-        WHERE id =
-          ${id}
-          AND LOWER(
-            COALESCE(
-              status,
-              'pending'
-            )
-          ) = 'pending'
+          )
         RETURNING *
       `;
 
     return ok({
-      message:
-        "Withdrawal request rejected successfully.",
-      request: {
-        ...updated[0],
-        type:
-          "withdrawal"
+      request: rows[0] || null,
+      status: "pending"
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to create deposit request"
+    );
+  }
+}
+
+/* =========================================================
+   SEND
+   ========================================================= */
+
+async function routeSend(request) {
+  const auth =
+    await requireApprovedUser(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const body =
+    await jsonBody(request);
+
+  const amount =
+    numberValue(body.amount);
+
+  if (amount <= 0) {
+    return bad(
+      400,
+      "Enter a valid amount"
+    );
+  }
+
+  const recipient =
+    normalizeEmail(
+      body.recipient_email ??
+      body.recipientEmail ??
+      body.email ??
+      ""
+    );
+
+  if (!recipient) {
+    return bad(
+      400,
+      "Recipient email is required"
+    );
+  }
+
+  const senderWallet =
+    await getCustomerWallet(
+      auth.user.id
+    );
+
+  if (amount > senderWallet.main) {
+    return bad(
+      400,
+      "Insufficient balance",
+      {
+        code: "INSUFFICIENT_BALANCE",
+        balance: senderWallet.main,
+        available_balance:
+          senderWallet.main
       }
+    );
+  }
+
+  const recipientUser =
+    await getUserByEmail(
+      recipient
+    );
+
+  if (!recipientUser) {
+    return bad(
+      404,
+      "Recipient account not found"
+    );
+  }
+
+  if (!accountApproved(recipientUser)) {
+    return bad(
+      400,
+      "Recipient account is not approved"
+    );
+  }
+
+  const recipientWallet =
+    await getCustomerWallet(
+      recipientUser.id
+    );
+
+  const senderMain =
+    await ensureWallet(
+      auth.user.id,
+      "main"
+    );
+
+  const recipientMain =
+    await ensureWallet(
+      recipientUser.id,
+      "main"
+    );
+
+  if (!senderMain || !recipientMain) {
+    return bad(
+      500,
+      "Wallet configuration is unavailable"
+    );
+  }
+
+  try {
+    const senderBalance =
+      walletAmount(senderMain);
+
+    const recipientBalance =
+      walletAmount(recipientMain);
+
+    if (senderBalance < amount) {
+      return bad(
+        400,
+        "Insufficient balance",
+        {
+          code:
+            "INSUFFICIENT_BALANCE",
+          balance:
+            senderBalance
+        }
+      );
+    }
+
+    await sql`BEGIN`;
+
+    const senderTable =
+      senderMain.__table ||
+      "wallets";
+
+    const recipientTable =
+      recipientMain.__table ||
+      "wallets";
+
+    const balanceColumn =
+      await columnExists(
+        senderTable,
+        "balance"
+      );
+
+    if (balanceColumn) {
+      await sql`
+        UPDATE ${sql(senderTable)}
+        SET balance =
+          ${senderBalance - amount}
+        WHERE id = ${senderMain.id}
+      `;
+
+      await sql`
+        UPDATE ${sql(recipientTable)}
+        SET balance =
+          ${recipientBalance + amount}
+        WHERE id = ${recipientMain.id}
+      `;
+    } else {
+      await sql`
+        UPDATE ${sql(senderTable)}
+        SET amount =
+          ${senderBalance - amount}
+        WHERE id = ${senderMain.id}
+      `;
+
+      await sql`
+        UPDATE ${sql(recipientTable)}
+        SET amount =
+          ${recipientBalance + amount}
+        WHERE id = ${recipientMain.id}
+      `;
+    }
+
+    const transactionsExist =
+      await tableExists(
+        "transactions"
+      );
+
+    if (transactionsExist) {
+      await sql`
+        INSERT INTO transactions
+          (
+            user_id,
+            type,
+            amount,
+            status,
+            description,
+            created_at
+          )
+        VALUES
+          (
+            ${auth.user.id},
+            'send',
+            ${amount},
+            'completed',
+            ${`Sent to ${recipient}`},
+            NOW()
+          )
+      `;
+
+      await sql`
+        INSERT INTO transactions
+          (
+            user_id,
+            type,
+            amount,
+            status,
+            description,
+            created_at
+          )
+        VALUES
+          (
+            ${recipientUser.id},
+            'receive',
+            ${amount},
+            'completed',
+            ${`Received from ${auth.user.email}`},
+            NOW()
+          )
+      `;
+    }
+
+    await sql`COMMIT`;
+
+    return ok({
+      status: "completed",
+      amount,
+      recipient,
+      balance:
+        senderBalance - amount
+    });
+  } catch (error) {
+    try {
+      await sql`ROLLBACK`;
+    } catch {}
+
+    return bad(
+      500,
+      error?.message ||
+        "Unable to complete transfer"
+    );
+  }
+}
+
+/* =========================================================
+   WITHDRAWAL
+   ========================================================= */
+
+async function saveWithdrawalAccount(
+  user,
+  body
+) {
+  const table =
+    await withdrawalTable();
+
+  if (!table) {
+    return bad(
+      500,
+      "Withdrawal account storage is not configured"
+    );
+  }
+
+  const bankName =
+    String(
+      body.bank_name ??
+      body.bankName ??
+      body.bank ??
+      ""
+    ).trim();
+
+  const accountName =
+    String(
+      body.account_name ??
+      body.accountName ??
+      body.account_holder_name ??
+      ""
+    ).trim();
+
+  const accountNumber =
+    String(
+      body.account_number ??
+      body.accountNumber ??
+      body.account_no ??
+      ""
+    ).trim();
+
+  if (
+    !bankName ||
+    !accountName ||
+    !accountNumber
+  ) {
+    return bad(
+      400,
+      "Bank name, account name and account number are required"
+    );
+  }
+
+  try {
+    const existing =
+      await getWithdrawalAccount(
+        user.id
+      );
+
+    if (existing) {
+      const updates = [];
+
+      const hasBank =
+        await columnExists(
+          table,
+          "bank_name"
+        );
+
+      const hasName =
+        await columnExists(
+          table,
+          "account_name"
+        );
+
+      const hasNumber =
+        await columnExists(
+          table,
+          "account_number"
+        );
+
+      if (hasBank) {
+        updates.push(
+          sql`bank_name = ${bankName}`
+        );
+      }
+
+      if (hasName) {
+        updates.push(
+          sql`account_name = ${accountName}`
+        );
+      }
+
+      if (hasNumber) {
+        updates.push(
+          sql`account_number = ${accountNumber}`
+        );
+      }
+
+      if (
+        await columnExists(
+          table,
+          "updated_at"
+        )
+      ) {
+        updates.push(
+          sql`updated_at = NOW()`
+        );
+      }
+
+      if (updates.length) {
+        /*
+          Use individual safe statements instead of dynamically
+          interpolating arbitrary SQL fragments.
+        */
+        if (hasBank) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET bank_name = ${bankName}
+            WHERE id = ${existing.id}
+          `;
+        }
+
+        if (hasName) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET account_name = ${accountName}
+            WHERE id = ${existing.id}
+          `;
+        }
+
+        if (hasNumber) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET account_number = ${accountNumber}
+            WHERE id = ${existing.id}
+          `;
+        }
+
+        if (
+          await columnExists(
+            table,
+            "updated_at"
+          )
+        ) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET updated_at = NOW()
+            WHERE id = ${existing.id}
+          `;
+        }
+      }
+
+      return ok({
+        withdrawal_account:
+          await getWithdrawalAccount(
+            user.id
+          )
+      });
+    }
+
+    const rows =
+      await sql`
+        INSERT INTO ${sql(table)}
+          (
+            user_id,
+            bank_name,
+            account_name,
+            account_number,
+            created_at,
+            updated_at
+          )
+        VALUES
+          (
+            ${user.id},
+            ${bankName},
+            ${accountName},
+            ${accountNumber},
+            NOW(),
+            NOW()
+          )
+        RETURNING *
+      `;
+
+    return ok({
+      withdrawal_account:
+        rows[0] || null
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to save withdrawal account"
+    );
+  }
+}
+
+async function routeWithdrawalAccount(
+  request
+) {
+  const auth =
+    await requireApprovedUser(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  if (
+    request.method === "GET"
+  ) {
+    const account =
+      await getWithdrawalAccount(
+        auth.user.id
+      );
+
+    return ok({
+      withdrawal_account:
+        normalizeWithdrawalAccount(
+          account
+        )
     });
   }
 
   if (
-    requestType ===
-    "deposit"
+    request.method === "POST" ||
+    request.method === "PUT" ||
+    request.method === "PATCH"
   ) {
-    await ensureUserWallets(
-      item.user_id
+    const body =
+      await jsonBody(request);
+
+    return saveWithdrawalAccount(
+      auth.user,
+      body
+    );
+  }
+
+  return bad(
+    405,
+    "Method not allowed"
+  );
+}
+
+async function routeWithdraw(request) {
+  const auth =
+    await requireApprovedUser(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const body =
+    await jsonBody(request);
+
+  const amount =
+    numberValue(body.amount);
+
+  if (amount <= 0) {
+    return bad(
+      400,
+      "Enter a valid withdrawal amount"
+    );
+  }
+
+  const wallet =
+    await getCustomerWallet(
+      auth.user.id
     );
 
-    const walletInfo =
-      await getCustomerMainWallet(
-        item.user_id
-      );
+  if (amount > wallet.main) {
+    return bad(
+      400,
+      "Insufficient balance",
+      {
+        code:
+          "INSUFFICIENT_BALANCE",
+        balance:
+          wallet.main,
+        available_balance:
+          wallet.main
+      }
+    );
+  }
 
-    if (!walletInfo.wallet) {
-      return bad(
-        500,
-        "Main wallet could not be found for this customer."
-      );
-    }
-
-    const wallet =
-      walletInfo.wallet;
-
-    const oldBalance =
-      walletInfo.balance;
-
-    const newBalance =
-      oldBalance +
-      amount;
-
-    await setCustomerMainWalletBalance(
-      wallet,
-      newBalance,
-      walletInfo.legacy
+  let account =
+    await getWithdrawalAccount(
+      auth.user.id
     );
 
-    const transactionReference =
-      `DEP-${String(
-        item.deposit_reference ||
-          id
-      )}-${crypto.randomUUID()}`;
+  /*
+    If no withdrawal account exists, explicitly tell the
+    customer to complete it. The dashboard can use this
+    response for the one-time redirect.
+  */
+  if (!account) {
+    return bad(
+      409,
+      "Withdrawal account details are required",
+      {
+        code:
+          "WITHDRAWAL_ACCOUNT_REQUIRED",
+        redirect:
+          "/dashboard.html#withdrawal-account"
+      }
+    );
+  }
 
-    try {
+  const table =
+    await transactionTable();
+
+  if (!table) {
+    return bad(
+      500,
+      "Withdrawal transaction storage is not configured"
+    );
+  }
+
+  try {
+    const rows =
       await sql`
-        INSERT INTO transactions (
-          id,
-          user_id,
-          wallet_id,
-          transaction_reference,
-          transaction_type,
-          direction,
-          amount,
-          fee,
-          currency,
-          status,
-          description,
-          metadata,
-          created_at,
-          updated_at
-        )
-        VALUES (
-          ${crypto.randomUUID()},
-          ${item.user_id},
-          ${wallet.id},
-          ${transactionReference},
-          'deposit',
-          'credit',
-          ${amount},
-          0,
-          ${
-            item.currency ||
-            "USD"
-          },
-          'completed',
-          'Deposit approved by administrator',
-          ${JSON.stringify({
-            source:
-              "deposit_request_approval",
-            request_id:
-              item.id,
-            deposit_reference:
-              item.deposit_reference ||
-              null
-          })},
-          NOW(),
-          NOW()
-        )
+        INSERT INTO ${sql(table)}
+          (
+            user_id,
+            type,
+            amount,
+            status,
+            description,
+            created_at
+          )
+        VALUES
+          (
+            ${auth.user.id},
+            'withdrawal',
+            ${amount},
+            'pending',
+            'Withdrawal request',
+            NOW()
+          )
+        RETURNING *
       `;
 
-      const updated =
-        await sql`
-          UPDATE deposit_requests
-          SET
-            status =
-              'approved',
-            reviewed_by =
-              ${admin.user.id},
-            reviewed_at =
-              NOW(),
-            updated_at =
-              NOW()
-          WHERE id =
-            ${id}
-            AND LOWER(
-              COALESCE(
-                status,
-                'pending'
-              )
-            ) = 'pending'
-          RETURNING *
-        `;
+    return ok({
+      request:
+        normalizeTransaction(
+          rows[0]
+        ),
+      status: "pending",
+      withdrawal_account:
+        normalizeWithdrawalAccount(
+          account
+        )
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to create withdrawal request"
+    );
+  }
+}
 
-      if (!updated.length) {
-        throw new Error(
-          "Deposit request is no longer pending."
-        );
-      }
+/* =========================================================
+   KYC ROUTE
+   ========================================================= */
 
-      return ok({
-        message:
-          "Deposit request approved successfully.",
-        request: {
-          ...updated[0],
-          type:
-            "deposit"
-        }
-      });
-    } catch (error) {
-      await setCustomerMainWalletBalance(
-        wallet,
-        oldBalance,
-        walletInfo.legacy
-      );
+async function routeKyc(request) {
+  const auth =
+    await requireUser(request);
 
-      return bad(
-        500,
-        "Deposit could not be approved.",
-        {
-          detail:
-            error?.message
-        }
-      );
-    }
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const fresh =
+    await refreshUserFromDatabase(
+      auth.user
+    );
+
+  const current =
+    await resolveKycFromAllSources(
+      fresh
+    );
+
+  if (
+    request.method === "GET"
+  ) {
+    return ok({
+      kyc_status:
+        current.status,
+      kycStatus:
+        current.status,
+      approved:
+        current.status === "approved",
+      kyc_approved:
+        current.status === "approved",
+      kycApproved:
+        current.status === "approved"
+    });
   }
 
   if (
-    requestType ===
-    "withdrawal"
+    request.method === "POST"
   ) {
-    await ensureUserWallets(
-      item.user_id
-    );
-
-    const walletInfo =
-      await getCustomerMainWallet(
-        item.user_id
-      );
-
-    if (!walletInfo.wallet) {
-      return bad(
-        500,
-        "Withdrawal wallet could not be found."
-      );
-    }
-
-    const wallet =
-      walletInfo.wallet;
-
-    const oldBalance =
-      walletInfo.balance;
-
     if (
-      oldBalance < amount
+      current.status === "approved"
     ) {
-      return bad(
-        400,
-        "Insufficient Main Wallet balance for this withdrawal."
-      );
-    }
-
-    const newBalance =
-      oldBalance -
-      amount;
-
-    await setCustomerMainWalletBalance(
-      wallet,
-      newBalance,
-      walletInfo.legacy
-    );
-
-    const transactionId =
-      crypto.randomUUID();
-
-    const transactionReference =
-      `WTH-${String(
-        item.withdrawal_reference ||
-          id
-      )}-${crypto.randomUUID()}`;
-
-    try {
-      await sql`
-        INSERT INTO transactions (
-          id,
-          user_id,
-          wallet_id,
-          transaction_reference,
-          transaction_type,
-          direction,
-          amount,
-          fee,
-          currency,
-          status,
-          description,
-          metadata,
-          created_at,
-          updated_at
-        )
-        VALUES (
-          ${transactionId},
-          ${item.user_id},
-          ${wallet.id},
-          ${transactionReference},
-          'withdrawal',
-          'debit',
-          ${amount},
-          ${numberValue(
-            item.fee,
-            0
-          )},
-          ${
-            item.currency ||
-            "USD"
-          },
-          'completed',
-          'Withdrawal approved by administrator',
-          ${JSON.stringify({
-            source:
-              "withdrawal_request_approval",
-            request_id:
-              item.id,
-            withdrawal_reference:
-              item.withdrawal_reference ||
-              null,
-            withdrawal_method:
-              item.withdrawal_method ||
-              null
-          })},
-          NOW(),
-          NOW()
-        )
-      `;
-
-      const updated =
-        await sql`
-          UPDATE withdrawal_requests
-          SET
-            status =
-              'approved',
-            reviewed_by =
-              ${admin.user.id},
-            reviewed_at =
-              NOW(),
-            processed_at =
-              NOW(),
-            transaction_id =
-              ${transactionId},
-            updated_at =
-              NOW()
-          WHERE id =
-            ${id}
-            AND LOWER(
-              COALESCE(
-                status,
-                'pending'
-              )
-            ) = 'pending'
-          RETURNING *
-        `;
-
-      if (!updated.length) {
-        throw new Error(
-          "Withdrawal request is no longer pending."
-        );
-      }
-
       return ok({
         message:
-          "Withdrawal request approved successfully.",
-        request: {
-          ...updated[0],
-          type:
-            "withdrawal"
-        }
+          "KYC is already approved",
+        kyc_status:
+          "approved",
+        approved: true
+      });
+    }
+
+    const body =
+      await jsonBody(request);
+
+    return submitKyc(
+      current.user,
+      body
+    );
+  }
+
+  return bad(
+    405,
+    "Method not allowed"
+  );
+}
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+async function routeProfile(request) {
+  const auth =
+    await requireUser(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const fresh =
+    await refreshUserFromDatabase(
+      auth.user
+    );
+
+  if (
+    request.method === "GET"
+  ) {
+    return ok({
+      profile:
+        publicUser(fresh)
+    });
+  }
+
+  if (
+    request.method === "PUT" ||
+    request.method === "PATCH"
+  ) {
+    const body =
+      await jsonBody(request);
+
+    const fullName =
+      body.full_name ??
+      body.fullName ??
+      null;
+
+    const phone =
+      body.phone ??
+      body.phone_number ??
+      null;
+
+    const country =
+      body.country ??
+      null;
+
+    try {
+      if (
+        fullName !== null &&
+        await columnExists(
+          "users",
+          "full_name"
+        )
+      ) {
+        await sql`
+          UPDATE users
+          SET full_name = ${String(
+            fullName
+          ).trim()}
+          WHERE id = ${fresh.id}
+        `;
+      }
+
+      if (
+        phone !== null &&
+        await columnExists(
+          "users",
+          "phone"
+        )
+      ) {
+        await sql`
+          UPDATE users
+          SET phone = ${String(
+            phone
+          ).trim()}
+          WHERE id = ${fresh.id}
+        `;
+      }
+
+      if (
+        country !== null &&
+        await columnExists(
+          "users",
+          "country"
+        )
+      ) {
+        await sql`
+          UPDATE users
+          SET country = ${String(
+            country
+          ).trim()}
+          WHERE id = ${fresh.id}
+        `;
+      }
+
+      const updated =
+        await getUserById(
+          fresh.id
+        );
+
+      return ok({
+        profile:
+          publicUser(updated)
       });
     } catch (error) {
-      await setCustomerMainWalletBalance(
-        wallet,
-        oldBalance,
-        walletInfo.legacy
-      );
-
       return bad(
         500,
-        "Withdrawal could not be approved.",
-        {
-          detail:
-            error?.message
-        }
+        error?.message ||
+          "Unable to update profile"
       );
     }
   }
 
   return bad(
-    400,
-    "Unsupported request type."
+    405,
+    "Method not allowed"
   );
 }
 
-/* =====================================================
-   ADMIN ACTIVITY
-===================================================== */
+/* =========================================================
+   ADMIN AUTH
+   ========================================================= */
 
-async function adminActivity() {
-  const activities = [];
+function isAdmin(user) {
+  if (!user) return false;
 
-  try {
-    const rows =
-      await sql`
-        SELECT
-          t.id,
-          'transaction'
-            AS activity_type,
-          COALESCE(
-            t.transaction_type,
-            'transaction'
-          ) AS action,
-          t.amount,
-          t.direction,
-          t.status,
-          t.currency,
-          t.description,
-          t.user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          t.created_at
-        FROM transactions t
-        LEFT JOIN profiles p
-          ON p.id =
-            t.user_id
-        ORDER BY
-          t.created_at DESC
-        LIMIT 50
-      `;
-
-    activities.push(
-      ...rows
-    );
-  } catch {}
-
-  try {
-    const rows =
-      await sql`
-        SELECT
-          i.id,
-          'investment'
-            AS activity_type,
-          'investment_created'
-            AS action,
-          COALESCE(
-            i.principal_amount,
-            i.amount,
-            0
-          ) AS amount,
-          NULL AS direction,
-          i.status,
-          'USD'
-            AS currency,
-          NULL
-            AS description,
-          i.user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          i.created_at
-        FROM investments i
-        LEFT JOIN profiles p
-          ON p.id =
-            i.user_id
-        ORDER BY
-          i.created_at DESC
-        LIMIT 50
-      `;
-
-    activities.push(
-      ...rows
-    );
-  } catch {}
-
-  try {
-    const rows =
-      await sql`
-        SELECT
-          wl.id,
-          'wallet'
-            AS activity_type,
-          COALESCE(
-            wl.entry_type,
-            'wallet_activity'
-          ) AS action,
-          wl.amount,
-          CASE
-            WHEN wl.amount >= 0
-              THEN 'credit'
-            ELSE 'debit'
-          END AS direction,
-          'completed'
-            AS status,
-          'USD'
-            AS currency,
-          wl.description,
-          wl.user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          wl.created_at
-        FROM wallet_ledger wl
-        LEFT JOIN profiles p
-          ON p.id =
-            wl.user_id
-        ORDER BY
-          wl.created_at DESC
-        LIMIT 50
-      `;
-
-    activities.push(
-      ...rows
-    );
-  } catch {}
-
-  try {
-    const deposits =
-      await sql`
-        SELECT
-          d.id,
-          'request'
-            AS activity_type,
-          'deposit'
-            AS action,
-          d.amount,
-          NULL AS direction,
-          d.status,
-          d.currency,
-          NULL
-            AS description,
-          d.user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          d.submitted_at
-            AS created_at
-        FROM deposit_requests d
-        LEFT JOIN profiles p
-          ON p.id =
-            d.user_id
-        ORDER BY
-          d.submitted_at DESC
-        LIMIT 50
-      `;
-
-    activities.push(
-      ...deposits
-    );
-  } catch {}
-
-  try {
-    const withdrawals =
-      await sql`
-        SELECT
-          w.id,
-          'request'
-            AS activity_type,
-          'withdrawal'
-            AS action,
-          w.amount,
-          NULL AS direction,
-          w.status,
-          w.currency,
-          NULL
-            AS description,
-          w.user_id,
-          p.first_name,
-          p.last_name,
-          p.username,
-          p.email,
-          w.requested_at
-            AS created_at
-        FROM withdrawal_requests w
-        LEFT JOIN profiles p
-          ON p.id =
-            w.user_id
-        ORDER BY
-          w.requested_at DESC
-        LIMIT 50
-      `;
-
-    activities.push(
-      ...withdrawals
-    );
-  } catch {}
-
-  try {
-    const ready =
-      await ensureChatFoundation();
-
-    if (ready) {
-      const rows =
-        await sql`
-          SELECT
-            m.id,
-            'chat'
-              AS activity_type,
-            CASE
-              WHEN LOWER(
-                COALESCE(
-                  m.sender_type,
-                  ''
-                )
-              ) = 'admin'
-              THEN 'admin_message'
-              ELSE 'customer_message'
-            END AS action,
-            NULL AS amount,
-            NULL AS direction,
-            'completed'
-              AS status,
-            NULL AS currency,
-            m.message
-              AS description,
-            c.user_id,
-            p.first_name,
-            p.last_name,
-            p.username,
-            p.email,
-            m.created_at
-          FROM chat_messages m
-          LEFT JOIN chat_conversations c
-            ON c.id =
-              m.conversation_id
-          LEFT JOIN profiles p
-            ON p.id =
-              c.user_id
-          ORDER BY
-            m.created_at DESC
-          LIMIT 30
-        `;
-
-      activities.push(
-        ...rows
-      );
-    }
-  } catch {}
-
-  activities.sort(
-    (a, b) =>
-      new Date(
-        b.created_at || 0
-      ).getTime() -
-      new Date(
-        a.created_at || 0
-      ).getTime()
+  return Boolean(
+    user.is_admin === true ||
+    user.isAdmin === true ||
+    user.role === "admin" ||
+    user.user_role === "admin" ||
+    user.account_type === "admin"
   );
-
-  return ok({
-    activity:
-      activities.slice(
-        0,
-        50
-      ),
-    activities:
-      activities.slice(
-        0,
-        50
-      )
-  });
 }
 
-/* =====================================================
-   ADMIN DASHBOARD
-===================================================== */
+async function requireAdmin(request) {
+  const auth =
+    await requireUser(request);
 
-async function adminDashboard() {
-  const [
-    customers,
-    pendingKyc,
-    investments,
-    transactions
-  ] =
-    await Promise.all([
-      sql`
-        SELECT COUNT(*)::int
-          AS count
-        FROM profiles p
-        LEFT JOIN roles r
-          ON r.id =
-            p.role_id
-        WHERE LOWER(
-          COALESCE(
-            r.name,
-            'user'
-          )
-        )
-        NOT IN (
-          'admin',
-          'administrator'
-        )
-      `,
+  if (auth.error) {
+    return auth;
+  }
 
-      sql`
-        SELECT COUNT(*)::int
-          AS count
-        FROM profiles
-        WHERE LOWER(
-          COALESCE(
-            kyc_status,
-            'pending'
-          )
-        ) = 'pending'
-      `,
+  if (!isAdmin(auth.user)) {
+    return {
+      user: auth.user,
+      error: bad(
+        403,
+        "Administrator access required"
+      )
+    };
+  }
 
-      sql`
-        SELECT COUNT(*)::int
-          AS count
-        FROM investments
-      `,
-
-      sql`
-        SELECT COUNT(*)::int
-          AS count
-        FROM transactions
-      `
-    ]);
-
-  let pendingRequests = 0;
-
-  try {
-    const deposits =
-      await sql`
-        SELECT COUNT(*)::int
-          AS count
-        FROM deposit_requests
-        WHERE LOWER(
-          COALESCE(
-            status,
-            'pending'
-          )
-        ) = 'pending'
-      `;
-
-    const withdrawals =
-      await sql`
-        SELECT COUNT(*)::int
-          AS count
-        FROM withdrawal_requests
-        WHERE LOWER(
-          COALESCE(
-            status,
-            'pending'
-          )
-        ) = 'pending'
-      `;
-
-    pendingRequests =
-      (
-        deposits[0]?.count ||
-        0
-      ) +
-      (
-        withdrawals[0]?.count ||
-        0
-      );
-  } catch {}
-
-  return ok({
-    stats: {
-      customers:
-        customers[0]?.count ||
-        0,
-
-      pending_kyc:
-        pendingKyc[0]?.count ||
-        0,
-
-      investments:
-        investments[0]?.count ||
-        0,
-
-      transactions:
-        transactions[0]?.count ||
-        0,
-
-      pending_requests:
-        pendingRequests
-    }
-  });
+  return auth;
 }
 
-/* =====================================================
-   ADMIN CUSTOMERS
-===================================================== */
+/* =========================================================
+   ADMIN ACCOUNT APPROVAL
+   ========================================================= */
 
-async function adminCustomers(url) {
-  const search =
-    String(
-      url.searchParams.get(
-        "search"
-      ) || ""
-    ).trim();
+async function approveAccount(
+  request,
+  userId,
+  approved
+) {
+  const auth =
+    await requireAdmin(request);
 
-  const limit =
-    cleanLimit(
-      url.searchParams.get(
-        "limit"
-      ),
-      100
-    );
+  if (auth.error) {
+    return auth.error;
+  }
 
-  const offset =
-    Math.max(
-      Number(
-        url.searchParams.get(
-          "offset"
-        ) || 0
-      ),
-      0
-    );
+  const user =
+    await getUserById(userId);
 
-  const rows =
-    await sql`
-      SELECT
-        p.id,
-        p.first_name,
-        p.last_name,
-        p.username,
-        p.email,
-        p.status,
-        p.kyc_status,
-        p.email_verified_at,
-        p.two_factor_enabled,
-        p.created_at,
-        p.updated_at,
-        r.name AS role
-      FROM profiles p
-      LEFT JOIN roles r
-        ON r.id =
-          p.role_id
-      WHERE LOWER(
-        COALESCE(
-          r.name,
-          'user'
-        )
-      )
-      NOT IN (
-        'admin',
-        'administrator'
-      )
-      AND (
-        ${search} = ''
-        OR LOWER(
-          COALESCE(
-            p.first_name,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-        OR LOWER(
-          COALESCE(
-            p.last_name,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-        OR LOWER(
-          COALESCE(
-            p.username,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-        OR LOWER(
-          COALESCE(
-            p.email,
-            ''
-          )
-        )
-        LIKE LOWER(
-          ${"%" + search + "%"}
-        )
-      )
-      ORDER BY
-        p.created_at DESC
-      LIMIT ${limit}
-      OFFSET ${offset}
-    `;
-
-  return ok({
-    customers:
-      rows
-  });
-}
-
-async function adminCustomer(id) {
-  if (!id) {
+  if (!user) {
     return bad(
-      400,
-      "Customer ID is required."
+      404,
+      "Customer account not found"
     );
   }
 
-  const result =
-    await sql`
-      SELECT
-        p.*,
-        r.name AS role
-      FROM profiles p
-      LEFT JOIN roles r
-        ON r.id =
-          p.role_id
-      WHERE p.id =
-        ${id}
-      LIMIT 1
-    `;
+  try {
+    const updates = [];
 
-  if (!result.length) {
+    if (
+      await columnExists(
+        "users",
+        "account_approved"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET account_approved =
+          ${approved}
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      await columnExists(
+        "users",
+        "approved"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET approved =
+          ${approved}
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      await columnExists(
+        "users",
+        "is_approved"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET is_approved =
+          ${approved}
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      await columnExists(
+        "users",
+        "status"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET status =
+          ${approved
+            ? "approved"
+            : "pending"}
+        WHERE id = ${userId}
+      `;
+    }
+
+    /*
+      IMPORTANT:
+      Approval is also the temporary email-verification
+      mechanism.
+    */
+    if (
+      approved &&
+      await columnExists(
+        "users",
+        "email_verified"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET email_verified = TRUE
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      approved &&
+      await columnExists(
+        "users",
+        "emailVerified"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET "emailVerified" = TRUE
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      approved &&
+      await columnExists(
+        "users",
+        "is_email_verified"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET is_email_verified = TRUE
+        WHERE id = ${userId}
+      `;
+    }
+
+    const updated =
+      await getUserById(
+        userId
+      );
+
+    return ok({
+      user:
+        publicUser(updated),
+      account_approved:
+        approved,
+      email_verified:
+        approved
+          ? true
+          : emailVerified(updated)
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to update account approval"
+    );
+  }
+}
+
+/* =========================================================
+   ADMIN KYC APPROVAL
+   ========================================================= */
+
+async function adminKycUpdate(
+  request,
+  userId,
+  status
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const user =
+    await getUserById(userId);
+
+  if (!user) {
     return bad(
       404,
-      "Customer not found."
+      "Customer account not found"
     );
+  }
+
+  const normalized =
+    String(status)
+      .trim()
+      .toLowerCase();
+
+  const approved =
+    normalized === "approved" ||
+    normalized === "verified";
+
+  try {
+    /*
+      First update users table wherever the installation
+      contains a KYC field.
+    */
+
+    if (
+      await columnExists(
+        "users",
+        "kyc_status"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET kyc_status =
+          ${approved
+            ? "approved"
+            : normalized}
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      approved &&
+      await columnExists(
+        "users",
+        "kyc_verified"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET kyc_verified = TRUE
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      approved &&
+      await columnExists(
+        "users",
+        "kyc_approved"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET kyc_approved = TRUE
+        WHERE id = ${userId}
+      `;
+    }
+
+    if (
+      !approved &&
+      await columnExists(
+        "users",
+        "kyc_verified"
+      )
+    ) {
+      await sql`
+        UPDATE users
+        SET kyc_verified = FALSE
+        WHERE id = ${userId}
+      `;
+    }
+
+    /*
+      Then synchronize the dedicated KYC record if one exists.
+      This is what makes admin approval visible to the customer
+      even when the admin page uses the KYC table.
+    */
+
+    const table =
+      await firstExistingTable([
+        "kyc_submissions",
+        "kyc_requests",
+        "customer_kyc",
+        "kyc"
+      ]);
+
+    if (table) {
+      const hasKycStatus =
+        await columnExists(
+          table,
+          "kyc_status"
+        );
+
+      const hasStatus =
+        await columnExists(
+          table,
+          "status"
+        );
+
+      const hasApproved =
+        await columnExists(
+          table,
+          "approved"
+        );
+
+      const existingRows =
+        await sql`
+          SELECT *
+          FROM ${sql(table)}
+          WHERE user_id = ${userId}
+          ORDER BY created_at DESC NULLS LAST
+          LIMIT 1
+        `;
+
+      if (existingRows[0]) {
+        if (hasKycStatus) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET kyc_status =
+              ${approved
+                ? "approved"
+                : normalized}
+            WHERE id =
+              ${existingRows[0].id}
+          `;
+        }
+
+        if (
+          hasStatus &&
+          !hasKycStatus
+        ) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET status =
+              ${approved
+                ? "approved"
+                : normalized}
+            WHERE id =
+              ${existingRows[0].id}
+          `;
+        }
+
+        if (hasApproved) {
+          await sql`
+            UPDATE ${sql(table)}
+            SET approved =
+              ${approved}
+            WHERE id =
+              ${existingRows[0].id}
+          `;
+        }
+      }
+    }
+
+    const updated =
+      await getUserById(
+        userId
+      );
+
+    const finalKyc =
+      await resolveKycFromAllSources(
+        updated
+      );
+
+    return ok({
+      user:
+        publicUser(updated),
+      kyc_status:
+        finalKyc.status,
+      kyc_approved:
+        finalKyc.status === "approved"
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to update KYC"
+    );
+  }
+}
+
+/* =========================================================
+   ADMIN WALLET ADJUSTMENT
+   ========================================================= */
+
+async function adminAdjustWallet(
+  request,
+  userId
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const body =
+    await jsonBody(request);
+
+  const action =
+    String(
+      body.action ??
+      body.type ??
+      "credit"
+    )
+      .trim()
+      .toLowerCase();
+
+  const amount =
+    numberValue(
+      body.amount
+    );
+
+  const description =
+    String(
+      body.description ??
+      body.note ??
+      "Admin wallet adjustment"
+    ).trim();
+
+  if (amount <= 0) {
+    return bad(
+      400,
+      "Amount must be greater than zero"
+    );
+  }
+
+  const user =
+    await getUserById(
+      userId
+    );
+
+  if (!user) {
+    return bad(
+      404,
+      "Customer account not found"
+    );
+  }
+
+  /*
+    Prefer the SECURITY DEFINER RPC when available.
+    The customer wallet must correspond with the same wallet
+    the admin adjusted.
+  */
+
+  try {
+    const rpcExists =
+      await sql`
+        SELECT EXISTS (
+          SELECT 1
+          FROM pg_proc p
+          JOIN pg_namespace n
+            ON n.oid = p.pronamespace
+          WHERE n.nspname = 'public'
+            AND p.proname =
+              'admin_adjust_wallet'
+        ) AS exists
+      `;
+
+    if (rpcExists[0]?.exists) {
+      const wallet =
+        await ensureWallet(
+          userId,
+          "main"
+        );
+
+      if (!wallet?.id) {
+        return bad(
+          500,
+          "Customer main wallet not found"
+        );
+      }
+
+      const rpcRows =
+        await sql`
+          SELECT *
+          FROM public.admin_adjust_wallet(
+            ${wallet.id},
+            ${action},
+            ${amount},
+            ${description}
+          )
+        `;
+
+      const refreshed =
+        await synchronizeWalletRepresentations(
+          userId
+        );
+
+      return ok({
+        result:
+          rpcRows[0] || null,
+        wallet: {
+          main:
+            refreshed.main,
+          profit:
+            refreshed.profit,
+          total:
+            refreshed.total
+        }
+      });
+    }
+  } catch {
+    /*
+      Fall through to direct compatibility handling.
+      Existing deployments without the RPC continue working.
+    */
+  }
+
+  const wallet =
+    await getCustomerWallet(
+      userId
+    );
+
+  const current =
+    wallet.main;
+
+  let next;
+
+  if (
+    action === "debit" ||
+    action === "subtract" ||
+    action === "deduct" ||
+    action === "withdraw"
+  ) {
+    next =
+      current - amount;
+
+    if (next < 0) {
+      return bad(
+        400,
+        "Insufficient wallet balance"
+      );
+    }
+  } else {
+    next =
+      current + amount;
+  }
+
+  const mainWallet =
+    await ensureWallet(
+      userId,
+      "main"
+    );
+
+  if (!mainWallet) {
+    return bad(
+      500,
+      "Customer main wallet not found"
+    );
+  }
+
+  try {
+    const table =
+      mainWallet.__table ||
+      "wallets";
+
+    const hasBalance =
+      await columnExists(
+        table,
+        "balance"
+      );
+
+    if (hasBalance) {
+      await sql`
+        UPDATE ${sql(table)}
+        SET balance = ${next}
+        WHERE id = ${mainWallet.id}
+      `;
+    } else {
+      await sql`
+        UPDATE ${sql(table)}
+        SET amount = ${next}
+        WHERE id = ${mainWallet.id}
+      `;
+    }
+
+    const transactionsExist =
+      await tableExists(
+        "transactions"
+      );
+
+    if (transactionsExist) {
+      await sql`
+        INSERT INTO transactions
+          (
+            user_id,
+            type,
+            amount,
+            status,
+            description,
+            created_at
+          )
+        VALUES
+          (
+            ${userId},
+            ${action},
+            ${amount},
+            'completed',
+            ${description},
+            NOW()
+          )
+      `;
+    }
+
+    const refreshed =
+      await synchronizeWalletRepresentations(
+        userId
+      );
+
+    return ok({
+      wallet: {
+        main:
+          refreshed.main,
+        profit:
+          refreshed.profit,
+        total:
+          refreshed.total
+      },
+      amount,
+      action
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to adjust wallet"
+    );
+  }
+}
+
+/* =========================================================
+   ADMIN CUSTOMER DETAILS
+   ========================================================= */
+
+async function adminCustomer(
+  request,
+  userId
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const user =
+    await getUserById(
+      userId
+    );
+
+  if (!user) {
+    return bad(
+      404,
+      "Customer not found"
+    );
+  }
+
+  const kyc =
+    await resolveKycFromAllSources(
+      user
+    );
+
+  const wallets =
+    await synchronizeWalletRepresentations(
+      userId
+    );
+
+  const transactionsTable =
+    await transactionTable();
+
+  let transactions = [];
+
+  if (transactionsTable) {
+    try {
+      const rows =
+        await sql`
+          SELECT *
+          FROM ${sql(transactionsTable)}
+          WHERE user_id = ${userId}
+          ORDER BY created_at DESC NULLS LAST
+          LIMIT 100
+        `;
+
+      transactions =
+        rows.map(
+          normalizeTransaction
+        );
+    } catch {}
   }
 
   return ok({
     customer:
-      result[0]
+      publicUser(user),
+    kyc_status:
+      kyc.status,
+    wallets: {
+      main:
+        wallets.main,
+      profit:
+        wallets.profit,
+      total:
+        wallets.total
+    },
+    transactions
   });
 }
 
-/* =====================================================
-   ADMIN PASSWORD RESET
-===================================================== */
+/* =========================================================
+   CHAT HELPERS
+   ========================================================= */
 
-async function resetAdminPassword(
-  request,
-  body
-) {
-  const resetKey =
-    request.headers.get(
-      "x-admin-reset-key"
-    );
+async function chatTable() {
+  return firstExistingTable([
+    "chat_messages",
+    "customer_chat",
+    "messages",
+    "support_messages"
+  ]);
+}
 
-  const configuredKey =
-    process.env.ADMIN_RESET_KEY;
-
-  if (
-    !configuredKey ||
-    resetKey !== configuredKey
-  ) {
-    return bad(
-      403,
-      "Unauthorized."
-    );
-  }
-
-  const email =
-    normalizeEmail(
-      body.email
-    );
-
-  const password =
-    String(
-      body.password || ""
-    );
-
-  if (
-    !email ||
-    !password
-  ) {
-    return bad(
-      400,
-      "Email and password are required."
-    );
-  }
-
-  if (
-    password.length < 6
-  ) {
-    return bad(
-      400,
-      "Password must contain at least 6 characters."
-    );
-  }
-
-  const passwordHash =
-    hashPassword(
-      password
-    );
-
-  const result =
-    await sql`
-      UPDATE auth_credentials
-      SET
-        password_hash =
-          ${passwordHash},
-        password_updated_at =
-          NOW(),
-        failed_login_attempts =
-          0,
-        locked_until =
-          NULL,
-        updated_at =
-          NOW()
-      WHERE user_id = (
-        SELECT p.id
-        FROM profiles p
-        INNER JOIN roles r
-          ON r.id =
-            p.role_id
-        WHERE LOWER(
-          p.email
-        ) = ${email}
-        AND LOWER(
-          r.name
-        ) = 'admin'
-        LIMIT 1
-      )
-      RETURNING user_id
-    `;
-
-  if (!result.length) {
-    return bad(
-      404,
-      "Admin account not found."
-    );
-  }
-
-  return ok({
+function normalizeChatMessage(row) {
+  return {
+    id: row?.id ?? null,
+    user_id:
+      row?.user_id ??
+      row?.customer_id ??
+      null,
+    sender_id:
+      row?.sender_id ??
+      row?.user_id ??
+      null,
+    sender_role:
+      row?.sender_role ??
+      row?.role ??
+      "customer",
     message:
-      "Admin password reset successfully."
-  });
+      row?.message ??
+      row?.content ??
+      row?.text ??
+      "",
+    image_url:
+      row?.image_url ??
+      row?.attachment_url ??
+      null,
+    created_at:
+      row?.created_at ??
+      new Date().toISOString()
+  };
 }
 
-/* =====================================================
-   EMAIL VERIFICATION
-===================================================== */
+async function routeChat(request) {
+  const auth =
+    await requireUser(request);
 
-async function verifyEmail(token) {
-  const cleanToken =
-    String(
-      token || ""
-    ).trim();
+  if (auth.error) {
+    return auth.error;
+  }
 
-  if (!cleanToken) {
+  const table =
+    await chatTable();
+
+  if (!table) {
     return bad(
-      400,
-      "Verification token is required."
+      500,
+      "Customer chat storage is not configured"
     );
   }
 
-  const tokenHash =
-    hashToken(
-      cleanToken
-    );
-
-  const result =
-    await sql`
-      SELECT
-        t.id AS token_id,
-        t.user_id
-      FROM auth_email_tokens t
-      WHERE
-        t.token_hash =
-          ${tokenHash}
-        AND t.token_type =
-          'email_verification'
-        AND t.used_at IS NULL
-        AND t.expires_at >
-          NOW()
-      LIMIT 1
-    `;
-
-  if (!result.length) {
-    return bad(
-      400,
-      "This verification link is invalid or has expired."
-    );
-  }
-
-  const item =
-    result[0];
-
-  await sql`
-    UPDATE profiles
-    SET
-      email_verified_at =
-        NOW(),
-      updated_at =
-        NOW()
-    WHERE id =
-      ${item.user_id}
-  `;
-
-  await sql`
-    UPDATE auth_email_tokens
-    SET
-      used_at =
-        NOW()
-    WHERE id =
-      ${item.token_id}
-  `;
-
-  return ok({
-    message:
-      "Your email has been confirmed successfully."
-  });
-}
-
-/* =====================================================
-   NODE REQUEST → WEB REQUEST
-===================================================== */
-
-function createWebRequest(req) {
-  const protocol =
-    String(
-      req.headers[
-        "x-forwarded-proto"
-      ] ||
-        "https"
-    )
-      .split(",")[0]
-      .trim();
-
-  const host =
-    String(
-      req.headers[
-        "x-forwarded-host"
-      ] ||
-        req.headers.host ||
-        "coinforest.vercel.app"
-    )
-      .split(",")[0]
-      .trim();
-
-  const rawUrl =
-    String(
-      req.url || "/"
-    );
-
-  const absoluteUrl =
-    rawUrl.startsWith(
-      "http://"
-    ) ||
-    rawUrl.startsWith(
-      "https://"
-    )
-      ? rawUrl
-      : `${protocol}://${host}${rawUrl}`;
-
-  const requestHeaders =
-    new Headers();
-
-  for (
-    const [key, value] of
-      Object.entries(
-        req.headers || {}
-      )
+  if (
+    request.method === "GET"
   ) {
-    if (
-      Array.isArray(value)
-    ) {
-      requestHeaders.set(
-        key,
-        value.join(", ")
-      );
-    } else if (
-      value !== undefined
-    ) {
-      requestHeaders.set(
-        key,
-        String(value)
+    try {
+      const rows =
+        await sql`
+          SELECT *
+          FROM ${sql(table)}
+          WHERE
+            user_id = ${auth.user.id}
+            OR customer_id =
+              ${auth.user.id}
+          ORDER BY created_at ASC NULLS LAST
+          LIMIT 500
+        `;
+
+      return ok({
+        messages:
+          rows.map(
+            normalizeChatMessage
+          )
+      });
+    } catch (error) {
+      return bad(
+        500,
+        error?.message ||
+          "Unable to load chat"
       );
     }
   }
 
-  let body;
-
   if (
-    req.method !== "GET" &&
-    req.method !== "HEAD"
+    request.method === "POST"
   ) {
     if (
-      req.body !==
-        undefined &&
-      req.body !==
-        null
+      !customerCanAct(
+        auth.user
+      )
     ) {
-      if (
-        typeof req.body ===
-        "string"
-      ) {
-        body =
-          req.body;
-      } else if (
-        Buffer.isBuffer(
-          req.body
-        )
-      ) {
-        body =
-          req.body;
-      } else {
-        body =
-          JSON.stringify(
-            req.body
-          );
-
-        if (
-          !requestHeaders.has(
-            "content-type"
-          )
-        ) {
-          requestHeaders.set(
-            "content-type",
-            "application/json"
-          );
+      return bad(
+        403,
+        "Account approval is required before sending messages",
+        {
+          code:
+            "ACCOUNT_NOT_APPROVED"
         }
-      }
-    }
-  }
-
-  return new Request(
-    absoluteUrl,
-    {
-      method:
-        req.method ||
-        "GET",
-      headers:
-        requestHeaders,
-      body
-    }
-  );
-}
-
-/* =====================================================
-   WEB RESPONSE → NODE RESPONSE
-===================================================== */
-
-async function writeWebResponse(
-  res,
-  webResponse
-) {
-  if (res.headersSent) {
-    return;
-  }
-
-  res.statusCode =
-    webResponse.status;
-
-  webResponse.headers.forEach(
-    (value, key) => {
-      res.setHeader(
-        key,
-        value
-      );
-    }
-  );
-
-  const body =
-    await webResponse.text();
-
-  res.end(body);
-}
-
-/* =====================================================
-   MAIN ROUTER
-===================================================== */
-
-export default async function handler(
-  req,
-  res
-) {
-  try {
-    const request =
-      createWebRequest(
-        req
-      );
-
-    if (
-      request.method ===
-      "OPTIONS"
-    ) {
-      res.statusCode =
-        204;
-
-      res.setHeader(
-        "Access-Control-Allow-Origin",
-        "*"
-      );
-
-      res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, X-Admin-Reset-Key"
-      );
-
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-      );
-
-      res.end();
-
-      return;
-    }
-
-    const url =
-      new URL(
-        request.url
-      );
-
-    const path =
-      url.pathname;
-
-    const method =
-      request.method.toUpperCase();
-
-    /* HEALTH */
-
-    if (
-      method === "GET" &&
-      path ===
-        "/api/health"
-    ) {
-      return writeWebResponse(
-        res,
-        await health()
       );
     }
 
-    /* REGISTER */
+    const body =
+      await jsonBody(request);
 
-    if (
-      method === "POST" &&
-      path ===
-        "/api/auth/register"
-    ) {
-      return writeWebResponse(
-        res,
-        await register(
-          request,
-          await jsonBody(
-            request
-          )
-        )
+    const message =
+      String(
+        body.message ??
+        body.content ??
+        body.text ??
+        ""
+      ).trim();
+
+    const imageUrl =
+      body.image_url ??
+      body.imageUrl ??
+      body.attachment_url ??
+      null;
+
+    if (!message && !imageUrl) {
+      return bad(
+        400,
+        "Message or image is required"
       );
     }
 
-    /* LOGIN */
-
-    if (
-      method === "POST" &&
-      path ===
-        "/api/auth/login"
-    ) {
-      return writeWebResponse(
-        res,
-        await login(
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* VERIFY EMAIL */
-
-    if (
-      method === "POST" &&
-      path ===
-        "/api/auth/verify-email"
-    ) {
-      const body =
-        await jsonBody(
-          request
-        );
-
-      return writeWebResponse(
-        res,
-        await verifyEmail(
-          body.token
-        )
-      );
-    }
-
-    /* LOGOUT */
-
-    if (
-      method === "POST" &&
-      path ===
-        "/api/auth/logout"
-    ) {
-      return writeWebResponse(
-        res,
-        await logout(
-          request
-        )
-      );
-    }
-
-    /* CURRENT USER */
-
-    if (
-      method === "GET" &&
-      path ===
-        "/api/auth/me"
-    ) {
-      return writeWebResponse(
-        res,
-        await me(
-          request
-        )
-      );
-    }
-
-    /* ADMIN RESET */
-
-    if (
-      method === "POST" &&
-      path ===
-        "/api/admin/reset-password"
-    ) {
-      return writeWebResponse(
-        res,
-        await resetAdminPassword(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* CUSTOMER DASHBOARD */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/dashboard" ||
-        path ===
-          "/api/user/dashboard" ||
-        path ===
-          "/api/dashboard"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerDashboard(
-          request
-        )
-      );
-    }
-
-    /* CUSTOMER WALLETS */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/wallets" ||
-        path ===
-          "/api/user/wallets" ||
-        path ===
-          "/api/wallets"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerWallets(
-          request
-        )
-      );
-    }
-
-    /* CUSTOMER TRANSACTIONS */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/transactions" ||
-        path ===
-          "/api/user/transactions" ||
-        path ===
-          "/api/transactions"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerTransactions(
-          request,
-          url
-        )
-      );
-    }
-
-    /* CUSTOMER PROFILE */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/profile" ||
-        path ===
-          "/api/user/profile" ||
-        path ===
-          "/api/profile"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerProfile(
-          request
-        )
-      );
-    }
-
-    if (
-      (
-        method === "PUT" ||
-        method === "PATCH" ||
-        method === "POST"
-      ) &&
-      (
-        path ===
-          "/api/customer/profile" ||
-        path ===
-          "/api/user/profile" ||
-        path ===
-          "/api/profile"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerProfile(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* CUSTOMER KYC */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/kyc" ||
-        path ===
-          "/api/user/kyc" ||
-        path ===
-          "/api/kyc"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerKyc(
-          request
-        )
-      );
-    }
-
-    if (
-      method === "POST" &&
-      (
-        path ===
-          "/api/customer/kyc" ||
-        path ===
-          "/api/user/kyc" ||
-        path ===
-          "/api/kyc/apply"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerKyc(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* CUSTOMER DEPOSIT */
-
-    if (
-      method === "POST" &&
-      (
-        path ===
-          "/api/customer/deposit" ||
-        path ===
-          "/api/user/deposit" ||
-        path ===
-          "/api/deposit"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerDeposit(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* CUSTOMER SEND */
-
-    if (
-      method === "POST" &&
-      (
-        path ===
-          "/api/customer/send" ||
-        path ===
-          "/api/user/send" ||
-        path ===
-          "/api/send" ||
-        path ===
-          "/api/send-money"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerSend(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* WITHDRAWAL ACCOUNT */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/withdrawal-account" ||
-        path ===
-          "/api/user/withdrawal-account" ||
-        path ===
-          "/api/withdrawal-account"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerWithdrawalAccount(
-          request
-        )
-      );
-    }
-
-    if (
-      (
-        method === "POST" ||
-        method === "PUT" ||
-        method === "PATCH"
-      ) &&
-      (
-        path ===
-          "/api/customer/withdrawal-account" ||
-        path ===
-          "/api/user/withdrawal-account" ||
-        path ===
-          "/api/withdrawal-account"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerWithdrawalAccount(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* CUSTOMER WITHDRAW */
-
-    if (
-      method === "POST" &&
-      (
-        path ===
-          "/api/customer/withdraw" ||
-        path ===
-          "/api/user/withdraw" ||
-        path ===
-          "/api/withdraw" ||
-        path ===
-          "/api/withdrawal"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerWithdraw(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* CUSTOMER INVESTMENTS */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/investments" ||
-        path ===
-          "/api/user/investments" ||
-        path ===
-          "/api/investments"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerInvestments(
-          request,
-          url
-        )
-      );
-    }
-
-    /* CUSTOMER CHAT */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/customer/chat" ||
-        path ===
-          "/api/user/chat" ||
-        path ===
-          "/api/chat"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerChat(
-          request
-        )
-      );
-    }
-
-    if (
-      method === "POST" &&
-      (
-        path ===
-          "/api/customer/chat" ||
-        path ===
-          "/api/user/chat" ||
-        path ===
-          "/api/chat"
-      )
-    ) {
-      return writeWebResponse(
-        res,
-        await customerChat(
-          request,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* ADMIN DASHBOARD */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/admin/dashboard" ||
-        path ===
-          "/api/admin/stats"
-      )
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminDashboard()
-      );
-    }
-
-    /* ADMIN ACTIVITY */
-
-    if (
-      method === "GET" &&
-      path ===
-        "/api/admin/activity"
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminActivity()
-      );
-    }
-
-    /* ADMIN CUSTOMERS */
-
-    if (
-      method === "GET" &&
-      path ===
-        "/api/admin/customers"
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      const id =
-        url.searchParams.get(
-          "id"
-        );
-
-      if (id) {
-        return writeWebResponse(
-          res,
-          await adminCustomer(
-            id
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminCustomers(
-          url
-        )
-      );
-    }
-
-    if (
-      (
-        method === "PUT" ||
-        method === "PATCH" ||
-        method === "POST"
-      ) &&
-      path.startsWith(
-        "/api/admin/customers/"
-      )
-    ) {
-      const id =
-        path.split("/").pop();
-
-      return writeWebResponse(
-        res,
-        await updateCustomer(
-          request,
-          id,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* ADMIN WALLETS */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/admin/wallets" ||
-        path ===
-          "/api/admin/wallet"
-      )
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      const userId =
-        url.searchParams.get(
+    try {
+      const hasUser =
+        await columnExists(
+          table,
           "user_id"
         );
 
-      if (userId) {
-        return writeWebResponse(
-          res,
-          await adminWallet(
-            userId
-          )
+      const hasCustomer =
+        await columnExists(
+          table,
+          "customer_id"
         );
+
+      const hasMessage =
+        await columnExists(
+          table,
+          "message"
+        );
+
+      const hasContent =
+        await columnExists(
+          table,
+          "content"
+        );
+
+      const hasImage =
+        await columnExists(
+          table,
+          "image_url"
+        );
+
+      if (
+        hasUser &&
+        hasMessage
+      ) {
+        const rows =
+          await sql`
+            INSERT INTO ${sql(table)}
+              (
+                user_id,
+                message,
+                image_url,
+                sender_role,
+                created_at
+              )
+            VALUES
+              (
+                ${auth.user.id},
+                ${message},
+                ${imageUrl},
+                'customer',
+                NOW()
+              )
+            RETURNING *
+          `;
+
+        return ok({
+          message:
+            normalizeChatMessage(
+              rows[0]
+            )
+        });
       }
 
-      return writeWebResponse(
-        res,
-        await adminWallets(
-          url
-        )
+      if (
+        hasCustomer &&
+        hasMessage
+      ) {
+        const rows =
+          await sql`
+            INSERT INTO ${sql(table)}
+              (
+                customer_id,
+                message,
+                image_url,
+                sender_role,
+                created_at
+              )
+            VALUES
+              (
+                ${auth.user.id},
+                ${message},
+                ${imageUrl},
+                'customer',
+                NOW()
+              )
+            RETURNING *
+          `;
+
+        return ok({
+          message:
+            normalizeChatMessage(
+              rows[0]
+            )
+        });
+      }
+
+      if (
+        hasUser &&
+        hasContent
+      ) {
+        const rows =
+          await sql`
+            INSERT INTO ${sql(table)}
+              (
+                user_id,
+                content,
+                created_at
+              )
+            VALUES
+              (
+                ${auth.user.id},
+                ${message},
+                NOW()
+              )
+            RETURNING *
+          `;
+
+        return ok({
+          message:
+            normalizeChatMessage(
+              rows[0]
+            )
+        });
+      }
+
+      return bad(
+        500,
+        "Chat table schema is not compatible"
+      );
+    } catch (error) {
+      return bad(
+        500,
+        error?.message ||
+          "Unable to send chat message"
+      );
+    }
+  }
+
+  return bad(
+    405,
+    "Method not allowed"
+  );
+}
+
+/* =========================================================
+   ADMIN CHAT
+   ========================================================= */
+
+async function routeAdminChat(
+  request,
+  userId
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const table =
+    await chatTable();
+
+  if (!table) {
+    return bad(
+      500,
+      "Customer chat storage is not configured"
+    );
+  }
+
+  if (
+    request.method === "GET"
+  ) {
+    try {
+      const hasUser =
+        await columnExists(
+          table,
+          "user_id"
+        );
+
+      const hasCustomer =
+        await columnExists(
+          table,
+          "customer_id"
+        );
+
+      if (hasUser) {
+        const rows =
+          await sql`
+            SELECT *
+            FROM ${sql(table)}
+            WHERE user_id = ${userId}
+            ORDER BY created_at ASC NULLS LAST
+            LIMIT 500
+          `;
+
+        return ok({
+          messages:
+            rows.map(
+              normalizeChatMessage
+            )
+        });
+      }
+
+      if (hasCustomer) {
+        const rows =
+          await sql`
+            SELECT *
+            FROM ${sql(table)}
+            WHERE customer_id =
+              ${userId}
+            ORDER BY created_at ASC NULLS LAST
+            LIMIT 500
+          `;
+
+        return ok({
+          messages:
+            rows.map(
+              normalizeChatMessage
+            )
+        });
+      }
+
+      return bad(
+        500,
+        "Chat table has no customer reference column"
+      );
+    } catch (error) {
+      return bad(
+        500,
+        error?.message ||
+          "Unable to load customer chat"
+      );
+    }
+  }
+
+  if (
+    request.method === "POST"
+  ) {
+    const body =
+      await jsonBody(request);
+
+    const message =
+      String(
+        body.message ??
+        body.content ??
+        body.text ??
+        ""
+      ).trim();
+
+    const imageUrl =
+      body.image_url ??
+      body.imageUrl ??
+      body.attachment_url ??
+      null;
+
+    if (!message && !imageUrl) {
+      return bad(
+        400,
+        "Message or image is required"
       );
     }
 
+    try {
+      const hasUser =
+        await columnExists(
+          table,
+          "user_id"
+        );
+
+      const hasCustomer =
+        await columnExists(
+          table,
+          "customer_id"
+        );
+
+      const hasMessage =
+        await columnExists(
+          table,
+          "message"
+        );
+
+      if (
+        hasUser &&
+        hasMessage
+      ) {
+        const rows =
+          await sql`
+            INSERT INTO ${sql(table)}
+              (
+                user_id,
+                message,
+                image_url,
+                sender_role,
+                created_at
+              )
+            VALUES
+              (
+                ${userId},
+                ${message},
+                ${imageUrl},
+                'admin',
+                NOW()
+              )
+            RETURNING *
+          `;
+
+        return ok({
+          message:
+            normalizeChatMessage(
+              rows[0]
+            )
+        });
+      }
+
+      if (
+        hasCustomer &&
+        hasMessage
+      ) {
+        const rows =
+          await sql`
+            INSERT INTO ${sql(table)}
+              (
+                customer_id,
+                message,
+                image_url,
+                sender_role,
+                created_at
+              )
+            VALUES
+              (
+                ${userId},
+                ${message},
+                ${imageUrl},
+                'admin',
+                NOW()
+              )
+            RETURNING *
+          `;
+
+        return ok({
+          message:
+            normalizeChatMessage(
+              rows[0]
+            )
+        });
+      }
+
+      return bad(
+        500,
+        "Chat table schema is not compatible"
+      );
+    } catch (error) {
+      return bad(
+        500,
+        error?.message ||
+          "Unable to send admin message"
+      );
+    }
+  }
+
+  return bad(
+    405,
+    "Method not allowed"
+  );
+}
+
+/* =========================================================
+   ADMIN CUSTOMER LIST
+   ========================================================= */
+
+async function routeAdminCustomers(
+  request
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  try {
+    const limit =
+      cleanLimit(
+        new URL(request.url)
+          .searchParams
+          .get("limit"),
+        200
+      );
+
+    const rows =
+      await sql`
+        SELECT *
+        FROM users
+        ORDER BY created_at DESC NULLS LAST
+        LIMIT ${limit}
+      `;
+
+    const customers = [];
+
+    for (const user of rows) {
+      const kyc =
+        await resolveKycFromAllSources(
+          user
+        );
+
+      const wallets =
+        await synchronizeWalletRepresentations(
+          user.id
+        );
+
+      customers.push({
+        ...publicUser(user),
+        kyc_status:
+          kyc.status,
+        kyc_approved:
+          kyc.status === "approved",
+        wallet_balance:
+          wallets.main,
+        main_wallet:
+          wallets.main,
+        profit_wallet:
+          wallets.profit,
+        total_balance:
+          wallets.total
+      });
+    }
+
+    return ok({
+      customers
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to load customers"
+    );
+  }
+}
+
+/* =========================================================
+   ADMIN TRANSACTIONS
+   ========================================================= */
+
+async function routeAdminTransactions(
+  request
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (auth.error) {
+    return auth.error;
+  }
+
+  const table =
+    await transactionTable();
+
+  if (!table) {
+    return ok({
+      transactions: []
+    });
+  }
+
+  try {
+    const limit =
+      cleanLimit(
+        new URL(request.url)
+          .searchParams
+          .get("limit"),
+        200
+      );
+
+    const rows =
+      await sql`
+        SELECT *
+        FROM ${sql(table)}
+        ORDER BY created_at DESC NULLS LAST
+        LIMIT ${limit}
+      `;
+
+    return ok({
+      transactions:
+        rows.map(
+          normalizeTransaction
+        )
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Unable to load transactions"
+    );
+  }
+}
+
+/* =========================================================
+   HEALTH
+   ========================================================= */
+
+async function routeHealth() {
+  try {
+    const rows =
+      await sql`SELECT NOW() AS now`;
+
+    return ok({
+      database: true,
+      timestamp:
+        rows[0]?.now ??
+        new Date().toISOString()
+    });
+  } catch (error) {
+    return bad(
+      500,
+      error?.message ||
+        "Database unavailable",
+      {
+        database: false
+      }
+    );
+  }
+}
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+
+function pathParts(request) {
+  const url =
+    new URL(request.url);
+
+  return url.pathname
+    .replace(/^\/+|\/+$/g, "")
+    .split("/")
+    .filter(Boolean);
+}
+
+export default async function handler(
+  request
+) {
+  if (
+    request.method === "OPTIONS"
+  ) {
+    return new Response(null, {
+      status: 204,
+      headers
+    });
+  }
+
+  const parts =
+    pathParts(request);
+
+  const path =
+    "/" + parts.join("/");
+
+  try {
+    /*
+      Health endpoints
+    */
     if (
-      method === "POST" &&
+      path === "/health" ||
+      path === "/api/health"
+    ) {
+      return routeHealth();
+    }
+
+    /*
+      Current customer
+    */
+    if (
+      path === "/me" ||
+      path === "/api/me" ||
+      path === "/api/customer/me"
+    ) {
+      return routeMe(request);
+    }
+
+    /*
+      Wallets
+    */
+    if (
+      path === "/wallets" ||
+      path === "/api/wallets" ||
+      path === "/api/customer/wallets"
+    ) {
+      return routeWallets(
+        request
+      );
+    }
+
+    /*
+      Transactions
+    */
+    if (
+      path === "/transactions" ||
+      path === "/api/transactions" ||
+      path === "/api/customer/transactions"
+    ) {
+      return routeTransactions(
+        request
+      );
+    }
+
+    /*
+      Deposit
+    */
+    if (
+      path === "/deposit" ||
+      path === "/api/deposit" ||
+      path === "/api/customer/deposit"
+    ) {
+      return routeDeposit(
+        request
+      );
+    }
+
+    /*
+      Send
+    */
+    if (
+      path === "/send" ||
+      path === "/api/send" ||
+      path === "/api/customer/send"
+    ) {
+      return routeSend(
+        request
+      );
+    }
+
+    /*
+      Withdrawal
+    */
+    if (
+      path === "/withdraw" ||
+      path === "/api/withdraw" ||
+      path === "/api/customer/withdraw"
+    ) {
+      return routeWithdraw(
+        request
+      );
+    }
+
+    /*
+      Withdrawal account
+    */
+    if (
+      path ===
+        "/withdrawal-account" ||
+      path ===
+        "/api/withdrawal-account" ||
+      path ===
+        "/api/customer/withdrawal-account" ||
+      path ===
+        "/api/profile/withdrawal-account"
+    ) {
+      return routeWithdrawalAccount(
+        request
+      );
+    }
+
+    /*
+      KYC
+    */
+    if (
+      path === "/kyc" ||
+      path === "/api/kyc" ||
+      path === "/api/customer/kyc"
+    ) {
+      return routeKyc(
+        request
+      );
+    }
+
+    /*
+      Profile
+    */
+    if (
+      path === "/profile" ||
+      path === "/api/profile" ||
+      path === "/api/customer/profile"
+    ) {
+      return routeProfile(
+        request
+      );
+    }
+
+    /*
+      Customer chat
+    */
+    if (
+      path === "/chat" ||
+      path === "/api/chat" ||
+      path === "/api/customer/chat"
+    ) {
+      return routeChat(
+        request
+      );
+    }
+
+    /*
+      Admin customers
+    */
+    if (
+      path ===
+        "/admin/customers" ||
+      path ===
+        "/api/admin/customers"
+    ) {
+      return routeAdminCustomers(
+        request
+      );
+    }
+
+    /*
+      Admin customer detail
+    */
+    if (
       (
         path ===
-          "/api/admin/wallets/adjust" ||
+          "/admin/customer" ||
         path ===
-          "/api/admin/wallet/adjust"
+          "/api/admin/customer"
+      ) &&
+      parts.length >= 3
+    ) {
+      return adminCustomer(
+        request,
+        parts[parts.length - 1]
+      );
+    }
+
+    /*
+      Admin customer detail compatibility:
+      /admin/customers/:id
+    */
+    if (
+      (
+        path.startsWith(
+          "/admin/customers/"
+        ) ||
+        path.startsWith(
+          "/api/admin/customers/"
+        )
+      ) &&
+      parts.length >= 3
+    ) {
+      return adminCustomer(
+        request,
+        parts[parts.length - 1]
+      );
+    }
+
+    /*
+      Admin wallet adjustment
+    */
+    if (
+      path.startsWith(
+        "/admin/wallet/"
+      ) ||
+      path.startsWith(
+        "/api/admin/wallet/"
       )
     ) {
-      return writeWebResponse(
-        res,
-        await adjustWallet(
-          request,
-          await jsonBody(
-            request
-          )
-        )
+      return adminAdjustWallet(
+        request,
+        parts[parts.length - 1]
       );
     }
 
-    /* ADMIN KYC */
-
     if (
-      method === "GET" &&
-      path ===
-        "/api/admin/kyc"
+      path.startsWith(
+        "/admin/wallet-adjust/"
+      ) ||
+      path.startsWith(
+        "/api/admin/wallet-adjust/"
+      )
     ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminKyc(
-          url
-        )
+      return adminAdjustWallet(
+        request,
+        parts[parts.length - 1]
       );
     }
 
+    /*
+      Admin KYC
+    */
     if (
-      (
-        method === "POST" ||
-        method === "PATCH" ||
-        method === "PUT"
-      ) &&
+      path.startsWith(
+        "/admin/kyc/"
+      ) ||
       path.startsWith(
         "/api/admin/kyc/"
       )
     ) {
-      const id =
-        path.split("/").pop();
+      const body =
+        await jsonBody(request);
 
-      return writeWebResponse(
-        res,
-        await reviewKyc(
-          request,
-          id,
-          await jsonBody(
-            request
+      const userId =
+        parts[parts.length - 1];
+
+      const status =
+        body.status ??
+        body.kyc_status ??
+        (
+          path.endsWith(
+            "/approve"
           )
-        )
+            ? "approved"
+            : "pending"
+        );
+
+      return adminKycUpdate(
+        request,
+        userId,
+        status
       );
     }
 
-    /* ADMIN INVESTMENTS */
-
     if (
-      method === "GET" &&
-      path ===
-        "/api/admin/investments"
+      path.startsWith(
+        "/admin/kyc-approve/"
+      ) ||
+      path.startsWith(
+        "/api/admin/kyc-approve/"
+      )
     ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminInvestments(
-          url
-        )
+      return adminKycUpdate(
+        request,
+        parts[parts.length - 1],
+        "approved"
       );
     }
 
-    /* ADMIN TRANSACTIONS */
+    /*
+      Admin account approval
+    */
+    if (
+      path.startsWith(
+        "/admin/account/approve/"
+      ) ||
+      path.startsWith(
+        "/api/admin/account/approve/"
+      )
+    ) {
+      return approveAccount(
+        request,
+        parts[parts.length - 1],
+        true
+      );
+    }
 
     if (
-      method === "GET" &&
+      path.startsWith(
+        "/admin/account/reject/"
+      ) ||
+      path.startsWith(
+        "/api/admin/account/reject/"
+      ) ||
+      path.startsWith(
+        "/admin/account/decline/"
+      ) ||
+      path.startsWith(
+        "/api/admin/account/decline/"
+      )
+    ) {
+      return approveAccount(
+        request,
+        parts[parts.length - 1],
+        false
+      );
+    }
+
+    /*
+      Admin transactions
+    */
+    if (
+      path ===
+        "/admin/transactions" ||
       path ===
         "/api/admin/transactions"
     ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminTransactions(
-          url
-        )
+      return routeAdminTransactions(
+        request
       );
     }
 
-    /* ADMIN REQUESTS */
-
+    /*
+      Admin chat
+    */
     if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/admin/requests" ||
-        path ===
-          "/api/admin/pending-requests"
-      )
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminRequests(
-          url
-        )
-      );
-    }
-
-    if (
-      (
-        method === "POST" ||
-        method === "PATCH" ||
-        method === "PUT"
-      ) &&
       (
         path.startsWith(
-          "/api/admin/requests/"
+          "/admin/chat/"
         ) ||
-        path.startsWith(
-          "/api/admin/pending-requests/"
-        )
-      )
-    ) {
-      const id =
-        path.split("/").pop();
-
-      return writeWebResponse(
-        res,
-        await processRequest(
-          request,
-          id,
-          await jsonBody(
-            request
-          )
-        )
-      );
-    }
-
-    /* ADMIN CHAT */
-
-    if (
-      method === "GET" &&
-      (
-        path ===
-          "/api/admin/chat" ||
-        path ===
-          "/api/admin/conversations"
-      )
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      const conversationId =
-        url.searchParams.get(
-          "conversation_id"
-        );
-
-      if (
-        conversationId
-      ) {
-        return writeWebResponse(
-          res,
-          await adminMessages(
-            conversationId
-          )
-        );
-      }
-
-      return writeWebResponse(
-        res,
-        await adminConversations()
-      );
-    }
-
-    if (
-      method === "GET" &&
-      path.startsWith(
-        "/api/admin/chat/"
-      )
-    ) {
-      const auth =
-        await requireAdmin(
-          request
-        );
-
-      if (!auth.ok) {
-        return writeWebResponse(
-          res,
-          bad(
-            auth.status,
-            auth.error
-          )
-        );
-      }
-
-      const conversationId =
-        path.split("/").pop();
-
-      return writeWebResponse(
-        res,
-        await adminMessages(
-          conversationId
-        )
-      );
-    }
-
-    if (
-      method === "POST" &&
-      (
         path.startsWith(
           "/api/admin/chat/"
-        ) ||
-        path.startsWith(
-          "/api/admin/conversations/"
         )
-      )
+      ) &&
+      parts.length >= 3
     ) {
-      const conversationId =
-        path.split("/").pop();
-
-      return writeWebResponse(
-        res,
-        await adminSendMessage(
-          request,
-          conversationId,
-          await jsonBody(
-            request
-          )
-        )
+      return routeAdminChat(
+        request,
+        parts[parts.length - 1]
       );
     }
 
-    return writeWebResponse(
-      res,
-      bad(
-        404,
-        "API route not found.",
-        {
-          path,
-          method
-        }
+    /*
+      Generic customer chat compatibility
+    */
+    if (
+      path.startsWith(
+        "/admin/customer-chat/"
+      ) ||
+      path.startsWith(
+        "/api/admin/customer-chat/"
       )
-    );
+    ) {
+      return routeAdminChat(
+        request,
+        parts[parts.length - 1]
+      );
+    }
 
+    return bad(
+      404,
+      "API route not found",
+      {
+        path
+      }
+    );
   } catch (error) {
     console.error(
-      "CoinForest API error:",
+      "INDEX.JS ERROR:",
       error
     );
 
-    if (res.headersSent) {
-      res.end();
-      return;
-    }
-
-    return writeWebResponse(
-      res,
-      response(
-        500,
-        {
-          success: false,
-          error:
-            error?.message ||
-            "Internal server error."
-        }
-      )
+    return bad(
+      500,
+      error?.message ||
+        "Internal server error"
     );
   }
-}
+     }
