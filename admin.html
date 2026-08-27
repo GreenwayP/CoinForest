@@ -2998,8 +2998,7 @@ async function loadDashboard(){
       Load Recent Activities from the dedicated
       admin activity endpoint.
     */
-
-    let recentItems = [];
+        let recentItems = [];
 
     try {
 
@@ -3017,10 +3016,10 @@ async function loadDashboard(){
           ]
         );
 
-    } catch(activityError) {
+    } catch (activityError) {
 
       console.warn(
-        "Recent activity endpoint failed:",
+        "Dashboard activity load failed:",
         activityError
       );
 
