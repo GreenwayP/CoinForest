@@ -1555,11 +1555,13 @@ const transactionReference =
       );
     }
 
-    try {
+        try {
+
       await sql`
         INSERT INTO transactions (
           id,
           user_id,
+          wallet_id,
           transaction_reference,
           transaction_type,
           direction,
@@ -1575,6 +1577,7 @@ const transactionReference =
         VALUES (
           ${crypto.randomUUID()},
           ${userId},
+          ${wallet.id},
           ${transactionReference},
           ${amount >= 0 ? "system_credit" : "system_debit"},
           ${amount >= 0 ? "credit" : "debit"},
@@ -1584,36 +1587,60 @@ const transactionReference =
           'success',
           ${reason},
           ${JSON.stringify({
-            source:
-              "admin_wallet_adjustment",
-            wallet_type:
-              walletType,
-            admin_id:
-              admin.user.id,
-            adjustment:
-              amount
+            source: "admin_wallet_adjustment",
+            wallet_type: walletType,
+            admin_id: admin.user.id,
+            adjustment: amount
           })},
           NOW(),
           NOW()
         )
       `;
-    
-      } catch (error) {
-    console.error(
-      "ADMIN WALLET TRANSACTION INSERT FAILED:",
-      error?.message || error
-    );
 
-    return bad(
-      500,
-      "Wallet was not updated because the transaction record could not be created.",
-      {
-        detail:
-          error?.message ||
-          "Transaction insert failed."
+    } catch (error) {
+
+      const detail =
+        error?.message ||
+        "Transaction insert failed.";
+
+      console.error(
+        "ADMIN WALLET TRANSACTION INSERT FAILED:",
+        detail
+      );
+
+      /*
+       * Roll the wallet back because the
+       * transaction could not be recorded.
+       */
+      try {
+
+        await sql`
+          UPDATE wallets
+          SET
+            balance = ${current},
+            updated_at = NOW()
+          WHERE id = ${wallet.id}
+        `;
+
+      } catch (rollbackError) {
+
+        console.error(
+          "WALLET ROLLBACK FAILED:",
+          rollbackError?.message ||
+          rollbackError
+        );
+
       }
-    );
-  }
+
+      return bad(
+        500,
+        "Wallet was not updated because the transaction record could not be created.",
+        {
+          detail
+        }
+      );
+
+        }
 
     return ok({
       message:
