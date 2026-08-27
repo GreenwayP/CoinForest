@@ -2998,7 +2998,14 @@ async function loadDashboard(){
       Load Recent Activities from the dedicated
       admin activity endpoint.
     */
-        let recentItems = [];
+        
+    /*
+      DASHBOARD RECENT ACTIVITIES
+      Show only the latest important platform events.
+      The full Activity page remains unchanged.
+    */
+
+    let recentItems = [];
 
     try {
 
@@ -3007,7 +3014,7 @@ async function loadDashboard(){
           "/api/admin/activity"
         );
 
-      recentItems =
+      const allActivities =
         extractArray(
           activityData,
           [
@@ -3016,11 +3023,60 @@ async function loadDashboard(){
           ]
         );
 
-    } catch (activityError) {
+      /*
+        Keep important financial/account events
+        on the Dashboard.
+      */
+
+      recentItems =
+        allActivities
+          .filter(item => {
+
+            const type =
+  String(
+    item.type || ""
+  ).toLowerCase();
+
+const activityType =
+  String(
+    item.activity_type || ""
+  ).toLowerCase();
+
+const action =
+  String(
+    item.action || ""
+  ).toLowerCase();
+
+const eventType =
+  String(
+    item.event_type || ""
+  ).toLowerCase();
+
+const combinedType =
+  `${type} ${activityType} ${action} ${eventType}`;
+
+return (
+  combinedType.includes("wallet") ||
+  combinedType.includes("admin_adjustment") ||
+  combinedType.includes("wallet_activity") ||
+  combinedType.includes("transaction") ||
+  combinedType.includes("deposit") ||
+  combinedType.includes("withdraw") ||
+  combinedType.includes("investment") ||
+  combinedType.includes("transfer") ||
+  combinedType.includes("account") ||
+  combinedType.includes("kyc") ||
+  combinedType.includes("user")
+);
+
+          })
+          .slice(0, 8);
+
+    } catch(error) {
 
       console.warn(
-        "Dashboard activity load failed:",
-        activityError
+        "Dashboard recent activity failed:",
+        error
       );
 
     }
@@ -3028,7 +3084,6 @@ async function loadDashboard(){
     renderActivity(
       recentItems
     );
-
     if(
       !Number(
         stats.pending_kyc ??
