@@ -1557,12 +1557,9 @@ const transactionReference =
       return bad(
   500,
   error?.message ||
-  "Wallet ledger insert failed."
-);
-    }
-        
-      );
-    }
+  "Wallet ledger insert failed."    
+   );
+   }
 
         try {
 
