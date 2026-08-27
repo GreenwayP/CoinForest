@@ -1549,9 +1549,19 @@ const transactionReference =
         )
       `;
     } catch (error) {
-      console.warn(
-        "wallet_ledger insert failed:",
-        error?.message
+      console.error(
+        "ADMIN WALLET LEDGER INSERT FAILED:",
+        error?.message || error
+      );
+
+      return bad(
+        500,
+        "Wallet balance changed, but the wallet ledger could not be created.",
+        {
+          detail:
+            error?.message ||
+            "Wallet ledger insert failed."
+        }
       );
     }
 
