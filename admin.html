@@ -2993,17 +2993,33 @@ async function loadDashboard(){
       0
     );
 
-    renderActivity(
-      extractArray(
-        data,
-        [
-          "recentActivity",
-          "recent_activity",
-          "activities",
-          "activity"
-        ]
-      )
+    try{
+  const activityData =
+    await apiRequest(
+      "/api/admin/activity"
     );
+
+  renderActivity(
+    extractArray(
+      activityData,
+      [
+        "recentActivity",
+        "recent_activity",
+        "activities",
+        "activity"
+      ]
+    )
+  );
+
+}catch(activityError){
+
+  console.warn(
+    "Recent activity load error:",
+    activityError
+  );
+
+  renderActivity([]);
+}
 
     if(
       !Number(
