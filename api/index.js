@@ -3903,6 +3903,361 @@ async function adminChat(
   );
      }
 /* =====================================================
+   CUSTOMER CHAT
+===================================================== */
+
+async function customerChat(request, body = null) {
+  const auth = await requireCustomer(request);
+
+  if (!auth.ok) {
+    return bad(auth.status, auth.error, auth);
+  }
+
+  const userId = auth.user.id;
+
+  let conversationRows = await sql`
+    SELECT *
+    FROM chat_conversations
+    WHERE user_id = ${userId}
+    ORDER BY updated_at DESC
+    LIMIT 1
+  `;
+
+  let conversation;
+
+  if (conversationRows.length) {
+    conversation = conversationRows[0];
+  } else {
+    const rows = await sql`
+      INSERT INTO chat_conversations (
+        id,
+        user_id,
+        created_at,
+        updated_at
+      )
+      VALUES (
+        ${crypto.randomUUID()},
+        ${userId},
+        NOW(),
+        NOW()
+      )
+      RETURNING *
+    `;
+
+    conversation = rows[0];
+  }
+
+  if (!body) {
+    const messages = await sql`
+      SELECT *
+      FROM chat_messages
+      WHERE conversation_id = ${conversation.id}
+      ORDER BY created_at ASC
+      LIMIT 500
+    `;
+
+    return ok({
+      conversation,
+      messages
+    });
+  }
+
+  const message = String(
+    body.message ||
+    body.content ||
+    body.text ||
+    ""
+  ).trim();
+
+  if (!message) {
+    return bad(
+      400,
+      "Message is required."
+    );
+  }
+
+  const rows = await sql`
+    INSERT INTO chat_messages (
+      id,
+      conversation_id,
+      sender_id,
+      sender_type,
+      message,
+      created_at
+    )
+    VALUES (
+      ${crypto.randomUUID()},
+      ${conversation.id},
+      ${userId},
+      'customer',
+      ${message},
+      NOW()
+    )
+    RETURNING *
+  `;
+
+  await sql`
+    UPDATE chat_conversations
+    SET updated_at = NOW()
+    WHERE id = ${conversation.id}
+  `;
+
+  return ok({
+    conversation,
+    message: rows[0],
+    messages: [rows[0]],
+    message_text:
+      "Message sent successfully."
+  });
+}
+
+
+/* =====================================================
+   ADMIN CHAT
+===================================================== */
+
+async function adminChat(
+  request,
+  body = null,
+  conversationId = null
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (!auth.ok) {
+    return bad(
+      auth.status,
+      auth.error
+    );
+  }
+
+  if (body && conversationId) {
+    const message = String(
+      body.message ||
+      body.content ||
+      body.text ||
+      ""
+    ).trim();
+
+    if (!message) {
+      return bad(
+        400,
+        "Message is required."
+      );
+    }
+
+    const customer = await sql`
+      SELECT id
+      FROM chat_conversations
+      WHERE id = ${conversationId}
+      LIMIT 1
+    `;
+
+    if (!customer.length) {
+      return bad(
+        404,
+        "Conversation not found."
+      );
+    }
+
+    const rows = await sql`
+      INSERT INTO chat_messages (
+        id,
+        conversation_id,
+        sender_id,
+        sender_type,
+        message,
+        created_at
+      )
+      VALUES (
+        ${crypto.randomUUID()},
+        ${conversationId},
+        ${auth.user.id},
+        'admin',
+        ${message},
+        NOW()
+      )
+      RETURNING *
+    `;
+
+    await sql`
+      UPDATE chat_conversations
+      SET updated_at = NOW()
+      WHERE id = ${conversationId}
+    `;
+
+    return ok({
+      message: rows[0],
+      messages: [rows[0]],
+      message_text:
+        "Message sent successfully."
+    });
+  }
+
+  if (conversationId) {
+    const conversations = await sql`
+      SELECT
+        c.*,
+        p.first_name,
+        p.last_name,
+        p.username,
+        p.email
+      FROM chat_conversations c
+      LEFT JOIN profiles p
+        ON p.id = c.user_id
+      WHERE c.id = ${conversationId}
+      LIMIT 1
+    `;
+
+    if (!conversations.length) {
+      return bad(
+        404,
+        "Conversation not found."
+      );
+    }
+
+    const messages = await sql`
+      SELECT *
+      FROM chat_messages
+      WHERE conversation_id =
+        ${conversationId}
+      ORDER BY created_at ASC
+      LIMIT 500
+    `;
+
+    return ok({
+      conversation:
+        conversations[0],
+      messages
+    });
+  }
+
+  const conversations = await sql`
+    SELECT
+      c.id AS conversation_id,
+      c.user_id,
+      c.created_at,
+      c.updated_at,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM chat_conversations c
+    LEFT JOIN profiles p
+      ON p.id = c.user_id
+    ORDER BY c.updated_at DESC
+    LIMIT 500
+  `;
+
+  return ok({
+    conversations
+  });
+}
+
+
+/* =====================================================
+   ADMIN REQUESTS
+===================================================== */
+
+async function adminRequests(url) {
+  const status =
+    String(
+      url.searchParams.get("status") ||
+      ""
+    ).trim().toLowerCase();
+
+  const limit =
+    cleanLimit(
+      url.searchParams.get("limit"),
+      500
+    );
+
+  const rows = await sql`
+    SELECT
+      d.id,
+      d.deposit_reference AS reference,
+      d.deposit_reference AS transaction_ref,
+      d.user_id,
+      d.amount,
+      d.currency,
+      d.status,
+      d.created_at,
+      'deposit' AS type,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM deposit_requests d
+    LEFT JOIN profiles p
+      ON p.id = d.user_id
+    WHERE (
+      ${status} = ''
+      OR LOWER(
+        COALESCE(d.status, 'pending')
+      ) = ${status}
+    )
+
+    UNION ALL
+
+    SELECT
+      w.id,
+      w.withdrawal_reference AS reference,
+      w.withdrawal_reference AS transaction_ref,
+      w.user_id,
+      w.amount,
+      w.currency,
+      w.status,
+      w.created_at,
+      'withdrawal' AS type,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM withdrawal_requests w
+    LEFT JOIN profiles p
+      ON p.id = w.user_id
+    WHERE (
+      ${status} = ''
+      OR LOWER(
+        COALESCE(w.status, 'pending')
+      ) = ${status}
+    )
+
+    UNION ALL
+
+    SELECT
+      t.id,
+      t.transfer_reference AS reference,
+      t.transfer_reference AS transaction_ref,
+      t.sender_user_id AS user_id,
+      t.amount,
+      t.currency,
+      t.status,
+      t.created_at,
+      'transfer' AS type,
+      p.first_name,
+      p.last_name,
+      p.username,
+      p.email
+    FROM transfer_requests t
+    LEFT JOIN profiles p
+      ON p.id = t.sender_user_id
+    WHERE (
+      ${status} = ''
+      OR LOWER(
+        COALESCE(t.status, 'pending')
+      ) = ${status}
+    )
+
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `;
+
+  return ok({
+    requests: rows
+  });
+     }
+/* =====================================================
    ADMIN DASHBOARD
 ===================================================== */
 
