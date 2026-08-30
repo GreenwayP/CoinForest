@@ -1462,7 +1462,7 @@ async function loadCustomerTransactions(
 
           status:
             item.status ||
-            "completed",
+            "success",
 
           description:
             item.description ||
@@ -2422,12 +2422,12 @@ async function customerSend(
           ${auth.user.id},
           ${senderWallet.id},
           ${reference},
-          'send',
+          'transfer',
           'debit',
           ${amount},
           0,
           'USD',
-          'completed',
+          'success',
           ${`Transfer sent to ${recipient}`},
           ${JSON.stringify({
             recipient_id:
@@ -3757,7 +3757,7 @@ async function adjustWallet(
         ${Math.abs(amount)},
         0,
         'USD',
-        'completed',
+        'success',
         ${reason},
         ${JSON.stringify({
           source:
