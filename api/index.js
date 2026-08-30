@@ -3741,6 +3741,7 @@ async function register(
   });
 }
 
+
 /* =====================================================
    AUTH — LOGIN
    BACKWARD-COMPATIBLE LOGIN FIX
@@ -3750,212 +3751,90 @@ async function login(
   request,
   body
 ) {
-
-  const loginValue =
+  const identifier =
     String(
       body.email ||
       body.username ||
-      body.user_name ||
       body.identifier ||
+      body.email_address ||
+      body.emailAddress ||
       ""
-    ).trim();
+    )
+      .trim()
+      .toLowerCase();
 
   const password =
     String(
-      body.password || ""
+      body.password ||
+      body.pass ||
+      body.user_password ||
+      ""
     );
 
-  if(
-    !loginValue ||
+  if (
+    !identifier ||
     !password
-  ){
+  ) {
     return bad(
       400,
       "Email/username and password are required."
     );
   }
 
-  /*
-   * First try email exactly as the original
-   * authentication system does.
-   */
-  let user =
-    await findUserByEmail(
-      normalizeEmail(
-        loginValue
-      )
-    );
+  let user = null;
 
   /*
-   * If the customer entered their username,
-   * support username login as well.
-   */
-  if(!user){
-
+    Support both email login and username login.
+  */
+  if (
+    identifier.includes("@")
+  ) {
+    user =
+      await findUserByEmail(
+        identifier
+      );
+  } else {
     user =
       await findUserByUsername(
-        loginValue
+        identifier
       );
 
+    /*
+      Fallback to email lookup in case
+      the identifier was stored differently.
+    */
+    if (!user) {
+      user =
+        await findUserByEmail(
+          identifier
+        );
+    }
   }
 
-  if(!user){
-
+  if (!user) {
     return bad(
       401,
       "Invalid email or password."
     );
-
   }
 
-  /*
-   * Existing customer passwords are stored on
-   * the profiles record in password_hash.
-   *
-   * Do NOT create a new credential system here.
-   * Do NOT require auth_credentials.
-   */
   const storedPassword =
     user.password_hash ||
     user.password ||
     "";
 
-  let passwordValid = false;
-
-  /*
-   * Current CoinForest scrypt format:
-   *
-   * salt:hex-derived-key
-   */
-  if(
-    String(
+  if (
+    !verifyPassword(
+      password,
       storedPassword
-    ).includes(":")
-  ){
-
-    passwordValid =
-      verifyPassword(
-        password,
-        storedPassword
-      );
-
-  }
-
-  /*
-   * Backward compatibility for older SHA-256
-   * password records.
-   */
-  if(
-    !passwordValid &&
-    /^[a-f0-9]{64}$/i.test(
-      String(
-        storedPassword
-      )
     )
-  ){
-
-    const hash =
-      crypto
-        .createHash("sha256")
-        .update(password)
-        .digest("hex");
-
-    passwordValid =
-      hash.toLowerCase() ===
-      String(
-        storedPassword
-      ).toLowerCase();
-
-  }
-
-  /*
-   * Legacy plaintext compatibility.
-   *
-   * If an old account still has its password in
-   * legacy form, authenticate it and immediately
-   * upgrade it to the current secure format.
-   */
-  if(
-    !passwordValid &&
-    storedPassword &&
-    !String(
-      storedPassword
-    ).includes(":") &&
-    !/^[a-f0-9]{64}$/i.test(
-      String(
-        storedPassword
-      )
-    )
-  ){
-
-    passwordValid =
-      String(
-        storedPassword
-      ) === password;
-
-  }
-
-  if(!passwordValid){
-
+  ) {
     return bad(
       401,
       "Invalid email or password."
     );
-
   }
 
-  /*
-   * Upgrade legacy password storage after a
-   * successful login.
-   */
-  if(
-    !String(
-      storedPassword
-    ).includes(":")
-  ){
-
-    try{
-
-      if(
-        await columnExists(
-          "profiles",
-          "password_hash"
-        )
-      ){
-
-        const upgradedHash =
-          hashPassword(
-            password
-          );
-
-        await sql`
-          UPDATE profiles
-          SET password_hash =
-            ${upgradedHash}
-          WHERE id =
-            ${user.id}
-        `;
-
-      }
-
-    }catch(error){
-
-      /*
-       * Password authentication already succeeded.
-       * A migration failure must NOT prevent login.
-       */
-      console.warn(
-        "Password migration warning:",
-        error?.message
-      );
-
-    }
-
-  }
-
-  /*
-   * Create the normal CoinForest session.
-   */
   const rawToken =
     createToken();
 
@@ -3965,14 +3844,13 @@ async function login(
     );
 
   /*
-   * Preserve the existing session architecture.
-   */
-  if(
+    Preserve the existing session system.
+  */
+  if (
     !(await tableExists(
       "auth_sessions"
     ))
-  ){
-
+  ) {
     await sql`
       CREATE TABLE IF NOT EXISTS auth_sessions (
         id UUID PRIMARY KEY,
@@ -3982,7 +3860,6 @@ async function login(
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
     `;
-
   }
 
   await sql`
@@ -4004,12 +3881,10 @@ async function login(
   `;
 
   return ok({
-
     token:
       rawToken,
 
     user: {
-
       id:
         user.id,
 
@@ -4030,11 +3905,8 @@ async function login(
 
       kyc_status:
         user.kyc_status
-
     }
-
   });
-
 }
 
 /* =====================================================
