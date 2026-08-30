@@ -3743,51 +3743,219 @@ async function register(
 
 /* =====================================================
    AUTH — LOGIN
+   BACKWARD-COMPATIBLE LOGIN FIX
 ===================================================== */
 
 async function login(
   request,
   body
 ) {
-  const email =
-    normalizeEmail(
-      body.email
-    );
+
+  const loginValue =
+    String(
+      body.email ||
+      body.username ||
+      body.user_name ||
+      body.identifier ||
+      ""
+    ).trim();
 
   const password =
     String(
       body.password || ""
     );
 
-  const user =
+  if(
+    !loginValue ||
+    !password
+  ){
+    return bad(
+      400,
+      "Email/username and password are required."
+    );
+  }
+
+  /*
+   * First try email exactly as the original
+   * authentication system does.
+   */
+  let user =
     await findUserByEmail(
-      email
+      normalizeEmail(
+        loginValue
+      )
     );
 
-  if (!user) {
+  /*
+   * If the customer entered their username,
+   * support username login as well.
+   */
+  if(!user){
+
+    user =
+      await findUserByUsername(
+        loginValue
+      );
+
+  }
+
+  if(!user){
+
     return bad(
       401,
       "Invalid email or password."
     );
+
   }
 
+  /*
+   * Existing customer passwords are stored on
+   * the profiles record in password_hash.
+   *
+   * Do NOT create a new credential system here.
+   * Do NOT require auth_credentials.
+   */
   const storedPassword =
     user.password_hash ||
     user.password ||
     "";
 
-  if (
-    !verifyPassword(
-      password,
+  let passwordValid = false;
+
+  /*
+   * Current CoinForest scrypt format:
+   *
+   * salt:hex-derived-key
+   */
+  if(
+    String(
       storedPassword
+    ).includes(":")
+  ){
+
+    passwordValid =
+      verifyPassword(
+        password,
+        storedPassword
+      );
+
+  }
+
+  /*
+   * Backward compatibility for older SHA-256
+   * password records.
+   */
+  if(
+    !passwordValid &&
+    /^[a-f0-9]{64}$/i.test(
+      String(
+        storedPassword
+      )
     )
-  ) {
+  ){
+
+    const hash =
+      crypto
+        .createHash("sha256")
+        .update(password)
+        .digest("hex");
+
+    passwordValid =
+      hash.toLowerCase() ===
+      String(
+        storedPassword
+      ).toLowerCase();
+
+  }
+
+  /*
+   * Legacy plaintext compatibility.
+   *
+   * If an old account still has its password in
+   * legacy form, authenticate it and immediately
+   * upgrade it to the current secure format.
+   */
+  if(
+    !passwordValid &&
+    storedPassword &&
+    !String(
+      storedPassword
+    ).includes(":") &&
+    !/^[a-f0-9]{64}$/i.test(
+      String(
+        storedPassword
+      )
+    )
+  ){
+
+    passwordValid =
+      String(
+        storedPassword
+      ) === password;
+
+  }
+
+  if(!passwordValid){
+
     return bad(
       401,
       "Invalid email or password."
     );
+
   }
 
+  /*
+   * Upgrade legacy password storage after a
+   * successful login.
+   */
+  if(
+    !String(
+      storedPassword
+    ).includes(":")
+  ){
+
+    try{
+
+      if(
+        await columnExists(
+          "profiles",
+          "password_hash"
+        )
+      ){
+
+        const upgradedHash =
+          hashPassword(
+            password
+          );
+
+        await sql`
+          UPDATE profiles
+          SET password_hash =
+            ${upgradedHash}
+          WHERE id =
+            ${user.id}
+        `;
+
+      }
+
+    }catch(error){
+
+      /*
+       * Password authentication already succeeded.
+       * A migration failure must NOT prevent login.
+       */
+      console.warn(
+        "Password migration warning:",
+        error?.message
+      );
+
+    }
+
+  }
+
+  /*
+   * Create the normal CoinForest session.
+   */
   const rawToken =
     createToken();
 
@@ -3796,11 +3964,15 @@ async function login(
       rawToken
     );
 
-  if (
+  /*
+   * Preserve the existing session architecture.
+   */
+  if(
     !(await tableExists(
       "auth_sessions"
     ))
-  ) {
+  ){
+
     await sql`
       CREATE TABLE IF NOT EXISTS auth_sessions (
         id UUID PRIMARY KEY,
@@ -3810,6 +3982,7 @@ async function login(
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
     `;
+
   }
 
   await sql`
@@ -3831,25 +4004,37 @@ async function login(
   `;
 
   return ok({
+
     token:
       rawToken,
+
     user: {
+
       id:
         user.id,
+
       email:
         user.email,
+
       username:
         user.username,
+
       first_name:
         user.first_name,
+
       last_name:
         user.last_name,
+
       role:
         user.role,
+
       kyc_status:
         user.kyc_status
+
     }
+
   });
+
 }
 
 /* =====================================================
