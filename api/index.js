@@ -977,6 +977,34 @@ function customerActionAllowed(
   return null;
 }
 
+async function requireAdmin(request) {
+  const auth = await authenticate(request);
+
+  if (!auth.ok) {
+    return auth;
+  }
+
+  const role = String(
+    auth.user?.role_name ||
+    ""
+  ).trim().toLowerCase();
+
+  if (
+    role !== "admin" &&
+    role !== "administrator"
+  ) {
+    return {
+      ok: false,
+      status: 403,
+      error:
+        "Administrator access required.",
+      user: auth.user,
+      token: auth.token
+    };
+  }
+
+  return auth;
+}
 async function requireCustomer(
   request,
   options = {}
