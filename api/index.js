@@ -6855,6 +6855,94 @@ export default async function handler(
       );
     }
 
+     /* =================================================
+   CUSTOMER CHAT
+================================================= */
+
+if (
+  (method === "GET" ||
+   method === "POST") &&
+  (
+    path === "/api/customer/chat" ||
+    path === "/api/user/chat" ||
+    path === "/api/chat"
+  )
+) {
+  return writeWebResponse(
+    res,
+    await customerChat(
+      request,
+      method === "POST"
+        ? await jsonBody(request)
+        : null
+    )
+  );
+}
+
+
+/* =================================================
+   ADMIN CHAT
+================================================= */
+
+if (
+  method === "GET" &&
+  path === "/api/admin/chat"
+) {
+  return writeWebResponse(
+    res,
+    await adminChat(
+      request,
+      null,
+      url.searchParams.get(
+        "conversation_id"
+      )
+    )
+  );
+}
+
+if (
+  method === "POST" &&
+  path.startsWith(
+    "/api/admin/chat/"
+  )
+) {
+  return writeWebResponse(
+    res,
+    await adminChat(
+      request,
+      await jsonBody(request),
+      path.split("/").pop()
+    )
+  );
+}
+
+
+/* =================================================
+   ADMIN REQUESTS
+================================================= */
+
+if (
+  method === "GET" &&
+  path === "/api/admin/requests"
+) {
+  const auth =
+    await requireAdmin(request);
+
+  if (!auth.ok) {
+    return writeWebResponse(
+      res,
+      bad(
+        auth.status,
+        auth.error
+      )
+    );
+  }
+
+  return writeWebResponse(
+    res,
+    await adminRequests(url)
+  );
+}
     /* =================================================
        UNKNOWN ROUTE
     ================================================= */
