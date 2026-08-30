@@ -2956,7 +2956,952 @@ async function customerInvestments(
     );
   }
 }
+/* =====================================================
+   ADMIN REQUESTS
+===================================================== */
 
+async function adminRequests(request, url, body = null, requestId = null) {
+
+  const auth = await requireAdmin(request);
+
+  if (!auth.ok) {
+    return bad(
+      auth.status,
+      auth.error
+    );
+  }
+
+  /*
+   * GET /api/admin/requests
+   *
+   * Combines pending deposit, withdrawal
+   * and transfer requests into one list.
+   */
+
+  if (!body && !requestId) {
+
+    const status =
+      String(
+        url.searchParams.get("status") ||
+        "pending"
+      ).trim().toLowerCase();
+
+    const limit =
+      cleanLimit(
+        url.searchParams.get("limit"),
+        500
+      );
+
+    const deposits =
+      await sql`
+        SELECT
+          d.*,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM deposit_requests d
+        LEFT JOIN profiles p
+          ON p.id = d.user_id
+        WHERE LOWER(
+          COALESCE(d.status, 'pending')
+        ) = ${status}
+        ORDER BY d.created_at DESC
+        LIMIT ${limit}
+      `;
+
+    const withdrawals =
+      await sql`
+        SELECT
+          w.*,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM withdrawal_requests w
+        LEFT JOIN profiles p
+          ON p.id = w.user_id
+        WHERE LOWER(
+          COALESCE(w.status, 'pending')
+        ) = ${status}
+        ORDER BY w.created_at DESC
+        LIMIT ${limit}
+      `;
+
+    const transfers =
+      await sql`
+        SELECT
+          t.*,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM transfer_requests t
+        LEFT JOIN profiles p
+          ON p.id = t.sender_user_id
+        WHERE LOWER(
+          COALESCE(t.status, 'pending')
+        ) = ${status}
+        ORDER BY t.created_at DESC
+        LIMIT ${limit}
+      `;
+
+    const requests = [
+      ...deposits.map(row => ({
+        ...row,
+        id: row.id,
+        type: "deposit",
+        request_type: "deposit",
+        reference:
+          row.deposit_reference
+      })),
+
+      ...withdrawals.map(row => ({
+        ...row,
+        id: row.id,
+        type: "withdrawal",
+        request_type: "withdrawal",
+        reference:
+          row.withdrawal_reference
+      })),
+
+      ...transfers.map(row => ({
+        ...row,
+        id: row.id,
+        type: "transfer",
+        request_type: "transfer",
+        reference:
+          row.transfer_reference
+      }))
+    ];
+
+    requests.sort(
+      (a, b) =>
+        new Date(
+          b.created_at || 0
+        ).getTime() -
+        new Date(
+          a.created_at || 0
+        ).getTime()
+    );
+
+    return ok({
+      requests:
+        requests.slice(0, limit)
+    });
+  }
+
+
+  /*
+   * PATCH /api/admin/requests/:id
+   */
+
+  if (requestId) {
+
+    const decision =
+      String(
+        body?.status || ""
+      ).trim().toLowerCase();
+
+    if (
+      decision !== "approved" &&
+      decision !== "rejected"
+    ) {
+      return bad(
+        400,
+        "Request status must be approved or rejected."
+      );
+    }
+
+    /*
+     * Find the pending request.
+     * IDs are UUIDs, so we check each request table.
+     */
+
+    const depositRows =
+      await sql`
+        SELECT *
+        FROM deposit_requests
+        WHERE id = ${requestId}
+          AND LOWER(
+            COALESCE(status, 'pending')
+          ) = 'pending'
+        LIMIT 1
+      `;
+
+    if (depositRows.length) {
+
+      const item =
+        depositRows[0];
+
+      if (decision === "rejected") {
+
+        await sql`
+          UPDATE deposit_requests
+          SET
+            status = 'rejected',
+            reviewed_at = NOW(),
+            reviewed_by = ${auth.user.id},
+            updated_at = NOW()
+          WHERE id = ${requestId}
+        `;
+
+        return ok({
+          message:
+            "Deposit request rejected.",
+          request_type:
+            "deposit",
+          request:
+            item
+        });
+      }
+
+      const walletRows =
+        await sql`
+          SELECT *
+          FROM wallets
+          WHERE id = ${item.wallet_id}
+            AND user_id = ${item.user_id}
+          LIMIT 1
+        `;
+
+      if (!walletRows.length) {
+        return bad(
+          404,
+          "Customer wallet could not be found."
+        );
+      }
+
+      const wallet =
+        walletRows[0];
+
+      const amount =
+        numberValue(
+          item.amount,
+          0
+        );
+
+      const before =
+        numberValue(
+          wallet.balance,
+          0
+        );
+
+      const after =
+        Number(
+          (
+            before + amount
+          ).toFixed(2)
+        );
+
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${after},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
+      `;
+
+      try {
+
+        await sql`
+          INSERT INTO transactions (
+            id,
+            user_id,
+            wallet_id,
+            transaction_reference,
+            transaction_type,
+            direction,
+            amount,
+            fee,
+            currency,
+            status,
+            description,
+            metadata,
+            created_at,
+            updated_at
+          )
+          VALUES (
+            ${crypto.randomUUID()},
+            ${item.user_id},
+            ${wallet.id},
+            ${item.deposit_reference},
+            'deposit',
+            'credit',
+            ${amount},
+            0,
+            ${item.currency || "USD"},
+            'success',
+            'Deposit approved by administrator.',
+            ${JSON.stringify({
+              source: "admin_request_approval",
+              request_id: item.id
+            })},
+            NOW(),
+            NOW()
+          )
+        `;
+
+      } catch (error) {
+
+        await sql`
+          UPDATE wallets
+          SET
+            balance = ${before},
+            updated_at = NOW()
+          WHERE id = ${wallet.id}
+        `;
+
+        throw error;
+      }
+
+      await sql`
+        UPDATE deposit_requests
+        SET
+          status = 'approved',
+          reviewed_at = NOW(),
+          reviewed_by = ${auth.user.id},
+          updated_at = NOW()
+        WHERE id = ${requestId}
+      `;
+
+      return ok({
+        message:
+          "Deposit request approved.",
+        request_type:
+          "deposit",
+        amount,
+        balance:
+          after
+      });
+    }
+
+
+    /*
+     * WITHDRAWAL
+     */
+
+    const withdrawalRows =
+      await sql`
+        SELECT *
+        FROM withdrawal_requests
+        WHERE id = ${requestId}
+          AND LOWER(
+            COALESCE(status, 'pending')
+          ) = 'pending'
+        LIMIT 1
+      `;
+
+    if (withdrawalRows.length) {
+
+      const item =
+        withdrawalRows[0];
+
+      if (decision === "rejected") {
+
+        await sql`
+          UPDATE withdrawal_requests
+          SET
+            status = 'rejected',
+            reviewed_at = NOW(),
+            reviewed_by = ${auth.user.id},
+            updated_at = NOW()
+          WHERE id = ${requestId}
+        `;
+
+        return ok({
+          message:
+            "Withdrawal request rejected.",
+          request_type:
+            "withdrawal",
+          request:
+            item
+        });
+      }
+
+      const walletRows =
+        await sql`
+          SELECT *
+          FROM wallets
+          WHERE id = ${item.wallet_id}
+            AND user_id = ${item.user_id}
+          LIMIT 1
+        `;
+
+      if (!walletRows.length) {
+        return bad(
+          404,
+          "Customer wallet could not be found."
+        );
+      }
+
+      const wallet =
+        walletRows[0];
+
+      const amount =
+        numberValue(
+          item.amount,
+          0
+        );
+
+      const before =
+        numberValue(
+          wallet.balance,
+          0
+        );
+
+      if (before < amount) {
+        return bad(
+          400,
+          "Customer no longer has enough balance to approve this withdrawal."
+        );
+      }
+
+      const after =
+        Number(
+          (
+            before - amount
+          ).toFixed(2)
+        );
+
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${after},
+          updated_at = NOW()
+        WHERE id = ${wallet.id}
+      `;
+
+      try {
+
+        await sql`
+          INSERT INTO transactions (
+            id,
+            user_id,
+            wallet_id,
+            transaction_reference,
+            transaction_type,
+            direction,
+            amount,
+            fee,
+            currency,
+            status,
+            description,
+            metadata,
+            created_at,
+            updated_at
+          )
+          VALUES (
+            ${crypto.randomUUID()},
+            ${item.user_id},
+            ${wallet.id},
+            ${item.withdrawal_reference},
+            'withdrawal',
+            'debit',
+            ${amount},
+            ${numberValue(item.fee, 0)},
+            ${item.currency || "USD"},
+            'success',
+            'Withdrawal approved by administrator.',
+            ${JSON.stringify({
+              source: "admin_request_approval",
+              request_id: item.id
+            })},
+            NOW(),
+            NOW()
+          )
+        `;
+
+      } catch (error) {
+
+        await sql`
+          UPDATE wallets
+          SET
+            balance = ${before},
+            updated_at = NOW()
+          WHERE id = ${wallet.id}
+        `;
+
+        throw error;
+      }
+
+      await sql`
+        UPDATE withdrawal_requests
+        SET
+          status = 'approved',
+          reviewed_at = NOW(),
+          reviewed_by = ${auth.user.id},
+          processed_at = NOW(),
+          updated_at = NOW()
+        WHERE id = ${requestId}
+      `;
+
+      return ok({
+        message:
+          "Withdrawal request approved.",
+        request_type:
+          "withdrawal",
+        amount,
+        balance:
+          after
+      });
+    }
+
+
+    /*
+     * TRANSFER
+     */
+
+    const transferRows =
+      await sql`
+        SELECT *
+        FROM transfer_requests
+        WHERE id = ${requestId}
+          AND LOWER(
+            COALESCE(status, 'pending')
+          ) = 'pending'
+        LIMIT 1
+      `;
+
+    if (transferRows.length) {
+
+      const item =
+        transferRows[0];
+
+      if (decision === "rejected") {
+
+        await sql`
+          UPDATE transfer_requests
+          SET
+            status = 'rejected',
+            admin_notes =
+              COALESCE(
+                admin_notes,
+                'Rejected by administrator.'
+              ),
+            updated_at = NOW()
+          WHERE id = ${requestId}
+        `;
+
+        return ok({
+          message:
+            "Transfer request rejected.",
+          request_type:
+            "transfer"
+        });
+      }
+
+      const amount =
+        numberValue(
+          item.amount,
+          0
+        );
+
+      if (amount <= 0) {
+        return bad(
+          400,
+          "Transfer amount must be greater than zero."
+        );
+      }
+
+      const senderRows =
+        await sql`
+          SELECT *
+          FROM wallets
+          WHERE id = ${item.sender_wallet_id}
+            AND user_id = ${item.sender_user_id}
+          LIMIT 1
+        `;
+
+      const recipientRows =
+        await sql`
+          SELECT *
+          FROM wallets
+          WHERE id = ${item.recipient_wallet_id}
+            AND user_id = ${item.recipient_user_id}
+          LIMIT 1
+        `;
+
+      if (
+        !senderRows.length ||
+        !recipientRows.length
+      ) {
+        return bad(
+          404,
+          "Transfer wallet could not be found."
+        );
+      }
+
+      const sender =
+        senderRows[0];
+
+      const recipient =
+        recipientRows[0];
+
+      const senderBefore =
+        numberValue(
+          sender.balance,
+          0
+        );
+
+      const recipientBefore =
+        numberValue(
+          recipient.balance,
+          0
+        );
+
+      if (
+        senderBefore < amount
+      ) {
+        return bad(
+          400,
+          "Sender no longer has enough balance for this transfer."
+        );
+      }
+
+      const senderAfter =
+        Number(
+          (
+            senderBefore - amount
+          ).toFixed(2)
+        );
+
+      const recipientAfter =
+        Number(
+          (
+            recipientBefore + amount
+          ).toFixed(2)
+        );
+
+      await sql`
+        UPDATE wallets
+        SET
+          balance = ${senderAfter},
+          updated_at = NOW()
+        WHERE id = ${sender.id}
+      `;
+
+      try {
+
+        await sql`
+          UPDATE wallets
+          SET
+            balance = ${recipientAfter},
+            updated_at = NOW()
+          WHERE id = ${recipient.id}
+        `;
+
+        await sql`
+          INSERT INTO transactions (
+            id,
+            user_id,
+            wallet_id,
+            transaction_reference,
+            transaction_type,
+            direction,
+            amount,
+            fee,
+            currency,
+            status,
+            description,
+            metadata,
+            created_at,
+            updated_at
+          )
+          VALUES (
+            ${crypto.randomUUID()},
+            ${item.sender_user_id},
+            ${sender.id},
+            ${item.transfer_reference},
+            'transfer',
+            'debit',
+            ${amount},
+            ${numberValue(item.fee, 0)},
+            ${item.currency || "USD"},
+            'success',
+            'Transfer sent.',
+            ${JSON.stringify({
+              source: "admin_request_approval",
+              request_id: item.id,
+              recipient_user_id:
+                item.recipient_user_id
+            })},
+            NOW(),
+            NOW()
+          )
+        `;
+
+        await sql`
+          INSERT INTO transactions (
+            id,
+            user_id,
+            wallet_id,
+            transaction_reference,
+            transaction_type,
+            direction,
+            amount,
+            fee,
+            currency,
+            status,
+            description,
+            metadata,
+            created_at,
+            updated_at
+          )
+          VALUES (
+            ${crypto.randomUUID()},
+            ${item.recipient_user_id},
+            ${recipient.id},
+            ${`${item.transfer_reference}-RECEIVE`},
+            'transfer',
+            'credit',
+            ${amount},
+            0,
+            ${item.currency || "USD"},
+            'success',
+            'Transfer received.',
+            ${JSON.stringify({
+              source: "admin_request_approval",
+              request_id: item.id,
+              sender_user_id:
+                item.sender_user_id
+            })},
+            NOW(),
+            NOW()
+          )
+        `;
+
+      } catch (error) {
+
+        await sql`
+          UPDATE wallets
+          SET
+            balance = ${senderBefore},
+            updated_at = NOW()
+          WHERE id = ${sender.id}
+        `;
+
+        await sql`
+          UPDATE wallets
+          SET
+            balance = ${recipientBefore},
+            updated_at = NOW()
+          WHERE id = ${recipient.id}
+        `;
+
+        throw error;
+      }
+
+      await sql`
+        UPDATE transfer_requests
+        SET
+          status = 'approved',
+          processed_at = NOW(),
+          updated_at = NOW()
+        WHERE id = ${requestId}
+      `;
+
+      return ok({
+        message:
+          "Transfer request approved.",
+        request_type:
+          "transfer",
+        amount
+      });
+    }
+
+    return bad(
+      404,
+      "Request not found or has already been processed."
+    );
+  }
+
+  return bad(
+    400,
+    "Invalid request."
+  );
+}
+
+
+/* =====================================================
+   ADMIN CHAT
+===================================================== */
+
+async function adminChat(
+  request,
+  body = null,
+  conversationId = null
+) {
+
+  const auth =
+    await requireAdmin(request);
+
+  if (!auth.ok) {
+    return bad(
+      auth.status,
+      auth.error
+    );
+  }
+
+
+  /*
+   * GET /api/admin/chat
+   * Return customer conversations.
+   */
+
+  if (
+    !body &&
+    !conversationId
+  ) {
+
+    const conversations =
+      await sql`
+        SELECT
+          c.id,
+          c.user_id,
+          c.created_at,
+          c.updated_at,
+          p.first_name,
+          p.last_name,
+          p.username,
+          p.email
+        FROM chat_conversations c
+        LEFT JOIN profiles p
+          ON p.id = c.user_id
+        ORDER BY
+          c.updated_at DESC
+      `;
+
+    return ok({
+      conversations
+    });
+  }
+
+
+  /*
+   * GET /api/admin/chat?conversation_id=...
+   */
+
+  if (
+    !body &&
+    conversationId
+  ) {
+
+    const conversations =
+      await sql`
+        SELECT *
+        FROM chat_conversations
+        WHERE id = ${conversationId}
+        LIMIT 1
+      `;
+
+    if (!conversations.length) {
+      return bad(
+        404,
+        "Conversation not found."
+      );
+    }
+
+    const messages =
+      await sql`
+        SELECT *
+        FROM chat_messages
+        WHERE conversation_id =
+          ${conversationId}
+        ORDER BY created_at ASC
+        LIMIT 500
+      `;
+
+    return ok({
+      conversation:
+        conversations[0],
+      messages
+    });
+  }
+
+
+  /*
+   * POST /api/admin/chat/:conversation_id
+   */
+
+  if (
+    body &&
+    conversationId
+  ) {
+
+    const message =
+      String(
+        body.message ||
+        body.content ||
+        body.text ||
+        ""
+      ).trim();
+
+    if (!message) {
+      return bad(
+        400,
+        "Message is required."
+      );
+    }
+
+    const conversations =
+      await sql`
+        SELECT *
+        FROM chat_conversations
+        WHERE id = ${conversationId}
+        LIMIT 1
+      `;
+
+    if (!conversations.length) {
+      return bad(
+        404,
+        "Conversation not found."
+      );
+    }
+
+    const rows =
+      await sql`
+        INSERT INTO chat_messages (
+          id,
+          conversation_id,
+          sender_id,
+          sender_type,
+          message,
+          created_at
+        )
+        VALUES (
+          ${crypto.randomUUID()},
+          ${conversationId},
+          ${auth.user.id},
+          'admin',
+          ${message},
+          NOW()
+        )
+        RETURNING *
+      `;
+
+    await sql`
+      UPDATE chat_conversations
+      SET
+        updated_at = NOW()
+      WHERE id = ${conversationId}
+    `;
+
+    return ok({
+      message:
+        rows[0],
+      messages:
+        [rows[0]],
+      message_text:
+        "Message sent successfully."
+    });
+  }
+
+  return bad(
+    400,
+    "Invalid chat request."
+  );
+     }
 /* =====================================================
    ADMIN DASHBOARD
 ===================================================== */
