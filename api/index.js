@@ -6090,7 +6090,7 @@ export default async function handler(
           "/api/customer/withdrawal-account" ||
         path ===
           "/api/user/withdrawal-account" ||
-        path ===
+    ifath ===
           "/api/withdrawal-account"
       )
     ) {
@@ -6635,31 +6635,38 @@ if (
   );
 }
 
-
 /* =================================================
    ADMIN REQUESTS
 ================================================= */
 
 if (
-  method === "GET" &&
-  path === "/api/admin/requests"
+  (
+    method === "GET" &&
+    path === "/api/admin/requests"
+  ) ||
+  (
+    method === "PATCH" &&
+    path.startsWith("/api/admin/requests/")
+  )
 ) {
-  const auth =
-    await requireAdmin(request);
+  const body =
+    method === "PATCH"
+      ? await jsonBody(request)
+      : null;
 
-  if (!auth.ok) {
-    return writeWebResponse(
-      res,
-      bad(
-        auth.status,
-        auth.error
-      )
-    );
-  }
+  const requestId =
+    method === "PATCH"
+      ? path.split("/").pop()
+      : null;
 
   return writeWebResponse(
     res,
-    await adminRequests(url)
+    await adminRequests(
+      request,
+      url,
+      body,
+      requestId
+    )
   );
 }
     /* =================================================
