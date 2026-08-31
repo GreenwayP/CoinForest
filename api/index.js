@@ -6090,7 +6090,7 @@ export default async function handler(
           "/api/customer/withdrawal-account" ||
         path ===
           "/api/user/withdrawal-account" ||
-    ifath ===
+    path ===
           "/api/withdrawal-account"
       )
     ) {
