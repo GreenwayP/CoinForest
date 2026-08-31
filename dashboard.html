@@ -4389,26 +4389,53 @@ DASHBOARD DATA
 
 async function refreshDashboard(){
 
-  const result =
+  let result =
+  await api(
+    "/api/customer/dashboard",
+    {
+      method:"GET"
+    }
+  );
+
+/*
+ * If the full dashboard endpoint fails,
+ * fall back to the dedicated customer wallet
+ * endpoint so the customer's wallet can still load.
+ */
+if(!result.success){
+
+  const walletResult =
     await api(
-      "/api/customer/dashboard",
+      "/api/customer/wallets",
       {
         method:"GET"
       }
     );
 
-  if(!result.success){
+  if(walletResult.success){
+
+    result = {
+      ...walletResult,
+      transactions: [],
+      total_deposits: 0,
+      total_invested: 0,
+      total_withdrawals: 0,
+      weekly_profit: 0
+    };
+
+  }else{
 
     showNotice(
       "globalNotice",
+      walletResult.error ||
       result.error ||
       "Unable to load your wallet.",
       "error"
     );
 
     return;
-
   }
+}
 
   dashboardData =
     result;
