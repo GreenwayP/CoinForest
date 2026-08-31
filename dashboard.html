@@ -3624,13 +3624,13 @@ SEND MODAL
     <div class="field">
 
       <label>
-        Recipient Username
+        Recipient Wallet Address
       </label>
 
       <input
         type="text"
         id="recipient"
-        placeholder="@username">
+        placeholder="Enter wallet address">
 
     </div>
 
@@ -3928,23 +3928,91 @@ NAVIGATION
 function goBack(){
 
   /*
-   * Phone/browser back must NEVER log the
-   * customer out.
+   * Stay inside the customer dashboard.
+   * Never use browser history to leave the dashboard
+   * when there is no earlier dashboard section.
    */
+  const state = window.history.state;
 
   if(
-    window.history.length>1
+    state &&
+    state.coinforestDashboard &&
+    Number(state.dashboardDepth || 0) > 0
   ){
-
     window.history.back();
-
-  }else{
-
-    window.location.href="dashboard.html";
-
+    return;
   }
 
+  /* Last dashboard page: refresh instead of logging out. */
+  window.location.reload();
+
 }
+
+/*
+ * Protect the customer dashboard from the browser/phone Back button.
+ * If history reaches the page that opened the dashboard (normally login),
+ * restore the dashboard entry and refresh it instead of navigating away.
+ */
+(function setupDashboardHistory(){
+
+  const hash = window.location.hash
+    ? window.location.hash.substring(1)
+    : "dashboard";
+
+  const firstSection =
+    document.getElementById("section-" + hash)
+      ? hash
+      : "dashboard";
+
+  window.history.replaceState(
+    {
+      coinforestDashboard:true,
+      section:firstSection,
+      dashboardDepth:0
+    },
+    "",
+    window.location.pathname + window.location.search + "#" + firstSection
+  );
+
+  window.addEventListener("popstate", function(event){
+
+    const state = event.state;
+
+    if(
+      state &&
+      state.coinforestDashboard &&
+      state.section
+    ){
+      navigateSection(state.section, true);
+      return;
+    }
+
+    /*
+     * We reached the history entry before the dashboard.
+     * Put the dashboard entry back BEFORE refreshing so the customer
+     * never lands on the login page.
+     */
+    const current =
+      window.history.state && window.history.state.coinforestDashboard
+        ? window.history.state
+        : {
+            coinforestDashboard:true,
+            section:firstSection,
+            dashboardDepth:0
+          };
+
+    window.history.replaceState(
+      current,
+      "",
+      window.location.pathname + window.location.search + "#" +
+        (current.section || firstSection)
+    );
+
+    window.location.reload();
+
+  });
+
+})();
 
 function toggleSidebar(){
 
@@ -3964,9 +4032,27 @@ function closeSidebar(){
 
 }
 
-function navigateSection(section){
+function navigateSection(section, fromHistory=false){
 
   closeSidebar();
+
+  if(!fromHistory){
+    const current = window.history.state;
+    const depth =
+      current && current.coinforestDashboard
+        ? Number(current.dashboardDepth || 0) + 1
+        : 1;
+
+    window.history.pushState(
+      {
+        coinforestDashboard:true,
+        section:section,
+        dashboardDepth:depth
+      },
+      "",
+      window.location.pathname + window.location.search + "#" + section
+    );
+  }
 
   document
     .querySelectorAll(".dashboard-section")
@@ -4907,7 +4993,7 @@ async function submitSend(){
 
     showNotice(
       "sendNotice",
-      "Please enter the recipient username.",
+      "Please enter the recipient wallet address.",
       "error"
     );
 
@@ -4961,9 +5047,10 @@ async function submitSend(){
       {
         method:"POST",
         body:JSON.stringify({
-          recipient_username:
-            recipient.replace(/^@/,""),
-          amount
+          recipient_wallet_address:
+            recipient,
+          amount,
+          approval_required:true
         })
       }
     );
@@ -4990,7 +5077,7 @@ async function submitSend(){
   showNotice(
     "globalNotice",
     result.message ||
-    "Money sent successfully.",
+    "Send request submitted for admin approval.",
     "success"
   );
 
