@@ -544,44 +544,32 @@ async function ensureUserWallets(userId) {
   if (!userId) return;
 
   /*
-   * Current wallet model.
+   * Current wallet schema:
+   * wallets(user_id, wallet_type, currency, balance, status)
+   *
+   * Check whether each wallet already exists before
+   * creating it. This prevents duplicate zero-balance
+   * wallets from being created every time the customer
+   * dashboard loads.
    */
+
   try {
-    await sql`
-      INSERT INTO wallets (
-        id,
-        user_id,
-        wallet_type,
-        currency,
-        balance,
-        status,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        'main',
-        'USD',
-        0,
-        'active',
-        NOW(),
-        NOW()
-      )
-      ON CONFLICT DO NOTHING
+    const mainRows = await sql`
+      SELECT id
+      FROM wallets
+      WHERE user_id = ${userId}
+        AND LOWER(COALESCE(wallet_type, '')) = 'main'
+      LIMIT 1
     `;
-  } catch (error) {
-    /*
-     * Legacy combined wallet compatibility.
-     */
-    try {
+
+    if (!mainRows.length) {
       await sql`
         INSERT INTO wallets (
           id,
           user_id,
-          main_balance,
-          profit_balance,
+          wallet_type,
           currency,
+          balance,
           status,
           created_at,
           updated_at
@@ -589,56 +577,63 @@ async function ensureUserWallets(userId) {
         VALUES (
           ${crypto.randomUUID()},
           ${userId},
-          0,
-          0,
+          'main',
           'USD',
+          0,
           'active',
           NOW(),
           NOW()
         )
-        ON CONFLICT DO NOTHING
       `;
-    } catch (legacyError) {
-      console.warn(
-        "Main wallet creation warning:",
-        legacyError?.message ||
-          error?.message
-      );
     }
+  } catch (error) {
+    console.warn(
+      "Main wallet creation warning:",
+      error?.message
+    );
   }
 
   try {
-    await sql`
-      INSERT INTO wallets (
-        id,
-        user_id,
-        wallet_type,
-        currency,
-        balance,
-        status,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${crypto.randomUUID()},
-        ${userId},
-        'profit',
-        'USD',
-        0,
-        'active',
-        NOW(),
-        NOW()
-      )
-      ON CONFLICT DO NOTHING
+    const profitRows = await sql`
+      SELECT id
+      FROM wallets
+      WHERE user_id = ${userId}
+        AND LOWER(COALESCE(wallet_type, '')) = 'profit'
+      LIMIT 1
     `;
+
+    if (!profitRows.length) {
+      await sql`
+        INSERT INTO wallets (
+          id,
+          user_id,
+          wallet_type,
+          currency,
+          balance,
+          status,
+          created_at,
+          updated_at
+        )
+        VALUES (
+          ${crypto.randomUUID()},
+          ${userId},
+          'profit',
+          'USD',
+          0,
+          'active',
+          NOW(),
+          NOW()
+        )
+      `;
+    }
   } catch (error) {
     console.warn(
-      "Profit wallet creation compatibility warning:",
+      "Profit wallet creation warning:",
       error?.message
     );
   }
 }
-
+        
 async function ensureAllCustomerWallets() {
   const customers = await sql`
     SELECT
