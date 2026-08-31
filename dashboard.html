@@ -3928,91 +3928,43 @@ NAVIGATION
 function goBack(){
 
   /*
-   * Stay inside the customer dashboard.
-   * Never use browser history to leave the dashboard
-   * when there is no earlier dashboard section.
+   * Keep Back navigation inside the customer dashboard.
+   * Never use Back as a logout action.
    */
-  const state = window.history.state;
+  const currentSection =
+    window.__coinforestSection || "dashboard";
 
-  if(
-    state &&
-    state.coinforestDashboard &&
-    Number(state.dashboardDepth || 0) > 0
-  ){
-    window.history.back();
+  if(currentSection === "dashboard"){
+    window.location.reload();
     return;
   }
 
-  /* Last dashboard page: refresh instead of logging out. */
-  window.location.reload();
-
+  if(window.history.length > 1){
+    window.history.back();
+  }else{
+    navigateSection("dashboard", false);
+  }
 }
 
-/*
- * Protect the customer dashboard from the browser/phone Back button.
- * If history reaches the page that opened the dashboard (normally login),
- * restore the dashboard entry and refresh it instead of navigating away.
- */
-(function setupDashboardHistory(){
+function handleDashboardPopState(event){
+  const state = event.state || {};
 
-  const hash = window.location.hash
-    ? window.location.hash.substring(1)
-    : "dashboard";
+  if(state && state.coinforestDashboard){
+    window.__coinforestSection = state.section || "dashboard";
+    navigateSection(window.__coinforestSection, false);
+    return;
+  }
 
-  const firstSection =
-    document.getElementById("section-" + hash)
-      ? hash
-      : "dashboard";
-
-  window.history.replaceState(
-    {
-      coinforestDashboard:true,
-      section:firstSection,
-      dashboardDepth:0
-    },
-    "",
-    window.location.pathname + window.location.search + "#" + firstSection
-  );
-
-  window.addEventListener("popstate", function(event){
-
-    const state = event.state;
-
-    if(
-      state &&
-      state.coinforestDashboard &&
-      state.section
-    ){
-      navigateSection(state.section, true);
-      return;
-    }
-
-    /*
-     * We reached the history entry before the dashboard.
-     * Put the dashboard entry back BEFORE refreshing so the customer
-     * never lands on the login page.
-     */
-    const current =
-      window.history.state && window.history.state.coinforestDashboard
-        ? window.history.state
-        : {
-            coinforestDashboard:true,
-            section:firstSection,
-            dashboardDepth:0
-          };
-
-    window.history.replaceState(
-      current,
-      "",
-      window.location.pathname + window.location.search + "#" +
-        (current.section || firstSection)
-    );
-
+  /* The previous browser entry is outside the dashboard.
+     Return to the dashboard entry instead of exposing login. */
+  try{
+    window.history.go(1);
+  }catch(error){
     window.location.reload();
+  }
+}
 
-  });
-
-})();
+window.addEventListener("popstate", handleDashboardPopState);
 
 function toggleSidebar(){
 
@@ -4032,25 +3984,20 @@ function closeSidebar(){
 
 }
 
-function navigateSection(section, fromHistory=false){
+function navigateSection(section, addHistory=true){
 
   closeSidebar();
 
-  if(!fromHistory){
-    const current = window.history.state;
-    const depth =
-      current && current.coinforestDashboard
-        ? Number(current.dashboardDepth || 0) + 1
-        : 1;
+  window.__coinforestSection = section;
 
+  if(addHistory){
     window.history.pushState(
       {
         coinforestDashboard:true,
-        section:section,
-        dashboardDepth:depth
+        section
       },
       "",
-      window.location.pathname + window.location.search + "#" + section
+      window.location.href
     );
   }
 
@@ -5047,10 +4994,9 @@ async function submitSend(){
       {
         method:"POST",
         body:JSON.stringify({
-          recipient_wallet_address:
-            recipient,
-          amount,
-          approval_required:true
+          recipient_username:
+            recipient.replace(/^@/,""),
+          amount
         })
       }
     );
@@ -5077,7 +5023,7 @@ async function submitSend(){
   showNotice(
     "globalNotice",
     result.message ||
-    "Send request submitted for admin approval.",
+    "Money sent successfully.",
     "success"
   );
 
@@ -6363,6 +6309,22 @@ function escapeHtml(
     .replaceAll("'","&#039;");
 
 }
+
+/* =====================================================
+IN-DASHBOARD HISTORY INITIALIZATION
+===================================================== */
+(function(){
+  const initialSection = "dashboard";
+  window.__coinforestSection = initialSection;
+  window.history.replaceState(
+    {
+      coinforestDashboard:true,
+      section:initialSection
+    },
+    "",
+    window.location.href
+  );
+})();
 
 /* =====================================================
 START
