@@ -1172,7 +1172,8 @@ async function logout(request) {
 async function loadCustomerWalletState(
   userId
 ) {
-  await ensureUserWallets(userId);
+    // Existing customer wallets are loaded directly.
+  // Do not create/modify wallets during dashboard loading.
 
   const rows = await sql`
     SELECT *
