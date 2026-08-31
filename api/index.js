@@ -92,7 +92,7 @@ function hashPassword(password) {
     64
   );
 
-  return \`\${salt}:\${derivedKey.toString("hex")}\`;
+  return `${salt}:${derivedKey.toString("hex")}`;
 }
 
 function verifyPassword(password, storedHash) {
@@ -142,18 +142,18 @@ function getSiteUrl(request) {
     return "https://coinforest.vercel.app";
   }
 
-  return \`https://\${String(host)
+  return `https://${String(host)
     .split(",")[0]
-    .trim()}\`;
+    .trim()}`;
 }
 
 function escapeHtml(value) {
   return String(value)
-    .replaceAll("&", "&")
-    .replaceAll("<", "<")
-    .replaceAll(">", ">")
-    .replaceAll('"', """)
-    .replaceAll("'", "'");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function jsonBody(request) {
@@ -196,7 +196,7 @@ async function sendEmail({ to, subject, html }) {
     {
       method: "POST",
       headers: {
-        Authorization: \`Bearer \${apiKey}\`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -231,15 +231,15 @@ async function createEmailToken(
   const rawToken = createToken();
   const tokenHash = hashToken(rawToken);
 
-  await sql\`
+  await sql`
     UPDATE auth_email_tokens
     SET used_at = NOW()
-    WHERE user_id = \${userId}
-      AND token_type = \${tokenType}
+    WHERE user_id = ${userId}
+      AND token_type = ${tokenType}
       AND used_at IS NULL
-  \`;
+  `;
 
-  await sql\`
+  await sql`
     INSERT INTO auth_email_tokens (
       id,
       user_id,
@@ -249,15 +249,15 @@ async function createEmailToken(
       created_at
     )
     VALUES (
-      \${crypto.randomUUID()},
-      \${userId},
-      \${tokenHash},
-      \${tokenType},
+      ${crypto.randomUUID()},
+      ${userId},
+      ${tokenHash},
+      ${tokenType},
       NOW() +
-        (\${expiresMinutes} * INTERVAL '1 minute'),
+        (${expiresMinutes} * INTERVAL '1 minute'),
       NOW()
     )
-  \`;
+  `;
 
   return rawToken;
 }
@@ -273,8 +273,8 @@ async function sendVerificationEmail(
   );
 
   const verificationUrl =
-    \`\${getSiteUrl(request)}\` +
-    \`/verify-email.html?token=\` +
+    `${getSiteUrl(request)}` +
+    `/verify-email.html?token=` +
     encodeURIComponent(token);
 
   const firstName =
@@ -286,7 +286,7 @@ async function sendVerificationEmail(
     to: user.email,
     subject:
       "Confirm your CoinForest account",
-    html: \`
+    html: `
       <div style="
         max-width:600px;
         margin:40px auto;
@@ -317,7 +317,7 @@ async function sendVerificationEmail(
           <h2>Confirm your account</h2>
 
           <p>
-            Hello \${escapeHtml(firstName)},
+            Hello ${escapeHtml(firstName)},
           </p>
 
           <p style="line-height:1.7;">
@@ -330,7 +330,7 @@ async function sendVerificationEmail(
             margin:30px 0;
           ">
             <a
-              href="\${verificationUrl}"
+              href="${verificationUrl}"
               style="
                 display:inline-block;
                 background:#2ecc71;
@@ -353,7 +353,7 @@ async function sendVerificationEmail(
           </p>
         </div>
       </div>
-    \`
+    `
   });
 }
 
@@ -412,12 +412,12 @@ async function register(request, body) {
     );
   }
 
-  const existingEmail = await sql\`
+  const existingEmail = await sql`
     SELECT id
     FROM profiles
-    WHERE LOWER(email) = \${email}
+    WHERE LOWER(email) = ${email}
     LIMIT 1
-  \`;
+  `;
 
   if (existingEmail.length) {
     return bad(
@@ -426,13 +426,13 @@ async function register(request, body) {
     );
   }
 
-  const existingUsername = await sql\`
+  const existingUsername = await sql`
     SELECT id
     FROM profiles
     WHERE LOWER(username) =
-      LOWER(\${username})
+      LOWER(${username})
     LIMIT 1
-  \`;
+  `;
 
   if (existingUsername.length) {
     return bad(
@@ -446,7 +446,7 @@ async function register(request, body) {
   const passwordHash =
     hashPassword(password);
 
-  await sql\`
+  await sql`
     INSERT INTO profiles (
       id,
       role_id,
@@ -462,12 +462,12 @@ async function register(request, body) {
       updated_at
     )
     VALUES (
-      \${id},
+      ${id},
       '9dbe97ec-7b11-4789-b31b-bff00bc2483e',
-      \${firstName},
-      \${lastName},
-      \${username},
-      \${email},
+      ${firstName},
+      ${lastName},
+      ${username},
+      ${email},
       'pending',
       'pending',
       false,
@@ -475,9 +475,9 @@ async function register(request, body) {
       NOW(),
       NOW()
     )
-  \`;
+  `;
 
-  await sql\`
+  await sql`
     INSERT INTO auth_credentials (
       user_id,
       password_hash,
@@ -488,15 +488,15 @@ async function register(request, body) {
       updated_at
     )
     VALUES (
-      \${id},
-      \${passwordHash},
+      ${id},
+      ${passwordHash},
       NOW(),
       0,
       NULL,
       NOW(),
       NOW()
     )
-  \`;
+  `;
 
   await ensureUserWallets(id);
 
@@ -506,7 +506,7 @@ async function register(request, body) {
     first_name: firstName,
     last_name: lastName,
     username
-  }; 
+  };
 
   /*
    * Email verification is deliberately NOT required
@@ -547,7 +547,7 @@ async function ensureUserWallets(userId) {
    * Current wallet model.
    */
   try {
-    await sql\`
+    await sql`
       INSERT INTO wallets (
         id,
         user_id,
@@ -559,8 +559,8 @@ async function ensureUserWallets(userId) {
         updated_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${userId},
+        ${crypto.randomUUID()},
+        ${userId},
         'main',
         'USD',
         0,
@@ -569,13 +569,13 @@ async function ensureUserWallets(userId) {
         NOW()
       )
       ON CONFLICT DO NOTHING
-    \`;
+    `;
   } catch (error) {
     /*
      * Legacy combined wallet compatibility.
      */
     try {
-      await sql\`
+      await sql`
         INSERT INTO wallets (
           id,
           user_id,
@@ -587,8 +587,8 @@ async function ensureUserWallets(userId) {
           updated_at
         )
         VALUES (
-          \${crypto.randomUUID()},
-          \${userId},
+          ${crypto.randomUUID()},
+          ${userId},
           0,
           0,
           'USD',
@@ -597,7 +597,7 @@ async function ensureUserWallets(userId) {
           NOW()
         )
         ON CONFLICT DO NOTHING
-      \`;
+      `;
     } catch (legacyError) {
       console.warn(
         "Main wallet creation warning:",
@@ -608,7 +608,7 @@ async function ensureUserWallets(userId) {
   }
 
   try {
-    await sql\`
+    await sql`
       INSERT INTO wallets (
         id,
         user_id,
@@ -620,8 +620,8 @@ async function ensureUserWallets(userId) {
         updated_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${userId},
+        ${crypto.randomUUID()},
+        ${userId},
         'profit',
         'USD',
         0,
@@ -630,7 +630,7 @@ async function ensureUserWallets(userId) {
         NOW()
       )
       ON CONFLICT DO NOTHING
-    \`;
+    `;
   } catch (error) {
     console.warn(
       "Profit wallet creation compatibility warning:",
@@ -640,7 +640,7 @@ async function ensureUserWallets(userId) {
 }
 
 async function ensureAllCustomerWallets() {
-  const customers = await sql\`
+  const customers = await sql`
     SELECT
       p.id
     FROM profiles p
@@ -648,7 +648,7 @@ async function ensureAllCustomerWallets() {
       ON r.id = p.role_id
     WHERE LOWER(COALESCE(r.name, 'user'))
       NOT IN ('admin', 'administrator')
-  \`;
+  `;
 
   for (const customer of customers) {
     try {
@@ -685,7 +685,7 @@ async function login(body) {
     );
   }
 
-  const result = await sql\`
+  const result = await sql`
     SELECT
       p.id,
       p.email,
@@ -705,9 +705,9 @@ async function login(body) {
       ON a.user_id = p.id
     LEFT JOIN roles r
       ON r.id = p.role_id
-    WHERE LOWER(p.email) = \${email}
+    WHERE LOWER(p.email) = ${email}
     LIMIT 1
-  \`;
+  `;
 
   if (!result.length) {
     return bad(
@@ -742,7 +742,7 @@ async function login(body) {
       ) + 1;
 
     if (attempts >= 5) {
-      await sql\`
+      await sql`
         UPDATE auth_credentials
         SET
           failed_login_attempts = 0,
@@ -750,8 +750,8 @@ async function login(body) {
             NOW() +
             INTERVAL '15 minutes',
           updated_at = NOW()
-        WHERE user_id = \${user.id}
-      \`;
+        WHERE user_id = ${user.id}
+      `;
 
       return response(423, {
         success: false,
@@ -760,13 +760,13 @@ async function login(body) {
       });
     }
 
-    await sql\`
+    await sql`
       UPDATE auth_credentials
       SET
-        failed_login_attempts = \${attempts},
+        failed_login_attempts = ${attempts},
         updated_at = NOW()
-      WHERE user_id = \${user.id}
-    \`;
+      WHERE user_id = ${user.id}
+    `;
 
     return bad(
       401,
@@ -774,18 +774,18 @@ async function login(body) {
     );
   }
 
-  await sql\`
+  await sql`
     UPDATE auth_credentials
     SET
       failed_login_attempts = 0,
       locked_until = NULL,
       updated_at = NOW()
-    WHERE user_id = \${user.id}
-  \`;
+    WHERE user_id = ${user.id}
+  `;
 
   const token = createToken();
 
-  await sql\`
+  await sql`
     INSERT INTO user_sessions (
       id,
       user_id,
@@ -797,16 +797,16 @@ async function login(body) {
       updated_at
     )
     VALUES (
-      \${crypto.randomUUID()},
-      \${user.id},
-      \${hashToken(token)},
+      ${crypto.randomUUID()},
+      ${user.id},
+      ${hashToken(token)},
       'active',
       NOW(),
       NOW() + INTERVAL '30 days',
       NOW(),
       NOW()
     )
-  \`;
+  `;
 
   return ok({
     message:
@@ -862,7 +862,7 @@ async function authenticate(request) {
   const tokenHash =
     hashToken(token);
 
-  const result = await sql\`
+  const result = await sql`
     SELECT
       p.id,
       p.email,
@@ -881,11 +881,11 @@ async function authenticate(request) {
       ON r.id = p.role_id
     WHERE
       s.session_token_hash =
-        \${tokenHash}
+        ${tokenHash}
       AND s.status = 'active'
       AND s.expires_at > NOW()
     LIMIT 1
-  \`;
+  `;
 
   if (!result.length) {
     return {
@@ -896,16 +896,16 @@ async function authenticate(request) {
     };
   }
 
-  await sql\`
+  await sql`
     UPDATE user_sessions
     SET
       last_activity_at = NOW(),
       updated_at = NOW()
     WHERE
       session_token_hash =
-        \${tokenHash}
+        ${tokenHash}
       AND status = 'active'
-  \`;
+  `;
 
   return {
     ok: true,
@@ -1154,7 +1154,7 @@ async function logout(request) {
   const token = bearer(request);
 
   if (token) {
-    await sql\`
+    await sql`
       UPDATE user_sessions
       SET
         status = 'revoked',
@@ -1162,9 +1162,9 @@ async function logout(request) {
         updated_at = NOW()
       WHERE
         session_token_hash =
-          \${hashToken(token)}
+          ${hashToken(token)}
         AND status = 'active'
-    \`;
+    `;
   }
 
   return ok({
@@ -1182,12 +1182,12 @@ async function loadCustomerWalletState(
 ) {
   await ensureUserWallets(userId);
 
-  const rows = await sql\`
+  const rows = await sql`
     SELECT *
     FROM wallets
-    WHERE user_id = \${userId}
+    WHERE user_id = ${userId}
     ORDER BY created_at ASC
-  \`;
+  `;
 
   let main = null;
   let profit = null;
@@ -1382,13 +1382,13 @@ async function loadCustomerTransactions(
   let rows = [];
 
   try {
-    rows = await sql\`
+    rows = await sql`
       SELECT *
       FROM transactions
-      WHERE user_id = \${userId}
+      WHERE user_id = ${userId}
       ORDER BY created_at DESC
-      LIMIT \${limit}
-    \`;
+      LIMIT ${limit}
+    `;
   } catch (error) {
     console.warn(
       "Customer transactions query warning:",
@@ -1403,25 +1403,25 @@ async function loadCustomerTransactions(
    */
   try {
     const ledger =
-      await sql\`
+      await sql`
         SELECT *
         FROM wallet_ledger
-        WHERE user_id = \${userId}
+        WHERE user_id = ${userId}
         ORDER BY created_at DESC
-        LIMIT \${limit}
-      \`;
+        LIMIT ${limit}
+      `;
 
     const existingKeys =
       new Set(
         rows.map(
           row =>
-            \`\${row.transaction_reference || ""}|\${row.created_at || ""}\`
+            `${row.transaction_reference || ""}|${row.created_at || ""}`
         )
       );
 
     for (const item of ledger) {
       const key =
-        \`LEDGER|\${item.created_at || ""}|\${item.id || ""}\`;
+        `LEDGER|${item.created_at || ""}|${item.id || ""}`;
 
       if (
         !existingKeys.has(key)
@@ -1434,7 +1434,7 @@ async function loadCustomerTransactions(
 
           transaction_reference:
             item.transaction_reference ||
-            \`LEDGER-\${item.id}\`,
+            `LEDGER-${item.id}`,
 
           transaction_type:
             item.entry_type ||
@@ -1584,14 +1584,14 @@ async function customerDashboard(
 
     try {
       investments =
-        await sql\`
+        await sql`
           SELECT *
           FROM investments
           WHERE user_id =
-            \${auth.user.id}
+            ${auth.user.id}
           ORDER BY created_at DESC
           LIMIT 100
-        \`;
+        `;
     } catch (error) {
       console.warn(
         "Customer investments unavailable:",
@@ -1600,13 +1600,13 @@ async function customerDashboard(
     }
 
     const profileRows =
-      await sql\`
+      await sql`
         SELECT *
         FROM profiles
         WHERE id =
-          \${auth.user.id}
+          ${auth.user.id}
         LIMIT 1
-      \`;
+      `;
 
     const profile =
       profileRows[0] ||
@@ -1703,13 +1703,13 @@ async function customerProfile(
 
   if (!body) {
     const rows =
-      await sql\`
+      await sql`
         SELECT *
         FROM profiles
         WHERE id =
-          \${auth.user.id}
+          ${auth.user.id}
         LIMIT 1
-      \`;
+      `;
 
     return ok({
       profile:
@@ -1747,29 +1747,29 @@ async function customerProfile(
       : null;
 
   const updated =
-    await sql\`
+    await sql`
       UPDATE profiles
       SET
         first_name =
           COALESCE(
-            \${firstName},
+            ${firstName},
             first_name
           ),
         last_name =
           COALESCE(
-            \${lastName},
+            ${lastName},
             last_name
           ),
         username =
           COALESCE(
-            \${username},
+            ${username},
             username
           ),
         updated_at = NOW()
       WHERE id =
-        \${auth.user.id}
+        ${auth.user.id}
       RETURNING *
-    \`;
+    `;
 
   return ok({
     message:
@@ -1802,13 +1802,13 @@ async function customerKyc(
   }
 
   const profileRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM profiles
       WHERE id =
-        \${auth.user.id}
+        ${auth.user.id}
       LIMIT 1
-    \`;
+    `;
 
   const profile =
     profileRows[0] ||
@@ -1819,14 +1819,14 @@ async function customerKyc(
 
     try {
       submissions =
-        await sql\`
+        await sql`
           SELECT *
           FROM kyc_submissions
           WHERE user_id =
-            \${auth.user.id}
+            ${auth.user.id}
           ORDER BY created_at DESC
           LIMIT 20
-        \`;
+        `;
     } catch (error) {
       console.warn(
         "KYC submissions unavailable:",
@@ -1879,11 +1879,11 @@ async function customerKyc(
 
   try {
     existing =
-      await sql\`
+      await sql`
         SELECT id
         FROM kyc_submissions
         WHERE user_id =
-          \${auth.user.id}
+          ${auth.user.id}
           AND LOWER(
             COALESCE(
               status,
@@ -1892,7 +1892,7 @@ async function customerKyc(
           ) = 'pending'
         ORDER BY created_at DESC
         LIMIT 1
-      \`;
+      `;
   } catch (error) {
     /*
      * If the submissions table does not exist,
@@ -1920,7 +1920,7 @@ async function customerKyc(
     crypto.randomUUID();
 
   try {
-    await sql\`
+    await sql`
       INSERT INTO kyc_submissions (
         id,
         user_id,
@@ -1929,13 +1929,13 @@ async function customerKyc(
         updated_at
       )
       VALUES (
-        \${id},
-        \${auth.user.id},
+        ${id},
+        ${auth.user.id},
         'pending',
         NOW(),
         NOW()
       )
-    \`;
+    `;
   } catch (error) {
     return bad(
       500,
@@ -1947,14 +1947,14 @@ async function customerKyc(
     );
   }
 
-  await sql\`
+  await sql`
     UPDATE profiles
     SET
       kyc_status = 'pending',
       updated_at = NOW()
     WHERE id =
-      \${auth.user.id}
-  \`;
+      ${auth.user.id}
+  `;
 
   return ok({
     message:
@@ -2042,15 +2042,15 @@ async function customerDeposit(
   );
 
   const walletRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM wallets
       WHERE user_id =
-        \${auth.user.id}
+        ${auth.user.id}
         AND wallet_type =
           'main'
       LIMIT 1
-    \`;
+    `;
 
   if (!walletRows.length) {
     return bad(
@@ -2063,7 +2063,7 @@ async function customerDeposit(
     walletRows[0];
 
   const reference =
-    \`DEP-\${crypto.randomUUID()}\`;
+    `DEP-${crypto.randomUUID()}`;
 
   let paymentMethod =
     String(
@@ -2081,7 +2081,7 @@ async function customerDeposit(
 
   try {
     const rows =
-      await sql\`
+      await sql`
         INSERT INTO deposit_requests (
           id,
           deposit_reference,
@@ -2096,20 +2096,20 @@ async function customerDeposit(
           updated_at
         )
         VALUES (
-          \${crypto.randomUUID()},
-          \${reference},
-          \${auth.user.id},
-          \${wallet.id},
-          \${amount},
+          ${crypto.randomUUID()},
+          ${reference},
+          ${auth.user.id},
+          ${wallet.id},
+          ${amount},
           'USD',
-          \${paymentMethod},
-          \${paymentReference},
+          ${paymentMethod},
+          ${paymentReference},
           'pending',
           NOW(),
           NOW()
         )
         RETURNING *
-      \`;
+      `;
 
     return ok({
       message:
@@ -2200,15 +2200,15 @@ async function customerSend(
   }
 
   const walletRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM wallets
       WHERE user_id =
-        \${auth.user.id}
+        ${auth.user.id}
         AND wallet_type =
           'main'
       LIMIT 1
-    \`;
+    `;
 
   if (!walletRows.length) {
     return bad(
@@ -2244,13 +2244,13 @@ async function customerSend(
   }
 
   const recipientRows =
-    await sql\`
+    await sql`
       SELECT id, email
       FROM profiles
       WHERE LOWER(email) =
-        \${recipient}
+        ${recipient}
       LIMIT 1
-    \`;
+    `;
 
   if (!recipientRows.length) {
     return bad(
@@ -2277,15 +2277,15 @@ async function customerSend(
   );
 
   const recipientWalletRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM wallets
       WHERE user_id =
-        \${recipientId}
+        ${recipientId}
         AND wallet_type =
           'main'
       LIMIT 1
-    \`;
+    `;
 
   if (
     !recipientWalletRows.length
@@ -2314,29 +2314,29 @@ async function customerSend(
     amount;
 
   const reference =
-    \`SND-\${crypto.randomUUID()}\`;
+    `SND-${crypto.randomUUID()}`;
 
   try {
-    await sql\`
+    await sql`
       UPDATE wallets
       SET
-        balance = \${senderNew},
+        balance = ${senderNew},
         updated_at = NOW()
       WHERE id =
-        \${senderWallet.id}
-    \`;
+        ${senderWallet.id}
+    `;
 
-    await sql\`
+    await sql`
       UPDATE wallets
       SET
-        balance = \${recipientNew},
+        balance = ${recipientNew},
         updated_at = NOW()
       WHERE id =
-        \${recipientWallet.id}
-    \`;
+        ${recipientWallet.id}
+    `;
 
     try {
-      await sql\`
+      await sql`
         INSERT INTO wallet_ledger (
           id,
           user_id,
@@ -2349,17 +2349,17 @@ async function customerSend(
           created_at
         )
         VALUES (
-          \${crypto.randomUUID()},
-          \${auth.user.id},
+          ${crypto.randomUUID()},
+          ${auth.user.id},
           'main',
-          \${-amount},
-          \${senderBalance},
-          \${senderNew},
+          ${-amount},
+          ${senderBalance},
+          ${senderNew},
           'send',
-          \${\`Transfer sent to \${recipient}\`},
+          ${`Transfer sent to ${recipient}`},
           NOW()
         )
-      \`;
+      `;
     } catch (error) {
       console.warn(
         "Sender ledger warning:",
@@ -2368,7 +2368,7 @@ async function customerSend(
     }
 
     try {
-      await sql\`
+      await sql`
         INSERT INTO wallet_ledger (
           id,
           user_id,
@@ -2381,17 +2381,17 @@ async function customerSend(
           created_at
         )
         VALUES (
-          \${crypto.randomUUID()},
-          \${recipientId},
+          ${crypto.randomUUID()},
+          ${recipientId},
           'main',
-          \${amount},
-          \${recipientOld},
-          \${recipientNew},
+          ${amount},
+          ${recipientOld},
+          ${recipientNew},
           'receive',
-          \${\`Transfer received from \${auth.user.email}\`},
+          ${`Transfer received from ${auth.user.email}`},
           NOW()
         )
-      \`;
+      `;
     } catch (error) {
       console.warn(
         "Recipient ledger warning:",
@@ -2400,7 +2400,7 @@ async function customerSend(
     }
 
     try {
-      await sql\`
+      await sql`
         INSERT INTO transactions (
           id,
           user_id,
@@ -2418,18 +2418,18 @@ async function customerSend(
           updated_at
         )
         VALUES (
-          \${crypto.randomUUID()},
-          \${auth.user.id},
-          \${senderWallet.id},
-          \${reference},
+          ${crypto.randomUUID()},
+          ${auth.user.id},
+          ${senderWallet.id},
+          ${reference},
           'transfer',
           'debit',
-          \${amount},
+          ${amount},
           0,
           'USD',
           'success',
-          \${\`Transfer sent to \${recipient}\`},
-          \${JSON.stringify({
+          ${`Transfer sent to ${recipient}`},
+          ${JSON.stringify({
             recipient_id:
               recipientId,
             recipient_email:
@@ -2440,7 +2440,7 @@ async function customerSend(
           NOW(),
           NOW()
         )
-      \`;
+      `;
     } catch (error) {
       console.warn(
         "Send transaction warning:",
@@ -2462,25 +2462,25 @@ async function customerSend(
      * Best-effort rollback.
      */
     try {
-      await sql\`
+      await sql`
         UPDATE wallets
         SET
           balance =
-            \${senderBalance},
+            ${senderBalance},
           updated_at = NOW()
         WHERE id =
-          \${senderWallet.id}
-      \`;
+          ${senderWallet.id}
+      `;
 
-      await sql\`
+      await sql`
         UPDATE wallets
         SET
           balance =
-            \${recipientOld},
+            ${recipientOld},
           updated_at = NOW()
         WHERE id =
-          \${recipientWallet.id}
-      \`;
+          ${recipientWallet.id}
+      `;
     } catch (rollbackError) {
       console.error(
         "Send rollback failed:",
@@ -2504,7 +2504,7 @@ async function customerSend(
 ===================================================== */
 
 async function ensureWithdrawalAccountSchema() {
-  await sql\`
+  await sql`
     CREATE TABLE IF NOT EXISTS withdrawal_accounts (
       id UUID PRIMARY KEY,
       user_id UUID NOT NULL UNIQUE,
@@ -2516,7 +2516,7 @@ async function ensureWithdrawalAccountSchema() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
-  \`;
+  `;
 }
 
 async function customerWithdrawalAccount(
@@ -2551,13 +2551,13 @@ async function customerWithdrawalAccount(
 
   if (!body) {
     const rows =
-      await sql\`
+      await sql`
         SELECT *
         FROM withdrawal_accounts
         WHERE user_id =
-          \${auth.user.id}
+          ${auth.user.id}
         LIMIT 1
-      \`;
+      `;
 
     return ok({
       account:
@@ -2610,42 +2610,42 @@ async function customerWithdrawalAccount(
   }
 
   const existing =
-    await sql\`
+    await sql`
       SELECT id
       FROM withdrawal_accounts
       WHERE user_id =
-        \${auth.user.id}
+        ${auth.user.id}
       LIMIT 1
-    \`;
+    `;
 
   if (existing.length) {
     const updated =
-      await sql\`
+      await sql`
         UPDATE withdrawal_accounts
         SET
           method_name =
             'Bank Transfer',
 
           account_name =
-            \${accountName},
+            ${accountName},
 
           account_number =
-            \${accountNumber},
+            ${accountNumber},
 
           bank_name =
-            \${bankName},
+            ${bankName},
 
           swift_code =
-            \${swiftCode},
+            ${swiftCode},
 
           updated_at =
             NOW()
 
         WHERE user_id =
-          \${auth.user.id}
+          ${auth.user.id}
 
         RETURNING *
-      \`;
+      `;
 
     return ok({
       message:
@@ -2657,7 +2657,7 @@ async function customerWithdrawalAccount(
   }
 
   const created =
-    await sql\`
+    await sql`
       INSERT INTO withdrawal_accounts (
         id,
         user_id,
@@ -2670,18 +2670,18 @@ async function customerWithdrawalAccount(
         updated_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${auth.user.id},
+        ${crypto.randomUUID()},
+        ${auth.user.id},
         'Bank Transfer',
-        \${accountName},
-        \${accountNumber},
-        \${bankName},
-        \${swiftCode},
+        ${accountName},
+        ${accountNumber},
+        ${bankName},
+        ${swiftCode},
         NOW(),
         NOW()
       )
       RETURNING *
-    \`;
+    `;
 
   return ok({
     message:
@@ -2767,13 +2767,13 @@ async function customerWithdraw(
   await ensureWithdrawalAccountSchema();
 
   const accountRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM withdrawal_accounts
       WHERE user_id =
-        \${auth.user.id}
+        ${auth.user.id}
       LIMIT 1
-    \`;
+    `;
 
   if (!accountRows.length) {
     return bad(
@@ -2794,15 +2794,15 @@ async function customerWithdraw(
   );
 
   const walletRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM wallets
       WHERE user_id =
-        \${auth.user.id}
+        ${auth.user.id}
         AND wallet_type =
           'main'
       LIMIT 1
-    \`;
+    `;
 
   if (!walletRows.length) {
     return bad(
@@ -2839,11 +2839,11 @@ async function customerWithdraw(
   }
 
   const reference =
-    \`WTH-\${crypto.randomUUID()}\`;
+    `WTH-${crypto.randomUUID()}`;
 
   try {
     const rows =
-      await sql\`
+      await sql`
         INSERT INTO withdrawal_requests (
           id,
           withdrawal_reference,
@@ -2860,22 +2860,22 @@ async function customerWithdraw(
           withdrawal_account_id
         )
         VALUES (
-          \${crypto.randomUUID()},
-          \${reference},
-          \${auth.user.id},
-          \${wallet.id},
-          \${amount},
+          ${crypto.randomUUID()},
+          ${reference},
+          ${auth.user.id},
+          ${wallet.id},
+          ${amount},
           0,
-          \${amount},
+          ${amount},
           'USD',
           'Bank Transfer',
           'pending',
           NOW(),
           NOW(),
-          \${accountRows[0].id}
+          ${accountRows[0].id}
         )
         RETURNING *
-      \`;
+      `;
 
     return ok({
       message:
@@ -2922,13 +2922,13 @@ async function customerInvestments(
 
   try {
     const rows =
-      await sql\`
+      await sql`
         SELECT *
         FROM investments
         WHERE user_id =
-          \${auth.user.id}
+          ${auth.user.id}
         ORDER BY created_at DESC
-        LIMIT \${
+        LIMIT ${
           cleanLimit(
             url.searchParams.get(
               "limit"
@@ -2936,7 +2936,7 @@ async function customerInvestments(
             100
           )
         }
-      \`;
+      `;
 
     return ok({
       investments:
@@ -2993,7 +2993,7 @@ async function adminRequests(request, url, body = null, requestId = null) {
       );
 
     const deposits =
-      await sql\`
+      await sql`
         SELECT
           d.*,
           p.first_name,
@@ -3005,13 +3005,13 @@ async function adminRequests(request, url, body = null, requestId = null) {
           ON p.id = d.user_id
         WHERE LOWER(
           COALESCE(d.status, 'pending')
-        ) = \${status}
+        ) = ${status}
         ORDER BY d.created_at DESC
-        LIMIT \${limit}
-      \`;
+        LIMIT ${limit}
+      `;
 
     const withdrawals =
-      await sql\`
+      await sql`
         SELECT
           w.*,
           p.first_name,
@@ -3023,13 +3023,13 @@ async function adminRequests(request, url, body = null, requestId = null) {
           ON p.id = w.user_id
         WHERE LOWER(
           COALESCE(w.status, 'pending')
-        ) = \${status}
+        ) = ${status}
         ORDER BY w.created_at DESC
-        LIMIT \${limit}
-      \`;
+        LIMIT ${limit}
+      `;
 
     const transfers =
-      await sql\`
+      await sql`
         SELECT
           t.*,
           p.first_name,
@@ -3041,10 +3041,10 @@ async function adminRequests(request, url, body = null, requestId = null) {
           ON p.id = t.sender_user_id
         WHERE LOWER(
           COALESCE(t.status, 'pending')
-        ) = \${status}
+        ) = ${status}
         ORDER BY t.created_at DESC
-        LIMIT \${limit}
-      \`;
+        LIMIT ${limit}
+      `;
 
     const requests = [
       ...deposits.map(row => ({
@@ -3119,15 +3119,15 @@ async function adminRequests(request, url, body = null, requestId = null) {
      */
 
     const depositRows =
-      await sql\`
+      await sql`
         SELECT *
         FROM deposit_requests
-        WHERE id = \${requestId}
+        WHERE id = ${requestId}
           AND LOWER(
             COALESCE(status, 'pending')
           ) = 'pending'
         LIMIT 1
-      \`;
+      `;
 
     if (depositRows.length) {
 
@@ -3136,15 +3136,15 @@ async function adminRequests(request, url, body = null, requestId = null) {
 
       if (decision === "rejected") {
 
-        await sql\`
+        await sql`
           UPDATE deposit_requests
           SET
             status = 'rejected',
             reviewed_at = NOW(),
-            reviewed_by = \${auth.user.id},
+            reviewed_by = ${auth.user.id},
             updated_at = NOW()
-          WHERE id = \${requestId}
-        \`;
+          WHERE id = ${requestId}
+        `;
 
         return ok({
           message:
@@ -3157,13 +3157,13 @@ async function adminRequests(request, url, body = null, requestId = null) {
       }
 
       const walletRows =
-        await sql\`
+        await sql`
           SELECT *
           FROM wallets
-          WHERE id = \${item.wallet_id}
-            AND user_id = \${item.user_id}
+          WHERE id = ${item.wallet_id}
+            AND user_id = ${item.user_id}
           LIMIT 1
-        \`;
+        `;
 
       if (!walletRows.length) {
         return bad(
@@ -3194,17 +3194,17 @@ async function adminRequests(request, url, body = null, requestId = null) {
           ).toFixed(2)
         );
 
-      await sql\`
+      await sql`
         UPDATE wallets
         SET
-          balance = \${after},
+          balance = ${after},
           updated_at = NOW()
-        WHERE id = \${wallet.id}
-      \`;
+        WHERE id = ${wallet.id}
+      `;
 
       try {
 
-        await sql\`
+        await sql`
           INSERT INTO transactions (
             id,
             user_id,
@@ -3222,48 +3222,48 @@ async function adminRequests(request, url, body = null, requestId = null) {
             updated_at
           )
           VALUES (
-            \${crypto.randomUUID()},
-            \${item.user_id},
-            \${wallet.id},
-            \${item.deposit_reference},
+            ${crypto.randomUUID()},
+            ${item.user_id},
+            ${wallet.id},
+            ${item.deposit_reference},
             'deposit',
             'credit',
-            \${amount},
+            ${amount},
             0,
-            \${item.currency || "USD"},
+            ${item.currency || "USD"},
             'success',
             'Deposit approved by administrator.',
-            \${JSON.stringify({
+            ${JSON.stringify({
               source: "admin_request_approval",
               request_id: item.id
             })},
             NOW(),
             NOW()
           )
-        \`;
+        `;
 
       } catch (error) {
 
-        await sql\`
+        await sql`
           UPDATE wallets
           SET
-            balance = \${before},
+            balance = ${before},
             updated_at = NOW()
-          WHERE id = \${wallet.id}
-        \`;
+          WHERE id = ${wallet.id}
+        `;
 
         throw error;
       }
 
-      await sql\`
+      await sql`
         UPDATE deposit_requests
         SET
           status = 'approved',
           reviewed_at = NOW(),
-          reviewed_by = \${auth.user.id},
+          reviewed_by = ${auth.user.id},
           updated_at = NOW()
-        WHERE id = \${requestId}
-      \`;
+        WHERE id = ${requestId}
+      `;
 
       return ok({
         message:
@@ -3282,15 +3282,15 @@ async function adminRequests(request, url, body = null, requestId = null) {
      */
 
     const withdrawalRows =
-      await sql\`
+      await sql`
         SELECT *
         FROM withdrawal_requests
-        WHERE id = \${requestId}
+        WHERE id = ${requestId}
           AND LOWER(
             COALESCE(status, 'pending')
           ) = 'pending'
         LIMIT 1
-      \`;
+      `;
 
     if (withdrawalRows.length) {
 
@@ -3299,15 +3299,15 @@ async function adminRequests(request, url, body = null, requestId = null) {
 
       if (decision === "rejected") {
 
-        await sql\`
+        await sql`
           UPDATE withdrawal_requests
           SET
             status = 'rejected',
             reviewed_at = NOW(),
-            reviewed_by = \${auth.user.id},
+            reviewed_by = ${auth.user.id},
             updated_at = NOW()
-          WHERE id = \${requestId}
-        \`;
+          WHERE id = ${requestId}
+        `;
 
         return ok({
           message:
@@ -3320,13 +3320,13 @@ async function adminRequests(request, url, body = null, requestId = null) {
       }
 
       const walletRows =
-        await sql\`
+        await sql`
           SELECT *
           FROM wallets
-          WHERE id = \${item.wallet_id}
-            AND user_id = \${item.user_id}
+          WHERE id = ${item.wallet_id}
+            AND user_id = ${item.user_id}
           LIMIT 1
-        \`;
+        `;
 
       if (!walletRows.length) {
         return bad(
@@ -3364,17 +3364,17 @@ async function adminRequests(request, url, body = null, requestId = null) {
           ).toFixed(2)
         );
 
-      await sql\`
+      await sql`
         UPDATE wallets
         SET
-          balance = \${after},
+          balance = ${after},
           updated_at = NOW()
-        WHERE id = \${wallet.id}
-      \`;
+        WHERE id = ${wallet.id}
+      `;
 
       try {
 
-        await sql\`
+        await sql`
           INSERT INTO transactions (
             id,
             user_id,
@@ -3392,49 +3392,49 @@ async function adminRequests(request, url, body = null, requestId = null) {
             updated_at
           )
           VALUES (
-            \${crypto.randomUUID()},
-            \${item.user_id},
-            \${wallet.id},
-            \${item.withdrawal_reference},
+            ${crypto.randomUUID()},
+            ${item.user_id},
+            ${wallet.id},
+            ${item.withdrawal_reference},
             'withdrawal',
             'debit',
-            \${amount},
-            \${numberValue(item.fee, 0)},
-            \${item.currency || "USD"},
+            ${amount},
+            ${numberValue(item.fee, 0)},
+            ${item.currency || "USD"},
             'success',
             'Withdrawal approved by administrator.',
-            \${JSON.stringify({
+            ${JSON.stringify({
               source: "admin_request_approval",
               request_id: item.id
             })},
             NOW(),
             NOW()
           )
-        \`;
+        `;
 
       } catch (error) {
 
-        await sql\`
+        await sql`
           UPDATE wallets
           SET
-            balance = \${before},
+            balance = ${before},
             updated_at = NOW()
-          WHERE id = \${wallet.id}
-        \`;
+          WHERE id = ${wallet.id}
+        `;
 
         throw error;
       }
 
-      await sql\`
+      await sql`
         UPDATE withdrawal_requests
         SET
           status = 'approved',
           reviewed_at = NOW(),
-          reviewed_by = \${auth.user.id},
+          reviewed_by = ${auth.user.id},
           processed_at = NOW(),
           updated_at = NOW()
-        WHERE id = \${requestId}
-      \`;
+        WHERE id = ${requestId}
+      `;
 
       return ok({
         message:
@@ -3453,15 +3453,15 @@ async function adminRequests(request, url, body = null, requestId = null) {
      */
 
     const transferRows =
-      await sql\`
+      await sql`
         SELECT *
         FROM transfer_requests
-        WHERE id = \${requestId}
+        WHERE id = ${requestId}
           AND LOWER(
             COALESCE(status, 'pending')
           ) = 'pending'
         LIMIT 1
-      \`;
+      `;
 
     if (transferRows.length) {
 
@@ -3470,7 +3470,7 @@ async function adminRequests(request, url, body = null, requestId = null) {
 
       if (decision === "rejected") {
 
-        await sql\`
+        await sql`
           UPDATE transfer_requests
           SET
             status = 'rejected',
@@ -3480,8 +3480,8 @@ async function adminRequests(request, url, body = null, requestId = null) {
                 'Rejected by administrator.'
               ),
             updated_at = NOW()
-          WHERE id = \${requestId}
-        \`;
+          WHERE id = ${requestId}
+        `;
 
         return ok({
           message:
@@ -3505,22 +3505,22 @@ async function adminRequests(request, url, body = null, requestId = null) {
       }
 
       const senderRows =
-        await sql\`
+        await sql`
           SELECT *
           FROM wallets
-          WHERE id = \${item.sender_wallet_id}
-            AND user_id = \${item.sender_user_id}
+          WHERE id = ${item.sender_wallet_id}
+            AND user_id = ${item.sender_user_id}
           LIMIT 1
-        \`;
+        `;
 
       const recipientRows =
-        await sql\`
+        await sql`
           SELECT *
           FROM wallets
-          WHERE id = \${item.recipient_wallet_id}
-            AND user_id = \${item.recipient_user_id}
+          WHERE id = ${item.recipient_wallet_id}
+            AND user_id = ${item.recipient_user_id}
           LIMIT 1
-        \`;
+        `;
 
       if (
         !senderRows.length ||
@@ -3573,25 +3573,25 @@ async function adminRequests(request, url, body = null, requestId = null) {
           ).toFixed(2)
         );
 
-      await sql\`
+      await sql`
         UPDATE wallets
         SET
-          balance = \${senderAfter},
+          balance = ${senderAfter},
           updated_at = NOW()
-        WHERE id = \${sender.id}
-      \`;
+        WHERE id = ${sender.id}
+      `;
 
       try {
 
-        await sql\`
+        await sql`
           UPDATE wallets
           SET
-            balance = \${recipientAfter},
+            balance = ${recipientAfter},
             updated_at = NOW()
-          WHERE id = \${recipient.id}
-        \`;
+          WHERE id = ${recipient.id}
+        `;
 
-        await sql\`
+        await sql`
           INSERT INTO transactions (
             id,
             user_id,
@@ -3609,18 +3609,18 @@ async function adminRequests(request, url, body = null, requestId = null) {
             updated_at
           )
           VALUES (
-            \${crypto.randomUUID()},
-            \${item.sender_user_id},
-            \${sender.id},
-            \${item.transfer_reference},
+            ${crypto.randomUUID()},
+            ${item.sender_user_id},
+            ${sender.id},
+            ${item.transfer_reference},
             'transfer',
             'debit',
-            \${amount},
-            \${numberValue(item.fee, 0)},
-            \${item.currency || "USD"},
+            ${amount},
+            ${numberValue(item.fee, 0)},
+            ${item.currency || "USD"},
             'success',
             'Transfer sent.',
-            \${JSON.stringify({
+            ${JSON.stringify({
               source: "admin_request_approval",
               request_id: item.id,
               recipient_user_id:
@@ -3629,9 +3629,9 @@ async function adminRequests(request, url, body = null, requestId = null) {
             NOW(),
             NOW()
           )
-        \`;
+        `;
 
-        await sql\`
+        await sql`
           INSERT INTO transactions (
             id,
             user_id,
@@ -3649,18 +3649,18 @@ async function adminRequests(request, url, body = null, requestId = null) {
             updated_at
           )
           VALUES (
-            \${crypto.randomUUID()},
-            \${item.recipient_user_id},
-            \${recipient.id},
-            \${\`\${item.transfer_reference}-RECEIVE\`},
+            ${crypto.randomUUID()},
+            ${item.recipient_user_id},
+            ${recipient.id},
+            ${`${item.transfer_reference}-RECEIVE`},
             'transfer',
             'credit',
-            \${amount},
+            ${amount},
             0,
-            \${item.currency || "USD"},
+            ${item.currency || "USD"},
             'success',
             'Transfer received.',
-            \${JSON.stringify({
+            ${JSON.stringify({
               source: "admin_request_approval",
               request_id: item.id,
               sender_user_id:
@@ -3669,37 +3669,37 @@ async function adminRequests(request, url, body = null, requestId = null) {
             NOW(),
             NOW()
           )
-        \`;
+        `;
 
       } catch (error) {
 
-        await sql\`
+        await sql`
           UPDATE wallets
           SET
-            balance = \${senderBefore},
+            balance = ${senderBefore},
             updated_at = NOW()
-          WHERE id = \${sender.id}
-        \`;
+          WHERE id = ${sender.id}
+        `;
 
-        await sql\`
+        await sql`
           UPDATE wallets
           SET
-            balance = \${recipientBefore},
+            balance = ${recipientBefore},
             updated_at = NOW()
-          WHERE id = \${recipient.id}
-        \`;
+          WHERE id = ${recipient.id}
+        `;
 
         throw error;
       }
 
-      await sql\`
+      await sql`
         UPDATE transfer_requests
         SET
           status = 'approved',
           processed_at = NOW(),
           updated_at = NOW()
-        WHERE id = \${requestId}
-      \`;
+        WHERE id = ${requestId}
+      `;
 
       return ok({
         message:
@@ -3736,20 +3736,20 @@ async function customerChat(request, body = null) {
 
   const userId = auth.user.id;
 
-  let conversationRows = await sql\`
+  let conversationRows = await sql`
     SELECT *
     FROM chat_conversations
-    WHERE user_id = \${userId}
+    WHERE user_id = ${userId}
     ORDER BY updated_at DESC
     LIMIT 1
-  \`;
+  `;
 
   let conversation;
 
   if (conversationRows.length) {
     conversation = conversationRows[0];
   } else {
-    const rows = await sql\`
+    const rows = await sql`
       INSERT INTO chat_conversations (
         id,
         user_id,
@@ -3757,25 +3757,25 @@ async function customerChat(request, body = null) {
         updated_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${userId},
+        ${crypto.randomUUID()},
+        ${userId},
         NOW(),
         NOW()
       )
       RETURNING *
-    \`;
+    `;
 
     conversation = rows[0];
   }
 
   if (!body) {
-    const messages = await sql\`
+    const messages = await sql`
       SELECT *
       FROM chat_messages
-      WHERE conversation_id = \${conversation.id}
+      WHERE conversation_id = ${conversation.id}
       ORDER BY created_at ASC
       LIMIT 500
-    \`;
+    `;
 
     return ok({
       conversation,
@@ -3797,7 +3797,7 @@ async function customerChat(request, body = null) {
     );
   }
 
-  const rows = await sql\`
+  const rows = await sql`
     INSERT INTO chat_messages (
       id,
       conversation_id,
@@ -3807,21 +3807,21 @@ async function customerChat(request, body = null) {
       created_at
     )
     VALUES (
-      \${crypto.randomUUID()},
-      \${conversation.id},
-      \${userId},
+      ${crypto.randomUUID()},
+      ${conversation.id},
+      ${userId},
       'customer',
-      \${message},
+      ${message},
       NOW()
     )
     RETURNING *
-  \`;
+  `;
 
-  await sql\`
+  await sql`
     UPDATE chat_conversations
     SET updated_at = NOW()
-    WHERE id = \${conversation.id}
-  \`;
+    WHERE id = ${conversation.id}
+  `;
 
   return ok({
     conversation,
@@ -3867,12 +3867,12 @@ async function adminChat(
       );
     }
 
-    const customer = await sql\`
+    const customer = await sql`
       SELECT id
       FROM chat_conversations
-      WHERE id = \${conversationId}
+      WHERE id = ${conversationId}
       LIMIT 1
-    \`;
+    `;
 
     if (!customer.length) {
       return bad(
@@ -3881,7 +3881,7 @@ async function adminChat(
       );
     }
 
-    const rows = await sql\`
+    const rows = await sql`
       INSERT INTO chat_messages (
         id,
         conversation_id,
@@ -3891,21 +3891,21 @@ async function adminChat(
         created_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${conversationId},
-        \${auth.user.id},
+        ${crypto.randomUUID()},
+        ${conversationId},
+        ${auth.user.id},
         'admin',
-        \${message},
+        ${message},
         NOW()
       )
       RETURNING *
-    \`;
+    `;
 
-    await sql\`
+    await sql`
       UPDATE chat_conversations
       SET updated_at = NOW()
-      WHERE id = \${conversationId}
-    \`;
+      WHERE id = ${conversationId}
+    `;
 
     return ok({
       message: rows[0],
@@ -3916,7 +3916,7 @@ async function adminChat(
   }
 
   if (conversationId) {
-    const conversations = await sql\`
+    const conversations = await sql`
       SELECT
         c.*,
         p.first_name,
@@ -3926,9 +3926,9 @@ async function adminChat(
       FROM chat_conversations c
       LEFT JOIN profiles p
         ON p.id = c.user_id
-      WHERE c.id = \${conversationId}
+      WHERE c.id = ${conversationId}
       LIMIT 1
-    \`;
+    `;
 
     if (!conversations.length) {
       return bad(
@@ -3937,14 +3937,14 @@ async function adminChat(
       );
     }
 
-    const messages = await sql\`
+    const messages = await sql`
       SELECT *
       FROM chat_messages
       WHERE conversation_id =
-        \${conversationId}
+        ${conversationId}
       ORDER BY created_at ASC
       LIMIT 500
-    \`;
+    `;
 
     return ok({
       conversation:
@@ -3953,7 +3953,7 @@ async function adminChat(
     });
   }
 
-  const conversations = await sql\`
+  const conversations = await sql`
     SELECT
       c.id AS conversation_id,
       c.user_id,
@@ -3968,7 +3968,7 @@ async function adminChat(
       ON p.id = c.user_id
     ORDER BY c.updated_at DESC
     LIMIT 500
-  \`;
+  `;
 
   return ok({
     conversations
@@ -3988,7 +3988,7 @@ async function adminDashboard() {
     transactions,
     pendingRequests
   ] = await Promise.all([
-    sql\`
+    sql`
       SELECT COUNT(*)::int AS count
       FROM profiles p
       LEFT JOIN roles r
@@ -4000,9 +4000,9 @@ async function adminDashboard() {
         'admin',
         'administrator'
       )
-    \`,
+    `,
 
-    sql\`
+    sql`
       SELECT COUNT(*)::int AS count
       FROM profiles
       WHERE LOWER(
@@ -4011,22 +4011,22 @@ async function adminDashboard() {
           'pending'
         )
       ) = 'pending'
-    \`,
+    `,
 
-    sql\`
+    sql`
       SELECT COUNT(*)::int AS count
       FROM investments
-    \`,
+    `,
 
-    sql\`
+    sql`
       SELECT COUNT(*)::int AS count
       FROM transactions
-    \`,
+    `,
 
     /*
      * Do not assume pending_requests exists.
      */
-    sql\`
+    sql`
       SELECT (
         (
           SELECT COUNT(*)
@@ -4050,7 +4050,7 @@ async function adminDashboard() {
           ) = 'pending'
         )
       )::int AS count
-    \`
+    `
   ]);
 
   return ok({
@@ -4109,7 +4109,7 @@ async function adminCustomers(url) {
     );
 
   const rows =
-    await sql\`
+    await sql`
       SELECT
         p.id,
         p.first_name,
@@ -4137,14 +4137,14 @@ async function adminCustomers(url) {
         'administrator'
       )
       AND (
-        \${search} = ''
+        ${search} = ''
         OR LOWER(
           COALESCE(
             p.first_name,
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
         OR LOWER(
           COALESCE(
@@ -4152,7 +4152,7 @@ async function adminCustomers(url) {
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
         OR LOWER(
           COALESCE(
@@ -4160,7 +4160,7 @@ async function adminCustomers(url) {
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
         OR LOWER(
           COALESCE(
@@ -4168,14 +4168,14 @@ async function adminCustomers(url) {
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
       )
       ORDER BY
         p.created_at DESC
-      LIMIT \${limit}
-      OFFSET \${offset}
-    \`;
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `;
 
   return ok({
     customers:
@@ -4192,16 +4192,16 @@ async function adminCustomer(id) {
   }
 
   const result =
-    await sql\`
+    await sql`
       SELECT
         p.*,
         r.name AS role
       FROM profiles p
       LEFT JOIN roles r
         ON r.id = p.role_id
-      WHERE p.id = \${id}
+      WHERE p.id = ${id}
       LIMIT 1
-    \`;
+    `;
 
   if (!result.length) {
     return bad(
@@ -4239,7 +4239,7 @@ async function adminWallets(url) {
   await ensureAllCustomerWallets();
 
   const customers =
-    await sql\`
+    await sql`
       SELECT
         p.id AS user_id,
         p.first_name,
@@ -4260,14 +4260,14 @@ async function adminWallets(url) {
         'administrator'
       )
       AND (
-        \${search} = ''
+        ${search} = ''
         OR LOWER(
           COALESCE(
             p.username,
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
         OR LOWER(
           COALESCE(
@@ -4275,7 +4275,7 @@ async function adminWallets(url) {
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
         OR LOWER(
           COALESCE(
@@ -4285,13 +4285,13 @@ async function adminWallets(url) {
             ''
           )
         ) LIKE LOWER(
-          \${"%" + search + "%"}
+          ${"%" + search + "%"}
         )
       )
       ORDER BY
         p.created_at DESC
-      LIMIT \${limit}
-    \`;
+      LIMIT ${limit}
+    `;
 
   const result = [];
 
@@ -4300,14 +4300,14 @@ async function adminWallets(url) {
 
     try {
       walletRows =
-        await sql\`
+        await sql`
           SELECT *
           FROM wallets
           WHERE user_id =
-            \${customer.user_id}
+            ${customer.user_id}
           ORDER BY
             created_at ASC
-        \`;
+        `;
     } catch (error) {
       console.warn(
         "Wallet query warning:",
@@ -4456,7 +4456,7 @@ async function adminWallet(
   );
 
   const profile =
-    await sql\`
+    await sql`
       SELECT
         p.id,
         p.first_name,
@@ -4465,9 +4465,9 @@ async function adminWallet(
         p.email
       FROM profiles p
       WHERE p.id =
-        \${userId}
+        ${userId}
       LIMIT 1
-    \`;
+    `;
 
   if (!profile.length) {
     return bad(
@@ -4480,13 +4480,13 @@ async function adminWallet(
 
   try {
     wallets =
-      await sql\`
+      await sql`
         SELECT *
         FROM wallets
         WHERE user_id =
-          \${userId}
+          ${userId}
         ORDER BY created_at ASC
-      \`;
+      `;
   } catch (error) {
     return bad(
       500,
@@ -4502,14 +4502,14 @@ async function adminWallet(
 
   try {
     ledger =
-      await sql\`
+      await sql`
         SELECT *
         FROM wallet_ledger
         WHERE user_id =
-          \${userId}
+          ${userId}
         ORDER BY created_at DESC
         LIMIT 200
-      \`;
+      `;
   } catch (error) {
     console.warn(
       "wallet_ledger unavailable:",
@@ -4601,13 +4601,13 @@ async function adjustWallet(
   }
 
   const customer =
-    await sql\`
+    await sql`
       SELECT id
       FROM profiles
       WHERE id =
-        \${userId}
+        ${userId}
       LIMIT 1
-    \`;
+    `;
 
   if (!customer.length) {
     return bad(
@@ -4621,15 +4621,15 @@ async function adjustWallet(
   );
 
   const walletRows =
-    await sql\`
+    await sql`
       SELECT *
       FROM wallets
       WHERE user_id =
-        \${userId}
+        ${userId}
         AND wallet_type =
-          \${walletType}
+          ${walletType}
       LIMIT 1
-    \`;
+    `;
 
   if (!walletRows.length) {
     return bad(
@@ -4658,28 +4658,28 @@ async function adjustWallet(
   }
 
   const transactionReference =
-    \`ADJ-\${crypto.randomUUID()}\`;
+    `ADJ-${crypto.randomUUID()}`;
 
   /*
    * Update the exact wallet record that the
    * customer dashboard reads.
    */
   const updated =
-    await sql\`
+    await sql`
       UPDATE wallets
       SET
-        balance = \${next},
+        balance = ${next},
         updated_at = NOW()
       WHERE id =
-        \${wallet.id}
+        ${wallet.id}
       RETURNING *
-    \`;
+    `;
 
   /*
    * Ledger record.
    */
   try {
-    await sql\`
+    await sql`
       INSERT INTO wallet_ledger (
         id,
         user_id,
@@ -4693,18 +4693,18 @@ async function adjustWallet(
         created_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${userId},
-        \${walletType},
-        \${amount},
-        \${current},
-        \${next},
+        ${crypto.randomUUID()},
+        ${userId},
+        ${walletType},
+        ${amount},
+        ${current},
+        ${next},
         'admin_adjustment',
-        \${reason},
-        \${admin.user.id},
+        ${reason},
+        ${admin.user.id},
         NOW()
       )
-    \`;
+    `;
   } catch (error) {
     console.error(
       "ADMIN WALLET LEDGER INSERT FAILED:",
@@ -4716,16 +4716,16 @@ async function adjustWallet(
      * Do not leave a wallet changed without
      * its corresponding ledger entry.
      */
-    await sql\`
+    await sql`
       UPDATE wallets
       SET
         balance =
-          \${current},
+          ${current},
         updated_at =
           NOW()
       WHERE id =
-        \${wallet.id}
-    \`;
+        ${wallet.id}
+    `;
 
     return bad(
       500,
@@ -4741,7 +4741,7 @@ async function adjustWallet(
    * Transaction record.
    */
   try {
-    await sql\`
+    await sql`
       INSERT INTO transactions (
         id,
         user_id,
@@ -4759,26 +4759,26 @@ async function adjustWallet(
         updated_at
       )
       VALUES (
-        \${crypto.randomUUID()},
-        \${userId},
-        \${wallet.id},
-        \${transactionReference},
-        \${
+        ${crypto.randomUUID()},
+        ${userId},
+        ${wallet.id},
+        ${transactionReference},
+        ${
           amount >= 0
             ? "system_credit"
             : "system_debit"
         },
-        \${
+        ${
           amount >= 0
             ? "credit"
             : "debit"
         },
-        \${Math.abs(amount)},
+        ${Math.abs(amount)},
         0,
         'USD',
         'success',
-        \${reason},
-        \${JSON.stringify({
+        ${reason},
+        ${JSON.stringify({
           source:
             "admin_wallet_adjustment",
           wallet_type:
@@ -4791,7 +4791,7 @@ async function adjustWallet(
         NOW(),
         NOW()
       )
-    \`;
+    `;
   } catch (error) {
     console.error(
       "ADMIN WALLET TRANSACTION INSERT FAILED:",
@@ -4799,16 +4799,16 @@ async function adjustWallet(
         error
     );
 
-    await sql\`
+    await sql`
       UPDATE wallets
       SET
         balance =
-          \${current},
+          ${current},
         updated_at =
           NOW()
       WHERE id =
-        \${wallet.id}
-    \`;
+        ${wallet.id}
+    `;
 
     return bad(
       500,
@@ -4859,7 +4859,7 @@ async function adminKyc(url) {
   try {
     if (status) {
       rows =
-        await sql\`
+        await sql`
           SELECT
             k.*,
             p.first_name,
@@ -4876,14 +4876,14 @@ async function adminKyc(url) {
               k.status,
               'pending'
             )
-          ) = \${status}
+          ) = ${status}
           ORDER BY
             k.created_at DESC
-          LIMIT \${limit}
-        \`;
+          LIMIT ${limit}
+        `;
     } else {
       rows =
-        await sql\`
+        await sql`
           SELECT
             k.*,
             p.first_name,
@@ -4897,8 +4897,8 @@ async function adminKyc(url) {
             ON p.id = k.user_id
           ORDER BY
             k.created_at DESC
-          LIMIT \${limit}
-        \`;
+          LIMIT ${limit}
+        `;
     }
   } catch (error) {
     /*
@@ -4910,7 +4910,7 @@ async function adminKyc(url) {
      * of truth for this compatibility path.
      */
     const profileRows =
-      await sql\`
+      await sql`
         SELECT
           p.id AS id,
           p.id AS user_id,
@@ -4940,18 +4940,18 @@ async function adminKyc(url) {
           'administrator'
         )
         AND (
-          \${status} = ''
+          ${status} = ''
           OR LOWER(
             COALESCE(
               p.kyc_status,
               'pending'
             )
-          ) = \${status}
+          ) = ${status}
         )
         ORDER BY
           p.created_at DESC
-        LIMIT \${limit}
-      \`;
+        LIMIT ${limit}
+      `;
 
     rows =
       profileRows;
@@ -4964,7 +4964,7 @@ async function adminKyc(url) {
    */
   if (!rows.length) {
     rows =
-      await sql\`
+      await sql`
         SELECT
           p.id AS id,
           p.id AS user_id,
@@ -4994,18 +4994,18 @@ async function adminKyc(url) {
           'administrator'
         )
         AND (
-          \${status} = ''
+          ${status} = ''
           OR LOWER(
             COALESCE(
               p.kyc_status,
               'pending'
             )
-          ) = \${status}
+          ) = ${status}
         )
         ORDER BY
           p.created_at DESC
-        LIMIT \${limit}
-      \`;
+        LIMIT ${limit}
+      `;
   }
 
   return ok({
@@ -5065,13 +5065,13 @@ async function reviewKyc(
 
   try {
     submission =
-      await sql\`
+      await sql`
         SELECT *
         FROM kyc_submissions
         WHERE id =
-          \${id}
+          ${id}
         LIMIT 1
-      \`;
+      `;
   } catch {
     submission = [];
   }
@@ -5082,13 +5082,13 @@ async function reviewKyc(
    */
   if (!submission.length) {
     const profile =
-      await sql\`
+      await sql`
         SELECT id
         FROM profiles
         WHERE id =
-          \${id}
+          ${id}
         LIMIT 1
-      \`;
+      `;
 
     if (!profile.length) {
       return bad(
@@ -5102,20 +5102,20 @@ async function reviewKyc(
      *
      * Admin approval directly updates profiles.kyc_status.
      */
-    await sql\`
+    await sql`
       UPDATE profiles
       SET
         kyc_status =
-          \${decision},
+          ${decision},
         updated_at =
           NOW()
       WHERE id =
-        \${id}
-    \`;
+        ${id}
+    `;
 
     return ok({
       message:
-        \`KYC \${decision} successfully.\`,
+        `KYC ${decision} successfully.`,
 
       submission: {
         id,
@@ -5130,14 +5130,14 @@ async function reviewKyc(
     submission[0].user_id;
 
   const updated =
-    await sql\`
+    await sql`
       UPDATE kyc_submissions
       SET
         status =
-          \${decision},
+          ${decision},
 
         reviewed_by =
-          \${admin.user.id},
+          ${admin.user.id},
 
         reviewed_at =
           NOW(),
@@ -5146,28 +5146,28 @@ async function reviewKyc(
           NOW()
 
       WHERE id =
-        \${id}
+        ${id}
 
       RETURNING *
-    \`;
+    `;
 
   /*
    * Synchronize the profile.
    */
-  await sql\`
+  await sql`
     UPDATE profiles
     SET
       kyc_status =
-        \${decision},
+        ${decision},
       updated_at =
         NOW()
     WHERE id =
-      \${userId}
-  \`;
+      ${userId}
+  `;
 
   return ok({
     message:
-      \`KYC \${decision} successfully.\`,
+      `KYC ${decision} successfully.`,
 
     submission:
       updated[0]
@@ -5203,7 +5203,7 @@ async function updateCustomer(
   }
 
   const currentProfile =
-    await sql\`
+    await sql`
       SELECT
         id,
         status,
@@ -5211,9 +5211,9 @@ async function updateCustomer(
         kyc_status
       FROM profiles
       WHERE id =
-        \${id}
+        ${id}
       LIMIT 1
-    \`;
+    `;
 
   if (!currentProfile.length) {
     return bad(
@@ -5282,42 +5282,42 @@ async function updateCustomer(
    * This intentionally does NOT depend on Resend.
    */
   const updated =
-    await sql\`
+    await sql`
       UPDATE profiles
       SET
         first_name =
           COALESCE(
-            \${firstName},
+            ${firstName},
             first_name
           ),
 
         last_name =
           COALESCE(
-            \${lastName},
+            ${lastName},
             last_name
           ),
 
         username =
           COALESCE(
-            \${username},
+            ${username},
             username
           ),
 
         status =
           COALESCE(
-            \${status},
+            ${status},
             status
           ),
 
         kyc_status =
           COALESCE(
-            \${kycStatus},
+            ${kycStatus},
             kyc_status
           ),
 
         email_verified_at =
           CASE
-            WHEN \${approvalChanged}
+            WHEN ${approvalChanged}
               THEN COALESCE(
                 email_verified_at,
                 NOW()
@@ -5331,10 +5331,10 @@ async function updateCustomer(
           NOW()
 
       WHERE id =
-        \${id}
+        ${id}
 
       RETURNING *
-    \`;
+    `;
 
   await ensureUserWallets(
     id
@@ -5374,21 +5374,21 @@ async function verifyEmail(
     );
 
   const result =
-    await sql\`
+    await sql`
       SELECT
         t.id AS token_id,
         t.user_id
       FROM auth_email_tokens t
       WHERE
         t.token_hash =
-          \${tokenHash}
+          ${tokenHash}
         AND t.token_type =
           'email_verification'
         AND t.used_at IS NULL
         AND t.expires_at >
           NOW()
       LIMIT 1
-    \`;
+    `;
 
   if (!result.length) {
     return bad(
@@ -5400,7 +5400,7 @@ async function verifyEmail(
   const item =
     result[0];
 
-  await sql\`
+  await sql`
     UPDATE profiles
     SET
       email_verified_at =
@@ -5408,17 +5408,17 @@ async function verifyEmail(
       updated_at =
         NOW()
     WHERE id =
-      \${item.user_id}
-  \`;
+      ${item.user_id}
+  `;
 
-  await sql\`
+  await sql`
     UPDATE auth_email_tokens
     SET
       used_at =
         NOW()
     WHERE id =
-      \${item.token_id}
-  \`;
+      ${item.token_id}
+  `;
 
   return ok({
     message:
@@ -5488,11 +5488,11 @@ async function resetAdminPassword(
     );
 
   const result =
-    await sql\`
+    await sql`
       UPDATE auth_credentials
       SET
         password_hash =
-          \${passwordHash},
+          ${passwordHash},
 
         password_updated_at =
           NOW(),
@@ -5513,14 +5513,14 @@ async function resetAdminPassword(
           ON r.id = p.role_id
         WHERE
           LOWER(p.email) =
-            \${email}
+            ${email}
           AND LOWER(r.name) =
             'admin'
         LIMIT 1
       )
 
       RETURNING user_id
-    \`;
+    `;
 
   if (!result.length) {
     return bad(
@@ -5574,7 +5574,7 @@ function createWebRequest(req) {
       "https://"
     )
       ? rawUrl
-      : \`\${protocol}://\${host}\${rawUrl}\`;
+      : `${protocol}://${host}${rawUrl}`;
 
   const requestHeaders =
     new Headers();
@@ -6483,7 +6483,7 @@ export default async function handler(
         );
 
       const rows =
-        await sql\`
+        await sql`
           SELECT
             i.*,
             p.first_name,
@@ -6495,8 +6495,8 @@ export default async function handler(
             ON p.id = i.user_id
           ORDER BY
             i.created_at DESC
-          LIMIT \${limit}
-        \`;
+          LIMIT ${limit}
+        `;
 
       return writeWebResponse(
         res,
@@ -6543,7 +6543,7 @@ export default async function handler(
 
       try {
         rows =
-          await sql\`
+          await sql`
             SELECT
               t.*,
               p.first_name,
@@ -6556,8 +6556,8 @@ export default async function handler(
                 t.user_id
             ORDER BY
               t.created_at DESC
-            LIMIT \${limit}
-          \`;
+            LIMIT ${limit}
+          `;
       } catch (error) {
         console.warn(
           "Admin transaction query failed:",
