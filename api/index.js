@@ -1173,9 +1173,6 @@ async function logout(request) {
   });
 }
 
-/* =====================================================
-   CUSTOMER WALLET STATE
-===================================================== */
 
 async function loadCustomerWalletState(
   userId
@@ -1191,13 +1188,12 @@ async function loadCustomerWalletState(
 
   let main = null;
   let profit = null;
-  let legacy = null;
 
   for (const wallet of rows) {
     const type =
       String(
         wallet.wallet_type || ""
-      ).toLowerCase();
+      ).trim().toLowerCase();
 
     if (
       type === "main" &&
@@ -1212,18 +1208,9 @@ async function loadCustomerWalletState(
     ) {
       profit = wallet;
     }
-
-    if (
-      wallet.main_balance !==
-        undefined ||
-      wallet.profit_balance !==
-        undefined
-    ) {
-      legacy = wallet;
-    }
   }
 
-  const typedMainBalance =
+  const mainBalance =
     main
       ? numberValue(
           main.balance,
@@ -1231,59 +1218,13 @@ async function loadCustomerWalletState(
         )
       : 0;
 
-  const typedProfitBalance =
+  const profitBalance =
     profit
       ? numberValue(
           profit.balance,
           0
         )
       : 0;
-
-  const legacyMainBalance =
-    legacy
-      ? numberValue(
-          legacy.main_balance,
-          0
-        )
-      : 0;
-
-  const legacyProfitBalance =
-    legacy
-      ? numberValue(
-          legacy.profit_balance,
-          0
-        )
-      : 0;
-
-  if (!main && legacy) {
-    main = legacy;
-  }
-
-  if (
-    !profit &&
-    legacy &&
-    legacyProfitBalance !== 0
-  ) {
-    profit = legacy;
-  }
-
-  /*
-   * Important:
-   *
-   * A real non-zero legacy balance must not be
-   * hidden by a newly-created zero typed wallet.
-   */
-  const mainBalance =
-    typedMainBalance !== 0 ||
-    !legacy
-      ? typedMainBalance
-      : legacyMainBalance;
-
-  const profitBalance =
-    typedProfitBalance !== 0 ||
-    !legacy
-      ? typedProfitBalance
-      : legacyProfitBalance;
 
   return {
     rows,
