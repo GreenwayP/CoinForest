@@ -904,6 +904,29 @@ button{
 .investment-activity-copy strong{display:block;font-size:13px;line-height:1.35;}
 .investment-activity-copy span{display:block;margin-top:3px;font-size:11px;color:#aab8c5;}
 
+
+.live-activity-status{display:flex;align-items:center;gap:11px;min-width:0;}
+.live-activity-status>div:last-child{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.live-activity-status strong{font-size:13px;color:#173426;}
+.live-activity-status span:last-child{font-size:11px;color:#648072;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.live-activity-pill{margin-left:auto;border-radius:999px;padding:7px 11px;background:#e8f9ef;color:#16824d;font-size:10px;font-weight:900;letter-spacing:.7px;box-shadow:inset 0 0 0 1px #ccefdc;}
+.live-activity-pill.ready{background:#e8f9ef;color:#16824d;}
+.live-activity-pill.warn{background:#fff6df;color:#8b680d;}
+.activity-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 21px;border-bottom:1px solid #edf0f4;animation:activityIn .25s ease;}
+.activity-item:last-child{border-bottom:0;}
+.activity-item-main{min-width:0;}
+.activity-item strong{display:block;font-size:12px;color:#1c2b3b;}
+.activity-item span{display:block;margin-top:4px;color:#718096;font-size:10px;}
+.activity-item-badge{flex:0 0 auto;padding:6px 8px;border-radius:999px;background:#eaf9f0;color:#16824d;font-size:9px;font-weight:800;}
+.activity-item-badge.withdrawal{background:#eef5ff;color:#2878d8;}
+.investment-success-toast{position:fixed;top:92px;right:24px;z-index:10000;max-width:min(430px,calc(100vw - 32px));display:flex;align-items:flex-start;gap:12px;padding:15px 17px;border:1px solid #bde8ce;border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 18px 55px rgba(12,37,25,.18);transform:translateY(-14px);opacity:0;pointer-events:none;transition:.28s ease;}
+.investment-success-toast.show{transform:translateY(0);opacity:1;}
+.investment-success-icon{width:38px;height:38px;min-width:38px;border-radius:12px;display:grid;place-items:center;background:#e9faef;color:#159957;font-weight:900;}
+.investment-success-copy strong{display:block;font-size:13px;color:#142033;}
+.investment-success-copy span{display:block;margin-top:4px;font-size:11px;color:#718096;line-height:1.45;}
+@keyframes activityIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:600px){.activity-live-note{align-items:flex-start;}.live-activity-pill{padding:6px 8px;}.investment-success-toast{top:82px;right:16px;left:16px;max-width:none;}}
+
 /* =========================
    MOBILE
 ========================= */
@@ -1232,9 +1255,15 @@ button{
   <span class="eligibility-badge" id="eligibilityBadge">CHECKING</span>
 </div>
 
-<div class="activity-live-note">
-  <span class="activity-live-dot"></span>
-  Live investment activity • customer IDs are masked for privacy
+<div class="activity-live-note" id="liveActivityPanel" aria-live="polite">
+  <div class="live-activity-status">
+    <span class="activity-live-dot"></span>
+    <div>
+      <strong>Live Investment Activity</strong>
+      <span id="liveActivityStatus">Securely loading recent activity…</span>
+    </div>
+  </div>
+  <div class="live-activity-pill" id="liveActivityCount">LIVE</div>
 </div>
 
 
@@ -1761,6 +1790,16 @@ function normalizeKycStatus(value){
   return "pending";
 }
 
+function effectiveKycFromPayload(data){
+  const submissions = Array.isArray(data?.submissions) ? data.submissions : [];
+  const latest = submissions[0];
+  const latestStatus = normalizeKycStatus(latest?.status);
+  if(latest && latestStatus === "approved") return "approved";
+  const payloadStatus = normalizeKycStatus(data?.kyc_status || data?.profile?.kyc_status || data?.user?.kyc_status);
+  if(payloadStatus === "approved") return "approved";
+  return latest ? latestStatus : payloadStatus;
+}
+
 function setEligibility(state,message){
   const card=document.getElementById("eligibilityCard");
   const dot=document.getElementById("eligibilityDot");
@@ -1787,16 +1826,10 @@ async function refreshKycStatus(){
   if(!token()) return false;
   try{
     const {response,data}=await apiJson("/api/customer/kyc",{headers:{Authorization:"Bearer "+token()}});
-    if(!response.ok || !data.success) return normalizeKycStatus(currentUser?.kyc_status)==="approved";
-    const submissionStatus = Array.isArray(data.submissions) && data.submissions.length
-      ? data.submissions[0]?.status
-      : null;
-    const status=normalizeKycStatus(
-      data.kyc_status ||
-      data.profile?.kyc_status ||
-      data.user?.kyc_status ||
-      submissionStatus
-    );
+    if(!response.ok || !data?.success){
+      return normalizeKycStatus(currentUser?.kyc_status)==="approved";
+    }
+    const status=effectiveKycFromPayload(data);
     currentUser={...(currentUser||{}),...(data.profile||data.user||{}),kyc_status:status};
     return status==="approved";
   }catch(error){
@@ -1807,14 +1840,13 @@ async function refreshKycStatus(){
 
 function applyWallets(data){
   const walletRows=Array.isArray(data?.wallets)?data.wallets:[];
-  let main=Number(data?.main_balance ?? data?.main_wallet?.balance);
-  let profit=Number(data?.profit_balance ?? data?.profit_wallet?.balance);
-  if(!Number.isFinite(main)) main=NaN;
-  if(!Number.isFinite(profit)) profit=NaN;
+  let main=Number(data?.main_balance ?? data?.mainBalance ?? data?.main_wallet?.balance ?? data?.mainWallet?.balance);
+  let profit=Number(data?.profit_balance ?? data?.profitBalance ?? data?.profit_wallet?.balance ?? data?.profitWallet?.balance);
   for(const wallet of walletRows){
-    const type=String(wallet?.wallet_type||"").trim().toLowerCase();
-    if(type==="main" && !Number.isFinite(main)) main=Number(wallet.balance);
-    if(type==="profit" && !Number.isFinite(profit)) profit=Number(wallet.balance);
+    const type=String(wallet?.wallet_type||wallet?.type||wallet?.name||"").trim().toLowerCase();
+    const value=Number(wallet?.balance ?? wallet?.amount);
+    if(type.includes("main") && !Number.isFinite(main) && Number.isFinite(value)) main=value;
+    if(type.includes("profit") && !Number.isFinite(profit) && Number.isFinite(value)) profit=value;
   }
   if(Number.isFinite(main)) balances.main=main;
   if(Number.isFinite(profit)) balances.profit=profit;
@@ -1828,14 +1860,17 @@ function applyWallets(data){
 function renderInvestmentRows(rows){
   investmentRows=Array.isArray(rows)?rows:[];
   const total=investmentRows.reduce((sum,row)=>sum+(Number(row?.amount)||0),0);
-  const active=investmentRows.filter(row=>String(row?.status||"active").trim().toLowerCase()==="active").length;
+  const active=investmentRows.filter(row=>["active","running","open"].includes(String(row?.status||"active").trim().toLowerCase())).length;
   document.getElementById("investmentBalance").textContent=money(total);
   document.getElementById("totalInvested").textContent=money(total);
   document.getElementById("activeCount").textContent=String(active);
   const activity=document.getElementById("activity");
   if(!activity) return;
   if(!investmentRows.length){activity.innerHTML='<div class="activity-empty">No investment activity available yet.</div>';return;}
-  activity.innerHTML=investmentRows.slice(0,20).map(row=>`<div class="activity-item"><strong>${escapeHtml(row.plan_name||"Investment")}</strong><span>${money(row.amount)} • ${escapeHtml(row.status||"active")}</span></div>`).join("");
+  activity.innerHTML=investmentRows.slice(0,20).map(row=>{
+    const status=String(row?.status||"active");
+    return `<div class="activity-item"><div class="activity-item-main"><strong>${escapeHtml(row.plan_name||"Investment")}</strong><span>${money(row.amount)} • ${escapeHtml(status)}${row.transaction_reference?" • "+escapeHtml(row.transaction_reference):""}</span></div><span class="activity-item-badge">ACTIVE</span></div>`;
+  }).join("");
 }
 
 async function loadUser(){
@@ -1875,8 +1910,9 @@ async function loadUser(){
   return true;
 }
 
-function openInvestment(index){
-  if(normalizeKycStatus(currentUser?.kyc_status)!=="approved"){
+async function openInvestment(index){
+  const approved=await refreshKycStatus();
+  if(!approved){
     setEligibility("blocked","Approved KYC is required before you can invest. No separate investment approval is required.");
     alert("KYC verification is required before you can invest.");
     return;
@@ -1931,8 +1967,9 @@ document.getElementById("submitInvestment").addEventListener("click",async()=>{
     balances.main=Number(data.balance ?? data.wallet?.balance ?? (balances.main-amount));
     applyWallets({main_balance:balances.main,profit_balance:balances.profit});
     await loadUser();
-    alert((data.message||"Investment activated successfully.")+"\n\nReference: "+(data.transaction_reference||data.investment?.transaction_reference||"—"));
+    showInvestmentSuccess(data);
     closeInvestmentModal();
+    await loadInvestmentActivity();
   }catch(error){console.error("Investment submission error:",error);alert("Unable to activate your investment right now. Please try again.");}
   finally{button.disabled=false;button.textContent=original;}
 });
@@ -1962,13 +1999,35 @@ function renderActivityPopup(item){
 }
 function showNextActivity(){if(!activityQueue.length)return;const item=activityQueue[activityDisplayIndex%activityQueue.length];activityDisplayIndex++;renderActivityPopup(item);}
 async function loadInvestmentActivity(){
+  const statusEl=document.getElementById("liveActivityStatus");
+  const countEl=document.getElementById("liveActivityCount");
   try{
     const {response,data}=await apiJson("/api/customer/investment-activity",{headers:{Authorization:"Bearer "+token()}});
-    if(!response.ok||!data?.success||!Array.isArray(data.activities))return;
+    if(!response.ok||!data?.success||!Array.isArray(data.activities)) throw new Error(data?.error||"Activity unavailable");
     investmentActivity=data.activities.filter(item=>item&&item.user_id&&Number(item.amount)>0&&["investment","profit_withdrawal"].includes(item.activity_type));
     buildActivityQueue();
+    if(statusEl) statusEl.textContent=investmentActivity.length?`${investmentActivity.length} recent investment and profit activities • customer IDs protected`:"Waiting for investment activity";
+    if(countEl){countEl.textContent=investmentActivity.length?"LIVE":"READY";countEl.classList.add("ready");}
     if(investmentActivity.length&&!activityStarted){activityStarted=true;showNextActivity();}
-  }catch(error){console.warn("Investment activity unavailable:",error);}
+  }catch(error){
+    console.warn("Investment activity unavailable:",error);
+    if(statusEl) statusEl.textContent="Live activity will appear as investment records are created";
+    if(countEl){countEl.textContent="READY";countEl.classList.add("warn");}
+  }
+}
+function showInvestmentSuccess(data){
+  let toast=document.getElementById("investmentSuccessToast");
+  if(!toast){
+    toast=document.createElement("div");
+    toast.id="investmentSuccessToast";
+    toast.className="investment-success-toast";
+    document.body.appendChild(toast);
+  }
+  const inv=data?.investment||{};
+  const ref=data?.transaction_reference||inv?.transaction_reference||"—";
+  toast.innerHTML=`<div class="investment-success-icon">✓</div><div class="investment-success-copy"><strong>Investment activated successfully</strong><span>${escapeHtml(inv?.plan_name||selectedPlan?.name||"Investment")} • ${money(inv?.amount||data?.amount||0)}<br>Reference: ${escapeHtml(ref)}</span></div>`;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),5500);
 }
 
 function logout(){localStorage.removeItem("coinforest_token");window.location.href="index.html";}
