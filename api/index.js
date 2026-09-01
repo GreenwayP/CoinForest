@@ -1588,11 +1588,11 @@ async function customerDashboard(
       email_verified_at:
         profile.email_verified_at || null,
 
-      kyc_status:
-        String(
-          profile.kyc_status ||
-          "pending"
-        ).toLowerCase()
+           kyc_status:
+        await getEffectiveKycStatus(
+          auth.user.id,
+          profile.kyc_status
+        ) 
     });
   } catch (error) {
     console.error(
