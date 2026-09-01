@@ -2840,7 +2840,247 @@ async function customerWithdraw(
    CUSTOMER INVESTMENTS / PORTFOLIO
 ===================================================== */
 
+async function ensureInvestmentSchema() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS investments (
+      id UUID PRIMARY KEY,
+      user_id UUID NOT NULL,
+      plan_name TEXT NOT NULL,
+      amount NUMERIC(18,2) NOT NULL,
+      currency TEXT NOT NULL DEFAULT 'USD',
+      duration_days INTEGER NOT NULL DEFAULT 30,
+      return_percent NUMERIC(8,2) NOT NULL DEFAULT 0,
+      expected_profit NUMERIC(18,2) NOT NULL DEFAULT 0,
+      total_return NUMERIC(18,2) NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'active',
+      funding_method TEXT NOT NULL DEFAULT 'main_wallet',
+      transaction_reference TEXT,
+      maturity_date TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  /* Compatibility additions for an already-existing investments table. */
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS user_id UUID`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS plan_name TEXT`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS amount NUMERIC(18,2)`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'USD'`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS duration_days INTEGER DEFAULT 30`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS return_percent NUMERIC(8,2) DEFAULT 0`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS expected_profit NUMERIC(18,2) DEFAULT 0`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS total_return NUMERIC(18,2) DEFAULT 0`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active'`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS funding_method TEXT DEFAULT 'main_wallet'`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS transaction_reference TEXT`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS maturity_date TIMESTAMPTZ`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW()`;
+  await sql`ALTER TABLE investments ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW()`;
+}
+
+function investmentPlanConfig(name) {
+  const plans = {
+    starter: { name: 'Starter', min: 100, max: 999, durationDays: 30, returnPercent: 15 },
+    growth: { name: 'Growth', min: 1000, max: 4999, durationDays: 60, returnPercent: 25 },
+    premium: { name: 'Premium', min: 5000, max: 24999, durationDays: 90, returnPercent: 35 },
+    elite: { name: 'Elite', min: 25000, max: 1000000, durationDays: 120, returnPercent: 50 }
+  };
+
+  return plans[String(name || '').trim().toLowerCase()] || null;
+}
+
+async function customerCreateInvestment(request, body) {
+  const auth = await requireCustomer(request);
+
+  if (!auth.ok) {
+    return bad(auth.status, auth.error, auth);
+  }
+
+  /* Investment access is based on confirmed KYC, not a second investment approval. */
+  if (!isApprovedKyc(auth.user.kyc_status)) {
+    return bad(
+      403,
+      'KYC verification is required before you can invest.',
+      { code: 'KYC_REQUIRED', kyc_status: auth.user.kyc_status || 'pending' }
+    );
+  }
+
+  const plan = investmentPlanConfig(body?.plan_name || body?.plan || body?.scheme);
+  const amount = numberValue(body?.amount, NaN);
+
+  if (!plan) return bad(400, 'Please select a valid investment plan.');
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return bad(400, 'Investment amount must be greater than zero.');
+  }
+  if (amount < plan.min || amount > plan.max) {
+    return bad(400, `Investment amount must be between ${plan.min} and ${plan.max} for the ${plan.name} plan.`);
+  }
+
+  const fundingMethod = String(body?.funding_method || body?.funding || 'main_wallet').trim().toLowerCase();
+  if (fundingMethod !== 'main_wallet') {
+    return bad(400, 'Only Main Wallet funding can activate an investment immediately.');
+  }
+
+  await ensureUserWallets(auth.user.id);
+  await ensureInvestmentSchema();
+
+  const walletRows = await sql`
+    SELECT *
+    FROM wallets
+    WHERE user_id = ${auth.user.id}
+      AND LOWER(COALESCE(wallet_type, '')) = 'main'
+    LIMIT 1
+  `;
+
+  if (!walletRows.length) return bad(500, 'Main Wallet could not be found.');
+
+  const wallet = walletRows[0];
+  const before = numberValue(wallet.balance, 0);
+  if (before < amount) {
+    return bad(400, 'Insufficient Main Wallet balance.', {
+      code: 'INSUFFICIENT_BALANCE',
+      balance: before,
+      required: amount
+    });
+  }
+
+  const after = Number((before - amount).toFixed(2));
+  const investmentId = crypto.randomUUID();
+  const reference = `INV-${crypto.randomUUID()}`;
+  const profit = Number((amount * plan.returnPercent / 100).toFixed(2));
+  const totalReturn = Number((amount + profit).toFixed(2));
+
+  /*
+   * Use a conditional wallet update so a stale balance cannot create
+   * an investment when another request has already consumed the funds.
+   */
+  const debited = await sql`
+    UPDATE wallets
+    SET balance = ${after}, updated_at = NOW()
+    WHERE id = ${wallet.id}
+      AND user_id = ${auth.user.id}
+      AND balance >= ${amount}
+    RETURNING *
+  `;
+
+  if (!debited.length) {
+    return bad(409, 'Your Main Wallet balance changed. Please refresh and try again.', {
+      code: 'BALANCE_CHANGED'
+    });
+  }
+
+  try {
+    const rows = await sql`
+      INSERT INTO investments (
+        id, user_id, plan_name, amount, currency, duration_days,
+        return_percent, expected_profit, total_return, status,
+        funding_method, transaction_reference, maturity_date,
+        created_at, updated_at
+      )
+      VALUES (
+        ${investmentId}, ${auth.user.id}, ${plan.name}, ${amount}, 'USD',
+        ${plan.durationDays}, ${plan.returnPercent}, ${profit}, ${totalReturn},
+        'active', 'main_wallet', ${reference},
+        NOW() + (${plan.durationDays} * INTERVAL '1 day'), NOW(), NOW()
+      )
+      RETURNING *
+    `;
+
+    try {
+      await sql`
+        INSERT INTO wallet_ledger (
+          id, user_id, wallet_type, amount, balance_before, balance_after,
+          entry_type, description, created_at
+        )
+        VALUES (
+          ${crypto.randomUUID()}, ${auth.user.id}, 'main', ${-amount},
+          ${before}, ${after}, 'investment',
+          ${`Investment in ${plan.name} plan (${reference})`}, NOW()
+        )
+      `;
+    } catch (ledgerError) {
+      console.warn('Investment wallet ledger warning:', ledgerError?.message || ledgerError);
+    }
+
+    try {
+      await sql`
+        INSERT INTO transactions (
+          id, user_id, wallet_id, transaction_reference, transaction_type,
+          direction, amount, fee, currency, status, description, metadata,
+          created_at, updated_at
+        )
+        VALUES (
+          ${crypto.randomUUID()}, ${auth.user.id}, ${wallet.id}, ${reference},
+          'investment', 'debit', ${amount}, 0, 'USD', 'success',
+          ${`Investment in ${plan.name}`},
+          ${JSON.stringify({ source: 'customer_investment', investment_id: investmentId, plan: plan.name })},
+          NOW(), NOW()
+        )
+      `;
+    } catch (transactionError) {
+      console.warn('Investment transaction warning:', transactionError?.message || transactionError);
+    }
+
+    return ok({
+      message: 'Investment activated successfully.',
+      investment: rows[0],
+      wallet: debited[0],
+      balance: after,
+      transaction_reference: reference
+    });
+  } catch (error) {
+    await sql`
+      UPDATE wallets
+      SET balance = ${before}, updated_at = NOW()
+      WHERE id = ${wallet.id}
+        AND user_id = ${auth.user.id}
+    `;
+
+    return bad(500, 'Unable to create the investment. Your Main Wallet was not charged.', {
+      detail: error?.message
+    });
+  }
+}
+
+async function customerInvestmentActivity(request) {
+  const auth = await requireCustomer(request);
+  if (!auth.ok) return bad(auth.status, auth.error, auth);
+
+  try {
+    const investments = await sql`
+      SELECT id, user_id, plan_name, amount, currency, created_at
+      FROM investments
+      WHERE LOWER(COALESCE(status, 'active')) = 'active'
+      ORDER BY created_at DESC
+      LIMIT 100
+    `;
+
+    const withdrawals = await sql`
+      SELECT
+        t.id, t.user_id, t.amount, t.currency, t.created_at,
+        w.wallet_type
+      FROM transactions t
+      INNER JOIN wallets w ON w.id = t.wallet_id
+      WHERE LOWER(COALESCE(t.direction, '')) = 'debit'
+        AND LOWER(COALESCE(t.status, '')) = 'success'
+        AND LOWER(COALESCE(w.wallet_type, '')) = 'profit'
+      ORDER BY t.created_at DESC
+      LIMIT 100
+    `;
+
+    return ok({
+      activities: [
+        ...investments.map(row => ({ ...row, activity_type: 'investment' })),
+        ...withdrawals.map(row => ({ ...row, activity_type: 'profit_withdrawal' }))
+      ].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0, 100)
+    });
+  } catch (error) {
+    return bad(500, 'Unable to load investment activity.', { detail: error?.message });
+  }
+}
+
 async function customerInvestments(
+
   request,
   url
 ) {
@@ -6096,6 +6336,36 @@ export default async function handler(
     /* =================================================
        CUSTOMER INVESTMENTS
     ================================================= */
+
+    if (
+      method === "POST" &&
+      (
+        path ===
+          "/api/customer/investments" ||
+        path ===
+          "/api/user/investments" ||
+        path ===
+          "/api/investments"
+      )
+    ) {
+      return writeWebResponse(
+        res,
+        await customerCreateInvestment(
+          request,
+          await jsonBody(request)
+        )
+      );
+    }
+
+    if (
+      method === "GET" &&
+      path === "/api/customer/investment-activity"
+    ) {
+      return writeWebResponse(
+        res,
+        await customerInvestmentActivity(request)
+      );
+    }
 
     if (
       method === "GET" &&
