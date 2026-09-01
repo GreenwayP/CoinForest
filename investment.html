@@ -1791,12 +1791,17 @@ function normalizeKycStatus(value){
 }
 
 function effectiveKycFromPayload(data){
+  const payloadStatus = normalizeKycStatus(
+    data?.kyc_status || data?.profile?.kyc_status || data?.user?.kyc_status
+  );
+  if(payloadStatus === "approved") return "approved";
+
   const submissions = Array.isArray(data?.submissions) ? data.submissions : [];
+  /* Never let an older/pending submission hide a confirmed approval. */
+  if(submissions.some(row => normalizeKycStatus(row?.status) === "approved")) return "approved";
+
   const latest = submissions[0];
   const latestStatus = normalizeKycStatus(latest?.status);
-  if(latest && latestStatus === "approved") return "approved";
-  const payloadStatus = normalizeKycStatus(data?.kyc_status || data?.profile?.kyc_status || data?.user?.kyc_status);
-  if(payloadStatus === "approved") return "approved";
   return latest ? latestStatus : payloadStatus;
 }
 
@@ -2039,6 +2044,11 @@ renderPlans();
 setEligibility("checking");
 loadUser();
 loadInvestmentActivity();
+
+/* Keep live investment activity fresh without requiring a page reload. */
+setInterval(() => {
+  if(token()) loadInvestmentActivity();
+}, 30000);
 </script>
 
 </body>
