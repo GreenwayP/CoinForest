@@ -1582,17 +1582,11 @@ async function customerDashboard(
       account_approved:
         approved,
 
-      email_verified:
-        !!profile.email_verified_at ||
-        approved,
+            email_verified:
+        !!profile.email_verified_at,
 
       email_verified_at:
-        profile.email_verified_at ||
-        (
-          approved
-            ? new Date().toISOString()
-            : null
-        ),
+        profile.email_verified_at || null,
 
       kyc_status:
         String(
