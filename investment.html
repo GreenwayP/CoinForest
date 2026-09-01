@@ -1788,7 +1788,15 @@ async function refreshKycStatus(){
   try{
     const {response,data}=await apiJson("/api/customer/kyc",{headers:{Authorization:"Bearer "+token()}});
     if(!response.ok || !data.success) return normalizeKycStatus(currentUser?.kyc_status)==="approved";
-    const status=normalizeKycStatus(data.kyc_status || data.profile?.kyc_status || data.user?.kyc_status);
+    const submissionStatus = Array.isArray(data.submissions) && data.submissions.length
+      ? data.submissions[0]?.status
+      : null;
+    const status=normalizeKycStatus(
+      data.kyc_status ||
+      data.profile?.kyc_status ||
+      data.user?.kyc_status ||
+      submissionStatus
+    );
     currentUser={...(currentUser||{}),...(data.profile||data.user||{}),kyc_status:status};
     return status==="approved";
   }catch(error){
