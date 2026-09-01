@@ -827,6 +827,84 @@ button{
 }
 
 /* =========================
+   INVESTMENT ELIGIBILITY + LIVE ACTIVITY
+========================= */
+.eligibility-card{
+  margin:0 0 18px;
+  background:rgba(255,255,255,.96);
+  border:1px solid #e3e9ef;
+  border-radius:18px;
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  box-shadow:0 10px 28px rgba(16,34,52,.06);
+}
+.eligibility-dot{
+  width:14px;
+  height:14px;
+  min-width:14px;
+  border-radius:50%;
+  background:#eab52a;
+  box-shadow:0 0 0 7px rgba(234,181,42,.12);
+}
+.eligibility-copy{flex:1;min-width:0;}
+.eligibility-copy strong{display:block;font-size:16px;color:#142033;margin-bottom:3px;}
+.eligibility-copy span{display:block;font-size:13px;color:#718094;line-height:1.45;}
+.eligibility-badge{
+  border-radius:999px;
+  padding:8px 12px;
+  background:#f3f5f8;
+  color:#647184;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+.eligibility-card.eligible .eligibility-dot{background:#2fc47a;box-shadow:0 0 0 7px rgba(47,196,122,.12);}
+.eligibility-card.eligible .eligibility-badge{background:#eaf9f1;color:#16824d;}
+.eligibility-card.blocked .eligibility-dot{background:#e15b5b;box-shadow:0 0 0 7px rgba(225,91,91,.11);}
+.eligibility-card.blocked .eligibility-badge{background:#fff0f0;color:#a13b3b;}
+.activity-live-note{
+  margin:0 0 42px;
+  border:1px solid #d3efdf;
+  background:linear-gradient(90deg,#f4fcf7,#f8fcfa);
+  color:#466454;
+  border-radius:15px;
+  padding:13px 17px;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.activity-live-dot{width:10px;height:10px;border-radius:50%;background:#31c77a;box-shadow:0 0 0 5px rgba(49,199,122,.11);}
+.investment-activity-toast{
+  position:fixed;
+  left:22px;
+  bottom:22px;
+  z-index:9999;
+  max-width:min(420px,calc(100vw - 44px));
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:17px;
+  background:rgba(10,29,43,.96);
+  color:#fff;
+  box-shadow:0 18px 50px rgba(4,20,32,.28);
+  backdrop-filter:blur(14px);
+  transform:translateY(22px) scale(.98);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .28s ease,transform .28s ease;
+}
+.investment-activity-toast.show{opacity:1;transform:translateY(0) scale(1);}
+.investment-activity-icon{width:38px;height:38px;min-width:38px;border-radius:12px;display:grid;place-items:center;background:rgba(54,201,125,.16);color:#6be2a0;font-size:19px;font-weight:900;}
+.investment-activity-icon.withdrawal{background:rgba(91,159,255,.16);color:#8abaff;}
+.investment-activity-copy strong{display:block;font-size:13px;line-height:1.35;}
+.investment-activity-copy span{display:block;margin-top:3px;font-size:11px;color:#aab8c5;}
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -928,399 +1006,6 @@ button{
   }
 
 }
-
-/* ======================================================
-   COINFOREST INVESTMENT POLISH
-====================================================== */
-
-body{
-  background:
-    radial-gradient(circle at 8% 8%,rgba(46,204,113,.055),transparent 24%),
-    radial-gradient(circle at 92% 16%,rgba(40,120,216,.045),transparent 22%),
-    var(--bg);
-}
-
-.content{
-  position:relative;
-}
-
-.hero{
-  box-shadow:
-    0 18px 50px rgba(8,21,37,.16),
-    inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-.hero::before{
-  animation:forestOrbit 14s linear infinite;
-}
-
-.hero-stat{
-  transition:transform .22s ease,background .22s ease,border-color .22s ease;
-}
-
-.hero-stat:hover{
-  transform:translateY(-2px);
-  background:rgba(255,255,255,.105);
-  border-color:rgba(143,240,180,.22);
-}
-
-.balance-card{
-  position:relative;
-  overflow:hidden;
-  transition:transform .22s ease,box-shadow .22s ease;
-}
-
-.balance-card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.09) 48%,transparent 58%);
-  transform:translateX(-120%);
-  transition:transform .7s ease;
-}
-
-.balance-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 14px 34px rgba(15,30,50,.09);
-}
-
-.balance-card:hover::after{
-  transform:translateX(120%);
-}
-
-.plan{
-  transition:
-    transform .22s ease,
-    box-shadow .22s ease,
-    border-color .22s ease;
-}
-
-.plan::after{
-  content:"";
-  position:absolute;
-  width:130px;
-  height:130px;
-  right:-75px;
-  bottom:-75px;
-  border-radius:50%;
-  background:rgba(46,204,113,.06);
-  pointer-events:none;
-  transition:transform .3s ease;
-}
-
-.plan:hover::after{
-  transform:scale(1.35);
-}
-
-.plan button,
-.primary-btn{
-  transition:
-    transform .18s ease,
-    box-shadow .18s ease,
-    background .18s ease;
-}
-
-.plan button:hover,
-.primary-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 18px rgba(21,153,87,.18);
-}
-
-.section-title{
-  position:relative;
-}
-
-.section-title h2::after{
-  content:"";
-  display:block;
-  width:34px;
-  height:3px;
-  margin-top:8px;
-  border-radius:4px;
-  background:var(--green);
-}
-
-.investment-readiness{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  margin:0 0 22px;
-  padding:14px 16px;
-  background:rgba(255,255,255,.88);
-  border:1px solid var(--border);
-  border-radius:14px;
-  box-shadow:0 7px 24px rgba(15,30,50,.045);
-}
-
-.readiness-left{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  min-width:0;
-}
-
-.readiness-dot{
-  width:10px;
-  height:10px;
-  flex:0 0 10px;
-  border-radius:50%;
-  background:#e8aa25;
-  box-shadow:0 0 0 5px rgba(232,170,37,.12);
-}
-
-.readiness-dot.approved{
-  background:var(--green);
-  box-shadow:0 0 0 5px rgba(46,204,113,.12);
-}
-
-.readiness-dot.rejected{
-  background:var(--danger);
-  box-shadow:0 0 0 5px rgba(229,83,83,.12);
-}
-
-.readiness-copy strong{
-  display:block;
-  font-size:12px;
-}
-
-.readiness-copy span{
-  display:block;
-  margin-top:3px;
-  color:var(--muted);
-  font-size:10px;
-}
-
-.readiness-badge{
-  flex:0 0 auto;
-  padding:6px 10px;
-  border-radius:20px;
-  background:#f6f8fb;
-  color:#66768a;
-  font-size:9px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-}
-
-.readiness-badge.approved{
-  background:var(--green-soft);
-  color:var(--green-dark);
-}
-
-.readiness-badge.rejected{
-  background:#fff0f0;
-  color:#b13e3e;
-}
-
-.live-activity-strip{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  margin:-3px 0 22px;
-  padding:10px 13px;
-  border:1px solid rgba(46,204,113,.16);
-  border-radius:12px;
-  background:linear-gradient(90deg,#effaf3,#f8fbfd);
-  color:#39604b;
-  font-size:10px;
-}
-
-.live-activity-strip .pulse{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 0 0 rgba(46,204,113,.35);
-  animation:pulseGreen 1.8s infinite;
-}
-
-.investment-activity-toast{
-  position:fixed;
-  left:24px;
-  bottom:24px;
-  z-index:2200;
-  width:min(405px,calc(100vw - 32px));
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:15px 16px;
-  border:1px solid rgba(143,240,180,.18);
-  border-radius:17px;
-  background:rgba(7,21,37,.97);
-  color:#fff;
-  box-shadow:0 20px 55px rgba(7,21,37,.3);
-  backdrop-filter:blur(16px);
-  transform:translateY(24px);
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .35s ease,transform .35s ease;
-}
-
-.investment-activity-toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.investment-activity-icon{
-  width:40px;
-  height:40px;
-  flex:0 0 40px;
-  display:grid;
-  place-items:center;
-  border-radius:13px;
-  background:rgba(46,204,113,.14);
-  color:#8ff0b4;
-  font-weight:900;
-  font-size:18px;
-}
-
-.investment-activity-icon.withdrawal{
-  background:rgba(232,170,37,.14);
-  color:#ffd875;
-}
-
-.investment-activity-copy{
-  min-width:0;
-}
-
-.investment-activity-copy strong{
-  display:block;
-  font-size:13px;
-  line-height:1.45;
-}
-
-.investment-activity-copy span{
-  display:block;
-  margin-top:4px;
-  color:#aebccc;
-  font-size:10px;
-}
-
-.activity-list{
-  display:grid;
-  gap:9px;
-  padding:15px 19px 19px;
-}
-
-.activity-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px;
-  border:1px solid #edf1f5;
-  border-radius:11px;
-  background:#fbfcfd;
-}
-
-.activity-item-icon{
-  width:31px;
-  height:31px;
-  display:grid;
-  place-items:center;
-  border-radius:9px;
-  background:var(--green-soft);
-  color:var(--green-dark);
-  font-size:13px;
-}
-
-.activity-item-icon.withdrawal{
-  background:var(--gold-soft);
-  color:#a36e00;
-}
-
-.activity-item-copy{
-  min-width:0;
-  flex:1;
-}
-
-.activity-item-copy strong{
-  display:block;
-  font-size:11px;
-}
-
-.activity-item-copy span{
-  display:block;
-  margin-top:3px;
-  color:var(--muted);
-  font-size:9px;
-}
-
-.activity-item-amount{
-  font-size:11px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.return-preview{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin:-2px 0 15px;
-  padding:10px 12px;
-  border-radius:9px;
-  background:#f6f9fc;
-  color:#607085;
-  font-size:10px;
-}
-
-.return-preview strong{
-  color:var(--green-dark);
-  font-size:11px;
-}
-
-.primary-btn:disabled,
-.plan button:disabled{
-  cursor:not-allowed;
-  opacity:.62;
-  transform:none;
-  box-shadow:none;
-}
-
-@keyframes pulseGreen{
-  0%{box-shadow:0 0 0 0 rgba(46,204,113,.35)}
-  70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}
-  100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}
-}
-
-@keyframes forestOrbit{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
-}
-
-@media(max-width:600px){
-  .investment-readiness{
-    align-items:flex-start;
-  }
-
-  .investment-activity-toast{
-    left:16px;
-    right:16px;
-    bottom:16px;
-    width:auto;
-  }
-
-  .activity-item{
-    align-items:flex-start;
-  }
-
-  .activity-item-amount{
-    font-size:10px;
-  }
-}
-
-@media(prefers-reduced-motion:reduce){
-  *,
-  *::before,
-  *::after{
-    scroll-behavior:auto !important;
-    animation:none !important;
-    transition:none !important;
-  }
-}
-
 </style>
 </head>
 
@@ -1474,8 +1159,8 @@ body{
     <p>
       Explore structured investment schemes, review their
       terms and choose an eligible funding method. Investment
-      investments are available immediately after your KYC is
-      confirmed and approved. No separate investment approval is required.
+      requests are subject to account verification and the
+      applicable approval process.
     </p>
 
 
@@ -1538,20 +1223,18 @@ body{
 
 </section>
 
-<div class="investment-readiness" id="investmentReadiness">
-  <div class="readiness-left">
-    <div class="readiness-dot" id="readinessDot"></div>
-    <div class="readiness-copy">
-      <strong id="readinessTitle">Checking investment eligibility…</strong>
-      <span id="readinessText">Verifying your KYC status securely.</span>
-    </div>
+<div class="eligibility-card" id="eligibilityCard" aria-live="polite">
+  <div class="eligibility-dot" id="eligibilityDot"></div>
+  <div class="eligibility-copy">
+    <strong id="eligibilityTitle">Checking investment eligibility...</strong>
+    <span id="eligibilityMessage">Verifying your KYC status securely.</span>
   </div>
-  <div class="readiness-badge" id="readinessBadge">Checking</div>
+  <span class="eligibility-badge" id="eligibilityBadge">CHECKING</span>
 </div>
 
-<div class="live-activity-strip">
-  <span class="pulse"></span>
-  <span>Live investment activity • customer IDs are masked for privacy</span>
+<div class="activity-live-note">
+  <span class="activity-live-dot"></span>
+  Live investment activity • customer IDs are masked for privacy
 </div>
 
 
@@ -1644,7 +1327,7 @@ body{
   </h2>
 
   <p>
-    Choose a scheme, review its terms and activate it directly from your Main Wallet.
+    Review each scheme carefully. Once your KYC is approved, eligible Main Wallet investments activate immediately.
   </p>
 
 </div>
@@ -1731,7 +1414,7 @@ body{
         </strong>
 
         <p>
-          An approved KYC profile is required before an investment can be activated.
+          An approved KYC profile is required before an investment can be activated. No separate investment approval is required.
         </p>
 
       </div>
@@ -1764,7 +1447,7 @@ body{
       </h2>
 
       <p>
-        Your latest investment activity and status will appear here.
+        Your investment records will appear here.
       </p>
 
     </div>
@@ -1856,11 +1539,6 @@ body{
         step="0.01"
         placeholder="0.00">
 
-    </div>
-
-    <div class="return-preview" id="returnPreview">
-      <span>Estimated scheme return</span>
-      <strong id="returnPreviewValue">$0.00</strong>
     </div>
 
 
@@ -1991,8 +1669,9 @@ body{
 
     <div class="warning">
 
-      Approved KYC customers can activate Main Wallet investments immediately.
-      The backend verifies the balance and records the investment before confirming success.
+      Approved KYC is the investment eligibility requirement.
+      Eligible Main Wallet investments are activated immediately by the connected backend.
+      No separate admin approval is required for an investment.
 
     </div>
 
@@ -2013,7 +1692,7 @@ body{
         type="button"
         id="submitInvestment">
 
-        Activate Investment
+        Submit Investment Request
 
       </button>
 
@@ -2024,2054 +1703,276 @@ body{
 </div>
 
 
-
 <script>
-
 /* ======================================================
    COINFOREST INVESTMENT PAGE
-   Full customer-side investment implementation
+   - Real wallet balances from customer dashboard/wallet API
+   - Fresh KYC verification before investment
+   - Approved KYC activates investment immediately
+   - No separate investment admin approval
+   - Real investment records
+   - 100+ notification display slots from real records
+   - Masked customer IDs only
+   - Investment + profit withdrawal activity
 ====================================================== */
 
 let currentUser = null;
 let selectedPlan = null;
-
-let balances = {
-  main: 0,
-  profit: 0
-};
-
+let balances = { main:0, profit:0 };
 let investmentRows = [];
-
 let investmentActivity = [];
 let activityQueue = [];
 let activityDisplayIndex = 0;
 let activityTimer = null;
-
-
-/* ======================================================
-   INVESTMENT SCHEMES
-====================================================== */
+let activityStarted = false;
 
 const schemes = [
-
-  {
-    name:"Starter",
-    min:100,
-    max:999,
-    duration:"30 Days",
-    durationDays:30,
-    returnPercent:15,
-    description:
-      "An entry-level investment structure for smaller portfolio allocations.",
-    icon:"₿",
-    featured:false
-  },
-
-  {
-    name:"Growth",
-    min:1000,
-    max:4999,
-    duration:"60 Days",
-    durationDays:60,
-    returnPercent:25,
-    description:
-      "A balanced investment tier designed for users seeking a larger allocation.",
-    icon:"Ξ",
-    featured:true
-  },
-
-  {
-    name:"Premium",
-    min:5000,
-    max:24999,
-    duration:"90 Days",
-    durationDays:90,
-    returnPercent:35,
-    description:
-      "A higher allocation tier for more substantial portfolio positions.",
-    icon:"◆",
-    featured:false
-  },
-
-  {
-    name:"Elite",
-    min:25000,
-    max:1000000,
-    duration:"120 Days",
-    durationDays:120,
-    returnPercent:50,
-    description:
-      "An extended investment tier for larger portfolio allocations.",
-    icon:"◈",
-    featured:false
-  }
-
+  {name:"Starter",min:100,max:999,duration:"30 Days",durationDays:30,returnPercent:15,description:"An entry-level investment structure for smaller portfolio allocations.",icon:"₿",featured:false},
+  {name:"Growth",min:1000,max:4999,duration:"60 Days",durationDays:60,returnPercent:25,description:"A balanced investment tier designed for users seeking a larger allocation.",icon:"Ξ",featured:true},
+  {name:"Premium",min:5000,max:24999,duration:"90 Days",durationDays:90,returnPercent:35,description:"A higher allocation tier for more substantial portfolio positions.",icon:"◆",featured:false},
+  {name:"Elite",min:25000,max:1000000,duration:"120 Days",durationDays:120,returnPercent:50,description:"An extended investment tier for larger portfolio allocations.",icon:"◈",featured:false}
 ];
 
-
-/* ======================================================
-   MONEY
-====================================================== */
-
 function money(value){
-
-  const number =
-    Number(value) || 0;
-
-  return "$" +
-    number.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    );
-
+  const n = Number(value);
+  return "$" + (Number.isFinite(n) ? n : 0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
+function token(){ return localStorage.getItem("coinforest_token"); }
 
-/* ======================================================
-   SAFE TEXT
-====================================================== */
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
+async function apiJson(url, options={}){
+  const response = await fetch(url,{cache:"no-store",...options,headers:{Accept:"application/json",...(options.headers||{})}});
+  let data = null;
+  try { data = await response.json(); } catch (_) { data = {success:false,error:"Invalid server response."}; }
+  return {response,data};
 }
 
+function openSidebar(){document.getElementById("sidebar")?.classList.add("open");document.getElementById("sidebarOverlay")?.classList.add("show");document.body.classList.add("sidebar-open");}
+function closeSidebar(){document.getElementById("sidebar")?.classList.remove("open");document.getElementById("sidebarOverlay")?.classList.remove("show");document.body.classList.remove("sidebar-open");}
+function toggleSidebar(){document.getElementById("sidebar")?.classList.contains("open") ? closeSidebar() : openSidebar();}
 
-/* ======================================================
-   SIDEBAR
-====================================================== */
-
-function openSidebar(){
-
-  document
-    .getElementById("sidebar")
-    .classList
-    .add("open");
-
-  document
-    .getElementById("sidebarOverlay")
-    .classList
-    .add("show");
-
-  document
-    .body
-    .classList
-    .add("sidebar-open");
-
-}
-
-
-function closeSidebar(){
-
-  document
-    .getElementById("sidebar")
-    .classList
-    .remove("open");
-
-  document
-    .getElementById("sidebarOverlay")
-    .classList
-    .remove("show");
-
-  document
-    .body
-    .classList
-    .remove("sidebar-open");
-
-}
-
-
-function toggleSidebar(){
-
-  const sidebar =
-    document.getElementById("sidebar");
-
-  if(
-    sidebar.classList.contains("open")
-  ){
-    closeSidebar();
-  }else{
-    openSidebar();
-  }
-
-}
-
-
-document
-  .querySelectorAll(".sidebar .nav a")
-  .forEach(
-    link => {
-      link.addEventListener(
-        "click",
-        closeSidebar
-      );
-    }
-  );
-
-
-window.addEventListener(
-  "popstate",
-  closeSidebar
-);
-
-
-/* ======================================================
-   KYC
-====================================================== */
+document.querySelectorAll(".sidebar .nav a").forEach(link=>link.addEventListener("click",closeSidebar));
+window.addEventListener("popstate",closeSidebar);
 
 function normalizeKycStatus(value){
-
-  const status =
-    String(value || "pending")
-      .trim()
-      .toLowerCase();
-
-  if(
-    [
-      "approved",
-      "verified",
-      "complete",
-      "completed"
-    ].includes(status)
-  ){
-    return "approved";
-  }
-
-  if(
-    [
-      "rejected",
-      "declined"
-    ].includes(status)
-  ){
-    return "rejected";
-  }
-
+  const s = String(value || "pending").trim().toLowerCase();
+  if(["approved","verified","complete","completed"].includes(s)) return "approved";
+  if(["rejected","declined"].includes(s)) return "rejected";
   return "pending";
-
 }
 
-
-function kycApproved(){
-
-  return (
-    normalizeKycStatus(
-      currentUser?.kyc_status
-    ) === "approved"
-  );
-
-}
-
-
-function updateKycUI(){
-
-  const status =
-    normalizeKycStatus(
-      currentUser?.kyc_status
-    );
-
-  const dot =
-    document.getElementById(
-      "readinessDot"
-    );
-
-  const title =
-    document.getElementById(
-      "readinessTitle"
-    );
-
-  const text =
-    document.getElementById(
-      "readinessText"
-    );
-
-  const badge =
-    document.getElementById(
-      "readinessBadge"
-    );
-
-  dot.className =
-    "readiness-dot " +
-    status;
-
-  badge.className =
-    "readiness-badge " +
-    status;
-
-  if(
-    status === "approved"
-  ){
-
-    title.textContent =
-      "Investment access is ready";
-
-    text.textContent =
-      "Your KYC is approved. You can activate eligible investments immediately.";
-
-    badge.textContent =
-      "KYC Approved";
-
-  }else if(
-    status === "rejected"
-  ){
-
-    title.textContent =
-      "Investment access unavailable";
-
-    text.textContent =
-      "Your KYC is not approved. Investment activation is blocked.";
-
-    badge.textContent =
-      "KYC Rejected";
-
+function setEligibility(state,message){
+  const card=document.getElementById("eligibilityCard");
+  const dot=document.getElementById("eligibilityDot");
+  const title=document.getElementById("eligibilityTitle");
+  const text=document.getElementById("eligibilityMessage");
+  const badge=document.getElementById("eligibilityBadge");
+  if(!card) return;
+  card.classList.remove("eligible","blocked");
+  if(state==="eligible"){
+    card.classList.add("eligible"); title.textContent="Investment eligibility confirmed"; text.textContent=message||"Your KYC is approved. Eligible Main Wallet investments can activate immediately."; badge.textContent="ELIGIBLE";
+  }else if(state==="blocked"){
+    card.classList.add("blocked"); title.textContent="Investment eligibility unavailable"; text.textContent=message||"Approved KYC is required before you can invest."; badge.textContent="KYC REQUIRED";
   }else{
-
-    title.textContent =
-      "KYC verification required";
-
-    text.textContent =
-      "Complete and receive KYC approval before activating an investment.";
-
-    badge.textContent =
-      "KYC Pending";
-
+    title.textContent="Checking investment eligibility..."; text.textContent=message||"Verifying your KYC status securely."; badge.textContent="CHECKING";
   }
-
 }
-
-
-async function refreshKycStatus(){
-
-  const token =
-    localStorage.getItem(
-      "coinforest_token"
-    );
-
-  if(!token){
-    return false;
-  }
-
-  try{
-
-    const response =
-      await fetch(
-        "/api/customer/kyc",
-        {
-          method:"GET",
-          headers:{
-            Authorization:
-              "Bearer " + token,
-
-            Accept:
-              "application/json"
-          }
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if(
-      data.success
-    ){
-
-      const profile =
-        data.profile ||
-        data.user ||
-        {};
-
-      currentUser = {
-        ...(currentUser || {}),
-        ...profile,
-
-        kyc_status:
-          data.kyc_status ||
-          profile.kyc_status ||
-          currentUser?.kyc_status ||
-          "pending"
-      };
-
-      updateKycUI();
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "KYC refresh failed:",
-      error
-    );
-
-  }
-
-  return kycApproved();
-
-}
-
-
-/* ======================================================
-   RENDER SCHEMES
-====================================================== */
 
 function renderPlans(){
-
-  const container =
-    document.getElementById(
-      "plans"
-    );
-
-  container.innerHTML =
-    schemes.map(
-      (
-        plan,
-        index
-      ) => {
-
-        return `
-
-          <article
-            class="plan ${
-              plan.featured
-                ? "featured"
-                : ""
-            }">
-
-            ${
-              plan.featured
-                ?
-                '<div class="badge">POPULAR</div>'
-                :
-                ""
-            }
-
-            <div class="plan-icon">
-              ${escapeHtml(plan.icon)}
-            </div>
-
-            <h3>
-              ${escapeHtml(plan.name)}
-            </h3>
-
-            <p class="plan-description">
-              ${escapeHtml(plan.description)}
-            </p>
-
-            <div class="plan-range">
-
-              <small>
-                INVESTMENT RANGE
-              </small>
-
-              <strong>
-                ${money(plan.min)}
-                –
-                ${money(plan.max)}
-              </strong>
-
-            </div>
-
-            <div class="plan-meta">
-
-              <div class="plan-meta-item">
-
-                <small>
-                  RETURN
-                </small>
-
-                <strong>
-                  ${plan.returnPercent}%
-                </strong>
-
-              </div>
-
-              <div class="plan-meta-item">
-
-                <small>
-                  TERM
-                </small>
-
-                <strong>
-                  ${escapeHtml(plan.duration)}
-                </strong>
-
-              </div>
-
-            </div>
-
-            <button
-              type="button"
-              onclick="openInvestment(${index})">
-
-              Invest Now
-
-            </button>
-
-          </article>
-
-        `;
-
-      }
-    ).join("");
-
+  const container=document.getElementById("plans");
+  container.innerHTML=schemes.map((plan,index)=>`<article class="plan ${plan.featured?"featured":""}">${plan.featured?'<div class="badge">POPULAR</div>':''}<div class="plan-icon">${plan.icon}</div><h3>${plan.name}</h3><p class="plan-description">${plan.description}</p><div class="plan-range"><small>INVESTMENT RANGE</small><strong>${money(plan.min)} – ${money(plan.max)}</strong></div><div class="plan-meta"><div class="plan-meta-item"><small>RETURN</small><strong>${plan.returnPercent}%</strong></div><div class="plan-meta-item"><small>TERM</small><strong>${plan.duration}</strong></div></div><button type="button" onclick="openInvestment(${index})">Invest Now</button></article>`).join("");
 }
 
-
-/* ======================================================
-   MODAL
-====================================================== */
-
-async function openInvestment(index){
-
-  const approved =
-    await refreshKycStatus();
-
-  if(!approved){
-
-    alert(
-      "KYC verification is required before you can invest."
-    );
-
-    return;
-
+async function refreshKycStatus(){
+  if(!token()) return false;
+  try{
+    const {response,data}=await apiJson("/api/customer/kyc",{headers:{Authorization:"Bearer "+token()}});
+    if(!response.ok || !data.success) return normalizeKycStatus(currentUser?.kyc_status)==="approved";
+    const status=normalizeKycStatus(data.kyc_status || data.profile?.kyc_status || data.user?.kyc_status);
+    currentUser={...(currentUser||{}),...(data.profile||data.user||{}),kyc_status:status};
+    return status==="approved";
+  }catch(error){
+    console.warn("KYC refresh failed:",error);
+    return normalizeKycStatus(currentUser?.kyc_status)==="approved";
   }
+}
 
-  selectedPlan =
-    schemes[index];
-
-  if(!selectedPlan){
-    return;
+function applyWallets(data){
+  const walletRows=Array.isArray(data?.wallets)?data.wallets:[];
+  let main=Number(data?.main_balance ?? data?.main_wallet?.balance);
+  let profit=Number(data?.profit_balance ?? data?.profit_wallet?.balance);
+  if(!Number.isFinite(main)) main=NaN;
+  if(!Number.isFinite(profit)) profit=NaN;
+  for(const wallet of walletRows){
+    const type=String(wallet?.wallet_type||"").trim().toLowerCase();
+    if(type==="main" && !Number.isFinite(main)) main=Number(wallet.balance);
+    if(type==="profit" && !Number.isFinite(profit)) profit=Number(wallet.balance);
   }
-
-  document
-    .getElementById(
-      "schemeName"
-    )
-    .value =
-      selectedPlan.name +
-      " — " +
-      selectedPlan.duration;
-
-  document
-    .getElementById(
-      "investmentAmount"
-    )
-    .value = "";
-
-  document
-    .getElementById(
-      "fundMainText"
-    )
-    .textContent =
-      "Available balance: " +
-      money(balances.main);
-
-  document
-    .querySelector(
-      'input[name="funding"][value="main"]'
-    )
-    .checked = true;
-
-  document
-    .getElementById(
-      "fundMain"
-    )
-    .classList
-    .add("selected");
-
-  document
-    .getElementById(
-      "fundBank"
-    )
-    .classList
-    .remove("selected");
-
-  document
-    .getElementById(
-      "bankDetails"
-    )
-    .style
-    .display = "none";
-
-  document
-    .getElementById(
-      "balanceNote"
-    )
-    .textContent =
-      "Main Wallet available: " +
-      money(balances.main) +
-      ". Investment amount cannot exceed this balance.";
-
-  updateReturnPreview();
-
-  document
-    .getElementById(
-      "investmentModal"
-    )
-    .classList
-    .add("show");
-
+  if(Number.isFinite(main)) balances.main=main;
+  if(Number.isFinite(profit)) balances.profit=profit;
+  document.getElementById("mainBalance").textContent=money(balances.main);
+  document.getElementById("profitBalance").textContent=money(balances.profit);
+  document.getElementById("heroMainBalance").textContent=money(balances.main);
+  document.getElementById("heroProfitBalance").textContent=money(balances.profit);
+  document.getElementById("fundMainText").textContent="Available balance: "+money(balances.main);
 }
 
-
-function closeInvestmentModal(){
-
-  document
-    .getElementById(
-      "investmentModal"
-    )
-    .classList
-    .remove("show");
-
-  selectedPlan =
-    null;
-
+function renderInvestmentRows(rows){
+  investmentRows=Array.isArray(rows)?rows:[];
+  const total=investmentRows.reduce((sum,row)=>sum+(Number(row?.amount)||0),0);
+  const active=investmentRows.filter(row=>String(row?.status||"active").trim().toLowerCase()==="active").length;
+  document.getElementById("investmentBalance").textContent=money(total);
+  document.getElementById("totalInvested").textContent=money(total);
+  document.getElementById("activeCount").textContent=String(active);
+  const activity=document.getElementById("activity");
+  if(!activity) return;
+  if(!investmentRows.length){activity.innerHTML='<div class="activity-empty">No investment activity available yet.</div>';return;}
+  activity.innerHTML=investmentRows.slice(0,20).map(row=>`<div class="activity-item"><strong>${escapeHtml(row.plan_name||"Investment")}</strong><span>${money(row.amount)} • ${escapeHtml(row.status||"active")}</span></div>`).join("");
 }
-
-
-document
-  .querySelectorAll(
-    'input[name="funding"]'
-  )
-  .forEach(
-    radio => {
-
-      radio.addEventListener(
-        "change",
-        function(){
-
-          const mainSelected =
-            document
-              .querySelector(
-                'input[name="funding"][value="main"]'
-              )
-              .checked;
-
-          document
-            .getElementById(
-              "fundMain"
-            )
-            .classList
-            .toggle(
-              "selected",
-              mainSelected
-            );
-
-          document
-            .getElementById(
-              "fundBank"
-            )
-            .classList
-            .toggle(
-              "selected",
-              !mainSelected
-            );
-
-          document
-            .getElementById(
-              "bankDetails"
-            )
-            .style
-            .display =
-              mainSelected
-                ? "none"
-                : "block";
-
-          document
-            .getElementById(
-              "balanceNote"
-            )
-            .textContent =
-              mainSelected
-                ?
-                "Main Wallet available: " +
-                money(balances.main) +
-                ". Investment amount cannot exceed this balance."
-                :
-                "Bank Transfer funding cannot activate an investment immediately. Use your Main Wallet for instant activation after KYC approval.";
-
-        }
-      );
-
-    }
-  );
-
-
-/* ======================================================
-   RETURN PREVIEW
-====================================================== */
-
-function updateReturnPreview(){
-
-  const amount =
-    Number(
-      document.getElementById(
-        "investmentAmount"
-      ).value
-    ) || 0;
-
-  const preview =
-    document.getElementById(
-      "returnPreviewValue"
-    );
-
-  if(
-    !selectedPlan ||
-    amount <= 0
-  ){
-
-    preview.textContent =
-      "$0.00";
-
-    return;
-
-  }
-
-  const profit =
-    amount *
-    selectedPlan.returnPercent /
-    100;
-
-  preview.textContent =
-    money(profit) +
-    " profit";
-
-}
-
-
-document
-  .getElementById(
-    "investmentAmount"
-  )
-  .addEventListener(
-    "input",
-    function(){
-
-      const amount =
-        Number(this.value) || 0;
-
-      const mainSelected =
-        document
-          .querySelector(
-            'input[name="funding"][value="main"]'
-          )
-          .checked;
-
-      updateReturnPreview();
-
-      if(
-        mainSelected &&
-        amount > balances.main
-      ){
-
-        document
-          .getElementById(
-            "balanceNote"
-          )
-          .textContent =
-            "Insufficient Main Wallet balance.";
-
-      }else{
-
-        document
-          .getElementById(
-            "balanceNote"
-          )
-          .textContent =
-            mainSelected
-              ?
-              "Main Wallet available: " +
-              money(balances.main) +
-              ". Investment amount cannot exceed this balance."
-              :
-              "Bank Transfer funding cannot activate an investment immediately. Use your Main Wallet for instant activation after KYC approval.";
-
-      }
-
-    }
-  );
-
-
-/* ======================================================
-   PAGE TOAST
-====================================================== */
-
-function showPageToast(
-  message,
-  type = "success"
-){
-
-  let toast =
-    document.getElementById(
-      "investmentPageToast"
-    );
-
-  if(!toast){
-
-    toast =
-      document.createElement(
-        "div"
-      );
-
-    toast.id =
-      "investmentPageToast";
-
-    toast.style.cssText = `
-      position:fixed;
-      top:92px;
-      right:24px;
-      z-index:2300;
-      max-width:390px;
-      padding:13px 16px;
-      border-radius:13px;
-      color:#fff;
-      background:${
-        type === "error"
-          ? "#8f2f2f"
-          : "#12613a"
-      };
-      box-shadow:0 15px 40px rgba(0,0,0,.18);
-      font-size:12px;
-      font-weight:700;
-      opacity:0;
-      transform:translateY(-8px);
-      transition:.25s ease;
-    `;
-
-    document.body.appendChild(
-      toast
-    );
-
-  }
-
-  toast.textContent =
-    message;
-
-  toast.style.opacity =
-    "1";
-
-  toast.style.transform =
-    "translateY(0)";
-
-  clearTimeout(
-    toast._timer
-  );
-
-  toast._timer =
-    setTimeout(
-      () => {
-        toast.style.opacity =
-          "0";
-
-        toast.style.transform =
-          "translateY(-8px)";
-      },
-      4200
-    );
-
-}
-
-
-/* ======================================================
-   SUBMIT / ACTIVATE INVESTMENT
-====================================================== */
-
-document
-  .getElementById(
-    "submitInvestment"
-  )
-  .addEventListener(
-    "click",
-    async function(){
-
-      const button =
-        this;
-
-      if(!selectedPlan){
-
-        alert(
-          "Please select an investment scheme."
-        );
-
-        return;
-
-      }
-
-      const approved =
-        await refreshKycStatus();
-
-      if(!approved){
-
-        alert(
-          "KYC verification is required before you can invest."
-        );
-
-        return;
-
-      }
-
-      const amount =
-        Number(
-          document
-            .getElementById(
-              "investmentAmount"
-            )
-            .value
-        );
-
-      if(
-        !Number.isFinite(amount) ||
-        amount <= 0
-      ){
-
-        alert(
-          "Please enter a valid investment amount."
-        );
-
-        return;
-
-      }
-
-      if(
-        amount < selectedPlan.min ||
-        amount > selectedPlan.max
-      ){
-
-        alert(
-          "The amount is outside the selected " +
-          selectedPlan.name +
-          " scheme range of " +
-          money(selectedPlan.min) +
-          " to " +
-          money(selectedPlan.max) +
-          "."
-        );
-
-        return;
-
-      }
-
-      const mainSelected =
-        document
-          .querySelector(
-            'input[name="funding"][value="main"]'
-          )
-          .checked;
-
-      if(!mainSelected){
-
-        alert(
-          "For immediate activation, please select Main Wallet funding."
-        );
-
-        return;
-
-      }
-
-      if(
-        amount > balances.main
-      ){
-
-        alert(
-          "Insufficient Main Wallet balance."
-        );
-
-        return;
-
-      }
-
-      const token =
-        localStorage.getItem(
-          "coinforest_token"
-        );
-
-      if(!token){
-
-        window.location.href =
-          "index.html";
-
-        return;
-
-      }
-
-      const originalText =
-        button.textContent;
-
-      button.disabled =
-        true;
-
-      button.textContent =
-        "Activating…";
-
-      try{
-
-        const response =
-          await fetch(
-            "/api/customer/investments",
-            {
-              method:"POST",
-
-              headers:{
-                Authorization:
-                  "Bearer " + token,
-
-                "Content-Type":
-                  "application/json",
-
-                Accept:
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-                  plan_name:
-                    selectedPlan.name,
-
-                  amount:
-                    Number(
-                      amount.toFixed(2)
-                    ),
-
-                  funding_method:
-                    "main_wallet"
-                })
-            }
-          );
-
-        let result = {};
-
-        try{
-          result =
-            await response.json();
-        }catch{
-          result = {};
-        }
-
-        if(
-          !response.ok ||
-          !result.success
-        ){
-
-          showPageToast(
-            result.error ||
-            "Unable to activate your investment right now.",
-            "error"
-          );
-
-          return;
-
-        }
-
-        balances.main =
-          Number(
-            result.balance ??
-            result.wallet?.balance ??
-            balances.main - amount
-          ) || 0;
-
-        await loadUser();
-
-        closeInvestmentModal();
-
-        showPageToast(
-          (
-            result.message ||
-            "Investment activated successfully."
-          ) +
-          " Reference: " +
-          (
-            result.transaction_reference ||
-            result.investment?.transaction_reference ||
-            "—"
-          )
-        );
-
-        await loadInvestmentActivity();
-
-      }catch(error){
-
-        console.error(
-          "Investment activation error:",
-          error
-        );
-
-        showPageToast(
-          "Unable to activate your investment right now. Please try again.",
-          "error"
-        );
-
-      }finally{
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          originalText;
-
-      }
-
-    }
-  );
-
-
-/* ======================================================
-   LOAD ACCOUNT + WALLETS + INVESTMENTS
-====================================================== */
 
 async function loadUser(){
+  const t=token();
+  if(!t){window.location.href="index.html";return false;}
+  let dashboardData=null;
+  try{
+    const result=await apiJson("/api/customer/dashboard",{headers:{Authorization:"Bearer "+t}});
+    if(result.response.ok && result.data?.success){
+      dashboardData=result.data;
+      currentUser=result.data.user||result.data.profile||{};
+      currentUser.kyc_status=normalizeKycStatus(result.data.kyc_status||currentUser.kyc_status);
+      applyWallets(result.data);
+      renderInvestmentRows(result.data.investments||[]);
+    }
+  }catch(error){console.warn("Dashboard load failed:",error);}
 
-  const token =
-    localStorage.getItem(
-      "coinforest_token"
-    );
-
-  if(!token){
-
-    window.location.href =
-      "index.html";
-
-    return;
-
-  }
+  /* Always synchronize from the dedicated wallet endpoint as the authoritative wallet source. */
+  try{
+    const wallet=await apiJson("/api/customer/wallets",{headers:{Authorization:"Bearer "+t}});
+    if(wallet.response.ok && wallet.data?.success) applyWallets(wallet.data);
+  }catch(error){console.warn("Dedicated wallet synchronization failed:",error);}
 
   try{
+    const inv=await apiJson("/api/customer/investments?limit=100",{headers:{Authorization:"Bearer "+t}});
+    if(inv.response.ok && inv.data?.success) renderInvestmentRows(inv.data.investments||[]);
+  }catch(error){console.warn("Investment records load failed:",error);}
 
-    const response =
-      await fetch(
-        "/api/customer/dashboard",
-        {
-          method:"GET",
-          headers:{
-            Authorization:
-              "Bearer " + token,
+  const approved=await refreshKycStatus();
+  if(approved) setEligibility("eligible");
+  else setEligibility("blocked","Approved KYC is required before you can invest. No separate investment approval is required.");
 
-            Accept:
-              "application/json"
-          }
-        }
-      );
-
-    if(!response.ok){
-
-      console.error(
-        "Dashboard request failed:",
-        response.status
-      );
-
-      return;
-
-    }
-
-    const data =
-      await response.json();
-
-    if(
-      !data.success
-    ){
-
-      console.error(
-        "Invalid dashboard response:",
-        data
-      );
-
-      return;
-
-    }
-
-    currentUser =
-      data.user ||
-      data.profile ||
-      {};
-
-    currentUser.kyc_status =
-      data.kyc_status ||
-      currentUser.kyc_status ||
-      "pending";
-
-    const name =
-      currentUser.first_name ||
-      currentUser.full_name ||
-      currentUser.username ||
-      currentUser.email ||
-      "Account";
-
-    document
-      .getElementById(
-        "userName"
-      )
-      .textContent =
-        name;
-
-    const initials = (
-      (
-        currentUser.first_name ||
-        ""
-      ).charAt(0) +
-      (
-        currentUser.last_name ||
-        ""
-      ).charAt(0)
-    ).toUpperCase();
-
-    document
-      .getElementById(
-        "avatar"
-      )
-      .textContent =
-        initials ||
-        "CF";
-
-    balances.main =
-      Number(
-        data.main_balance ??
-        data.main_wallet?.balance ??
-        data.wallets?.find(
-          w =>
-            String(
-              w.wallet_type || ""
-            ).toLowerCase() ===
-            "main"
-        )?.balance ??
-        0
-      ) || 0;
-
-    balances.profit =
-      Number(
-        data.profit_balance ??
-        data.profit_wallet?.balance ??
-        data.wallets?.find(
-          w =>
-            String(
-              w.wallet_type || ""
-            ).toLowerCase() ===
-            "profit"
-        )?.balance ??
-        0
-      ) || 0;
-
-    document
-      .getElementById(
-        "mainBalance"
-      )
-      .textContent =
-        money(balances.main);
-
-    document
-      .getElementById(
-        "profitBalance"
-      )
-      .textContent =
-        money(balances.profit);
-
-    document
-      .getElementById(
-        "heroMainBalance"
-      )
-      .textContent =
-        money(balances.main);
-
-    document
-      .getElementById(
-        "heroProfitBalance"
-      )
-      .textContent =
-        money(balances.profit);
-
-    document
-      .getElementById(
-        "fundMainText"
-      )
-      .textContent =
-        "Available balance: " +
-        money(balances.main);
-
-    investmentRows =
-      Array.isArray(
-        data.investments
-      )
-        ? data.investments
-        : [];
-
-    await loadInvestmentRecords(
-      investmentRows
-    );
-
-    updateKycUI();
-
-    /*
-      Refresh the authoritative KYC state after
-      the dashboard has populated the customer.
-    */
-    await refreshKycStatus();
-
-  }catch(error){
-
-    console.error(
-      "Unable to load CoinForest account:",
-      error
-    );
-
-  }
-
+  const name=currentUser?.first_name||currentUser?.full_name||currentUser?.username||currentUser?.email||"Account";
+  document.getElementById("userName").textContent=name;
+  const initials=((currentUser?.first_name||"").charAt(0)+(currentUser?.last_name||"").charAt(0)).toUpperCase();
+  document.getElementById("avatar").textContent=initials||"CF";
+  return true;
 }
 
-
-async function loadInvestmentRecords(
-  initialRows = null
-){
-
-  let rows =
-    Array.isArray(initialRows)
-      ? initialRows
-      : null;
-
-  if(!rows){
-
-    try{
-
-      const token =
-        localStorage.getItem(
-          "coinforest_token"
-        );
-
-      const response =
-        await fetch(
-          "/api/customer/investments?limit=100",
-          {
-            headers:{
-              Authorization:
-                "Bearer " + token,
-
-              Accept:
-                "application/json"
-            }
-          }
-        );
-
-      const data =
-        await response.json();
-
-      if(
-        data.success &&
-        Array.isArray(
-          data.investments
-        )
-      ){
-
-        rows =
-          data.investments;
-
-      }else{
-
-        rows = [];
-
-      }
-
-    }catch(error){
-
-      console.warn(
-        "Unable to load investment records:",
-        error
-      );
-
-      rows = [];
-
-    }
-
-  }
-
-  investmentRows =
-    rows || [];
-
-  const totalInvested =
-    investmentRows.reduce(
-      (
-        sum,
-        row
-      ) =>
-        sum +
-        (
-          Number(
-            row.amount
-          ) || 0
-        ),
-      0
-    );
-
-  const activeCount =
-    investmentRows.filter(
-      row =>
-        [
-          "active",
-          "approved",
-          "running"
-        ].includes(
-          String(
-            row.status ||
-            "active"
-          )
-            .trim()
-            .toLowerCase()
-        )
-    ).length;
-
-  document
-    .getElementById(
-      "investmentBalance"
-    )
-    .textContent =
-      money(totalInvested);
-
-  document
-    .getElementById(
-      "totalInvested"
-    )
-    .textContent =
-      money(totalInvested);
-
-  document
-    .getElementById(
-      "activeCount"
-    )
-    .textContent =
-      activeCount;
-
-  renderOwnActivity(
-    investmentRows
-  );
-
-}
-
-
-/* ======================================================
-   OWN INVESTMENT ACTIVITY LIST
-====================================================== */
-
-function formatDate(value){
-
-  if(!value){
-    return "Date unavailable";
-  }
-
-  const date =
-    new Date(value);
-
-  if(
-    Number.isNaN(
-      date.getTime()
-    )
-  ){
-    return "Date unavailable";
-  }
-
-  return date.toLocaleString(
-    "en-US",
-    {
-      month:"short",
-      day:"numeric",
-      year:"numeric",
-      hour:"numeric",
-      minute:"2-digit"
-    }
-  );
-
-}
-
-
-function renderOwnActivity(
-  rows
-){
-
-  const container =
-    document.getElementById(
-      "activity"
-    );
-
-  if(!rows.length){
-
-    container.innerHTML = `
-      <div class="activity-empty">
-        No investment activity available yet.
-      </div>
-    `;
-
+function openInvestment(index){
+  if(normalizeKycStatus(currentUser?.kyc_status)!=="approved"){
+    setEligibility("blocked","Approved KYC is required before you can invest. No separate investment approval is required.");
+    alert("KYC verification is required before you can invest.");
     return;
-
   }
-
-  const visible =
-    rows.slice(
-      0,
-      8
-    );
-
-  container.innerHTML = `
-    <div class="activity-list">
-      ${
-        visible.map(
-          row => {
-
-            const status =
-              String(
-                row.status ||
-                "active"
-              ).toLowerCase();
-
-            return `
-              <div class="activity-item">
-
-                <div class="activity-item-icon">
-                  ↗
-                </div>
-
-                <div class="activity-item-copy">
-
-                  <strong>
-                    ${escapeHtml(
-                      row.plan_name ||
-                      row.plan ||
-                      row.name ||
-                      "Investment"
-                    )}
-                    ·
-                    ${escapeHtml(
-                      status
-                    )}
-                  </strong>
-
-                  <span>
-                    ${escapeHtml(
-                      formatDate(
-                        row.created_at
-                      )
-                    )}
-                  </span>
-
-                </div>
-
-                <div class="activity-item-amount">
-                  ${money(
-                    row.amount
-                  )}
-                </div>
-
-              </div>
-            `;
-
-          }
-        ).join("")
-      }
-    </div>
-  `;
-
+  selectedPlan=schemes[index];
+  document.getElementById("modalTitle").textContent="Invest in "+selectedPlan.name;
+  document.getElementById("modalDescription").textContent=`${selectedPlan.duration} • ${selectedPlan.returnPercent}% return • Main Wallet activation`;
+  document.getElementById("schemeName").value=selectedPlan.name+" — "+selectedPlan.duration;
+  document.getElementById("investmentAmount").value="";
+  document.querySelector('input[name="funding"][value="main"]').checked=true;
+  document.getElementById("fundMain").classList.add("selected");
+  document.getElementById("fundBank").classList.remove("selected");
+  document.getElementById("bankDetails").style.display="none";
+  document.getElementById("balanceNote").textContent="Main Wallet available: "+money(balances.main)+". Investment amount cannot exceed this balance.";
+  document.getElementById("investmentModal").classList.add("show");
 }
 
+function closeInvestmentModal(){document.getElementById("investmentModal")?.classList.remove("show");selectedPlan=null;}
 
-/* ======================================================
-   INVESTMENT ACTIVITY POPUPS
-====================================================== */
+document.querySelectorAll('input[name="funding"]').forEach(radio=>radio.addEventListener("change",()=>{
+  const main=document.querySelector('input[name="funding"][value="main"]').checked;
+  document.getElementById("fundMain").classList.toggle("selected",main);
+  document.getElementById("fundBank").classList.toggle("selected",!main);
+  document.getElementById("bankDetails").style.display=main?"none":"block";
+  document.getElementById("balanceNote").textContent=main?"Main Wallet available: "+money(balances.main)+". Investment amount cannot exceed this balance.":"Bank Transfer cannot activate an investment immediately. Use Main Wallet for instant activation after approved KYC.";
+}));
 
-function maskCustomerId(
-  id
-){
+document.getElementById("investmentAmount").addEventListener("input",function(){
+  if(!selectedPlan) return;
+  const amount=Number(this.value)||0;
+  const note=document.getElementById("balanceNote");
+  if(amount>balances.main) note.textContent="Insufficient Main Wallet balance.";
+  else if(amount<selectedPlan.min) note.textContent="Minimum for "+selectedPlan.name+": "+money(selectedPlan.min)+".";
+  else if(amount>selectedPlan.max) note.textContent="Maximum for "+selectedPlan.name+": "+money(selectedPlan.max)+".";
+  else note.textContent="Main Wallet available: "+money(balances.main)+". Ready to activate.";
+});
 
-  const raw =
-    String(
-      id || ""
-    )
-      .replace(
-        /[^a-zA-Z0-9]/g,
-        ""
-      );
-
-  if(!raw){
-    return "cf••••••";
-  }
-
-  const tail =
-    raw.slice(-3);
-
-  const head =
-    raw
-      .slice(0,3)
-      .toLowerCase();
-
-  return (
-    "cf" +
-    head +
-    "××××" +
-    tail
-  );
-
-}
-
-
-function activityMoney(
-  value,
-  currency = "USD"
-){
-
-  const amount =
-    Number(value) || 0;
-
+document.getElementById("submitInvestment").addEventListener("click",async()=>{
+  if(!selectedPlan){alert("Please select an investment scheme.");return;}
+  const approved=await refreshKycStatus();
+  if(!approved){setEligibility("blocked","Approved KYC is required before you can invest.");alert("KYC verification is required before you can invest.");return;}
+  const amount=Number(document.getElementById("investmentAmount").value);
+  if(!Number.isFinite(amount)||amount<=0){alert("Please enter a valid investment amount.");return;}
+  if(amount<selectedPlan.min||amount>selectedPlan.max){alert(`The amount is outside the ${selectedPlan.name} scheme range of ${money(selectedPlan.min)} to ${money(selectedPlan.max)}.`);return;}
+  if(!document.querySelector('input[name="funding"][value="main"]').checked){alert("Use your Main Wallet for immediate investment activation.");return;}
+  if(amount>balances.main){alert("Insufficient Main Wallet balance. You cannot invest more than your available Main Wallet balance.");return;}
+  const button=document.getElementById("submitInvestment");
+  const original=button.textContent;button.disabled=true;button.textContent="Activating...";
   try{
+    const {response,data}=await apiJson("/api/customer/investments",{method:"POST",headers:{Authorization:"Bearer "+token(),"Content-Type":"application/json"},body:JSON.stringify({plan_name:selectedPlan.name,amount,funding_method:"main_wallet"})});
+    if(!response.ok||!data?.success){alert(data?.error||"Unable to activate your investment right now.");return;}
+    balances.main=Number(data.balance ?? data.wallet?.balance ?? (balances.main-amount));
+    applyWallets({main_balance:balances.main,profit_balance:balances.profit});
+    await loadUser();
+    alert((data.message||"Investment activated successfully.")+"\n\nReference: "+(data.transaction_reference||data.investment?.transaction_reference||"—"));
+    closeInvestmentModal();
+  }catch(error){console.error("Investment submission error:",error);alert("Unable to activate your investment right now. Please try again.");}
+  finally{button.disabled=false;button.textContent=original;}
+});
 
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style:"currency",
-        currency:
-          currency ||
-          "USD",
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    ).format(
-      amount
-    );
-
-  }catch{
-
-    return money(
-      amount
-    );
-
-  }
-
-}
-
-
-function ensureActivityToast(){
-
-  let toast =
-    document.getElementById(
-      "investmentActivityToast"
-    );
-
-  if(toast){
-    return toast;
-  }
-
-  toast =
-    document.createElement(
-      "div"
-    );
-
-  toast.id =
-    "investmentActivityToast";
-
-  toast.className =
-    "investment-activity-toast";
-
-  toast.setAttribute(
-    "aria-live",
-    "polite"
-  );
-
-  document.body.appendChild(
-    toast
-  );
-
-  return toast;
-
-}
-
-
-function renderActivityPopup(
-  item
-){
-
-  const toast =
-    ensureActivityToast();
-
-  const isWithdrawal =
-    item.activity_type ===
-    "profit_withdrawal";
-
-  const id =
-    maskCustomerId(
-      item.user_id
-    );
-
-  const amount =
-    activityMoney(
-      item.amount,
-      item.currency
-    );
-
-  const plan =
-    item.plan_name ||
-    item.plan ||
-    "Investment";
-
-  const message =
-    isWithdrawal
-      ?
-      `${id} withdrew ${amount} profit`
-      :
-      `${id} invested ${amount} in ${plan}`;
-
-  toast.innerHTML = `
-    <div class="investment-activity-icon ${
-      isWithdrawal
-        ? "withdrawal"
-        : ""
-    }">
-      ${
-        isWithdrawal
-          ? "↙"
-          : "↗"
-      }
-    </div>
-
-    <div class="investment-activity-copy">
-
-      <strong>
-        ${escapeHtml(
-          message
-        )}
-      </strong>
-
-      <span>
-        ${
-          isWithdrawal
-            ? "Profit wallet activity"
-            : "Investment activity"
-        }
-      </span>
-
-    </div>
-  `;
-
-  toast.classList.remove(
-    "show"
-  );
-
-  requestAnimationFrame(
-    () =>
-      toast.classList.add(
-        "show"
-      )
-  );
-
-  clearTimeout(
-    activityTimer
-  );
-
-  /*
-    Minimum visible time:
-    7 full seconds.
-  */
-  activityTimer =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          "show"
-        );
-
-        setTimeout(
-          showNextActivity,
-          350
-        );
-
-      },
-      7000
-    );
-
-}
-
-
+function escapeHtml(value){return String(value??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+function maskCustomerId(id){const raw=String(id||"").replace(/[^a-zA-Z0-9]/g,"");if(!raw)return"cf••••••";return"cf"+raw.slice(0,3).toLowerCase()+"××××"+raw.slice(-3);}
+function activityMoney(value,currency="USD"){const n=Number(value)||0;try{return new Intl.NumberFormat("en-US",{style:"currency",currency:currency||"USD",minimumFractionDigits:2,maximumFractionDigits:2}).format(n);}catch(_){return money(n);}}
+function ensureActivityToast(){let el=document.getElementById("investmentActivityToast");if(el)return el;el=document.createElement("div");el.id="investmentActivityToast";el.className="investment-activity-toast";el.setAttribute("aria-live","polite");document.body.appendChild(el);return el;}
 function buildActivityQueue(){
-
-  if(!investmentActivity.length){
-
-    activityQueue = [];
-
-    return;
-
-  }
-
-  /*
-    Create 100+ display slots from REAL database
-    activity records only. If fewer records exist,
-    verified records are cycled; no fake customer
-    transactions are generated.
-  */
-
-  const slots = [];
-
-  for(
-    let i = 0;
-    i < 120;
-    i++
-  ){
-
-    slots.push(
-      investmentActivity[
-        i %
-        investmentActivity.length
-      ]
-    );
-
-  }
-
-  /*
-    Shuffle display order without changing
-    the underlying activity records.
-  */
-
-  for(
-    let i = slots.length - 1;
-    i > 0;
-    i--
-  ){
-
-    const j =
-      Math.floor(
-        Math.random() *
-        (i + 1)
-      );
-
-    [
-      slots[i],
-      slots[j]
-    ] =
-    [
-      slots[j],
-      slots[i]
-    ];
-
-  }
-
-  activityQueue =
-    slots;
-
-  activityDisplayIndex =
-    0;
-
+  if(!investmentActivity.length){activityQueue=[];return;}
+  const slots=[];for(let i=0;i<120;i++)slots.push(investmentActivity[i%investmentActivity.length]);
+  for(let i=slots.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]];}
+  activityQueue=slots;activityDisplayIndex=0;
 }
-
-
-function showNextActivity(){
-
-  if(
-    !activityQueue.length
-  ){
-    return;
-  }
-
-  const item =
-    activityQueue[
-      activityDisplayIndex %
-      activityQueue.length
-    ];
-
-  activityDisplayIndex +=
-    1;
-
-  renderActivityPopup(
-    item
-  );
-
+function renderActivityPopup(item){
+  const toast=ensureActivityToast();
+  const withdrawal=item.activity_type==="profit_withdrawal";
+  const id=maskCustomerId(item.user_id);
+  const amount=activityMoney(item.amount,item.currency);
+  const plan=item.plan_name||item.plan||"Investment";
+  const message=withdrawal?`${id} withdrew ${amount} profit`:`${id} invested ${amount} in ${plan}`;
+  toast.innerHTML=`<div class="investment-activity-icon ${withdrawal?"withdrawal":""}">${withdrawal?"↙":"↗"}</div><div class="investment-activity-copy"><strong>${escapeHtml(message)}</strong><span>${withdrawal?"Profit wallet activity":"Investment activity"}</span></div>`;
+  toast.classList.remove("show");requestAnimationFrame(()=>toast.classList.add("show"));
+  clearTimeout(activityTimer);
+  /* Every popup remains visible for a full 7 seconds. */
+  activityTimer=setTimeout(()=>{toast.classList.remove("show");setTimeout(showNextActivity,350);},7000);
 }
-
-
+function showNextActivity(){if(!activityQueue.length)return;const item=activityQueue[activityDisplayIndex%activityQueue.length];activityDisplayIndex++;renderActivityPopup(item);}
 async function loadInvestmentActivity(){
-
   try{
-
-    const token =
-      localStorage.getItem(
-        "coinforest_token"
-      );
-
-    if(!token){
-      return;
-    }
-
-    const response =
-      await fetch(
-        "/api/customer/investment-activity",
-        {
-          headers:{
-            Authorization:
-              "Bearer " + token,
-
-            Accept:
-              "application/json"
-          }
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if(
-      !data.success ||
-      !Array.isArray(
-        data.activities
-      )
-    ){
-
-      return;
-
-    }
-
-    investmentActivity =
-      data.activities.filter(
-        item =>
-          item &&
-          item.user_id &&
-          Number(
-            item.amount
-          ) > 0
-      );
-
+    const {response,data}=await apiJson("/api/customer/investment-activity",{headers:{Authorization:"Bearer "+token()}});
+    if(!response.ok||!data?.success||!Array.isArray(data.activities))return;
+    investmentActivity=data.activities.filter(item=>item&&item.user_id&&Number(item.amount)>0&&["investment","profit_withdrawal"].includes(item.activity_type));
     buildActivityQueue();
-
-    if(
-      activityQueue.length
-    ){
-
-      /*
-        Start the first popup after a short
-        delay so the page has time to settle.
-      */
-
-      clearTimeout(
-        activityTimer
-      );
-
-      activityTimer =
-        setTimeout(
-          showNextActivity,
-          1200
-        );
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "Investment activity unavailable:",
-      error
-    );
-
-  }
-
+    if(investmentActivity.length&&!activityStarted){activityStarted=true;showNextActivity();}
+  }catch(error){console.warn("Investment activity unavailable:",error);}
 }
 
+function logout(){localStorage.removeItem("coinforest_token");window.location.href="index.html";}
 
-/* ======================================================
-   MODAL EVENTS
-====================================================== */
-
-document
-  .getElementById(
-    "investmentModal"
-  )
-  .addEventListener(
-    "click",
-    function(event){
-
-      if(
-        event.target === this
-      ){
-
-        closeInvestmentModal();
-
-      }
-
-    }
-  );
-
-
-document
-  .addEventListener(
-    "keydown",
-    function(event){
-
-      if(
-        event.key === "Escape"
-      ){
-
-        closeInvestmentModal();
-
-        closeSidebar();
-
-      }
-
-    }
-  );
-
-
-/* ======================================================
-   LOGOUT
-====================================================== */
-
-async function logout(){
-
-  const token =
-    localStorage.getItem(
-      "coinforest_token"
-    );
-
-  try{
-
-    if(token){
-
-      await fetch(
-        "/api/auth/logout",
-        {
-          method:"POST",
-          headers:{
-            Authorization:
-              "Bearer " + token
-          }
-        }
-      );
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "Logout error:",
-      error
-    );
-
-  }
-
-  localStorage.removeItem(
-    "coinforest_token"
-  );
-
-  window.location.href =
-    "index.html";
-
-}
-
-
-/* ======================================================
-   INITIALIZE
-====================================================== */
+document.getElementById("investmentModal").addEventListener("click",e=>{if(e.target===e.currentTarget)closeInvestmentModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeInvestmentModal();closeSidebar();}});
 
 renderPlans();
-
+setEligibility("checking");
 loadUser();
-
 loadInvestmentActivity();
-
 </script>
-
 
 </body>
   </html>
