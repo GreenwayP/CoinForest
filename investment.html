@@ -2975,7 +2975,7 @@ function updateReturnPreview(){
 
   }
 
-  const profit =
+  const investmentRowsentRows=
     amount *
     selectedPlan.returnPercent /
     100;
@@ -3515,24 +3515,33 @@ async function loadUser(){
         "Available balance: " +
         money(balances.main);
 
-    investmentRows =
+        investmentRows =
       Array.isArray(
         data.investments
       )
         ? data.investments
         : [];
 
-    await loadInvestmentRecords(
-      investmentRows
-    );
-
+    /*
+      Update KYC immediately.
+      Investment records must not block
+      the eligibility display.
+    */
     updateKycUI();
 
     /*
-      Refresh the authoritative KYC state after
-      the dashboard has populated the customer.
+      Refresh the authoritative KYC state.
     */
     await refreshKycStatus();
+
+    /*
+      Load investment records after
+      account/KYC state is ready.
+    */
+    await loadInvestmentRecords(
+      investmentRows
+    );
+    
 
   }catch(error){
 
