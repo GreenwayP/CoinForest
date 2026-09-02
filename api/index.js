@@ -1726,14 +1726,34 @@ async function getEffectiveKycStatus(userId, fallbackStatus = "pending") {
     console.warn("Effective KYC lookup warning:", error?.message);
   }
 
-  const submissionStatus = String(latest?.status || "").trim().toLowerCase();
-  if (submissionStatus === "approved") return "approved";
-  if (["rejected", "declined"].includes(submissionStatus)) return "rejected";
+  const submissionStatus =
+  String(latest?.status || "")
+    .trim()
+    .toLowerCase();
 
-  const profileStatus = String(fallbackStatus || "pending").trim().toLowerCase();
-  if (["approved", "verified", "complete", "completed"].includes(profileStatus)) return "approved";
-  if (["rejected", "declined"].includes(profileStatus)) return "rejected";
-  return "pending";
+const profileStatus =
+  String(fallbackStatus || "pending")
+    .trim()
+    .toLowerCase();
+
+if (
+  submissionStatus === "approved" ||
+  ["approved", "verified", "complete", "completed"]
+    .includes(profileStatus)
+)
+  return "approved";
+
+if (
+  ["rejected", "declined"].includes(submissionStatus)
+)
+  return "rejected";
+
+if (
+  ["rejected", "declined"].includes(profileStatus)
+)
+  return "rejected";
+
+return "pending";
 }
 
 /* =====================================================
