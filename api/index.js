@@ -1713,6 +1713,7 @@ async function customerProfile(
 
 async function getEffectiveKycStatus(userId, fallbackStatus = "pending") {
   let latest = null;
+
   try {
     const rows = await sql`
       SELECT status, reviewed_at, updated_at, created_at
@@ -1721,40 +1722,61 @@ async function getEffectiveKycStatus(userId, fallbackStatus = "pending") {
       ORDER BY COALESCE(reviewed_at, updated_at, created_at) DESC
       LIMIT 1
     `;
+
     latest = rows[0] || null;
   } catch (error) {
-    console.warn("Effective KYC lookup warning:", error?.message);
+    console.warn(
+      "Effective KYC lookup warning:",
+      error?.message
+    );
   }
 
+  const profileStatus =
+    String(fallbackStatus || "pending")
+      .trim()
+      .toLowerCase();
+
   const submissionStatus =
-  String(latest?.status || "")
-    .trim()
-    .toLowerCase();
+    String(latest?.status || "")
+      .trim()
+      .toLowerCase();
 
-const profileStatus =
-  String(fallbackStatus || "pending")
-    .trim()
-    .toLowerCase();
+  /*
+   * The approved customer profile is authoritative.
+   * A stale/pending KYC submission must not override
+   * an administrator-approved profile.
+   */
+  if (
+    profileStatus === "approved" ||
+    profileStatus === "verified" ||
+    profileStatus === "complete" ||
+    profileStatus === "completed"
+  ) {
+    return "approved";
+  }
 
-if (
-  submissionStatus === "approved" ||
-  ["approved", "verified", "complete", "completed"]
-    .includes(profileStatus)
-)
-  return "approved";
+  if (
+    submissionStatus === "approved"
+  ) {
+    return "approved";
+  }
 
-if (
-  ["rejected", "declined"].includes(submissionStatus)
-)
-  return "rejected";
+  if (
+    profileStatus === "rejected" ||
+    profileStatus === "declined"
+  ) {
+    return "rejected";
+  }
 
-if (
-  ["rejected", "declined"].includes(profileStatus)
-)
-  return "rejected";
+  if (
+    submissionStatus === "rejected" ||
+    submissionStatus === "declined"
+  ) {
+    return "rejected";
+  }
 
-return "pending";
-}
+  return "pending";
+       }
 
 /* =====================================================
    CUSTOMER KYC
