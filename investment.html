@@ -2615,37 +2615,48 @@ async function refreshKycStatus(){
     const data =
       await response.json();
 
-    if(
-      data.success
-    ){
+    console.log(
+      "CoinForest KYC response:",
+      data
+    );
 
-      const profile =
-        data.profile ||
-        data.user ||
-        {};
+    const profile =
+      data.profile ||
+      data.user ||
+      {};
 
-      const returnedKycStatus =
-        extractKycStatus(data) ||
-        extractKycStatus(profile) ||
-        extractKycStatus(data.user) ||
-        currentUser?.kyc_status ||
-        "pending";
+    const receivedKyc =
+      data.kyc_status ||
+      profile.kyc_status ||
+      null;
+
+    if(receivedKyc){
 
       currentUser = {
         ...(currentUser || {}),
         ...profile,
-        kyc_status: returnedKycStatus
+
+        kyc_status:
+          receivedKyc
       };
 
       updateKycUI();
 
-return kycApproved();
-
+      return (
+        normalizeKycStatus(
+          receivedKyc
+        ) === "approved"
+      );
     }
+
+    console.warn(
+      "KYC response did not contain a status:",
+      data
+    );
 
   }catch(error){
 
-    console.warn(
+    console.error(
       "KYC refresh failed:",
       error
     );
@@ -2653,9 +2664,7 @@ return kycApproved();
   }
 
   return kycApproved();
-
 }
-
 
 /* ======================================================
    RENDER SCHEMES
