@@ -1811,9 +1811,11 @@ async function customerKyc(
     }
 
     const effectiveKycStatus = await getEffectiveKycStatus(
-      auth.user.id,
-      profile.kyc_status
-    );
+  auth.user.id,
+  profile.kyc_status ||
+  auth.user.kyc_status ||
+  "pending"
+);
 
     return ok({
       kyc_status: effectiveKycStatus,
