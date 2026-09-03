@@ -1536,64 +1536,75 @@ async function customerDashboard(
       );
     }
 
-    const profileRows =
-      await sql`
-        SELECT *
-        FROM profiles
-        WHERE id =
-          ${auth.user.id}
-        LIMIT 1
-      `;
-
     const profile =
-      profileRows[0] ||
-      auth.user;
+  profileRows[0] ||
+  auth.user;
 
-    const approved =
-      isApprovedStatus(
-        profile.status
-      );
+const effectiveKycStatus =
+  await getEffectiveKycStatus(
+    auth.user.id,
+    profile.kyc_status ||
+    auth.user.kyc_status
+  );
 
-    return ok({
-      user: profile,
-      profile,
+const effectiveKycStatus =
+  await getEffectiveKycStatus(
+    auth.user.id,
+    profile.kyc_status ||
+    auth.user.kyc_status
+  );
 
-      wallets:
-        walletState.rows,
+const approved =
+  isApprovedStatus(
+    profile.status
+  );
 
-      main_wallet:
-        walletState.main,
+return ok({
+  user: {
+    ...profile,
+    kyc_status:
+      effectiveKycStatus
+  },
 
-      profit_wallet:
-        walletState.profit,
+  profile: {
+    ...profile,
+    kyc_status:
+      effectiveKycStatus
+  },
 
-      main_balance:
-        walletState.mainBalance,
+  wallets:
+    walletState.rows,
 
-      profit_balance:
-        walletState.profitBalance,
+  main_wallet:
+    walletState.main,
 
-      total_balance:
-        walletState.totalBalance,
+  profit_wallet:
+    walletState.profit,
 
-      transactions,
-      investments,
+  main_balance:
+    walletState.mainBalance,
 
-      account_approved:
-        approved,
+  profit_balance:
+    walletState.profitBalance,
 
-            email_verified:
-        !!profile.email_verified_at,
+  total_balance:
+    walletState.totalBalance,
 
-      email_verified_at:
-        profile.email_verified_at || null,
+  transactions,
+  investments,
 
-           kyc_status:
-        await getEffectiveKycStatus(
-          auth.user.id,
-          profile.kyc_status
-        ) 
-    });
+  account_approved:
+    approved,
+
+  email_verified:
+    !!profile.email_verified_at,
+
+  email_verified_at:
+    profile.email_verified_at || null,
+
+  kyc_status:
+    effectiveKycStatus
+});
   } catch (error) {
     console.error(
       "Customer dashboard error:",
