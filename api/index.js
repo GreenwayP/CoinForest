@@ -1535,7 +1535,14 @@ async function customerDashboard(
         error?.message
       );
     }
-
+const profileRows =
+  await sql`
+    SELECT *
+    FROM profiles
+    WHERE id =
+      ${auth.user.id}
+    LIMIT 1
+  `;
     const profile =
   profileRows[0] ||
   auth.user;
