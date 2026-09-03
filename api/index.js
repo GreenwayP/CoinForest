@@ -2952,10 +2952,45 @@ async function ensureInvestmentSchema() {
 
 function investmentPlanConfig(name) {
   const plans = {
-  starter: { name: 'Starter', min: 100, max: 999, durationDays: 14, returnPercent: 12 },
-  growth: { name: 'Growth', min: 1000, max: 4999, durationDays: 34, returnPercent: 24 },
-  premium: { name: 'Premium', min: 5000, max: 24999, durationDays: 54, returnPercent: 36 },
-  elite: { name: 'Elite', min: 25000, max: 1000000, durationDays: 74, returnPercent: 48 }
+  starter: {
+    name: 'Starter',
+    min: 150,
+    max: 700,
+    durationDays: 1,
+    returnPercent: 20
+  },
+
+  growth: {
+    name: 'Growth',
+    min: 700,
+    max: 3000,
+    durationDays: 4,
+    returnPercent: 32
+  },
+
+  silver: {
+    name: 'Silver',
+    min: 3000,
+    max: 10000,
+    durationDays: 7,
+    returnPercent: 47
+  },
+
+  premium: {
+    name: 'Premium',
+    min: 10000,
+    max: 25000,
+    durationDays: 14,
+    returnPercent: 72
+  },
+
+  elite: {
+    name: 'Elite',
+    min: 25000,
+    max: 1000000,
+    durationDays: 30,
+    returnPercent: 100
+  }
 };
   return plans[String(name || '').trim().toLowerCase()] || null;
 }
