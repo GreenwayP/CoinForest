@@ -3058,20 +3058,34 @@ async function customerCreateInvestment(request, body) {
       console.warn('Investment wallet ledger warning:', ledgerError?.message || ledgerError);
     }
 
-    /* The investment is a real customer transaction, not merely a portfolio row. */
-    await sql`
-      INSERT INTO transactions (
-        id, user_id, wallet_id, transaction_reference, transaction_type,
-        direction, amount, fee, currency, status, description, metadata,
-        created_at, updated_at
-      ) VALUES (
-        ${crypto.randomUUID()}, ${auth.user.id}, ${wallet.id}, ${reference},
-        'investment', 'debit', ${amount}, 0, 'USD', 'success',
-        ${`Investment in ${plan.name}`},
-        ${JSON.stringify({ source: 'customer_investment', investment_id: investmentId, plan: plan.name, return_percent: plan.returnPercent, expected_profit: profit })},
-        NOW(), NOW()
-      )
-    `;
+    /* The investment is already created and the wallet is already charged.
+   Transaction history is recorded on a best-effort basis. */
+try {
+  await sql`
+    INSERT INTO transactions (
+      id, user_id, wallet_id, transaction_reference, transaction_type,
+      direction, amount, fee, currency, status, description, metadata,
+      created_at, updated_at
+    ) VALUES (
+      ${crypto.randomUUID()}, ${auth.user.id}, ${wallet.id}, ${reference},
+      'investment', 'debit', ${amount}, 0, 'USD', 'success',
+      ${`Investment in ${plan.name}`},
+      ${JSON.stringify({
+        source: 'customer_investment',
+        investment_id: investmentId,
+        plan: plan.name,
+        return_percent: plan.returnPercent,
+        expected_profit: profit
+      })},
+      NOW(), NOW()
+    )
+  `;
+} catch (transactionError) {
+  console.warn(
+    'Investment transaction history warning:',
+    transactionError?.message || transactionError
+  );
+}
 
     return ok({
       message: 'Investment activated successfully.',
