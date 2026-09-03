@@ -2952,11 +2952,11 @@ async function ensureInvestmentSchema() {
 
 function investmentPlanConfig(name) {
   const plans = {
-    starter: { name: 'Starter', min: 100, max: 999, durationDays: 30, returnPercent: 15 },
-    growth: { name: 'Growth', min: 1000, max: 4999, durationDays: 60, returnPercent: 25 },
-    premium: { name: 'Premium', min: 5000, max: 24999, durationDays: 90, returnPercent: 35 },
-    elite: { name: 'Elite', min: 25000, max: 1000000, durationDays: 120, returnPercent: 50 }
-  };
+  starter: { name: 'Starter', min: 100, max: 999, durationDays: 14, returnPercent: 12 },
+  growth: { name: 'Growth', min: 1000, max: 4999, durationDays: 34, returnPercent: 24 },
+  premium: { name: 'Premium', min: 5000, max: 24999, durationDays: 54, returnPercent: 36 },
+  elite: { name: 'Elite', min: 25000, max: 1000000, durationDays: 74, returnPercent: 48 }
+};
   return plans[String(name || '').trim().toLowerCase()] || null;
 }
 
