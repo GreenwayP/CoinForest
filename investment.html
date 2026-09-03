@@ -2243,40 +2243,57 @@ const schemes = [
 
   {
     name:"Starter",
-    min:100,
-    max:999,
-    duration:"30 Days",
-    durationDays:30,
-    returnPercent:15,
+    min:150,
+    max:700,
+    duration:"1 Day",
+    durationDays:1,
+    returnPercent:20,
     description:
-      "An entry-level investment structure for smaller portfolio allocations.",
-    icon:"₿",
+      "Start small with a 1-day investment term.",
+    numberOfPeriods:14,
+    icon:"🌱",
     featured:false
   },
 
   {
     name:"Growth",
-    min:1000,
-    max:4999,
-    duration:"60 Days",
-    durationDays:60,
-    returnPercent:25,
+    min:700,
+    max:3000,
+    duration:"4 Days",
+    durationDays:4,
+    returnPercent:32,
     description:
-      "A balanced investment tier designed for users seeking a larger allocation.",
-    icon:"Ξ",
+      "A balanced 4-day plan for growing allocations.",
+    numberOfPeriods:7,
+    icon:"📈",
     featured:true
   },
 
   {
-    name:"Premium",
-    min:5000,
-    max:24999,
-    duration:"90 Days",
-    durationDays:90,
-    returnPercent:35,
+    name:"Silver",
+    min:3000,
+    max:10000,
+    duration:"7 Days",
+    durationDays:7,
+    returnPercent:47,
     description:
-      "A higher allocation tier for more substantial portfolio positions.",
-    icon:"◆",
+      "A 7-day plan for more substantial positions.",
+    numberOfPeriods:6,
+    icon:"🥈",
+    featured:false
+  },
+
+  {
+    name:"Premium",
+    min:10000,
+    max:25000,
+    duration:"14 Days",
+    durationDays:14,
+    returnPercent:72,
+    description:
+      "A premium 14-day allocation tier.",
+    numberOfPeriods:8,
+    icon:"💎",
     featured:false
   },
 
@@ -2284,17 +2301,17 @@ const schemes = [
     name:"Elite",
     min:25000,
     max:1000000,
-    duration:"120 Days",
-    durationDays:120,
-    returnPercent:50,
+    duration:"30 Days",
+    durationDays:30,
+    returnPercent:100,
     description:
-      "An extended investment tier for larger portfolio allocations.",
-    icon:"◈",
+      "The highest allocation tier with a 30-day term.",
+    numberOfPeriods:5,
+    icon:"👑",
     featured:false
   }
 
 ];
-
 
 /* ======================================================
    MONEY
