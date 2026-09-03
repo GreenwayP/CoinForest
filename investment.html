@@ -3279,11 +3279,13 @@ document
         ){
 
           showPageToast(
-            result.error ||
-            "Unable to activate your investment right now.",
-            "error"
-          );
-
+  result.error +
+  (result.detail
+    ? " — " + result.detail
+    : "") ||
+  "Unable to activate your investment right now.",
+  "error"
+);
           return;
 
         }
