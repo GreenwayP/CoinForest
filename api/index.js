@@ -3031,14 +3031,14 @@ async function customerCreateInvestment(request, body) {
     const rows = await sql`
       INSERT INTO investments (
         id, user_id, plan_name, amount, currency, duration_days,
-        return_percent, expected_profit, total_return, status,
-        funding_method, transaction_reference, maturity_date,
-        created_at, updated_at
+return_percent, expected_profit, total_return, status,
+funding_method, transaction_reference, investment_reference,
+maturity_date, created_at, updated_at
       ) VALUES (
         ${investmentId}, ${auth.user.id}, ${plan.name}, ${amount}, 'USD',
         ${plan.durationDays}, ${plan.returnPercent}, ${profit}, ${totalReturn},
-        'active', 'main_wallet', ${reference},
-        NOW() + (${plan.durationDays} * INTERVAL '1 day'), NOW(), NOW()
+        'active', 'main_wallet', ${reference}, ${reference},
+NOW() + (${plan.durationDays} * INTERVAL '1 day'), NOW(), NOW()
       )
       RETURNING *
     `;
