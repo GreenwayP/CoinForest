@@ -4389,13 +4389,15 @@ async function logout(){
    INITIALIZE
 ====================================================== */
 
-renderPlans();
-
 (async function initializeInvestmentCenter(){
+
+  renderPlans();
 
   await loadUser();
 
-  await loadInvestmentActivity({showFirst:true});
+  await loadInvestmentActivity({
+    showFirst:true
+  });
 
 })();
 
