@@ -1613,17 +1613,7 @@ body{
       class="mobile-menu"
       type="button"
       onclick="openSidebar()"
-      aria-label="Open menu">
-      ☰
-    </button>
-
-    <h1>
-      Investments
-    </h1>
-
-  </div>
-
-  <div class="user-area">
+  aria-label-area">
 
     <div class="user-name">
       <strong id="userName">
@@ -2984,15 +2974,14 @@ function updateReturnPreview(){
 
   }
 
-  const investmentRowsentRows=
-    amount *
-    selectedPlan.returnPercent /
-    100;
+  const profit =
+  amount *
+  selectedPlan.returnPercent /
+  100;
 
-  preview.textContent =
-    money(profit) +
-    " profit";
-
+preview.textContent =
+  money(profit) +
+  " profit";
 }
 
 
