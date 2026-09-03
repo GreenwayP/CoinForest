@@ -3028,20 +3028,76 @@ async function customerCreateInvestment(request, body) {
   }
 
   try {
-    const rows = await sql`
-      INSERT INTO investments (
-        id, user_id, plan_name, amount, currency, duration_days,
-return_percent, expected_profit, total_return, status,
-funding_method, transaction_reference, investment_reference,
-maturity_date, created_at, updated_at
-      ) VALUES (
-        ${investmentId}, ${auth.user.id}, ${plan.name}, ${amount}, 'USD',
-        ${plan.durationDays}, ${plan.returnPercent}, ${profit}, ${totalReturn},
-        'active', 'main_wallet', ${reference}, ${reference},
-NOW() + (${plan.durationDays} * INTERVAL '1 day'), NOW(), NOW()
-      )
-      RETURNING *
-    `;
+    const schemaRows = await sql`
+  SELECT *
+  FROM investment_schemas
+  WHERE LOWER(name) = LOWER(${plan.name})
+    AND status = 'active'
+  LIMIT 1
+`;
+
+const schema = schemaRows[0];
+
+if (!schema) {
+  throw new Error(
+    `Investment scheme "${plan.name}" was not found in investment_schemas.`
+  );
+}
+
+const rows = await sql`
+  INSERT INTO investments (
+    id,
+    investment_reference,
+    user_id,
+    wallet_id,
+    schema_id,
+    principal_amount,
+    roi_percentage,
+    expected_profit,
+    total_expected_return,
+    currency,
+    status,
+    started_at,
+    maturity_at,
+    auto_reinvest,
+    plan_name,
+    amount,
+    duration_days,
+    return_percent,
+    total_return,
+    funding_method,
+    transaction_reference,
+    maturity_date,
+    created_at,
+    updated_at
+  ) VALUES (
+    ${investmentId},
+    ${reference},
+    ${auth.user.id},
+    ${wallet.id},
+    ${schema.id},
+    ${amount},
+    ${schema.roi_percentage},
+    ${profit},
+    ${totalReturn},
+    'USD',
+    'active',
+    NOW(),
+    NOW() + (${plan.durationDays} * INTERVAL '1 day'),
+    false,
+    ${plan.name},
+    ${amount},
+    ${plan.durationDays},
+    ${schema.roi_percentage},
+    ${totalReturn},
+    'main_wallet',
+    ${reference},
+    NOW() + (${plan.durationDays} * INTERVAL '1 day'),
+    NOW(),
+    NOW()
+  )
+  RETURNING *
+`;
 
     try {
       await sql`
