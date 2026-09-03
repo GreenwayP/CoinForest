@@ -1547,13 +1547,6 @@ const effectiveKycStatus =
     auth.user.kyc_status
   );
 
-const effectiveKycStatus =
-  await getEffectiveKycStatus(
-    auth.user.id,
-    profile.kyc_status ||
-    auth.user.kyc_status
-  );
-
 const approved =
   isApprovedStatus(
     profile.status
