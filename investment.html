@@ -3193,22 +3193,201 @@ document
       }
 
       const mainSelected =
-        document
-          .querySelector(
-            'input[name="funding"][value="main"]'
-          )
-          .checked;
+  document
+    .querySelector(
+      'input[name="funding"][value="main"]'
+    )
+    .checked;
 
-      if(!mainSelected){
+const bankSelected =
+  document
+    .querySelector(
+      'input[name="funding"][value="bank"]'
+    )
+    .checked;
 
-        showPageToast(
-          "For immediate activation, please select Main Wallet funding.",
-          "error"
-        );
 
-        return;
+/* =====================================================
+   BANK TRANSFER REQUEST
 
-      }
+   Sends request to Admin only.
+   Does NOT create an investment.
+   Does NOT change wallet balance.
+   Does NOT create a transaction.
+===================================================== */
+
+if(bankSelected){
+
+  const accountName =
+    document
+      .getElementById("bankAccountName")
+      .value
+      .trim();
+
+  const bankName =
+    document
+      .getElementById("bankName")
+      .value
+      .trim();
+
+  const accountNumber =
+    document
+      .getElementById("bankAccountNumber")
+      .value
+      .trim();
+
+  const transferReference =
+    document
+      .getElementById("transferReference")
+      .value
+      .trim();
+
+  if(
+    !accountName ||
+    !bankName ||
+    !accountNumber ||
+    !transferReference
+  ){
+    showPageToast(
+      "Please complete all Bank Transfer details.",
+      "error"
+    );
+    return;
+  }
+
+  const token =
+    localStorage.getItem(
+      "coinforest_token"
+    );
+
+  if(!token){
+    window.location.href =
+      "index.html";
+    return;
+  }
+
+  const originalText =
+    button.textContent;
+
+  button.disabled = true;
+  button.textContent = "Submitting…";
+
+  try{
+
+    const response =
+      await fetch(
+        "https://coinforest-api-test-2026.onrender.com/api/customer/deposit",
+        {
+          method:"POST",
+
+          headers:{
+            Authorization:
+              "Bearer " + token,
+
+            "Content-Type":
+              "application/json",
+
+            Accept:
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              amount:
+                Number(
+                  amount.toFixed(2)
+                ),
+
+              payment_method:
+                "Bank Transfer",
+
+              payment_reference:
+                [
+                  "Transfer Reference: " +
+                    transferReference,
+
+                  "Account Name: " +
+                    accountName,
+
+                  "Bank Name: " +
+                    bankName,
+
+                  "Account Number: " +
+                    accountNumber,
+
+                  "Investment Scheme: " +
+                    selectedPlan.name
+
+                ].join(" | ")
+            })
+        }
+      );
+
+    let result = {};
+
+    try{
+      result =
+        await response.json();
+    }catch{
+      result = {};
+    }
+
+    if(
+      !response.ok ||
+      !result.success
+    ){
+
+      showPageToast(
+        result.error ||
+        "Unable to submit Bank Transfer request right now.",
+        "error"
+      );
+
+      return;
+    }
+
+    closeInvestmentModal();
+
+    showPageToast(
+      "Bank Transfer request submitted successfully, you'll get a feedback from our administrator shortly.",
+      "success"
+    );
+
+  }catch(error){
+
+    console.error(
+      "Bank Transfer request error:",
+      error
+    );
+
+    showPageToast(
+      "Unable to submit Bank Transfer request right now. Please try again.",
+      "error"
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = originalText;
+
+  }
+
+  return;
+}
+
+
+/* Main Wallet continues below exactly as before */
+
+if(!mainSelected){
+
+  showPageToast(
+    "For immediate activation, please select Main Wallet funding.",
+    "error"
+  );
+
+  return;
+  }
 
       if(
         amount > balances.main
