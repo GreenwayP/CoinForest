@@ -3423,6 +3423,57 @@ async function adminRequests(request, url, body = null, requestId = null) {
       const item =
         depositRows[0];
 
+         /* =====================================================
+         BANK TRANSFER REQUEST
+
+         Bank Transfer is administrator review only.
+         Approval/decline changes request status only.
+
+         DO NOT:
+         - credit wallet
+         - create transaction
+         - create investment
+      ===================================================== */
+
+      const isBankTransferRequest =
+        String(
+          item.payment_method || ""
+        )
+          .trim()
+          .toLowerCase() === "bank transfer";
+
+      if (isBankTransferRequest) {
+
+        const newStatus =
+          decision === "approved"
+            ? "approved"
+            : "rejected";
+
+        await sql`
+          UPDATE deposit_requests
+          SET
+            status = ${newStatus},
+            reviewed_at = NOW(),
+            reviewed_by = ${auth.user.id},
+            updated_at = NOW()
+          WHERE id = ${requestId}
+        `;
+
+        return ok({
+          message:
+            decision === "approved"
+              ? "Bank Transfer request approved."
+              : "Bank Transfer request declined.",
+
+          request_type:
+            "bank_transfer",
+
+          request: {
+            ...item,
+            status: newStatus
+          }
+        });
+      }    
       if (decision === "rejected") {
 
         await sql`
