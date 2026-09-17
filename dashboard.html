@@ -3935,7 +3935,7 @@ function goBack(){
     window.__coinforestSection || "dashboard";
 
   if(currentSection === "dashboard"){
-    window.location.reload();
+    navigateSection("dashboard", false);
     return;
   }
 
