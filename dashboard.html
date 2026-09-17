@@ -6341,7 +6341,24 @@ function escapeHtml(
 IN-DASHBOARD HISTORY INITIALIZATION
 ===================================================== */
 (function(){
-  const initialSection = "dashboard";
+  const params = new URLSearchParams(window.location.search);
+const allowedSections = [
+  "dashboard",
+  "portfolio",
+  "wallets",
+  "investments",
+  "transactions",
+  "markets",
+  "profile",
+  "security"
+];
+
+const requestedSection = params.get("section");
+
+const initialSection =
+  allowedSections.includes(requestedSection)
+    ? requestedSection
+    : "dashboard";
   window.__coinforestSection = initialSection;
   window.history.replaceState(
     {
@@ -6364,7 +6381,9 @@ START
   await refreshDashboard();
 
   await loadWithdrawalAccount();
-
+if (window.__coinforestInitialSection !== "dashboard") {
+  navigateSection(window.__coinforestInitialSection, false);
+}
 })();
 
 </script>
