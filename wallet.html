@@ -1926,20 +1926,16 @@ async function loadUser(){
     */
 
     balances.main =
-      Number(
-        currentUser.main_wallet_balance ??
-        currentUser.main_balance ??
-        currentUser.wallet_balance ??
-        0
-      );
+  Number(
+    data.main_balance ??
+    0
+  );
 
-
-    balances.profit =
-      Number(
-        currentUser.profit_wallet_balance ??
-        currentUser.profit_balance ??
-        0
-      );
+balances.profit =
+  Number(
+    data.profit_balance ??
+    0
+  );
 
 
     updateBalances();
