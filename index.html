@@ -252,6 +252,29 @@ padding:42px 15px 15px;
 position:relative
 }
 
+.phone-scene-image{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:20;
+opacity:0;
+transform:scale(1.015);
+transition:opacity .45s ease,transform .55s ease;
+pointer-events:none
+}
+
+.phone-scene-image.visible{
+opacity:1;
+transform:scale(1)
+}
+
+.phone-screen > *:not(.phone-scene-image){
+position:relative;
+z-index:2
+}
+
 .phone-top{
 display:flex;
 justify-content:space-between;
@@ -718,37 +741,39 @@ linear-gradient(145deg,#0d2034,#081421)
 
 .person-silhouette{
 position:absolute;
-bottom:0;
 left:50%;
+bottom:0;
 transform:translateX(-50%);
-width:150px;
-height:300px;
-background:linear-gradient(90deg,#172a3e,#203b53,#102134);
-border-radius:75px 75px 20px 20px;
-opacity:.8
+width:230px;
+height:330px;
+z-index:1;
+opacity:1;
+background:transparent;
+border-radius:20px 20px 0 0;
+overflow:hidden;
+mask-image:linear-gradient(to bottom,black 0%,black 88%,transparent 100%);
+-webkit-mask-image:linear-gradient(to bottom,black 0%,black 88%,transparent 100%)
 }
 
-.person-silhouette:before{
-content:"";
-position:absolute;
-top:-78px;
-left:37px;
-width:76px;
-height:76px;
-border-radius:50%;
-background:linear-gradient(135deg,#a76c43,#e0a37a)
+.person-silhouette img{
+width:100%;
+height:100%;
+object-fit:cover;
+object-position:center top;
+display:block
 }
 
-.person-silhouette:after{
-content:"";
-position:absolute;
-top:40px;
-right:-32px;
-width:65px;
-height:150px;
-border-radius:35px;
-background:#1a3046;
-transform:rotate(-15deg)
+.person-silhouette:before,.person-silhouette:after{
+content:none
+}
+
+.device-card:nth-child(2n) .person-silhouette{
+transform:translateX(-50%) scaleX(-1)
+}
+
+.device-card .mini-device{
+position:relative;
+z-index:3
 }
 
 .mini-device{
@@ -1281,6 +1306,34 @@ pointer-events:none;
 transition:.35s ease
 }
 
+.activity-avatar{
+width:48px;
+height:48px;
+min-width:48px;
+border-radius:50%;
+overflow:hidden;
+background:#173b58;
+border:1px solid rgba(246,196,83,.28)
+}
+
+.activity-avatar img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block
+}
+
+.activity-content{
+min-width:0
+}
+
+.activity-role{
+display:block;
+font-size:10px;
+color:#7f91a6;
+margin:2px 0 4px
+}
+
 .activity-popup.show{
 transform:translateY(0);
 opacity:1
@@ -1611,6 +1664,8 @@ Explore CoinForest
 
 <div class="phone-screen" id="phoneScreen">
 
+<img class="phone-scene-image" id="phoneSceneImage" src="assets/phone/phone-1.jpg" alt="CoinForest mobile app screen">
+
 <div class="phone-top">
 <span id="phoneClock">9:41</span>
 <span>● ● ●</span>
@@ -1904,7 +1959,7 @@ CoinForest environment simple to navigate.
 <span data-i18n="scene1Text">A clear view of available account funds.</span>
 </div>
 
-<div class="person-silhouette"></div>
+<div class="person-silhouette"><img src="assets/transition/transition-1.jpg" alt="CoinForest financial experience" loading="lazy"></div>
 
 <div class="mini-device">
 
@@ -1955,7 +2010,7 @@ fill="none" stroke="#f6c453" stroke-width="2"/>
 <span data-i18n="scene2Text">Separate visibility for accumulated returns.</span>
 </div>
 
-<div class="person-silhouette"></div>
+<div class="person-silhouette"><img src="assets/transition/transition-2.jpg" alt="CoinForest financial experience" loading="lazy"></div>
 
 <div class="mini-device">
 
@@ -2006,7 +2061,7 @@ fill="none" stroke="#22d3c5" stroke-width="2"/>
 <span data-i18n="scene3Text">Monitor active financial positions.</span>
 </div>
 
-<div class="person-silhouette"></div>
+<div class="person-silhouette"><img src="assets/transition/transition-3.jpg" alt="CoinForest financial experience" loading="lazy"></div>
 
 <div class="mini-device">
 
@@ -2060,7 +2115,7 @@ Coin<span>Forest</span>
 <span data-i18n="scene4Text">Compare available plan structures.</span>
 </div>
 
-<div class="person-silhouette"></div>
+<div class="person-silhouette"><img src="assets/transition/transition-4.jpg" alt="CoinForest financial experience" loading="lazy"></div>
 
 <div class="mini-device">
 
@@ -2109,7 +2164,7 @@ Coin<span>Forest</span>
 <span data-i18n="scene5Text">Review recent account actions.</span>
 </div>
 
-<div class="person-silhouette"></div>
+<div class="person-silhouette"><img src="assets/transition/transition-5.jpg" alt="CoinForest financial experience" loading="lazy"></div>
 
 <div class="mini-device">
 
@@ -2158,7 +2213,7 @@ Coin<span>Forest</span>
 <span data-i18n="scene6Text">A compact view of selected markets.</span>
 </div>
 
-<div class="person-silhouette"></div>
+<div class="person-silhouette"><img src="assets/transition/transition-6.jpg" alt="CoinForest financial experience" loading="lazy"></div>
 
 <div class="mini-device">
 
@@ -2643,12 +2698,12 @@ onerror="this.style.display='none'">
 
 <div class="team-photo">
 <img src="assets/people/team-3.jpg"
-alt="Daniel Okafor"
+alt="Daniel Mensah"
 onerror="this.style.display='none'">
 </div>
 
 <div class="team-info">
-<h3>Daniel Okafor</h3>
+<h3>Daniel Mensah</h3>
 <span>Financial Operations Director</span>
 <p>Financial systems and operational structure.</p>
 </div>
@@ -2791,21 +2846,23 @@ investments and financial tools together.
 <div class="activity-popup" id="activityPopup">
 
 <div class="activity-avatar" id="activityAvatar">
-CF
+<img id="activityAvatarImage" src="assets/people/popup-1.jpg" alt="CoinForest member">
 </div>
 
 <div class="activity-content">
 
+<strong id="activityPerson">CoinForest Member</strong>
+<span class="activity-role" id="activityRole">Platform User</span>
 <strong id="activityTitle">
-Platform Update
+Recent Account Activity
 </strong>
 
 <p id="activityMessage">
-CoinForest account activity is available.
+A CoinForest account activity was completed.
 </p>
 
 <span id="activityTime">
-Now
+Recently
 </span>
 
 </div>
@@ -3306,6 +3363,18 @@ state.price-previous
 
 
 /* =========================================================
+   REALISTIC COINFOREST VISUAL ASSETS
+========================================================= */
+const realisticCoinForestAssets=[
+  ...Array.from({length:6},(_,i)=>`assets/phone/phone-${i+1}.jpg`),
+  ...Array.from({length:9},(_,i)=>`assets/transition/transition-${i+1}.jpg`),
+  ...Array.from({length:4},(_,i)=>`assets/people/team-${i+1}.jpg`),
+  ...Array.from({length:28},(_,i)=>`assets/people/testimonial-${i+1}.jpg`),
+  ...Array.from({length:5},(_,i)=>`assets/people/popup-${i+1}.jpg`)
+];
+realisticCoinForestAssets.forEach(src=>{const img=new Image();img.src=src;});
+
+/* =========================================================
    PHONE SCENES
 ========================================================= */
 
@@ -3315,6 +3384,7 @@ const phoneScenes=[
 balance:"$18,420.00",
 profit:"+$2,480.50 this month",
 title:"Investment Portfolio",
+image:"assets/phone/phone-1.jpg",
 oneIcon:"◆",
 oneTitle:"Gold Investment",
 oneText:"+$5,000.00",
@@ -3330,6 +3400,7 @@ threeText:"+$1,240.00"
 balance:"$22,870.50",
 profit:"+$4,120.75 this month",
 title:"Withdrawal Activity",
+image:"assets/phone/phone-2.jpg",
 oneIcon:"✓",
 oneTitle:"Withdrawal Status",
 oneText:"Processing",
@@ -3345,6 +3416,7 @@ threeText:"$20,370.50"
 balance:"$20,370.50",
 profit:"+$3,890.20 this month",
 title:"Account Overview",
+image:"assets/phone/phone-3.jpg",
 oneIcon:"●",
 oneTitle:"Support",
 oneText:"Connected",
@@ -3360,6 +3432,7 @@ threeText:"Protected"
 balance:"$24,615.20",
 profit:"+$5,210.40 this month",
 title:"Send Transaction",
+image:"assets/phone/phone-4.jpg",
 oneIcon:"↗",
 oneTitle:"Transfer",
 oneText:"$1,250.00",
@@ -3375,6 +3448,7 @@ threeText:"Confirmed"
 balance:"$27,840.75",
 profit:"+$6,430.15 this month",
 title:"Investment Growth",
+image:"assets/phone/phone-5.jpg",
 oneIcon:"◆",
 oneTitle:"Growth Package",
 oneText:"+$5,000.00",
@@ -3402,6 +3476,12 @@ void screen.offsetWidth;
 
 screen.classList.add("phone-slide");
 
+const phoneSceneImage=document.getElementById("phoneSceneImage");
+phoneSceneImage.classList.remove("visible");
+phoneSceneImage.src=scene.image;
+phoneSceneImage.alt=`CoinForest ${scene.title} mobile screen`;
+requestAnimationFrame(()=>phoneSceneImage.classList.add("visible"));
+
 document.getElementById("phoneBalance").textContent=scene.balance;
 document.getElementById("phoneProfit").textContent=scene.profit;
 document.getElementById("phoneActivityTitle").textContent=scene.title;
@@ -3426,6 +3506,7 @@ phoneSceneIndex=0;
 }
 
 updatePhoneScene();
+document.getElementById("phoneSceneImage").classList.add("visible");
 setInterval(updatePhoneScene,2600);
 
 
@@ -3479,35 +3560,34 @@ setInterval(refreshMarkets,1700);
 ========================================================= */
 
 const testimonials=[
-
-["James Reynolds","Digital Consultant","JR","The dashboard gives me a clear overview of my wallet and account activity."],
-["Aisha Bello","Business Consultant","AB","I appreciate how clearly the different account sections are presented."],
-["Liam Carter","Technology Specialist","LC","The interface feels modern and straightforward to navigate."],
-["Sofia Laurent","Financial Analyst","SL","The structure makes the different financial sections easy to follow."],
-["Daniel Okafor","Entrepreneur","DO","The wallet layout provides a clear overview of account information."],
-["Maria Santos","Independent Consultant","MS","The clean presentation keeps the important information accessible."],
-["Michael Johnson","Business Owner","MJ","The overall interface feels polished and easy to navigate."],
-["Priya Sharma","Investment Researcher","PS","The market information and account tools are presented clearly."],
-["David Wilson","Entrepreneur","DW","The information is organized in a way that is easy to follow."],
-["Fatima Abdullahi","Digital Strategist","FA","The platform gives the financial dashboard an organized feel."],
-["Ethan Williams","Technology Consultant","EW","The modern design makes the overall experience smooth."],
-["Camila Rodriguez","Marketing Professional","CR","I like the combination of market information and account tools."],
-["Marcus Anderson","Business Consultant","MA","The information is presented in a clear and accessible way."],
-["Yuki Tanaka","Technology Specialist","YT","The clean organization makes the dashboard easier to understand."],
-["Grace Morgan","Digital Strategist","GM","The important account information is easy to locate."],
-["Christopher Lee","Technology Consultant","CL","The modern design and organized dashboard work well together."],
-["Kwame Mensah","Business Owner","KM","The platform keeps important financial information easy to access."],
-["Isabella Rossi","Financial Consultant","IR","The presentation is professional and the navigation is straightforward."],
-["Noah Thompson","Entrepreneur","NT","The dashboard provides a clear picture of account activity."],
-["Zainab Yusuf","Operations Manager","ZY","The wallet sections are organized in an easy-to-understand way."],
-["Lucas Silva","Digital Consultant","LS","The market overview and financial tools fit together nicely."],
-["Hannah Brown","Marketing Director","HB","The platform has a clean and professional interface."],
-["Raj Patel","Technology Entrepreneur","RP","The account interface is simple to navigate."],
-["Chloe Martin","Financial Analyst","CM","The wallet information is presented in a clear format."],
-["Samuel Adeyemi","Business Consultant","SA","The overall experience feels organized and polished."],
-["Elena Garcia","Independent Consultant","EG","The clean layout makes it easy to move through the platform."],
-["Omar Hassan","Digital Finance Specialist","OH","The dashboard gives a clear view of important account details."],
-["Amelia Clark","Investment Consultant","AC","The platform brings key financial tools together in an organized environment."]
+["James Reynolds","Digital Consultant","assets/people/testimonial-1.jpg","The dashboard gives me a clear overview of my wallet and account activity."],
+["Aisha Bello","Business Consultant","assets/people/testimonial-2.jpg","I appreciate how clearly the different account sections are presented."],
+["Liam Carter","Technology Specialist","assets/people/testimonial-3.jpg","The interface feels modern and straightforward to navigate."],
+["Sofia Laurent","Financial Analyst","assets/people/testimonial-4.jpg","The structure makes the different financial sections easy to follow."],
+["Daniel Mensah","Entrepreneur","assets/people/testimonial-5.jpg","The wallet layout provides a clear overview of account information."],
+["Maria Santos","Independent Consultant","assets/people/testimonial-6.jpg","The clean presentation keeps the important information accessible."],
+["Michael Johnson","Business Owner","assets/people/testimonial-7.jpg","The overall interface feels polished and easy to navigate."],
+["Priya Sharma","Investment Researcher","assets/people/testimonial-8.jpg","The market information and account tools are presented clearly."],
+["David Wilson","Entrepreneur","assets/people/testimonial-9.jpg","The information is organized in a way that is easy to follow."],
+["Fatima Abdullahi","Digital Strategist","assets/people/testimonial-10.jpg","The platform gives the financial dashboard an organized feel."],
+["Ethan Williams","Technology Consultant","assets/people/testimonial-11.jpg","The modern design makes the overall experience smooth."],
+["Camila Rodriguez","Marketing Professional","assets/people/testimonial-12.jpg","I like the combination of market information and account tools."],
+["Marcus Anderson","Business Consultant","assets/people/testimonial-13.jpg","The information is presented in a clear and accessible way."],
+["Yuki Tanaka","Technology Specialist","assets/people/testimonial-14.jpg","The clean organization makes the dashboard easier to understand."],
+["Grace Morgan","Digital Strategist","assets/people/testimonial-15.jpg","The important account information is easy to locate."],
+["Christopher Lee","Technology Consultant","assets/people/testimonial-16.jpg","The modern design and organized dashboard work well together."],
+["Kwame Mensah","Business Owner","assets/people/testimonial-17.jpg","The platform keeps important financial information easy to access."],
+["Isabella Rossi","Financial Consultant","assets/people/testimonial-18.jpg","The presentation is professional and the navigation is straightforward."],
+["Noah Thompson","Entrepreneur","assets/people/testimonial-19.jpg","The dashboard provides a clear picture of account activity."],
+["Zainab Yusuf","Operations Manager","assets/people/testimonial-20.jpg","The wallet sections are organized in an easy-to-understand way."],
+["Lucas Silva","Digital Consultant","assets/people/testimonial-21.jpg","The market overview and financial tools fit together nicely."],
+["Hannah Brown","Marketing Director","assets/people/testimonial-22.jpg","The platform has a clean and professional interface."],
+["Raj Patel","Technology Entrepreneur","assets/people/testimonial-23.jpg","The account interface is simple to navigate."],
+["Chloe Martin","Financial Analyst","assets/people/testimonial-24.jpg","The wallet information is presented in a clear format."],
+["Samuel Adeyemi","Business Consultant","assets/people/testimonial-25.jpg","The overall experience feels organized and polished."],
+["Elena Garcia","Independent Consultant","assets/people/testimonial-26.jpg","The clean layout makes it easy to move through the platform."],
+["Omar Hassan","Digital Finance Specialist","assets/people/testimonial-27.jpg","The dashboard gives a clear view of important account details."],
+["Amelia Clark","Investment Consultant","assets/people/testimonial-28.jpg","The platform brings key financial tools together in an organized environment."],
 ];
 
 let testimonialIndex=0;
@@ -3536,7 +3616,7 @@ card.innerHTML=`
 <div class="person">
 
 <div class="avatar">
-${item[2]}
+<img src="${item[2]}" alt="${item[0]}" loading="lazy">
 </div>
 
 <div>
@@ -3593,37 +3673,46 @@ renderTestimonials();
 ========================================================= */
 
 const activities=[
-
 {
-title:"Investment plan selected",
-message:"The Silver plan is currently available for review.",
-time:"Recently"
-},
-
-{
-title:"Wallet management",
-message:"Main Wallet and Profit Wallet tools are available.",
-time:"Recently"
-},
-
-{
-title:"Market overview",
-message:"Digital asset market information has been refreshed.",
+name:"David Wilson",
+role:"Entrepreneur",
+image:"assets/people/popup-1.jpg",
+title:"Deposit successful",
+message:"A $300.00 deposit has been recorded on a CoinForest account.",
 time:"Just now"
 },
-
 {
-title:"Account security",
-message:"Account protection and authentication controls are available.",
+name:"Aisha Bello",
+role:"Business Consultant",
+image:"assets/people/popup-2.jpg",
+title:"Investment completed",
+message:"A $1,000.00 investment has been added to the account activity.",
+time:"2 minutes ago"
+},
+{
+name:"Liam Carter",
+role:"Technology Specialist",
+image:"assets/people/popup-3.jpg",
+title:"Withdrawal successful",
+message:"A $250.00 withdrawal has been marked completed.",
+time:"5 minutes ago"
+},
+{
+name:"Fatima Abdullahi",
+role:"Digital Strategist",
+image:"assets/people/popup-4.jpg",
+title:"Profit credited",
+message:"A profit entry has been added to the account activity.",
+time:"8 minutes ago"
+},
+{
+name:"Grace Morgan",
+role:"Digital Strategist",
+image:"assets/people/popup-5.jpg",
+title:"Wallet updated",
+message:"A CoinForest wallet balance has been updated.",
 time:"Recently"
 },
-
-{
-title:"Investment plans updated",
-message:"The current five-plan structure is now displayed.",
-time:"Recently"
-}
-
 ];
 
 let activityIndex=0;
@@ -3633,6 +3722,11 @@ const activityPopup=document.getElementById("activityPopup");
 function showActivity(){
 
 const activity=activities[activityIndex];
+
+document.getElementById("activityAvatarImage").src=activity.image;
+document.getElementById("activityAvatarImage").alt=activity.name;
+document.getElementById("activityPerson").textContent=activity.name;
+document.getElementById("activityRole").textContent=activity.role;
 
 document.getElementById("activityTitle")
 .textContent=activity.title;
