@@ -1517,7 +1517,7 @@ SIDEBAR
       data-section="wallets"
       onclick="navigateSection('wallets');return false;">
       <span class="icon">◉</span>
-      <span>Wallets</span>
+      <span>Main Wallet</span>
     </a>
 
     <a
@@ -1701,6 +1701,13 @@ DASHBOARD SECTION
         class="btn btn-dark"
         onclick="openSend()">
         Send Money
+      </button>
+
+      <button
+        class="btn"
+        style="background:#eafaf3;color:#087f50"
+        onclick="navigateSection('wallets')">
+        Main Wallet
       </button>
 
     </div>
@@ -2116,13 +2123,13 @@ DASHBOARD SECTION
           onclick="navigateSection('wallets')">
 
           <div class="action-icon">
-            👛
+            💼
           </div>
 
-          <strong>Wallet Exchange</strong>
+          <strong>Main Wallet</strong>
 
           <span>
-            Manage your wallets
+            Open wallet & actions
           </span>
 
         </button>
@@ -2152,13 +2159,13 @@ DASHBOARD SECTION
       <div class="card-head">
 
         <h2>
-          My Wallets
+          Main Wallet
         </h2>
 
         <a
           href="#"
           onclick="navigateSection('wallets');return false;">
-          View all
+          Open wallet
         </a>
 
       </div>
@@ -2626,10 +2633,10 @@ WALLETS
 
     <div>
 
-      <h1>Wallets</h1>
+      <h1>Main Wallet</h1>
 
       <p>
-        View and manage your CoinForest wallets.
+        Manage your main wallet balance and wallet actions.
       </p>
 
     </div>
@@ -2639,6 +2646,34 @@ WALLETS
       onclick="refreshDashboard()">
       ↻ Refresh
     </button>
+
+  </div>
+
+  <div class="card" style="margin-bottom:18px">
+
+    <div class="card-head">
+      <h2>Main Wallet Actions</h2>
+    </div>
+
+    <div class="actions">
+      <button class="action" onclick="openDeposit()">
+        <div class="action-icon">💳</div>
+        <strong>Deposit</strong>
+        <span>Add funds to your Main Wallet</span>
+      </button>
+
+      <button class="action" onclick="openSend()">
+        <div class="action-icon">↗</div>
+        <strong>Send Money</strong>
+        <span>Transfer from your Main Wallet</span>
+      </button>
+
+      <button class="action" onclick="openWithdrawal()">
+        <div class="action-icon">💸</div>
+        <strong>Withdraw</strong>
+        <span>Withdraw from your Main Wallet</span>
+      </button>
+    </div>
 
   </div>
 
@@ -3814,6 +3849,15 @@ CHAT
 
 <script>
 
+/*
+ * COINFOREST MASTER WALLET ARCHITECTURE
+ * - Wallet Exchange is dashboard display-only.
+ * - Main Wallet is the single wallet-management destination.
+ * - Sidebar Wallet/Main Wallet -> section-wallets.
+ * - Deposit / Send / Withdraw operate from Main Wallet actions.
+ * Do not create a second wallet implementation.
+ */
+
 /* =====================================================
 AUTH
 ===================================================== */
@@ -3861,14 +3905,29 @@ async function api(
     ...(options.headers || {})
   };
 
-  const response =
-  await fetch(
-    "https://coinforest-api-test-2026.onrender.com"+path,
-      {
-        ...options,
-        headers
-      }
-    );
+  let response;
+
+  try{
+
+    response =
+      await fetch(
+        "https://coinforest-api-test-2026.onrender.com"+path,
+        {
+          ...options,
+          headers
+        }
+      );
+
+  }catch(error){
+
+    return {
+      success:false,
+      error:
+        error?.message ||
+        "Unable to reach the CoinForest API."
+    };
+
+  }
 
   let data = {};
 
@@ -4416,11 +4475,17 @@ if(!result.success){
 
     result = {
       ...walletResult,
-      transactions: [],
-      total_deposits: 0,
-      total_invested: 0,
-      total_withdrawals: 0,
-      weekly_profit: 0
+      transactions:
+        walletResult.transactions ||
+        [],
+      total_deposits:
+        walletResult.total_deposits,
+      total_invested:
+        walletResult.total_invested,
+      total_withdrawals:
+        walletResult.total_withdrawals,
+      weekly_profit:
+        walletResult.weekly_profit
     };
 
   }else{
